@@ -41,17 +41,3 @@
 ### Acesso ao arquivo SEARCH_ORGANIC.pdf
 
 Basta abrir o arquivo e escolher o navegador de sua preferência.
-
-### Acesso ao arquivo SEARCH_ORGANIC.docx
-
-### Visualize online:
-
-2. Acesse https://www.office.com/ e faça o login com o seu e-mail ou crie uma conta.
-3. Após estar logado, no canto esquerdo da tela procure por <img src="./assets/word.png" style="margin: 0.5rem 0.5rem 0;"> e clique com o botão esquerdo.
-4. Agora no canto direito da sua tela procure por <img src="./assets/carregar.png" style="margin: 0.5rem 0.5rem 0;"> clique com o botão esquerdo e abra o arquivo baixado.
-
-### OU
-
-### Baixe e instale o pacote Microsoft 365 (antigo Office 365):
-
-https://www.microsoft.com/pt-br/microsoft-365
