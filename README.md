@@ -38,6 +38,6 @@
 
 2.1. Após baixar e instalar o WINRAR, clique com o botão direito no repositório baixado no passo <strong>( 1 )</strong> e depois em "Extrair aqui".
 
-### Acesso ao arquivo SEARCH_ORGANIC.pdf
+### Acesso ao arquivo Search_Organic.pdf
 
-Basta abrir o arquivo e escolher o navegador de sua preferência.
+Basta abrir o arquivo Search_Organic.pdf dentro da pasta src e escolher o navegador de sua preferência.
