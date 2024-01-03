@@ -1,4 +1,4 @@
-package endereco;
+package Classes;
 
 import java.util.UUID;
 
