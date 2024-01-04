@@ -1,7 +1,5 @@
 package Modelo;
 
-import java.util.UUID;
-
 public class Categoria {
 
     private static int categoriaId = 1;
