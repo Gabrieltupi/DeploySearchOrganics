@@ -27,7 +27,7 @@ public class Pedido {
     private BigDecimal calcularTotal(){
         BigDecimal resultado = new BigDecimal(0);
         for (Produto produto : produtos) {
-            BigDecimal quantidade = new BigDecimal(produto.getQuantidade());
+            BigDecimal quantidade = produto.getQuantidade();
             BigDecimal preco = produto.getPreco();
             resultado = resultado.add(quantidade.multiply(preco));
         }
