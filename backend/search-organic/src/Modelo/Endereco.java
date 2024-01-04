@@ -3,7 +3,8 @@ package Modelo;
 import java.util.UUID;
 
 public class Endereco {
-    private final UUID id;
+    private static int enderecoId = 1;
+    private int id;
     private String logradouro;
     private String numero;
     private String complemento;
@@ -13,7 +14,7 @@ public class Endereco {
     private String pais;
 
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade, String estado, String pais) {
-        this.id = UUID.randomUUID();
+        this.id = enderecoId;
         this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;
@@ -21,9 +22,10 @@ public class Endereco {
         this.cidade = cidade;
         this.estado = estado;
         this.pais = pais;
+        enderecoId++;
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
