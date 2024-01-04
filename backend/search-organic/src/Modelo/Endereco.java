@@ -1,4 +1,4 @@
-package Classes;
+package Modelo;
 
 import java.util.UUID;
 
