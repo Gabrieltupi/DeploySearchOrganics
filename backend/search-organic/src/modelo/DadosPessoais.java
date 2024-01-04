@@ -1,5 +1,4 @@
 package modelo;
-import Modelo.Endereco;
 
 import java.util.Date;
 
