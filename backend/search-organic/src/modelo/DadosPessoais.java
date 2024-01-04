@@ -1,5 +1,4 @@
-package Classes;
-import Modelo.Endereco;
+package modelo;
 
 import java.util.Date;
 

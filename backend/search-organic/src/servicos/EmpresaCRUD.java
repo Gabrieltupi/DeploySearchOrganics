@@ -1,5 +1,5 @@
-package Servicos;
-import Modelo.Empresa;
+package servicos;
+import modelo.Empresa;
 import java.util.ArrayList;
 
 public class EmpresaCRUD {

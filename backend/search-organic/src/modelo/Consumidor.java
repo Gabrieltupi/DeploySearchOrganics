@@ -1,4 +1,4 @@
-package Modelo;
+package modelo;
 
 public class Consumidor {
     private static int consumidorId = 1;

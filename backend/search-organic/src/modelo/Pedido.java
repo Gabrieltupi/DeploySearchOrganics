@@ -1,9 +1,8 @@
-package Classes;
+package modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.UUID;
 
 public class Pedido {
