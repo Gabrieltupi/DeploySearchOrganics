@@ -1,4 +1,6 @@
 package Classes;
+import Modelo.Endereco;
+
 import java.util.Date;
 
 public class DadosPessoais {
