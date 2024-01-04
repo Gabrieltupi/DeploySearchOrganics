@@ -3,12 +3,15 @@ package Modelo;
 import java.util.UUID;
 
 public class Categoria {
-    private static int id;
+
+    private static int categoriaId = 1;
+    private int id;
     private String variedade;
 
     public Categoria(String variedade) {
+        this.id = categoriaId;
         this.variedade = variedade;
-        id++;
+        categoriaId++;
     }
 
     public int getId() {
