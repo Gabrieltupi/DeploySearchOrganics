@@ -1,23 +1,24 @@
 package Classes;
 import java.util.Date;
-import java.util.UUID;
 
 public class DadosPessoais {
-    private final UUID id;
+    private static int dadosPessoaisId;
+    private int id;
     private String nome;
     private String sobrenome;
     private Endereco endereco;
     private Date dataNascimento;
 
     public DadosPessoais(String nome, String sobrenome, Endereco endereco, Date dataNascimento) {
-        this.id = UUID.randomUUID();
+        this.id = dadosPessoaisId;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.endereco = endereco;
         this.dataNascimento = dataNascimento;
+        dadosPessoaisId++;
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
