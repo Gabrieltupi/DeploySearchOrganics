@@ -46,6 +46,7 @@ public class Empresa implements Impressao {
     public String getUsuario() { return usuario; }
     public void setUsuario(String usuario) { this.usuario = usuario; }
 
+    @Override
     public void imprimir() {
         System.out.println("Nome da empresa: " + getNomeFantasia());
         System.out.println("ID da empresa: " + getId());

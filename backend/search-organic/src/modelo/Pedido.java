@@ -1,11 +1,13 @@
 package modelo;
 
+import interfaces.Impressao;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Pedido {
+public class Pedido implements Impressao {
     private final UUID id;
     private ArrayList<Produto> produtos;
     private BigDecimal total;
@@ -72,5 +74,15 @@ public class Pedido {
 
     public LocalDate getData() {
         return data;
+    }
+
+    @Override
+    public void imprimir() {
+        System.out.println("ID do pedido: " + getId());
+        System.out.println("Produtos do pedido: " + getProdutos());
+        System.out.println("Total do pedido: " + getTotal());
+        System.out.println("Forma de pagamento do pedido: " + getFormaPagamento());
+        System.out.println("Entregue: " + getEntregue());
+        System.out.println("Data do pedido: " + getData());
     }
 }
