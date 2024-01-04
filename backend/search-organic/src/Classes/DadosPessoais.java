@@ -4,7 +4,7 @@ import Modelo.Endereco;
 import java.util.Date;
 
 public class DadosPessoais {
-    private static int dadosPessoaisId;
+    private static int dadosPessoaisId = 1;
     private int id;
     private String nome;
     private String sobrenome;
