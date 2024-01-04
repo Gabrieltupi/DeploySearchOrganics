@@ -1,4 +1,4 @@
-package Servicos;
+package servicos;
 import Modelo.Empresa;
 import java.util.ArrayList;
 

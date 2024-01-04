@@ -1,6 +1,6 @@
-package Modelo;
+package modelo;
 
-import Interface.Impressao;
+import interfaces.Impressao;
 import java.util.ArrayList;
 
 public class Empresa implements Impressao {
