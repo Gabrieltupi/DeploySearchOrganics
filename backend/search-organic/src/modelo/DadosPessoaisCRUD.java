@@ -1,10 +1,11 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DadosPessoaisCRUD {
 
-    ArrayList <DadosPessoais> dadosPessoais = new Arraylist<>();
+    ArrayList <DadosPessoais> dadosPessoais = new ArrayList<>();
 
     public DadosPessoaisCRUD(){}
 

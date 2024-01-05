@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class EnderecoCRUD {
 
-    ArrayList <Endereco> enderecos = new Arraylist<>();
+    ArrayList <Endereco> enderecos = new ArrayList<>();
 
     public EnderecoCRUD(){}
 
@@ -33,7 +33,7 @@ public class EnderecoCRUD {
     }
 
     public void imprimirEnderecos(){
-        for (Endereco x: dadosPessoais){
+        for (Endereco x: enderecos){
             System.out.println("Dados pessoais");
             System.out.println(x);
 

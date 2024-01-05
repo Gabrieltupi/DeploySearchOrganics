@@ -1,26 +1,33 @@
 package modelo;
 
+import interfaces.Impressao;
+import utils.FormaPagamento;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.UUID;
 
-public class Pedido {
-    private final UUID id;
+public class Pedido implements Impressao {
+    private static int pedidoId = 1;
+    private int id;
     private ArrayList<Produto> produtos;
     private BigDecimal total;
-    private String formaPagamento;
+    private FormaPagamento formaPagamento;
     private Boolean entregue;
     private LocalDate data;
 
+    private int consumidorId;
 
-    public Pedido(ArrayList<Produto> produtos, String formaPagamento) {
-        this.id = UUID.randomUUID();
+
+    public Pedido(ArrayList<Produto> produtos, FormaPagamento formaPagamento, int consumidorId) {
+        this.id = pedidoId;
         this.produtos = produtos;
         this.total = this.calcularTotal();
         this.formaPagamento = formaPagamento;
         this.entregue = false;
         this.data = LocalDate.now();
+        this.consumidorId = consumidorId;
+        this.pedidoId++;
     }
 
     private BigDecimal calcularTotal(){
@@ -34,7 +41,7 @@ public class Pedido {
         return resultado;
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
@@ -54,11 +61,11 @@ public class Pedido {
         this.total = total;
     }
 
-    public String getFormaPagamento() {
+    public FormaPagamento getFormaPagamento() {
         return formaPagamento;
     }
 
-    public void setFormaPagamento(String formaPagamento) {
+    public void setFormaPagamento(FormaPagamento formaPagamento) {
         this.formaPagamento = formaPagamento;
     }
 
@@ -72,5 +79,25 @@ public class Pedido {
 
     public LocalDate getData() {
         return data;
+    }
+
+    @Override
+    public void imprimir() {
+        System.out.printf("""
+                ID do Pedido: %d
+                Entregue: %b
+                Forma de pagamento: %s
+                Data: %s
+                Total: R$ %.2f         
+                """,
+                id, entregue, formaPagamento, data, total);
+        System.out.println("Produtos: ");
+        for(Produto produto: this.produtos){
+            System.out.printf("""
+                    Nome: %s
+                    Quantidade: %d
+                    Preço: R$ %.2f
+                    """, produto.getNome(), produto.getQuantidade(),  produto.getPreco());
+        }
     }
 }
