@@ -22,7 +22,7 @@ public class Consumidor {
     }
 
     public void setCpf(String cpf) {
-        this.cpf= cpf;
+        this.cpf = cpf;
     }
 
     public Usuario getUsuario() {
@@ -30,12 +30,12 @@ public class Consumidor {
     }
 
     public void setUsuario(Usuario usuario) {
-        this.usuario= usuario;
+        this.usuario = usuario;
     }
 
     public void imprimir() {
         System.out.println("CPF do consumidor: " + getCpf());
         System.out.println("ID do consumidor: " + getId());
-        System.out.println("Usuario do consumidor: " + getUsuario());
+        System.out.println("Usuário do consumidor: " + getUsuario());
     }
 }
