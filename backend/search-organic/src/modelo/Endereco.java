@@ -13,7 +13,8 @@ public class Endereco {
     private String estado;
     private String pais;
 
-    public Endereco(String logradouro, String numero, String complemento, String cep, String cidade, String estado, String pais) {
+    public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
+                    String estado, String pais) {
         this.id = enderecoId;
         this.logradouro = logradouro;
         this.numero = numero;
@@ -85,14 +86,15 @@ public class Endereco {
         this.pais = pais;
     }
 
-    public void imprimir() {
-        System.out.printf("ID: %s\n", this.id);
-        System.out.printf("Logradouro: %s\n", this.logradouro);
-        System.out.printf("Número: %s\n", this.numero);
-        System.out.printf("Complemento: %s\n", this.complemento);
-        System.out.printf("CEP: %s\n", this.cep);
-        System.out.printf("Cidade: %s\n", this.cidade);
-        System.out.printf("Estado: %s\n", this.estado);
-        System.out.printf("País: %s\n", this.pais);
+    @Override
+    public String toString() {
+        return "ID: " + id +
+                "\nLogradouro: " + logradouro +
+                "\nNúmero: " + numero +
+                "\nComplemento: " + complemento +
+                "\nCEP: " + cep +
+                "\nCidade: " + cidade +
+                "\nEstado: " + estado +
+                "\nPaís: " + pais + "\n";
     }
 }

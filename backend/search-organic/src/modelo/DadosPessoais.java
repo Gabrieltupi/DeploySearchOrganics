@@ -1,8 +1,10 @@
 package modelo;
 
+import interfaces.Impressao;
+
 import java.util.Date;
 
-public class DadosPessoais {
+public class DadosPessoais{
     private static int dadosPessoaisId = 1;
     private int id;
     private String nome;
@@ -52,6 +54,13 @@ public class DadosPessoais {
 
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+
+    @Override
+    public String toString(){
+        return "Nome completo: " + nome + " " + sobrenome +
+                "\nEndereço: " + endereco +
+                "\nData de Nascimento: " + endereco + "\n";
     }
 }
 
