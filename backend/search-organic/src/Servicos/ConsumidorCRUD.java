@@ -34,7 +34,7 @@ public class ConsumidorCRUD {
         for(Consumidor consumidor : consumidores){
             if(id == consumidor.getId()){
                 consumidor.setCpf(consumidorEditado.getCpf());
-//                consumidor.setUsuario(consumidorEditado.getUsuario());
+                consumidor.setUsuario(consumidorEditado.getUsuario());
                 System.out.println("Edição realizada com sucesso!");
                 return;
             }
