@@ -1,5 +1,5 @@
-package Servicos;
-import Modelo.Consumidor;
+package servicos;
+import modelo.Consumidor;
 import java.util.ArrayList;
 
 public class ConsumidorCRUD {

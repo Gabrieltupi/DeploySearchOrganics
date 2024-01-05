@@ -1,6 +1,6 @@
-package Modelo;
+package modelo;
 
-import Interface.Impressao;
+import interfaces.Impressao;
 import java.util.ArrayList;
 
 public class Empresa implements Impressao {
@@ -46,6 +46,7 @@ public class Empresa implements Impressao {
     public String getUsuario() { return usuario; }
     public void setUsuario(String usuario) { this.usuario = usuario; }
 
+    @Override
     public void imprimir() {
         System.out.println("Nome da empresa: " + getNomeFantasia());
         System.out.println("ID da empresa: " + getId());

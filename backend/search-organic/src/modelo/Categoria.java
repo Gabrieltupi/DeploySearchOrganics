@@ -1,6 +1,8 @@
-package Modelo;
+package modelo;
 
-public class Categoria {
+import interfaces.Impressao;
+
+public class Categoria implements Impressao {
 
     private static int categoriaId = 1;
     private int id;
@@ -22,5 +24,11 @@ public class Categoria {
 
     public void setVariedade(String variedade) {
         this.variedade = variedade;
+    }
+
+    @Override
+    public void imprimir() {
+        System.out.println("ID da categoria: " + getId());
+        System.out.println("Variedade da categoria: " + getVariedade());
     }
 }
