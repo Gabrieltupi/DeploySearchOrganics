@@ -1,9 +1,10 @@
-package Classes;
-import Modelo.Endereco;
+package modelo;
+
+import interfaces.Impressao;
 
 import java.util.Date;
 
-public class DadosPessoais {
+public class DadosPessoais implements Impressao {
     private static int dadosPessoaisId = 1;
     private int id;
     private String nome;
@@ -53,6 +54,16 @@ public class DadosPessoais {
 
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+
+
+    @Override
+    public void imprimir() {
+        System.out.println("ID dos dados pessoais: " + getId());
+        System.out.println("Nome dos dados pessoais: " + getNome());
+        System.out.println("Sobrenome dos dados pessoais: " + getSobrenome());
+        System.out.println("Endereco dos dados pessoais: " + getEndereco());
+        System.out.println("Data de nascimento dos dados pessoais: " + getDataNascimento());
     }
 }
 

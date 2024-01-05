@@ -1,6 +1,8 @@
-package Modelo;
+package modelo;
 
-public class Consumidor {
+import interfaces.Impressao;
+
+public class Consumidor  implements Impressao {
     private static int consumidorId = 1;
     private int id;
     private String cpf;
@@ -33,6 +35,7 @@ public class Consumidor {
         this.usuario = usuario;
     }
 
+    @Override
     public void imprimir() {
         System.out.println("CPF do consumidor: " + getCpf());
         System.out.println("ID do consumidor: " + getId());
