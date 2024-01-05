@@ -1,8 +1,10 @@
 package modelo;
 
+import interfaces.Impressao;
+
 import java.util.UUID;
 
-public class Endereco {
+public class Endereco implements Impressao {
     private static int enderecoId = 1;
     private int id;
     private String logradouro;
@@ -85,14 +87,15 @@ public class Endereco {
         this.pais = pais;
     }
 
+    @Override
     public void imprimir() {
-        System.out.printf("ID: %s\n", this.id);
-        System.out.printf("Logradouro: %s\n", this.logradouro);
-        System.out.printf("Número: %s\n", this.numero);
-        System.out.printf("Complemento: %s\n", this.complemento);
-        System.out.printf("CEP: %s\n", this.cep);
-        System.out.printf("Cidade: %s\n", this.cidade);
-        System.out.printf("Estado: %s\n", this.estado);
-        System.out.printf("País: %s\n", this.pais);
+        System.out.printf("ID: %s\n", this.getId());
+        System.out.printf("Logradouro: %s\n", this.getLogradouro());
+        System.out.printf("Número: %s\n", this.getNumero());
+        System.out.printf("Complemento: %s\n", this.getComplemento());
+        System.out.printf("CEP: %s\n", this.getCep());
+        System.out.printf("Cidade: %s\n", this.getCidade());
+        System.out.printf("Estado: %s\n", this.getEstado());
+        System.out.printf("País: %s\n", this.getPais());
     }
 }
