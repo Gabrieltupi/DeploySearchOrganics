@@ -1,11 +1,12 @@
 package modelo;
 
+import interfaces.Impressao;
 import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class Produto {
+public class Produto implements Impressao {
     private final UUID id;
     private String nome;
     private String descricao;
@@ -84,5 +85,17 @@ public class Produto {
 
     public void setUnidadeMedida(UnidadeMedida unidadeMedida) {
         this.unidadeMedida = unidadeMedida;
+    }
+
+    @Override
+    public void imprimir() {
+        System.out.println("ID do produto: " + getId());
+        System.out.println("Nome do produto: " + getNome());
+        System.out.println("Descrição do produto: " + getDescricao());
+        System.out.println("Preço do produto: " + getPreco());
+        System.out.println("Quantidade do produto: " + getQuantidade());
+        System.out.println("Categoria do produto: " + getCategoria().getVariedade());
+        System.out.println("Taxa do produto: " + getTaxa());
+        System.out.println("Unidade de medida do produto: " + getUnidadeMedida());
     }
 }

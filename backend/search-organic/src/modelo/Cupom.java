@@ -56,6 +56,7 @@ public class Cupom  implements Impressao {
     }
 
 
+    @Override
     public void imprimir() {
         System.out.println("\n O que você precisa saber sobre seu cupom de desconto:");
         System.out.println("\n O seu ID é : " + id);

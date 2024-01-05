@@ -1,13 +1,13 @@
 package modelo;
 
+import interfaces.Impressao;
 import utils.FormaPagamento;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.UUID;
 
-public class Pedido {
+public class Pedido implements Impressao {
     private static int pedidoId = 1;
     private int id;
     private ArrayList<Produto> produtos;
@@ -39,25 +39,6 @@ public class Pedido {
         }
 
         return resultado;
-    }
-
-    public void imprimir() {
-        System.out.printf("""
-                ID do Pedido: %d
-                Entregue: %b
-                Forma de pagamento: %s
-                Data: %s
-                Total: R$ %.2f         
-                """,
-                id, entregue, formaPagamento, data, total);
-        System.out.println("Produtos: ");
-        for(Produto produto: this.produtos){
-            System.out.printf("""
-                    Nome: %s
-                    Quantidade: %d
-                    Preço: R$ %.2f
-                    """, produto.getNome(), produto.getQuantidade(),  produto.getPreco());
-        }
     }
 
     public int getId() {
@@ -100,5 +81,23 @@ public class Pedido {
         return data;
     }
 
-
+    @Override
+    public void imprimir() {
+        System.out.printf("""
+                ID do Pedido: %d
+                Entregue: %b
+                Forma de pagamento: %s
+                Data: %s
+                Total: R$ %.2f         
+                """,
+                id, entregue, formaPagamento, data, total);
+        System.out.println("Produtos: ");
+        for(Produto produto: this.produtos){
+            System.out.printf("""
+                    Nome: %s
+                    Quantidade: %d
+                    Preço: R$ %.2f
+                    """, produto.getNome(), produto.getQuantidade(),  produto.getPreco());
+        }
+    }
 }
