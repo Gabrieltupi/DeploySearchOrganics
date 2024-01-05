@@ -9,6 +9,10 @@ public class DadosPessoaisCRUD {
 
     public DadosPessoaisCRUD(){}
 
+    public ArrayList<DadosPessoais> getDadosPessoais() {
+        return dadosPessoais;
+    }
+
     public boolean adicionarDadosPessoais(DadosPessoais dadosPessoais){
         if(dadosPessoais != null) {
             this.dadosPessoais.add(dadosPessoais);

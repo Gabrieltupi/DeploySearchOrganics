@@ -7,6 +7,10 @@ public class EnderecoCRUD {
 
     public EnderecoCRUD(){}
 
+    public ArrayList<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
     public boolean adicionarEndereco(Endereco endereco){
         if(endereco != null) {
             this.enderecos.add(endereco);
