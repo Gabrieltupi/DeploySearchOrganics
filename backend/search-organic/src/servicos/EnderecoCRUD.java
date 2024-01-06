@@ -1,4 +1,6 @@
-package modelo;
+package servicos;
+import modelo.Endereco;
+
 import java.util.ArrayList;
 
 public class EnderecoCRUD {
