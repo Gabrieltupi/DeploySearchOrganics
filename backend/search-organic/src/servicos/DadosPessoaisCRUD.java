@@ -1,4 +1,7 @@
-package modelo;
+package servicos;
+
+import modelo.DadosPessoais;
+import modelo.Endereco;
 
 import java.util.ArrayList;
 import java.util.Date;

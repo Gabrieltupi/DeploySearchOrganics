@@ -1,5 +1,6 @@
 package servicos;
 import modelo.Empresa;
+import modelo.Produto;
 import utils.validadores.ValidadorCNPJ;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,12 +8,12 @@ import java.util.Iterator;
 public class EmpresaCRUD {
     private static ArrayList<Empresa> empresas = new ArrayList<>();
 
-    public static void criarEmpresa(String id, String nomeFantasia, String cnpj, String razaoSocial,
-                                    String inscricaoEstadual, String setor, ArrayList<String> produtos,
+    public static void criarEmpresa(String nomeFantasia, String cnpj, String razaoSocial,
+                                    String inscricaoEstadual, String setor, ArrayList<Produto> produtos,
                                     String usuario) {
 
         if (ValidadorCNPJ.validarCNPJ(cnpj)) {
-            Empresa novaEmpresa = new Empresa(id, nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
+            Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
                     setor, produtos, usuario);
 
             empresas.add(novaEmpresa);
@@ -23,9 +24,9 @@ public class EmpresaCRUD {
     }
 
     // READ
-    public static void exibirEmpresa(String id) {
+    public static void exibirEmpresa(int id) {
         for (Empresa empresa : empresas) {
-            if (empresa.getId().equals(id)) {
+            if (empresa.getId() == id) {
                 empresa.imprimir();
                 return;
             }
@@ -40,13 +41,13 @@ public class EmpresaCRUD {
     }
 
     // UPDATE
-    public void atualizarEmpresa(String id, String novoNomeFantasia, String novoCnpj,
+    public void atualizarEmpresa(int id, String novoNomeFantasia, String novoCnpj,
                                  String novaRazaoSocial, String novaInscricaoEstadual,
-                                 String novoSetor, ArrayList<String> novosProdutos,
+                                 String novoSetor, ArrayList<Produto> novosProdutos,
                                  String novoUsuario) {
 
         for (Empresa empresa : empresas) {
-            if (empresa.getId().equals(id)) {
+            if (empresa.getId() == id) {
                 if (ValidadorCNPJ.validarCNPJ(novoCnpj)) {
                     empresa.setNomeFantasia(novoNomeFantasia);
                     empresa.setCnpj(novoCnpj);
@@ -66,11 +67,11 @@ public class EmpresaCRUD {
     }
 
     // DELETE
-    public void excluirEmpresa(String id) {
+    public void excluirEmpresa(int id) {
         Iterator<Empresa> iterator = empresas.iterator();
         while (iterator.hasNext()) {
             Empresa empresa = iterator.next();
-            if (empresa.getId().equals(id)) {
+            if (empresa.getId() == id) {
                 iterator.remove();
                 System.out.println("Empresa com o ID " + id + " excluída.");
                 return;
