@@ -15,7 +15,8 @@ public class Endereco implements Impressao {
     private String estado;
     private String pais;
 
-    public Endereco(String logradouro, String numero, String complemento, String cep, String cidade, String estado, String pais) {
+    public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
+                    String estado, String pais) {
         this.id = enderecoId;
         this.logradouro = logradouro;
         this.numero = numero;
@@ -97,5 +98,17 @@ public class Endereco implements Impressao {
         System.out.printf("Cidade: %s\n", this.getCidade());
         System.out.printf("Estado: %s\n", this.getEstado());
         System.out.printf("País: %s\n", this.getPais());
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id +
+                "\nLogradouro: " + logradouro +
+                "\nNúmero: " + numero +
+                "\nComplemento: " + complemento +
+                "\nCEP: " + cep +
+                "\nCidade: " + cidade +
+                "\nEstado: " + estado +
+                "\nPaís: " + pais + "\n";
     }
 }
