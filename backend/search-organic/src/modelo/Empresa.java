@@ -4,20 +4,21 @@ import interfaces.Impressao;
 import java.util.ArrayList;
 
 public class Empresa implements Impressao {
-    private String id;
+    private static int empresaId = 1;
+    private int idEmpresa;
     private String nomeFantasia;
     private String cnpj;
     private String razaoSocial;
     private String inscricaoEstadual;
     private String setor;
 
-    private ArrayList<String> produtos = new ArrayList<>();
+    private ArrayList<Produto> produtos = new ArrayList<>();
     private String usuario;
 
 
-    public Empresa(String id, String nomeFantasia, String cnpj, String razaoSocial, String inscricaoEstadual,
-                   String setor, ArrayList<String> produtos, String usuario) {
-        this.id = id;
+    public Empresa(String nomeFantasia, String cnpj, String razaoSocial, String inscricaoEstadual,
+                   String setor, ArrayList<Produto> produtos, String usuario) {
+        this.idEmpresa = empresaId;
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
@@ -26,10 +27,10 @@ public class Empresa implements Impressao {
 
         this.produtos = produtos;
         this.usuario = usuario;
+        empresaId++;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public int getId() { return idEmpresa; }
     public String getNomeFantasia() { return nomeFantasia; }
     public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
     public String getCnpj() { return cnpj; }
@@ -41,10 +42,28 @@ public class Empresa implements Impressao {
     public String getSetor() { return setor; }
     public void setSetor(String setor) { this.setor = setor; }
 
-    public ArrayList<String> getProdutos() { return produtos; }
-    public void setProdutos(ArrayList<String> produtos) { this.produtos = produtos; }
+    public ArrayList<Produto> getProdutos() { return produtos; }
+    public void setProdutos(ArrayList<Produto> produtos) { this.produtos = produtos; }
     public String getUsuario() { return usuario; }
     public void setUsuario(String usuario) { this.usuario = usuario; }
+
+    public boolean adicionarProduto(Produto produto){
+        if(produto != null){
+            produtos.add(produto);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removerProduto(int id){
+        for(Produto x: produtos){
+            if(id == x.getIdProduto()){
+                produtos.remove(x);
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public void imprimir() {
@@ -60,7 +79,7 @@ public class Empresa implements Impressao {
             System.out.println("A empresa não possui produtos.");
         } else {
             System.out.println("Lista de Produtos:");
-            for (String produto : produtos) {
+            for (Produto produto : produtos) {
                 System.out.println(produto);
             }
         }
