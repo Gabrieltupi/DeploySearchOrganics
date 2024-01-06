@@ -1,29 +1,82 @@
 package modelo;
-
+import utils.UnidadeMedida;
+import interfaces.CupomServicos;
 import interfaces.Impressao;
+import java.math.BigDecimal;
 
-public class Cupom  implements Impressao {
-    private static int cupomId = 1;
-    private int id;
+public class Cupom implements Impressao, CupomServicos {
+    private static int cupomIdCounter = 1;
+    private final int cupomId;
     private String nomeProduto;
-
+    private boolean ativo;
     private String descricao;
     private double taxaDeDesconto;
 
-    public Cupom(String nomeProduto, String descricao, double taxaDeDesconto) {
-        this.id = cupomId;
+    public Cupom(int cupomId, String nomeProduto, boolean ativo, String descricao, double taxaDeDesconto) {
+        this.cupomId = cupomId;
         this.nomeProduto = nomeProduto;
+        this.ativo = ativo;
         this.descricao = descricao;
         this.taxaDeDesconto = taxaDeDesconto;
-        cupomId++;
     }
 
-    public int getId() {
-        return id;
+    @Override
+    public void imprimir() {
+        System.out.println("\nInformações sobre o cupom de desconto:");
+        System.out.println("ID do cupom: " + getCupomId());
+        System.out.println("Produto associado: " + getNomeProduto());
+        System.out.println("Descrição do cupom: " + getDescricao());
+        System.out.println("Taxa de desconto: " + this.taxaDeDesconto);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public boolean eValido() {
+        if (this.ativo) {
+            System.out.println("O cupom é válido.");
+            return true;
+        } else {
+            System.out.println("O cupom é inválido.");
+            return false;
+        }
+    }
+
+    @Override
+    public void ativarCupom() {
+        if (this.ativo) {
+            System.out.println("O cupom já está ativo!");
+        } else {
+            this.ativo = true;
+            System.out.println("O cupom foi ativado!");
+        }
+    }
+
+    @Override
+    public boolean desativarCupom() {
+        if (this.ativo) {
+            this.ativo = false;
+            System.out.println("O cupom agora está inativo.");
+            return true;
+        } else {
+            System.out.println("O cupom já está inativo.");
+            return false;
+        }
+    }
+
+    @Override
+    public void validarCupom() {
+    }
+
+
+    public static int getCupomIdCounter() {
+        return cupomIdCounter;
+    }
+
+    public static void setCupomIdCounter(int cupomIdCounter) {
+        Cupom.cupomIdCounter = cupomIdCounter;
+    }
+
+    public int getCupomId() {
+        return cupomId;
     }
 
     public String getNomeProduto() {
@@ -32,6 +85,14 @@ public class Cupom  implements Impressao {
 
     public void setNomeProduto(String nomeProduto) {
         this.nomeProduto = nomeProduto;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 
     public String getDescricao() {
@@ -49,22 +110,5 @@ public class Cupom  implements Impressao {
     public void setTaxaDeDesconto(double taxaDeDesconto) {
         this.taxaDeDesconto = taxaDeDesconto;
     }
-
-    public boolean validarCupom() {
-        return taxaDeDesconto > 0 && nomeProduto !=null && !nomeProduto.isEmpty()
-                && taxaDeDesconto <= 20.0;
-    }
-
-
-    @Override
-    public void imprimir() {
-        System.out.println("\n O que você precisa saber sobre seu cupom de desconto:");
-        System.out.println("\n O seu ID é : " + id);
-        System.out.println("\n O seu Produto é : " + nomeProduto);
-        System.out.println("\n Descrição do item : " + descricao);
-        System.out.println("\n A sua taxa de desconto é : " + taxaDeDesconto);
-
-
-    }
-
 }
+
