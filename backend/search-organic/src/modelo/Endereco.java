@@ -2,8 +2,6 @@ package modelo;
 
 import interfaces.Impressao;
 
-import java.util.UUID;
-
 public class Endereco implements Impressao {
     private static int enderecoId = 1;
     private int id;
@@ -14,6 +12,7 @@ public class Endereco implements Impressao {
     private String cidade;
     private String estado;
     private String pais;
+    private String regiao;
 
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
                     String estado, String pais) {
@@ -88,6 +87,14 @@ public class Endereco implements Impressao {
         this.pais = pais;
     }
 
+    public String getRegiao() {
+        return regiao;
+    }
+
+    public void setRegiao(String regiao) {
+        this.regiao = regiao;
+    }
+
     @Override
     public void imprimir() {
         System.out.printf("ID: %s\n", this.getId());
@@ -95,6 +102,7 @@ public class Endereco implements Impressao {
         System.out.printf("Número: %s\n", this.getNumero());
         System.out.printf("Complemento: %s\n", this.getComplemento());
         System.out.printf("CEP: %s\n", this.getCep());
+        System.out.printf("Regiao: %s\n", this.getRegiao());
         System.out.printf("Cidade: %s\n", this.getCidade());
         System.out.printf("Estado: %s\n", this.getEstado());
         System.out.printf("País: %s\n", this.getPais());
@@ -103,6 +111,7 @@ public class Endereco implements Impressao {
     @Override
     public String toString() {
         return "ID: " + id +
+                "\nRegiao: " + regiao +
                 "\nLogradouro: " + logradouro +
                 "\nNúmero: " + numero +
                 "\nComplemento: " + complemento +

@@ -1,7 +1,8 @@
 
-package utils;
+package utils.validadores;
 
-public class ValidadorCep {
+public class ValidadorCEP {
+    private static String regiao;
     public static boolean isCepValido(String cep){
         if(cep.length() != 9){
             return false;
@@ -10,25 +11,25 @@ public class ValidadorCep {
         int cepInt = Integer.parseInt(digitoRegiaoDigitoSubRegiao);
 
         if (cepInt >= 1 && cepInt <= 5){
-            String regiao = "SP - Capital";
-            System.out.println(regiao);
+            regiao = "SP - Capital";
             return true;
         }
         if (cepInt >= 6 && cepInt <= 9){
-            String regiao = "SP - Área Metropolitana";
-            System.out.println(regiao);
+            regiao = "SP - Área Metropolitana";
             return true;
         }
         if (cepInt == 11){
-            String regiao = "SP - Litoral";
-            System.out.println(regiao);
+            regiao = "SP - Litoral";
             return true;
         }
         if (cepInt >= 12 && cepInt <= 19){
-            String regiao = "SP - Interior";
-            System.out.println(regiao);
+            regiao = "SP - Interior";
             return true;
         }
         return false;
     }
+    public static String getRegiao() {
+        return regiao;
+    }
+
 }
