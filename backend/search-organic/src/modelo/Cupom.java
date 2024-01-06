@@ -62,10 +62,6 @@ public class Cupom implements Impressao, CupomServicos {
         }
     }
 
-    @Override
-    public void validarCupom() {
-    }
-
 
     public static int getCupomIdCounter() {
         return cupomIdCounter;

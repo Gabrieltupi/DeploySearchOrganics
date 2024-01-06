@@ -4,5 +4,4 @@ public interface CupomServicos {
     public boolean eValido();
     public void ativarCupom();
     public boolean desativarCupom();
-    public void validarCupom();
 }
