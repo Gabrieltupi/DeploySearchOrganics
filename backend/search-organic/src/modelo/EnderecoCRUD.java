@@ -14,6 +14,10 @@ public class EnderecoCRUD {
 
     public boolean adicionarEndereco(Endereco endereco){
         if(endereco != null) {
+            if (!endereco.getEstado().equals("SP")){
+                System.out.println("Ainda não atendemos neste estado");
+                return false;
+            }
             if (ValidadorCEP.isCepValido(endereco.getCep())) {
                 endereco.setRegiao(ValidadorCEP.getRegiao());
                 this.enderecos.add(endereco);
