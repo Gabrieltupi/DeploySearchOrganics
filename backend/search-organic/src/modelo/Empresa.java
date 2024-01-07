@@ -13,11 +13,11 @@ public class Empresa implements Impressao {
     private String setor;
 
     private ArrayList<Produto> produtos = new ArrayList<>();
-    private String usuario;
+    private Usuario usuario;
 
 
     public Empresa(String nomeFantasia, String cnpj, String razaoSocial, String inscricaoEstadual,
-                   String setor, ArrayList<Produto> produtos, String usuario) {
+                   String setor, ArrayList<Produto> produtos, Usuario usuario) {
         this.idEmpresa = empresaId;
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
@@ -44,8 +44,8 @@ public class Empresa implements Impressao {
 
     public ArrayList<Produto> getProdutos() { return produtos; }
     public void setProdutos(ArrayList<Produto> produtos) { this.produtos = produtos; }
-    public String getUsuario() { return usuario; }
-    public void setUsuario(String usuario) { this.usuario = usuario; }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
     public boolean adicionarProduto(Produto produto){
         if(produto != null){

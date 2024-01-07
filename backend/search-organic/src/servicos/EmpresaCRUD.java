@@ -1,6 +1,7 @@
 package servicos;
 import modelo.Empresa;
 import modelo.Produto;
+import modelo.Usuario;
 import utils.validadores.ValidadorCNPJ;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +11,7 @@ public class EmpresaCRUD {
 
     public static void criarEmpresa(String nomeFantasia, String cnpj, String razaoSocial,
                                     String inscricaoEstadual, String setor, ArrayList<Produto> produtos,
-                                    String usuario) {
+                                    Usuario usuario) {
 
         if (ValidadorCNPJ.validarCNPJ(cnpj)) {
             Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
@@ -23,7 +24,6 @@ public class EmpresaCRUD {
         }
     }
 
-    // READ
     public static void exibirEmpresa(int id) {
         for (Empresa empresa : empresas) {
             if (empresa.getId() == id) {
@@ -40,11 +40,10 @@ public class EmpresaCRUD {
         }
     }
 
-    // UPDATE
     public void atualizarEmpresa(int id, String novoNomeFantasia, String novoCnpj,
                                  String novaRazaoSocial, String novaInscricaoEstadual,
                                  String novoSetor, ArrayList<Produto> novosProdutos,
-                                 String novoUsuario) {
+                                 Usuario novoUsuario) {
 
         for (Empresa empresa : empresas) {
             if (empresa.getId() == id) {
@@ -66,7 +65,6 @@ public class EmpresaCRUD {
         System.out.println("Empresa não registrada.");
     }
 
-    // DELETE
     public void excluirEmpresa(int id) {
         Iterator<Empresa> iterator = empresas.iterator();
         while (iterator.hasNext()) {

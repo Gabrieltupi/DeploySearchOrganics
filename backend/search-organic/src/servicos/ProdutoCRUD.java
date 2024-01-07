@@ -36,6 +36,14 @@ public class ProdutoCRUD {
         return null;
     }
 
+    public void listarProdutosPorCategoria(TipoCategoria categoria) {
+        for (Produto produto : produtos) {
+            if (produto.getCategoria().equals(categoria)) {
+                produto.imprimir();
+            }
+        }
+    }
+
     public void atualizarProduto(int id, String novoNome, String novaDescricao, BigDecimal novoPreco, BigDecimal novaQuantidade,
                                  TipoCategoria novaCategoria, double novaTaxa, UnidadeMedida novaUnidadedeMedida) {
         for (Produto produto : produtos) {

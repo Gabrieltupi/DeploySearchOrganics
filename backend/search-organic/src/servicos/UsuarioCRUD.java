@@ -1,4 +1,5 @@
 package servicos;
+import java.time.LocalDate;
 import java.util.Date;
 import modelo.Usuario;
 import modelo.Endereco;
@@ -9,10 +10,22 @@ public class UsuarioCRUD {
     private static List<Usuario> usuarios = new ArrayList<>();
     private static int proximoId = 1;
 
-    public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, Date dataNascimento) {
-        Usuario novoUsuario = new Usuario(login, password, nome, sobrenome, endereco, dataNascimento);
-        novoUsuario.setUsuarioId(proximoId++);
-        usuarios.add(novoUsuario);
+    public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
+        criarUsuario(new Usuario(login, password, nome, sobrenome, endereco, dataNascimento));
+    }
+
+    public void criarUsuario(Usuario usuario) {
+        usuario.setUsuarioId(proximoId++);
+        usuarios.add(usuario);
+    }
+
+    public Usuario buscarUsuarioPorLoginESenha(String login, String senha) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getLogin().equals(login) && usuario.getPassword().equals(senha)) {
+                return usuario;
+            }
+        }
+        return null;
     }
 
     public Usuario buscarUsuarioPorId(int usuarioId) {
@@ -21,7 +34,7 @@ public class UsuarioCRUD {
                 return usuario;
             }
         }
-        return null; // Retorna null se o usuário não for encontrado
+        return null;
     }
 
     public void exibirTodos(){

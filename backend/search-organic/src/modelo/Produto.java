@@ -5,7 +5,6 @@ import utils.TipoCategoria;
 import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class Produto implements Impressao {
     private static int produtoId = 1;
@@ -101,6 +100,7 @@ public class Produto implements Impressao {
     @Override
     public void imprimir() {
         System.out.println("ID do produto: " + getIdProduto());
+        System.out.println("ID da empresa: " + getEmpresaId());
         System.out.println("Nome do produto: " + getNome());
         System.out.println("Descrição do produto: " + getDescricao());
         System.out.println("Preço do produto: " + getPreco());

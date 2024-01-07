@@ -19,7 +19,7 @@ public class PedidoCRUD {
             pedido.imprimir();
         }
     }
-    //UPDATE
+
     public void atualizarPedido(int idPedido, Pedido pedidoAtualizado) {
         if(idPedido > this.pedidos.size()){
             System.out.println("ID de pedido inválido");
@@ -31,7 +31,6 @@ public class PedidoCRUD {
         pedido.setFormaPagamento(pedidoAtualizado.getFormaPagamento());
     }
 
-    //DELETE
     public void excluirPedido(int idPedido) {
         if(idPedido > this.pedidos.size()){
             System.out.println("ID de pedido inválido");

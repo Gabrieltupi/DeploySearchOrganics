@@ -2,6 +2,7 @@ package modelo;
 
 import interfaces.Impressao;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class DadosPessoais implements Impressao {
@@ -10,9 +11,9 @@ public class DadosPessoais implements Impressao {
     private String nome;
     private String sobrenome;
     private Endereco endereco;
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
-    public DadosPessoais(String nome, String sobrenome, Endereco endereco, Date dataNascimento) {
+    public DadosPessoais(String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
         this.id = dadosPessoaisId;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -49,11 +50,11 @@ public class DadosPessoais implements Impressao {
         this.endereco = endereco;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 

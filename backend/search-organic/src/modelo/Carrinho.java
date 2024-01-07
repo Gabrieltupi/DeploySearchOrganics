@@ -11,23 +11,20 @@ public class Carrinho {
     private BigDecimal quantidade = new BigDecimal(0);
     private BigDecimal valorTotal = new BigDecimal(0);
 
-    Produto verifica;
+    private Usuario usuario;
 
-    public Carrinho(int idEmpresa, Produto produto, BigDecimal quantidade){
+    public Carrinho(Usuario usuario, int idEmpresa) {
         this.idEmpresa = idEmpresa;
-        if(produto != null && idEmpresa == produto.getEmpresaId() &&
-                produto.getQuantidade().compareTo(quantidade) > 0){
-            this.produtos.put(produto.getIdProduto(), produto);
-            this.quantidadeProduto.put(produto.getIdProduto(), quantidade);
-            valorTotal = valorTotal.add(produto.getPreco().multiply(quantidade));
-        } else {
-            System.out.println("Produto não cadastrado!");
-        }
+        this.usuario = usuario;
     }
 
-    public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade){
-        if(produto != null && idEmpresa == produto.getEmpresaId() &&
-                produto.getQuantidade().compareTo(quantidade) > 0){
+    public Carrinho(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
+        if (produto != null && idEmpresa == produto.getEmpresaId() &&
+                produto.getQuantidade().compareTo(quantidade) > 0) {
             this.produtos.put(produto.getIdProduto(), produto);
             this.quantidadeProduto.put(produto.getIdProduto(), quantidade);
             valorTotal = valorTotal.add(produto.getPreco().multiply(quantidade));
@@ -38,10 +35,8 @@ public class Carrinho {
         }
     }
 
-    public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal quantidade){
-        verifica = null;
-        verifica = produtos.get(id);
-        if(verifica != null){
+    public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal quantidade) {
+        if (produtos.get(id) != null) {
             quantidadeProduto.put(id, quantidade);
             return true;
         }
@@ -49,12 +44,8 @@ public class Carrinho {
         return false;
     }
 
-    public boolean removerProdutoDoCarrinho(int id){
-        verifica = null;
-        verifica = produtos.remove(id);
-        quantidadeProduto.remove(id);
-
-        if(verifica != null){
+    public boolean removerProdutoDoCarrinho(int id) {
+        if (produtos.remove(id) != null) {
             return true;
         }
         System.out.println("ID não encontrado!!");
@@ -62,15 +53,55 @@ public class Carrinho {
 
     }
 
-    public void listarProdutosDoCarrinho(){
-        for(int key: produtos.keySet()){
+    public void listarProdutosDoCarrinho() {
+        for (int key : produtos.keySet()) {
             System.out.println("Número: " + key + " Nome do produto: " + produtos.get(key).getNome()
                     + " Quantidade: " + quantidadeProduto.get(key));
         }
     }
 
-    public void limparSacola(){
+    public void limparSacola() {
         quantidadeProduto = new HashMap<>();
         produtos = new HashMap<>();
+    }
+
+    public int getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(int idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public Map<Integer, Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(Map<Integer, Produto> produtos) {
+        this.produtos = produtos;
+    }
+
+    public Map<Integer, BigDecimal> getQuantidadeProduto() {
+        return quantidadeProduto;
+    }
+
+    public void setQuantidadeProduto(Map<Integer, BigDecimal> quantidadeProduto) {
+        this.quantidadeProduto = quantidadeProduto;
+    }
+
+    public BigDecimal getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(BigDecimal quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public BigDecimal getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }
