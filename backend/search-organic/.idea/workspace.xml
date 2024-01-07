@@ -5,13 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc72c87a-9994-4b25-b6e2-18b5d648071c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/CupomCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/CupomCRUD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/EnderecoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/EnderecoCRUD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/UsuarioCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/UsuarioCRUD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/GeradorSeeds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/GeradorSeeds.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/Main.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/modelo/Carrinho.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/modelo/Cupom.class" beforeDir="false" />
@@ -66,7 +59,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "feat/excecptions",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/aleso/OneDrive/Área de Trabalho/dbcorganic/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
     "node.js.detected.package.eslint": "true",

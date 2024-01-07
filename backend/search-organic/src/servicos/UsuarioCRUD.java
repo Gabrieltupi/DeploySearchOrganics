@@ -25,6 +25,7 @@ public class UsuarioCRUD {
         }
         usuario.setUsuarioId(proximoId++);
         usuarios.add(usuario);
+        System.out.println("-----------------");
     }
 
     private boolean verificarUsuarioCadastrado( String login) {
@@ -39,6 +40,7 @@ public class UsuarioCRUD {
     public Usuario buscarUsuarioPorLoginESenha(String login, String senha) {
         for (Usuario usuario : usuarios) {
             if (usuario.getLogin().equals(login) && usuario.getPassword().equals(senha)) {
+                System.out.println("-----------------");
                 return usuario;
             }
         }
@@ -57,6 +59,7 @@ public class UsuarioCRUD {
     public void exibirTodos(){
         for(Usuario usuario : usuarios){
             usuario.imprimir();
+            System.out.println("-----------------");
         }
     }
 
