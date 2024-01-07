@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49f7bca-e3de-4b23-92a0-e3aec4becb98" name="Changes" comment="">
+    <list default="true" id="cc72c87a-9994-4b25-b6e2-18b5d648071c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modelo/Carrinho.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Carrinho.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modelo/Cupom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Cupom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modelo/Pedido.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Pedido.java" afterDir="false" />
@@ -37,11 +38,14 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2aSqH2DQY9w86ggrDu19LeA7cwJ" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -53,6 +57,8 @@
     "Application.Main.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "feat/implementar-main",
     "git-widget-placeholder": "develop",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/leofa/Desktop/Vem Ser 13/vs1-TrabalhoFinal/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
@@ -93,7 +99,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b49f7bca-e3de-4b23-92a0-e3aec4becb98" name="Changes" comment="" />
+      <changelist id="cc72c87a-9994-4b25-b6e2-18b5d648071c" name="Changes" comment="" />
       <created>1704322238476</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -116,6 +122,7 @@
       <workItem from="1704587246220" duration="456000" />
       <workItem from="1704588251276" duration="407000" />
       <workItem from="1704597043961" duration="3016000" />
+      <workItem from="1704647832191" duration="1820000" />
     </task>
     <servers />
   </component>
