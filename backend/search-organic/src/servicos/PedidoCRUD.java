@@ -1,16 +1,27 @@
 package servicos;
 
+import modelo.Cupom;
+import modelo.Endereco;
 import modelo.Pedido;
 import modelo.Produto;
 import utils.FormaPagamento;
+import utils.validadores.TipoEntrega;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PedidoCRUD {
     private ArrayList<Pedido> pedidos = new java.util.ArrayList<>();
 
-    public void criarPedido(ArrayList<Produto> produtos, FormaPagamento formaPagamento, int consumidorId){
-        Pedido pedido = new Pedido(produtos, formaPagamento, consumidorId);
+    public void criarPedido(int consumidorId, Map<Integer, Produto> produtos,
+                            Map<Integer, BigDecimal> quantidadeProduto,
+                            FormaPagamento formaPagamento, LocalDate dataDeEntrega,
+                            Endereco endereco,
+                            TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total){
+        Pedido pedido = new Pedido(consumidorId, produtos, quantidadeProduto,
+                formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, total);
         this.pedidos.add(pedido);
     }
 

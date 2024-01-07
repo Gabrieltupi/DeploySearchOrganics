@@ -10,9 +10,9 @@ public class Cupom implements Impressao, CupomServicos {
     private String nomeProduto;
     private boolean ativo;
     private String descricao;
-    private double taxaDeDesconto;
+    private BigDecimal taxaDeDesconto;
 
-    public Cupom(int cupomId, String nomeProduto, boolean ativo, String descricao, double taxaDeDesconto) {
+    public Cupom(int cupomId, String nomeProduto, boolean ativo, String descricao, BigDecimal taxaDeDesconto) {
         this.cupomId = cupomId;
         this.nomeProduto = nomeProduto;
         this.ativo = ativo;
@@ -100,11 +100,11 @@ public class Cupom implements Impressao, CupomServicos {
         this.descricao = descricao;
     }
 
-    public double getTaxaDeDesconto() {
+    public BigDecimal getTaxaDeDesconto() {
         return taxaDeDesconto;
     }
 
-    public void setTaxaDeDesconto(double taxaDeDesconto) {
+    public void setTaxaDeDesconto(BigDecimal taxaDeDesconto) {
         this.taxaDeDesconto = taxaDeDesconto;
     }
 }

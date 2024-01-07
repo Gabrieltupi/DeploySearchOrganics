@@ -1,6 +1,10 @@
 package modelo;
 
+import utils.FormaPagamento;
+import utils.validadores.TipoEntrega;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,16 +14,57 @@ public class Carrinho {
     private Map<Integer, BigDecimal> quantidadeProduto = new HashMap<>();
     private BigDecimal quantidade = new BigDecimal(0);
     private BigDecimal valorTotal = new BigDecimal(0);
-
     private Usuario usuario;
+    private Pedido pedido;
 
     public Carrinho(Usuario usuario, int idEmpresa) {
         this.idEmpresa = idEmpresa;
         this.usuario = usuario;
     }
 
+
+
     public Carrinho(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public int getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(int idEmpresa){
+        this.idEmpresa = idEmpresa;
+    }
+    public Map<Integer, Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(Map<Integer, Produto> produtos) {
+        this.produtos = produtos;
+    }
+
+    public Map<Integer, BigDecimal> getQuantidadeProduto() {
+        return quantidadeProduto;
+    }
+
+    public void setQuantidadeProduto(Map<Integer, BigDecimal> quantidadeProduto) {
+        this.quantidadeProduto = quantidadeProduto;
+    }
+
+    public BigDecimal getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(BigDecimal quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public BigDecimal getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
     }
 
     public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
@@ -58,6 +103,7 @@ public class Carrinho {
             System.out.println("Número: " + key + " Nome do produto: " + produtos.get(key).getNome()
                     + " Quantidade: " + quantidadeProduto.get(key));
         }
+        System.out.println("Valor final (Sem frete): " + valorTotal);
     }
 
     public void limparSacola() {
@@ -65,43 +111,9 @@ public class Carrinho {
         produtos = new HashMap<>();
     }
 
-    public int getIdEmpresa() {
-        return idEmpresa;
-    }
-
-    public void setIdEmpresa(int idEmpresa) {
-        this.idEmpresa = idEmpresa;
-    }
-
-    public Map<Integer, Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void setProdutos(Map<Integer, Produto> produtos) {
-        this.produtos = produtos;
-    }
-
-    public Map<Integer, BigDecimal> getQuantidadeProduto() {
-        return quantidadeProduto;
-    }
-
-    public void setQuantidadeProduto(Map<Integer, BigDecimal> quantidadeProduto) {
-        this.quantidadeProduto = quantidadeProduto;
-    }
-
-    public BigDecimal getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(BigDecimal quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public BigDecimal getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
+    public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
+                                Endereco endereco, Cupom cupom, TipoEntrega tipoEntrega){
+        pedido = new Pedido(usuario.getId(), produtos, quantidadeProduto,
+                formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
     }
 }
