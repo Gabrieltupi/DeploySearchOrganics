@@ -20,7 +20,7 @@ public class Pedido implements Impressao {
     private LocalDate dataDeEntrega;
     private Endereco endereco;
     private int consumidorId;
-
+    private LocalDate inicioEntrega;
     private TipoEntrega tipoEntrega;
 
     public Pedido(int consumidorId, Map<Integer, Produto> produtos,
@@ -38,8 +38,10 @@ public class Pedido implements Impressao {
         this.tipoEntrega = tipoEntrega;
         this.total = total.subtract(cupom.getTaxaDeDesconto());
         this.entregue = false;
+        this.inicioEntrega = LocalDate.now();
         pedidoId++;
     }
+
 
     public int getId() {
         return id;
@@ -116,6 +118,16 @@ public class Pedido implements Impressao {
     public void setTipoEntrega(TipoEntrega tipoEntrega) {
         this.tipoEntrega = tipoEntrega;
     }
+
+    public LocalDate getInicioEntrega() {
+        return inicioEntrega;
+    }
+
+    public void setInicioEntrega(LocalDate inicioEntrega) {
+        this.inicioEntrega = inicioEntrega;
+    }
+
+
 
     public boolean pedidoEntrege(boolean entregue){
         this.entregue = entregue;

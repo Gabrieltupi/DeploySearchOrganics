@@ -2,6 +2,7 @@ package modelo;
 
 import utils.FormaPagamento;
 import utils.validadores.TipoEntrega;
+import utils.validadores.ValidadorCEP;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -113,7 +114,13 @@ public class Carrinho {
 
     public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                                 Endereco endereco, Cupom cupom, TipoEntrega tipoEntrega){
-        pedido = new Pedido(usuario.getId(), produtos, quantidadeProduto,
-                formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
+
+        if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
+            pedido = new Pedido(usuario.getId(), produtos, quantidadeProduto,
+                    formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
+        } else {
+            System.out.println("CEP invalido - pedido não foi finalizado");
+        }
+
     }
 }
