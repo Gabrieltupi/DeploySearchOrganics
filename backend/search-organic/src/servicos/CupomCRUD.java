@@ -1,6 +1,7 @@
 package servicos;
 import modelo.Cupom;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class CupomCRUD {
@@ -39,7 +40,7 @@ public class CupomCRUD {
                 System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
                 cupom.setNomeProduto(novoNomeProduto);
                 cupom.setDescricao(novaDescricao);
-                cupom.setTaxaDeDesconto(novaTaxaDeDesconto);
+                cupom.setTaxaDeDesconto(BigDecimal.valueOf(novaTaxaDeDesconto));
                 System.out.println("Cupom atualizado com sucesso!");
                 return;
             }

@@ -1,3 +1,4 @@
+import exceptions.UsuarioJaCadastradoException;
 import modelo.Carrinho;
 import modelo.Endereco;
 import modelo.Produto;
@@ -8,8 +9,11 @@ import utils.TipoCategoria;
 import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -36,55 +40,68 @@ public class Main {
                     2 - Cadastro
                     0 - Sair
                     """);
+            try {
+                int escolha = scanner.nextInt();
+                scanner.nextLine();
 
-            int escolha = scanner.nextInt();
-            scanner.nextLine();
+                switch (escolha) {
+                    case 1:
+                        Usuario usuario = login(scanner, usuarioCRUD);
+                        if (usuario != null) {
+                            System.out.println("Bem vindo " + usuario.getNome());
+                            while (true) {
+                                System.out.println("""
+                                        1 - Minha conta
+                                        2 - Lojas
+                                        3 - Carrinho
+                                        0 - Voltar
+                                        """);
+                                try {
+                                    int escolhaMenuConsumidor = scanner.nextInt();
 
-            switch (escolha) {
-                case 1:
-                    Usuario usuario = login(scanner, usuarioCRUD);
-                    if (usuario != null) {
-                        System.out.println("Bem vindo " + usuario.getNome());
-                        while(true) {
-                            System.out.println("""
-                                    1 - Minha conta
-                                    2 - Lojas
-                                    3 - Carrinho
-                                    0 - Voltar
-                                    """);
+                                    scanner.nextLine();
+                                    Carrinho carrinho = new Carrinho(usuario);
 
-                            int escolhaMenuConsumidor = scanner.nextInt();
+                                    if (escolhaMenuConsumidor == 1) {
+                                        menuMinhaConta(scanner, usuario, enderecoCRUD);
+                                    }
+                                    if (escolhaMenuConsumidor == 2) {
+                                        menuLojas(scanner, produtoCRUD, carrinho);
 
-                            scanner.nextLine();
-
-                            Carrinho carrinho = new Carrinho(usuario);
-
-                            if (escolhaMenuConsumidor == 1) {
-                                menuMinhaConta(scanner, usuario, enderecoCRUD);
+                                    }
+                                    if (escolhaMenuConsumidor == 3) {
+                                        menuCarrinho(scanner, carrinho);
+                                    }
+                                    if (escolhaMenuConsumidor == 0) {
+                                        break;
+                                    }
+                                } catch (InputMismatchException ipt) {
+                                    System.out.println("Opção inválida!");
+                                    scanner.nextLine();
+                                }
                             }
-                            if (escolhaMenuConsumidor == 2) {
-                               menuLojas(scanner, produtoCRUD, carrinho);
-
-                            }
-                            if (escolhaMenuConsumidor == 3) {
-                              menuCarrinho(scanner, carrinho);
-                            }
-                            if (escolhaMenuConsumidor == 0) {
-                                break;
-                            }
+                        } else {
+                            System.out.println("Usuário não encontrado");
                         }
-                    } else {
-                        System.out.println("Usuário não encontrado");
-                    }
-                    break;
-                case 2:
-                    cadastro(scanner, usuarioCRUD, enderecoCRUD);
-                    break;
-                case 0:
-                    sair = true;
-                    break;
-                default:
-                    System.out.println("Opção inválida");
+                        break;
+                    case 2:
+                        cadastro(scanner, usuarioCRUD, enderecoCRUD);
+                        break;
+                    case 0:
+                        sair = true;
+                        break;
+                    default:
+                        System.out.println("Opção inválida");
+                }
+
+            } catch (InputMismatchException ipt) {
+                System.out.println("Opção inválida!");
+                scanner.nextLine();
+            } catch (DateTimeParseException dt) {
+                System.out.println("Data de nascimento inválida!");
+                scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println();
             }
         }
 
@@ -92,27 +109,27 @@ public class Main {
     }
 
     private static void menuCarrinho(Scanner scanner, Carrinho carrinho) {
-        System.out.println("""
-                                        1 - Ir para pagamento
-                                        2 - Listar produtos do carrinho
-                                        3 - Editar quantidade de produto do carrinho
-                                        4 - Remover produto do carrinho
-                                        5 - Limpar carrinho
-                                        0 - Voltar
-                                        """);
+        while (true) {
+            System.out.println("""
+                    1 - Ir para pagamento
+                    2 - Listar produtos do carrinho
+                    3 - Editar quantidade de produto do carrinho
+                    4 - Remover produto do carrinho
+                    5 - Limpar carrinho
+                    0 - Voltar
+                    """);
 
-        int escolhaMenuCarrinho = scanner.nextInt();
-        scanner.nextLine();
+            int escolhaMenuCarrinho = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (escolhaMenuCarrinho) {
-            case 1:
+            if (escolhaMenuCarrinho == 1) {
                 // TODO: Ir para pagamento
-            case 2:
+            }
+            if (escolhaMenuCarrinho == 2) {
                 System.out.println("Produtos do carrinho: ");
                 carrinho.listarProdutosDoCarrinho();
-
-                break;
-            case 3:
+            }
+            if (escolhaMenuCarrinho == 3) {
                 System.out.println("Digite o ID do produto: ");
                 int idProdutoEditar = scanner.nextInt();
 
@@ -121,72 +138,76 @@ public class Main {
 
                 carrinho.editarQuantidadeProdutoDaSacola(idProdutoEditar, quantidade);
 
-                break;
-            case 4:
+            }
+            if (escolhaMenuCarrinho == 4) {
                 System.out.println("Digite o ID do produto: ");
                 int idProdutoRemover = scanner.nextInt();
 
                 carrinho.removerProdutoDoCarrinho(idProdutoRemover);
 
-                break;
-            case 5:
+            }
+            if (escolhaMenuCarrinho == 5) {
                 carrinho.limparSacola();
 
+            }
+
+            if (escolhaMenuCarrinho == 0) {
                 break;
-            case 0:
-                break;
-            default:
+            }
+
+            if (escolhaMenuCarrinho != 1 && escolhaMenuCarrinho != 2 && escolhaMenuCarrinho != 3 && escolhaMenuCarrinho
+                    != 4 && escolhaMenuCarrinho != 5) {
                 System.out.println("Opção inválida");
+            }
         }
     }
-
     private static void menuLojas(Scanner scanner, ProdutoCRUD produtoCRUD, Carrinho carrinho) {
-        System.out.println("""
-                                        1 - Listar produtos
-                                        2 - Adicionar produto ao carrinho
-                                        0 - Voltar
-                                        """);
+        while (true) {
+            System.out.println("""
+                    1 - Listar produtos
+                    2 - Adicionar produto ao carrinho
+                    0 - Voltar
+                    """);
 
-        int escolhaMenuProdutos = scanner.nextInt();
-        scanner.nextLine();
+            int escolhaMenuProdutos = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (escolhaMenuProdutos) {
-            case 1:
-                System.out.println("""
-                                                1 - Listar produtos por categoria
-                                                2 - Listar todos os produtos
-                                                0 - Voltar
-                                                """);
+            if (escolhaMenuProdutos == 1) {
+                while (true) {
+                    System.out.println("""
+                            1 - Listar produtos por categoria
+                            2 - Listar todos os produtos
+                            0 - Voltar
+                            """);
 
-                int escolhaMenuListarProdutos = scanner.nextInt();
-                scanner.nextLine();
+                    int escolhaMenuListarProdutos = scanner.nextInt();
+                    scanner.nextLine();
 
-                switch (escolhaMenuListarProdutos) {
-                    case 1:
+                    if (escolhaMenuListarProdutos == 1) {
                         System.out.println("""
-                                                        Escolha uma catergoria:
-                                                        1 - LEGUMES,
-                                                        2 - VERDURAS E TEMPEROS,
-                                                        3 - FRUTAS,
-                                                        4 - OVOS,
-                                                        5 - LEITES,
-                                                        6 - ARROZ E FEIJAO
-                                                        """);
+                                Escolha uma catergoria:
+                                1 - LEGUMES,
+                                2 - VERDURAS E TEMPEROS,
+                                3 - FRUTAS,
+                                4 - OVOS,
+                                5 - LEITES,
+                                6 - ARROZ E FEIJAO
+                                """);
                         int indexCategoria = scanner.nextInt();
+                        scanner.nextLine();
 
                         produtoCRUD.listarProdutosPorCategoria(TipoCategoria.values()[indexCategoria - 1]);
-                        break;
-                    case 2:
+                    }
+                    if (escolhaMenuListarProdutos == 2) {
                         produtoCRUD.listarProdutos();
+                    }
+                    if (escolhaMenuListarProdutos == 0) {
                         break;
-                    case 0:
-                        break;
-                    default:
-                        System.out.println("Opção inválida");
+                    }
                 }
-                break;
+            }
 
-            case 2:
+            if (escolhaMenuProdutos == 2) {
                 System.out.println("Digite o ID do produto: ");
                 int idProduto = scanner.nextInt();
 
@@ -196,14 +217,17 @@ public class Main {
                 Produto produto = produtoCRUD.buscarProdutoPorId(idProduto);
                 carrinho.setIdEmpresa(produto.getEmpresaId());
                 carrinho.adicionarProdutoAoCarrinho(produtoCRUD.buscarProdutoPorId(idProduto), quantidadeProduto);
+            }
 
-            case 0:
-                break;
-            default:
+            if (escolhaMenuProdutos == 0) {
+                return;
+            }
+
+            if (escolhaMenuProdutos != 1 && escolhaMenuProdutos != 2) {
                 System.out.println("Opção inválida");
+            }
         }
     }
-
     private static void menuMinhaConta(Scanner scanner, Usuario usuario, EnderecoCRUD enderecoCRUD) {
         System.out.println("""
                                         1 - Editar dados pessoais
@@ -234,7 +258,9 @@ public class Main {
                 break;
             case 2:
                 Endereco enderecoAtualizado = obterEndereco(scanner);
-                enderecoCRUD.atualizarEndereco(usuario.getEndereco().getId(), enderecoAtualizado.getLogradouro(), enderecoAtualizado.getNumero(), enderecoAtualizado.getComplemento(), enderecoAtualizado.getCep(), enderecoAtualizado.getCidade(), enderecoAtualizado.getEstado(), enderecoAtualizado.getPais());
+                enderecoCRUD.atualizarEndereco(usuario.getEndereco().getId(), enderecoAtualizado.getLogradouro(),
+                        enderecoAtualizado.getNumero(), enderecoAtualizado.getComplemento(), enderecoAtualizado.getCep(),
+                        enderecoAtualizado.getCidade(), enderecoAtualizado.getEstado(), enderecoAtualizado.getPais());
                 break;
             case 3:
                 System.out.println("Digite seu login: ");
@@ -286,9 +312,17 @@ public class Main {
         LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro);
 
         Endereco enderecoCadastro = obterEndereco(scanner);
-        enderecoCRUD.adicionarEndereco(enderecoCadastro);
+        if (!enderecoCRUD.adicionarEndereco(enderecoCadastro)) {
+            return ;
+        }
 
-        usuarioCRUD.criarUsuario(loginCadastro, senhaCadastro, nomeCadastro, sobrenomeCadastro, enderecoCadastro, dataNascimentoCadastro);
+        try {
+            usuarioCRUD.criarUsuario(loginCadastro, senhaCadastro, nomeCadastro, sobrenomeCadastro, enderecoCadastro,
+                    dataNascimentoCadastro);
+        }
+        catch (UsuarioJaCadastradoException uce) {
+            System.out.println("Ocorreu um erro de cadastro: " +  uce.getMessage());
+        }
     }
 
     private static Endereco obterEndereco(Scanner scanner){

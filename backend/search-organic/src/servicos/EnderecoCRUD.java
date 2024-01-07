@@ -16,7 +16,7 @@ public class EnderecoCRUD {
 
     public boolean adicionarEndereco(Endereco endereco){
         if(endereco != null) {
-            if (!endereco.getEstado().equals("SP")){
+            if (!endereco.getEstado().equalsIgnoreCase("SP")){
                 System.out.println("Ainda não atendemos neste estado");
                 return false;
             }

@@ -1,5 +1,6 @@
 package utils;
 
+import exceptions.UsuarioJaCadastradoException;
 import modelo.*;
 import servicos.*;
 
@@ -20,7 +21,12 @@ public class GeradorSeeds {
         enderecoCRUD.adicionarEndereco(endereco2);
 
         Usuario usuario1 = new Usuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
-        usuarioCRUD.criarUsuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
+        try {
+            usuarioCRUD.criarUsuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
+        }
+        catch (UsuarioJaCadastradoException uce) {
+            System.out.println("Ocorreu um erro de cadastro");
+        }
 
         ArrayList<Produto> produtosEmpresa1 = new ArrayList<>();
         BigDecimal preco = new BigDecimal("1.5");
