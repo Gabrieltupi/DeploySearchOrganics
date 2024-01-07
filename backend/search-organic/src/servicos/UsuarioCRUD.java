@@ -34,7 +34,7 @@ public class UsuarioCRUD {
                 return usuario;
             }
         }
-        return null; // Retorna null se o usuário não for encontrado
+        return null;
     }
 
     public void exibirTodos(){

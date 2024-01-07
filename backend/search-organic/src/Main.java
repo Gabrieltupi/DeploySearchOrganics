@@ -1,17 +1,22 @@
-import modelo.*;
+import modelo.Carrinho;
+import modelo.Endereco;
+import modelo.Produto;
+import modelo.Usuario;
 import servicos.*;
+import utils.GeradorSeeds;
 import utils.TipoCategoria;
 import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        CategoriaCRUD categoriaCRUD = new CategoriaCRUD();
+        GeradorSeeds geradorSeeds = new GeradorSeeds();
         ConsumidorCRUD consumidorCRUD = new ConsumidorCRUD();
         CupomCRUD cupomCRUD = new CupomCRUD();
         DadosPessoaisCRUD dadosPessoaisCRUD = new DadosPessoaisCRUD();
@@ -22,6 +27,8 @@ public class Main {
         ProdutoCRUD produtoCRUD = new ProdutoCRUD();
 
         boolean sair = false;
+
+        GeradorSeeds.gerarSeeds(enderecoCRUD, usuarioCRUD, produtoCRUD, empresaCRUD);
 
         do {
             System.out.println("""
@@ -219,7 +226,7 @@ public class Main {
 
                                 switch (escolhaMenuCarrinho) {
                                     case 1:
-
+                                        // TODO: Ir para pagamento
                                     case 2:
                                         System.out.println("Produtos do carrinho: ");
                                         carrinho.listarProdutosDoCarrinho();
