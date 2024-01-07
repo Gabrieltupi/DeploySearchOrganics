@@ -15,7 +15,7 @@ public class EmpresaCRUD {
 
         if (ValidadorCNPJ.validarCNPJ(cnpj)) {
             Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
-                    setor, produtos, usuario);
+                    setor, usuario);
 
             empresas.add(novaEmpresa);
             System.out.println("Empresa criada com sucesso.");

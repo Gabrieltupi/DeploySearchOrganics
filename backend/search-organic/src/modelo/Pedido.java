@@ -29,6 +29,10 @@ public class Pedido implements Impressao {
                   FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                   Endereco endereco,
                   TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total) {
+        if(cupom == null){
+            cupom.setTaxaDeDesconto(new BigDecimal(0));
+        }
+
         this.id = pedidoId;
         this.produtos = produtos;
         this.quantidadeProduto = quantidadeProduto;
@@ -37,6 +41,12 @@ public class Pedido implements Impressao {
         this.endereco = endereco;
         this.consumidorId = consumidorId;
         this.tipoEntrega = tipoEntrega;
+        if(tipoEntrega == tipoEntrega.RETIRAR_NO_LOCAL){
+            this.total = total.subtract(cupom.getTaxaDeDesconto());
+
+        }else {
+            this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
+        }
         this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
         this.entregue = false;
         this.inicioEntrega = LocalDate.now();
@@ -152,7 +162,6 @@ public class Pedido implements Impressao {
 
     public boolean pedidoEntrege(boolean entregue){
         this.entregue = entregue;
-
         return entregue;
     }
 

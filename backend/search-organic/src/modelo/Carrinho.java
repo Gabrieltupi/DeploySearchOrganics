@@ -114,6 +114,7 @@ public class Carrinho {
         if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
             pedido = new Pedido(usuario.getId(), produtos, quantidadeProduto,
                     formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
+            pedido.imprimir();
         } else {
             System.out.println("CEP invalido - pedido não foi finalizado");
         }
