@@ -95,7 +95,7 @@ public class Pedido implements Impressao {
         for(Produto produto: this.produtos){
             System.out.printf("""
                     Nome: %s
-                    Quantidade: %d
+                    Quantidade: %.2f
                     Preço: R$ %.2f
                     """, produto.getNome(), produto.getQuantidade(),  produto.getPreco());
         }

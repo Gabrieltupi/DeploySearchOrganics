@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Produto implements Impressao {
-    private final UUID id;
+    private static int produtoId = 1;
+    private int idProduto;
+    private int empresaId;
     private String nome;
     private String descricao;
     private BigDecimal preco;
@@ -16,8 +18,11 @@ public class Produto implements Impressao {
     private double taxa;
     private UnidadeMedida unidadeMedida;
 
-    public Produto(String nome, String descricao, BigDecimal preco, BigDecimal quantidade, Categoria categoria, double taxa, UnidadeMedida unidadeMedida) {
-        this.id = UUID.randomUUID();
+    public Produto(int empresaId, String nome, String descricao, BigDecimal preco,
+                   BigDecimal quantidade, Categoria categoria, double taxa,
+                   UnidadeMedida unidadeMedida) {
+        this.idProduto = produtoId;
+        this.empresaId = empresaId;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
@@ -25,10 +30,15 @@ public class Produto implements Impressao {
         this.categoria = categoria;
         this.taxa = taxa;
         this.unidadeMedida = unidadeMedida;
+        this.produtoId++;
     }
 
-    public UUID getId() {
-        return id;
+    public int getIdProduto() {
+        return idProduto;
+    }
+
+    public int getEmpresaId(){
+        return empresaId;
     }
 
     public String getNome() {
@@ -89,7 +99,7 @@ public class Produto implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do produto: " + getId());
+        System.out.println("ID do produto: " + getIdProduto());
         System.out.println("Nome do produto: " + getNome());
         System.out.println("Descrição do produto: " + getDescricao());
         System.out.println("Preço do produto: " + getPreco());
