@@ -3,6 +3,7 @@ package servicos;
 import modelo.DadosPessoais;
 import modelo.Endereco;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,7 +26,7 @@ public class DadosPessoaisCRUD {
     }
 
     public boolean atualizarDadosPessoais(int id, String nome, String sobrenome, Endereco endereco,
-                                           Date dataNascimento){
+                                          LocalDate dataNascimento){
         for(DadosPessoais x: dadosPessoais){
             if(id == x.getId()){
                 x.setNome(nome);

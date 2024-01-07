@@ -1,5 +1,7 @@
 package modelo;
 import interfaces.Impressao;
+
+import java.time.LocalDate;
 import java.util.Date;
 public class Usuario extends DadosPessoais implements Impressao {
     private int usuarioId = 1;
@@ -8,7 +10,7 @@ public class Usuario extends DadosPessoais implements Impressao {
     private boolean ativo = true;
 
 
-    public Usuario(String login, String password, String nome, String sobrenome, Endereco endereco, Date dataNascimento) {
+    public Usuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
         super(nome, sobrenome, endereco, dataNascimento);
         this.login = login;
         this.password = password;
@@ -62,6 +64,7 @@ public class Usuario extends DadosPessoais implements Impressao {
         System.out.println("ID do Usuário: " + usuarioId);
         System.out.println("Login: " + login);
         System.out.println("Status: " + verificarStatus());
+        System.out.println("Endereço "+ getEndereco());
         System.out.println("Data de nascimento "+getDataNascimento());
         System.out.println("-------------------");
     }

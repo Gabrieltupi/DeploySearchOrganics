@@ -4,7 +4,6 @@ import interfaces.Impressao;
 import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class Produto implements Impressao {
     private static int produtoId = 1;

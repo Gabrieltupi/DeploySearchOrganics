@@ -32,20 +32,21 @@ public class EnderecoCRUD {
     }
 
     public boolean atualizarEndereco(int id, String logradouro, String numero, String complemento,
-                                          String cep, String cidade, String estado, String pais){
+                                          String cep, String cidade, String estado, String pais) {
         System.out.println(ValidadorCEP.getRegiao());
         if (ValidadorCEP.isCepValido(cep)) {
             System.out.println(ValidadorCEP.getRegiao());
+
             for(Endereco x: enderecos){
-                if(id == x.getId()){
+                if(id == x.getId()) {
                     x.setRegiao(ValidadorCEP.getRegiao());
-                    x.setLogradouro(logradouro);
-                    x.setNumero(numero);
-                    x.setComplemento(complemento);
+                    if (logradouro != null) x.setLogradouro(logradouro);
+                    if (numero != null) x.setNumero(numero);
+                    if (complemento != null) x.setComplemento(complemento);
                     x.setCep(cep);
-                    x.setCidade(cidade);
-                    x.setEstado(estado);
-                    x.setPais(pais);
+                    if (cidade != null) x.setCidade(cidade);
+                    if (estado != null) x.setEstado(estado);
+                    if (pais != null) x.setPais(pais);
                     return true;
                 }
             }
