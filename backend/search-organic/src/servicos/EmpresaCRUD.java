@@ -37,6 +37,7 @@ public class EmpresaCRUD {
     public void listarEmpresas() {
         for (Empresa empresa : empresas) {
             empresa.imprimir();
+            System.out.println("-----------------");
         }
     }
 

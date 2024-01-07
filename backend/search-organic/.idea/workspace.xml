@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="b49f7bca-e3de-4b23-92a0-e3aec4becb98" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modelo/Carrinho.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Carrinho.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/CarrinhoCRUD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/EmpresaCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/EmpresaCRUD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/ProdutoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/ProdutoCRUD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/UsuarioCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/UsuarioCRUD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/GeradorSeeds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/GeradorSeeds.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +51,7 @@
     "Application.Main.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feat/implementar-main",
+    "git-widget-placeholder": "develop",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/leofa/Desktop/Vem Ser 13/vs1-TrabalhoFinal/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
     "node.js.detected.package.eslint": "true",
