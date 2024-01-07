@@ -30,6 +30,18 @@ public class Empresa implements Impressao {
         empresaId++;
     }
 
+    public Empresa(String nomeFantasia, String cnpj, String razaoSocial, String inscricaoEstadual,
+                   String setor, Usuario usuario) {
+        this.idEmpresa = empresaId;
+        this.nomeFantasia = nomeFantasia;
+        this.cnpj = cnpj;
+        this.razaoSocial = razaoSocial;
+        this.inscricaoEstadual = inscricaoEstadual;
+        this.setor = setor;
+        this.usuario = usuario;
+        empresaId++;
+    }
+
     public int getId() { return idEmpresa; }
     public String getNomeFantasia() { return nomeFantasia; }
     public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }

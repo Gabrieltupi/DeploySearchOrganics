@@ -22,6 +22,10 @@ public class PedidoCRUD {
                             TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total){
         Pedido pedido = new Pedido(consumidorId, produtos, quantidadeProduto,
                 formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, total);
+        criarPedido(pedido);
+    }
+
+    public void criarPedido(Pedido pedido){
         this.pedidos.add(pedido);
     }
 

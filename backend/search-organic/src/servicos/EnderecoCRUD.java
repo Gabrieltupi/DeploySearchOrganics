@@ -18,7 +18,6 @@ public class EnderecoCRUD {
         if(endereco != null && ValidadorCEP.isCepValido(endereco.getCep()) != null) {
             this.enderecos.add(endereco);
             return true;
-
         }
         System.out.println("CEP inválido!");
         return false;

@@ -23,8 +23,6 @@ public class Carrinho {
         this.usuario = usuario;
     }
 
-
-
     public Carrinho(Usuario usuario) {
         this.usuario = usuario;
     }
@@ -68,17 +66,15 @@ public class Carrinho {
         this.valorTotal = valorTotal;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
-        if (produto != null && idEmpresa == produto.getEmpresaId() &&
-                produto.getQuantidade().compareTo(quantidade) > 0) {
             this.produtos.put(produto.getIdProduto(), produto);
             this.quantidadeProduto.put(produto.getIdProduto(), quantidade);
             valorTotal = valorTotal.add(produto.getPreco().multiply(quantidade));
             return true;
-        } else {
-            System.out.println("Produto não é valido para essa compra!!");
-            return false;
-        }
     }
 
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal quantidade) {
