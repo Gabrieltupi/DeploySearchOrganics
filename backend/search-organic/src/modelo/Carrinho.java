@@ -2,6 +2,7 @@ package modelo;
 
 import utils.FormaPagamento;
 import utils.validadores.TipoEntrega;
+import utils.validadores.ValidadorCEP;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,8 +22,6 @@ public class Carrinho {
         this.idEmpresa = idEmpresa;
         this.usuario = usuario;
     }
-
-
 
     public Carrinho(Usuario usuario) {
         this.usuario = usuario;
@@ -67,17 +66,15 @@ public class Carrinho {
         this.valorTotal = valorTotal;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
-        if (produto != null && idEmpresa == produto.getEmpresaId() &&
-                produto.getQuantidade().compareTo(quantidade) > 0) {
             this.produtos.put(produto.getIdProduto(), produto);
             this.quantidadeProduto.put(produto.getIdProduto(), quantidade);
             valorTotal = valorTotal.add(produto.getPreco().multiply(quantidade));
             return true;
-        } else {
-            System.out.println("Produto não é valido para essa compra!!");
-            return false;
-        }
     }
 
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal quantidade) {
@@ -113,7 +110,14 @@ public class Carrinho {
 
     public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                                 Endereco endereco, Cupom cupom, TipoEntrega tipoEntrega){
-        pedido = new Pedido(usuario.getId(), produtos, quantidadeProduto,
-                formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
+
+        if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
+            pedido = new Pedido(usuario.getId(), produtos, quantidadeProduto,
+                    formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
+            pedido.imprimir();
+        } else {
+            System.out.println("CEP invalido - pedido não foi finalizado");
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 package modelo;
 
 import interfaces.Impressao;
+import utils.validadores.ValidadorCEP;
 
 public class Endereco implements Impressao {
     private static int enderecoId = 1;
@@ -14,17 +15,24 @@ public class Endereco implements Impressao {
     private String pais;
     private String regiao;
 
+    private ValidadorCEP validadorCEP;
+
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
                     String estado, String pais) {
-        this.id = enderecoId;
-        this.logradouro = logradouro;
-        this.numero = numero;
-        this.complemento = complemento;
-        this.cep = cep;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.pais = pais;
-        enderecoId++;
+        if(ValidadorCEP.isCepValido(cep) != null) {
+            this.id = enderecoId;
+            this.logradouro = logradouro;
+            this.numero = numero;
+            this.complemento = complemento;
+            this.cep = cep;
+            this.cidade = cidade;
+            this.estado = estado;
+            this.pais = pais;
+            this.regiao = ValidadorCEP.isCepValido(cep);
+            enderecoId++;
+        } else{
+            System.out.println("Ainda não atendemos neste estado");
+        }
     }
 
     public int getId() {

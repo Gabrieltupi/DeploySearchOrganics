@@ -15,13 +15,28 @@ public class EmpresaCRUD {
 
         if (ValidadorCNPJ.validarCNPJ(cnpj)) {
             Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
-                    setor, produtos, usuario);
+                    setor, usuario);
 
             empresas.add(novaEmpresa);
             System.out.println("Empresa criada com sucesso.");
         } else {
             System.out.println("CNPJ inválido. A empresa não foi criada.");
         }
+    }
+
+    public static int criarEmpresa(String nomeFantasia, String cnpj, String razaoSocial,
+                                    String inscricaoEstadual, String setor, Usuario usuario) {
+
+        if (ValidadorCNPJ.validarCNPJ(cnpj)) {
+            Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
+                    setor, usuario);
+            empresas.add(novaEmpresa);
+            System.out.println("Empresa criada com sucesso.");
+            return novaEmpresa.getId();
+        } else {
+            System.out.println("CNPJ inválido. A empresa não foi criada.");
+        }
+        return 0;
     }
 
     public static void exibirEmpresa(int id) {

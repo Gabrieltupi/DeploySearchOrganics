@@ -15,13 +15,13 @@ import java.util.Map;
 public class PedidoCRUD {
     private ArrayList<Pedido> pedidos = new java.util.ArrayList<>();
 
-    public void criarPedido(int consumidorId, Map<Integer, Produto> produtos,
-                            Map<Integer, BigDecimal> quantidadeProduto,
-                            FormaPagamento formaPagamento, LocalDate dataDeEntrega,
-                            Endereco endereco,
-                            TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total){
-        Pedido pedido = new Pedido(consumidorId, produtos, quantidadeProduto,
-                formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, total);
+    public void criarPedido(){}
+
+    public void adicionarPedido(Pedido pedido){
+        pedidos.add(pedido);
+    }
+
+    public void criarPedido(Pedido pedido){
         this.pedidos.add(pedido);
     }
 

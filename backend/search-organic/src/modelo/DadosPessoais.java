@@ -74,13 +74,3 @@ public class DadosPessoais implements Impressao {
                 "\nData de Nascimento: " + endereco + "\n";
     }
 }
-
-
-
-
-
-
-
-
-
-

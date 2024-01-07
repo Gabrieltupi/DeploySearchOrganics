@@ -3,6 +3,7 @@ package modelo;
 import interfaces.Impressao;
 import utils.FormaPagamento;
 import utils.validadores.TipoEntrega;
+import utils.validadores.ValidadorCEP;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ public class Pedido implements Impressao {
     private LocalDate dataDeEntrega;
     private Endereco endereco;
     private int consumidorId;
-
+    private LocalDate inicioEntrega;
     private TipoEntrega tipoEntrega;
 
     public Pedido(int consumidorId, Map<Integer, Produto> produtos,
@@ -28,6 +29,10 @@ public class Pedido implements Impressao {
                   FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                   Endereco endereco,
                   TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total) {
+        if(cupom == null){
+            cupom.setTaxaDeDesconto(new BigDecimal(0));
+        }
+
         this.id = pedidoId;
         this.produtos = produtos;
         this.quantidadeProduto = quantidadeProduto;
@@ -36,10 +41,18 @@ public class Pedido implements Impressao {
         this.endereco = endereco;
         this.consumidorId = consumidorId;
         this.tipoEntrega = tipoEntrega;
-        this.total = total.subtract(cupom.getTaxaDeDesconto());
+        if(tipoEntrega == tipoEntrega.RETIRAR_NO_LOCAL){
+            this.total = total.subtract(cupom.getTaxaDeDesconto());
+
+        }else {
+            this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
+        }
+        this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
         this.entregue = false;
+        this.inicioEntrega = LocalDate.now();
         pedidoId++;
     }
+
 
     public int getId() {
         return id;
@@ -117,9 +130,38 @@ public class Pedido implements Impressao {
         this.tipoEntrega = tipoEntrega;
     }
 
+    public LocalDate getInicioEntrega() {
+        return inicioEntrega;
+    }
+
+    public void setInicioEntrega(LocalDate inicioEntrega) {
+        this.inicioEntrega = inicioEntrega;
+    }
+
+    public BigDecimal calcularFrete(String cep) {
+        BigDecimal frete = new BigDecimal("0.00");
+        String regiao = ValidadorCEP.isCepValido(cep);
+
+        if (regiao == null) return null;
+
+        if (regiao.equals("SP - Capital")) {
+            frete = new BigDecimal("10.00");
+        }
+        if (regiao.equals("SP - Área Metropolitana")) {
+            frete = new BigDecimal("15.00");
+        }
+        if (regiao.equals("SP - Litoral")) {
+            frete = new BigDecimal("20.00");
+        }
+        if (regiao.equals("SP - Interior")) {
+            frete = new BigDecimal("25.00");
+        }
+
+        return frete;
+    }
+
     public boolean pedidoEntrege(boolean entregue){
         this.entregue = entregue;
-
         return entregue;
     }
 
@@ -133,7 +175,7 @@ public class Pedido implements Impressao {
                 Status de entraga: %b%n
                 CEP de entrega: %s
                 """,
-                id, formaPagamento, dataDeEntrega, tipoEntrega, total, entregue, endereco.getCep());
+                id, formaPagamento, dataDeEntrega, tipoEntrega, entregue, endereco.getCep());
         System.out.println("Produtos: \n");
 
         for (int key : produtos.keySet()) {

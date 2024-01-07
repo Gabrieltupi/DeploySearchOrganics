@@ -7,14 +7,14 @@ import java.math.BigDecimal;
 public class Cupom implements Impressao, CupomServicos {
     private static int cupomIdCounter = 1;
     private final int cupomId;
-    private String nomeProduto;
+    private String nomeCupom;
     private boolean ativo;
     private String descricao;
     private BigDecimal taxaDeDesconto;
 
-    public Cupom(int cupomId, String nomeProduto, boolean ativo, String descricao, BigDecimal taxaDeDesconto) {
+    public Cupom(int cupomId, String nomeCupom, boolean ativo, String descricao, BigDecimal taxaDeDesconto) {
         this.cupomId = cupomId;
-        this.nomeProduto = nomeProduto;
+        this.nomeCupom = nomeCupom;
         this.ativo = ativo;
         this.descricao = descricao;
         this.taxaDeDesconto = taxaDeDesconto;
@@ -24,7 +24,7 @@ public class Cupom implements Impressao, CupomServicos {
     public void imprimir() {
         System.out.println("\nInformações sobre o cupom de desconto:");
         System.out.println("ID do cupom: " + getCupomId());
-        System.out.println("Produto associado: " + getNomeProduto());
+        System.out.println("Produto associado: " + getNomeCupom());
         System.out.println("Descrição do cupom: " + getDescricao());
         System.out.println("Taxa de desconto: " + this.taxaDeDesconto);
     }
@@ -76,12 +76,12 @@ public class Cupom implements Impressao, CupomServicos {
         return cupomId;
     }
 
-    public String getNomeProduto() {
-        return nomeProduto;
+    public String getNomeCupom() {
+        return nomeCupom;
     }
 
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
+    public void setNomeCupom(String nomeProduto) {
+        this.nomeCupom = nomeProduto;
     }
 
     public boolean isAtivo() {

@@ -6,13 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cc72c87a-9994-4b25-b6e2-18b5d648071c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modelo/Carrinho.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Carrinho.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modelo/Cupom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Cupom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Empresa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Empresa.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modelo/Pedido.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Pedido.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/servicos/EmpresaCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/EmpresaCRUD.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/servicos/PedidoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/PedidoCRUD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/ProdutoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/ProdutoCRUD.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,8 +56,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "feat/implementar-main",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "feat/ajuste-saidas",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/leofa/Desktop/Vem Ser 13/vs1-TrabalhoFinal/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
     "node.js.detected.package.eslint": "true",
