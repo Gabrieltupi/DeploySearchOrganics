@@ -175,7 +175,11 @@ public class Main {
                                         System.out.println("Digite a quantidade: ");
                                         BigDecimal quantidade = scanner.nextBigDecimal();
 
-
+                                        Carrinho carrinho = new Carrinho(usuario, 1);
+                                        BigDecimal preco = new BigDecimal("1.5");
+                                        BigDecimal dsad = new BigDecimal("18");
+                                        BigDecimal dasda = new BigDecimal("8");
+                                        carrinho.adicionarProdutoAoCarrinho(new Produto(0, "Maçã", "Gala orgânica", preco, dsad, new Categoria("FRUTAS"), 3.2, UnidadeMedida.KG), dasda);
                                 }
 
                             }
