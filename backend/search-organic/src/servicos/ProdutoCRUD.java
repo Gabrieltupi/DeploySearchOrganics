@@ -1,5 +1,4 @@
 package servicos;
-import modelo.Categoria;
 import modelo.Produto;
 import utils.TipoCategoria;
 import utils.UnidadeMedida;
