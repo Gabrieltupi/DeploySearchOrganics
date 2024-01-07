@@ -78,4 +78,15 @@ public class EmpresaCRUD {
         }
         System.out.println("Empresa não encontrada.");
     }
+
+    public void Lojas(){
+        for (Empresa empresa : empresas) {
+            System.out.println(empresa.getNomeFantasia());
+            System.out.println();
+            for (Produto produto: empresa.getProdutos()){
+                System.out.println("Nome: " + produto.getNome() + "Preço: " + produto.getPreco());
+            }
+            System.out.println();
+        }
+    }
 }

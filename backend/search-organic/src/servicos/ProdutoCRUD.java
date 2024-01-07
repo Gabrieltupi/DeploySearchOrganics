@@ -77,6 +77,16 @@ public class ProdutoCRUD {
 
     }
 
+    public void listarProdutosLoja(int idLoja){
+        for (Produto produto: produtos){
+            if(idLoja == produto.getEmpresaId()){
+                System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " quantidade: " + produto.getQuantidade());
+                System.out.println("Descrição: " + produto.getDescricao());
+                System.out.println();
+            }
+        }
+    }
+
 }
 
 
