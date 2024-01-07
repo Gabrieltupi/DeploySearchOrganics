@@ -19,7 +19,9 @@ public class ProdutoCRUD {
 
     public void listarProdutos() {
         for (Produto produto : produtos) {
+            System.out.println("-----------------");
             produto.imprimir();
+            System.out.println("-----------------");
         }
     }
 
@@ -29,6 +31,7 @@ public class ProdutoCRUD {
             if (produto.getIdProduto() == id) {
                 System.out.println("Produto encontrado:" + produto.getIdProduto());
                 produto.imprimir();
+                System.out.println("-----------------");
                 return produto;
             }
         }
