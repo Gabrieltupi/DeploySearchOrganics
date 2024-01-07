@@ -22,9 +22,9 @@ public class CupomCRUD {
     }
     public Cupom buscarCupomPorId(int id) {
         for (Cupom cupom : cupons) {
-            System.out.println("Verificando Cupom por Id:" + cupom.getId());
-            if (cupom.getId() == id) {
-                System.out.println("Cupom encontrado:" + cupom.getId());
+            System.out.println("Verificando Cupom por Id:" + cupom.getCupomId());
+            if (cupom.getCupomId() == id) {
+                System.out.println("Cupom encontrado:" + cupom.getCupomId());
                 cupom.imprimir();
                 return cupom;
             }
@@ -35,8 +35,8 @@ public class CupomCRUD {
 
     public void atualizarCupom(int id, String novoNomeProduto, String novaDescricao, double novaTaxaDeDesconto) {
         for (Cupom cupom : cupons) {
-            if (cupom.getId() == id) {
-                System.out.println("Cupom encontrado, atualize as informações: " + cupom.getId());
+            if (cupom.getCupomId() == id) {
+                System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
                 cupom.setNomeProduto(novoNomeProduto);
                 cupom.setDescricao(novaDescricao);
                 cupom.setTaxaDeDesconto(novaTaxaDeDesconto);
@@ -50,7 +50,7 @@ public class CupomCRUD {
 
     public void deletarCupom(int id) {
         for (Cupom cupom : cupons) {
-            if (cupom.getId() == id) {
+            if (cupom.getCupomId() == id) {
                 cupons.remove(cupom);
                 return;
             }

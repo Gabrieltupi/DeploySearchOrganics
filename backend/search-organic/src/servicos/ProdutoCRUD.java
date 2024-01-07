@@ -1,6 +1,7 @@
 package servicos;
 import modelo.Categoria;
 import modelo.Produto;
+import utils.TipoCategoria;
 import utils.UnidadeMedida;
 
 import java.util.ArrayList;
@@ -36,8 +37,16 @@ public class ProdutoCRUD {
         return null;
     }
 
+    public void listarProdutosPorCategoria(TipoCategoria categoria) {
+        for (Produto produto : produtos) {
+            if (produto.getCategoria().equals(categoria)) {
+                produto.imprimir();
+            }
+        }
+    }
+
     public void atualizarProduto(int id, String novoNome, String novaDescricao, BigDecimal novoPreco, BigDecimal novaQuantidade,
-                                 Categoria novaCategoria, double novaTaxa, UnidadeMedida novaUnidadedeMedida) {
+                                 TipoCategoria novaCategoria, double novaTaxa, UnidadeMedida novaUnidadedeMedida) {
         for (Produto produto : produtos) {
             if (produto.getIdProduto() == id) {
                 System.out.println("Produto encontrado, atualize as informações: " + produto.getIdProduto());

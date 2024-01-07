@@ -16,7 +16,10 @@ public class Carrinho {
     public Carrinho(Usuario usuario, int idEmpresa) {
         this.idEmpresa = idEmpresa;
         this.usuario = usuario;
+    }
 
+    public Carrinho(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
@@ -60,5 +63,45 @@ public class Carrinho {
     public void limparSacola() {
         quantidadeProduto = new HashMap<>();
         produtos = new HashMap<>();
+    }
+
+    public int getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(int idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public Map<Integer, Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(Map<Integer, Produto> produtos) {
+        this.produtos = produtos;
+    }
+
+    public Map<Integer, BigDecimal> getQuantidadeProduto() {
+        return quantidadeProduto;
+    }
+
+    public void setQuantidadeProduto(Map<Integer, BigDecimal> quantidadeProduto) {
+        this.quantidadeProduto = quantidadeProduto;
+    }
+
+    public BigDecimal getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(BigDecimal quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public BigDecimal getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }

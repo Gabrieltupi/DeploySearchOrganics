@@ -1,5 +1,6 @@
 import modelo.*;
 import servicos.*;
+import utils.TipoCategoria;
 import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
@@ -8,6 +9,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
         CategoriaCRUD categoriaCRUD = new CategoriaCRUD();
         ConsumidorCRUD consumidorCRUD = new ConsumidorCRUD();
         CupomCRUD cupomCRUD = new CupomCRUD();
@@ -16,18 +19,15 @@ public class Main {
         EnderecoCRUD enderecoCRUD = new EnderecoCRUD();
         PedidoCRUD pedidoCRUD = new PedidoCRUD();
         UsuarioCRUD usuarioCRUD = new UsuarioCRUD();
-//        Carrinho carrinho = new Carrinho();
+        ProdutoCRUD produtoCRUD = new ProdutoCRUD();
 
-        // crie um usuario para teste
-        usuarioCRUD.criarUsuario("admin", "admin", "admin", "admin", null, null);
-
-
-        Scanner scanner = new Scanner(System.in);
+        boolean sair = false;
 
         do {
             System.out.println("""
                     1 - Login
                     2 - Cadastro
+                    0 - Sair
                     """);
 
             int escolha = scanner.nextInt();
@@ -49,18 +49,22 @@ public class Main {
                         do {
                             System.out.println("""
                                     1 - Minha conta
-                                    2 - Produtos
+                                    2 - Lojas
                                     3 - Carrinho
+                                    0 - Voltar
                                     """);
 
                             int escolhaMenuConsumidor = scanner.nextInt();
                             scanner.nextLine();
+
+                            Carrinho carrinho = new Carrinho(usuario);
 
                             if (escolhaMenuConsumidor == 1) {
                                 System.out.println("""
                                         1 - Editar dados pessoais
                                         2 - Editar endereço
                                         3 - Editar login
+                                        0 - Voltar
                                         """);
 
                                 int escolhaMenuDadosPessoais = scanner.nextInt();
@@ -130,6 +134,8 @@ public class Main {
                                         usuario.setLogin(loginEditado);
                                         usuario.setPassword(senhaEditada);
                                         break;
+                                    case 0:
+                                        break;
                                     default:
                                         System.out.println("Opção inválida");
                                 }
@@ -138,6 +144,7 @@ public class Main {
                                 System.out.println("""
                                         1 - Listar produtos
                                         2 - Adicionar produto ao carrinho
+                                        0 - Voltar
                                         """);
 
                                 int escolhaMenuProdutos = scanner.nextInt();
@@ -148,6 +155,7 @@ public class Main {
                                         System.out.println("""
                                                 1 - Listar produtos por categoria
                                                 2 - Listar todos os produtos
+                                                0 - Voltar
                                                 """);
 
                                         int escolhaMenuListarProdutos = scanner.nextInt();
@@ -155,13 +163,23 @@ public class Main {
 
                                         switch (escolhaMenuListarProdutos) {
                                             case 1:
-                                                System.out.println("Digite o nome da categoria: ");
-                                                String nomeCategoria = scanner.nextLine();
+                                                System.out.println("""
+                                                        Escolha uma catergoria:
+                                                        1 - LEGUMES,
+                                                        2 - VERDURAS E TEMPEROS,
+                                                        3 - FRUTAS,
+                                                        4 - OVOS,
+                                                        5 - LEITES,
+                                                        6 - ARROZ E FEIJAO
+                                                        """);
+                                                int indexCategoria = scanner.nextInt();
 
-                                                produtoCRUD.listarProdutosPorCategoria(nomeCategoria);
+                                                produtoCRUD.listarProdutosPorCategoria(TipoCategoria.values()[indexCategoria - 1]);
                                                 break;
                                             case 2:
-                                                produtoCRUD.listarTodosProdutos();
+                                                produtoCRUD.listarProdutos();
+                                                break;
+                                            case 0:
                                                 break;
                                             default:
                                                 System.out.println("Opção inválida");
@@ -173,15 +191,69 @@ public class Main {
                                         int idProduto = scanner.nextInt();
 
                                         System.out.println("Digite a quantidade: ");
-                                        BigDecimal quantidade = scanner.nextBigDecimal();
+                                        BigDecimal quantidadeProduto = scanner.nextBigDecimal();
 
-                                        Carrinho carrinho = new Carrinho(usuario, 1);
-                                        BigDecimal preco = new BigDecimal("1.5");
-                                        BigDecimal dsad = new BigDecimal("18");
-                                        BigDecimal dasda = new BigDecimal("8");
-                                        carrinho.adicionarProdutoAoCarrinho(new Produto(0, "Maçã", "Gala orgânica", preco, dsad, new Categoria("FRUTAS"), 3.2, UnidadeMedida.KG), dasda);
+                                        Produto produto = produtoCRUD.buscarProdutoPorId(idProduto);
+                                        carrinho.setIdEmpresa(produto.getEmpresaId());
+                                        carrinho.adicionarProdutoAoCarrinho(produtoCRUD.buscarProdutoPorId(idProduto), quantidadeProduto);
+
+                                    case 0:
+                                        break;
+                                    default:
+                                        System.out.println("Opção inválida");
                                 }
 
+                            }
+                            if (escolhaMenuConsumidor == 3) {
+                                System.out.println("""
+                                        1 - Ir para pagamento
+                                        2 - Listar produtos do carrinho
+                                        3 - Editar quantidade de produto do carrinho
+                                        4 - Remover produto do carrinho
+                                        5 - Limpar carrinho
+                                        0 - Voltar
+                                        """);
+
+                                int escolhaMenuCarrinho = scanner.nextInt();
+                                scanner.nextLine();
+
+                                switch (escolhaMenuCarrinho) {
+                                    case 1:
+
+                                    case 2:
+                                        System.out.println("Produtos do carrinho: ");
+                                        carrinho.listarProdutosDoCarrinho();
+
+                                        break;
+                                    case 3:
+                                        System.out.println("Digite o ID do produto: ");
+                                        int idProdutoEditar = scanner.nextInt();
+
+                                        System.out.println("Digite a quantidade: ");
+                                        BigDecimal quantidade = scanner.nextBigDecimal();
+
+                                        carrinho.editarQuantidadeProdutoDaSacola(idProdutoEditar, quantidade);
+
+                                        break;
+                                    case 4:
+                                        System.out.println("Digite o ID do produto: ");
+                                        int idProdutoRemover = scanner.nextInt();
+
+                                        carrinho.removerProdutoDoCarrinho(idProdutoRemover);
+
+                                        break;
+                                    case 5:
+                                        carrinho.limparSacola();
+
+                                        break;
+                                    case 0:
+                                        break;
+                                    default:
+                                        System.out.println("Opção inválida");
+                                }
+                            }
+                            if (escolhaMenuConsumidor == 0) {
+                                break;
                             }
                         } while (true);
                     } else {
@@ -243,11 +315,14 @@ public class Main {
                     usuarioCRUD.criarUsuario(loginCadastro, senhaCadastro, nomeCadastro, sobrenomeCadastro, enderecoCadastro, dataNascimentoCadastro);
 
                     break;
+                case 0:
+                    sair = true;
+                    break;
                 default:
                     System.out.println("Opção inválida");
             }
+        } while (!sair);
 
-            usuarioCRUD.exibirTodos();
-        } while (true);
+        scanner.close();
     }
 }

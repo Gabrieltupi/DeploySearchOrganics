@@ -11,9 +11,12 @@ public class UsuarioCRUD {
     private static int proximoId = 1;
 
     public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
-        Usuario novoUsuario = new Usuario(login, password, nome, sobrenome, endereco, dataNascimento);
-        novoUsuario.setUsuarioId(proximoId++);
-        usuarios.add(novoUsuario);
+        criarUsuario(new Usuario(login, password, nome, sobrenome, endereco, dataNascimento));
+    }
+
+    public void criarUsuario(Usuario usuario) {
+        usuario.setUsuarioId(proximoId++);
+        usuarios.add(usuario);
     }
 
     public Usuario buscarUsuarioPorLoginESenha(String login, String senha) {
