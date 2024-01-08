@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc72c87a-9994-4b25-b6e2-18b5d648071c" name="Changes" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/Main.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/modelo/Carrinho.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/modelo/Cupom.class" beforeDir="false" />
@@ -14,6 +15,14 @@
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/servicos/PedidoCRUD.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/servicos/ProdutoCRUD.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../out/production/vs13-squad1-SEARCH-ORGANIC/utils/GeradorSeeds.class" beforeDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Carrinho.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Carrinho.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Empresa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Empresa.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Pedido.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Pedido.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/EmpresaCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/EmpresaCRUD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/PedidoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/PedidoCRUD.java" afterDir="false" />
+>>>>>>> develop
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +68,11 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+<<<<<<< HEAD
     "git-widget-placeholder": "feat/excecptions",
+=======
+    "git-widget-placeholder": "feat/ajuste-saidas",
+>>>>>>> develop
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/aleso/OneDrive/Área de Trabalho/dbcorganic/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
     "node.js.detected.package.eslint": "true",

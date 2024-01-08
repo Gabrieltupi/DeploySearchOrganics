@@ -20,6 +20,12 @@ public class ConsumidorCRUD {
         }
     }
 
+    public void exibirConsumidor(){
+        for(Consumidor consumidor : consumidores){
+            System.out.println("Nome: " + consumidor);
+        }
+    }
+
     public void exibir(int id){
         for(Consumidor consumidor : consumidores){
             if(id == consumidor.getId()){

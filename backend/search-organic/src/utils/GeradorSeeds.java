@@ -15,8 +15,12 @@ public class GeradorSeeds {
         LocalDate dataNascimento2 = LocalDate.of(1990, 1, 1);
 
         Endereco endereco1 = new Endereco("Rua Honesto Barbosa", "1315", "Bloco A", "01153-000", "Sao Paulo", "SP", "Brasil");
+<<<<<<< HEAD
+        Endereco endereco2 = new Endereco("Avenida Roberto Vila", "3123", "Casa", "01053-000", "Sao Paulo", "SP", "Brasil");
+=======
         Endereco endereco2 = new Endereco("Avenida Roberto Vila", "3123", "", "10053-000", "Sao Paulo", "SP", "Brasil");
         Endereco endereco3 = new Endereco("Rua Barão do Rio Branco", "18", "Vila eldizia", "09181-610", "Sao Paulo", "SP", "Brasil");
+>>>>>>> develop
 
         enderecoCRUD.adicionarEndereco(endereco1);
         enderecoCRUD.adicionarEndereco(endereco2);
@@ -30,29 +34,46 @@ public class GeradorSeeds {
             System.out.println("Ocorreu um erro de cadastro");
         }
 
+<<<<<<< HEAD
+        int idEmpresaSeed = empresaCRUD.criarEmpresa("Fazenda do tio Zé", "07269844000181", "FazendaZezinho", "0223233556", "Alimenticio", usuario1);
+=======
         Usuario usuario2 = new Usuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento);
         usuarioCRUD.criarUsuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento);
 
         Usuario usuario3 = new Usuario("user", "user", "user", "user", endereco3, dataNascimento);
         usuarioCRUD.criarUsuario("user", "user", "user", "user", endereco3, dataNascimento);
 
+>>>>>>> develop
 
         ArrayList<Produto> produtosEmpresa1 = new ArrayList<>();
         empresaCRUD.criarEmpresa("Fazenda do tio Zé", "07269844000181", "FazendaZezinho", "0223233556", "Alimenticio", produtosEmpresa1, usuario1);
 
         BigDecimal preco = new BigDecimal("1.5");
         BigDecimal quantidade = new BigDecimal("18");
+<<<<<<< HEAD
+
+        Produto produto = new Produto(idEmpresaSeed, "Maçã", "Gala orgânica", preco, quantidade, TipoCategoria.FRUTAS, 3.2, UnidadeMedida.KG);
+=======
         Produto produto = new Produto(1, "Maçã", "Gala orgânica", preco, quantidade, TipoCategoria.FRUTAS, 3.2, UnidadeMedida.KG);
+>>>>>>> develop
         produtosEmpresa1.add(produto);
 
         preco = new BigDecimal("8.50");
         quantidade = new BigDecimal("100");
+<<<<<<< HEAD
+        Produto produto1 = new Produto(idEmpresaSeed, "Banana", "Caixo de banana prata", preco, quantidade, TipoCategoria.FRUTAS, 3.2, UnidadeMedida.PC);
+=======
         Produto produto1 = new Produto(1, "Banana", "Caixo de banana prata", preco, quantidade, TipoCategoria.FRUTAS, 3.2, UnidadeMedida.PC);
+>>>>>>> develop
         produtosEmpresa1.add(produto1);
 
         preco = new BigDecimal("2.0");
         quantidade = new BigDecimal("18");
+<<<<<<< HEAD
+        Produto produto2 = new Produto(idEmpresaSeed, "Batata", "Batata organica", preco, quantidade, TipoCategoria.LEGUMES, 3.2, UnidadeMedida.PC);
+=======
         Produto produto2 = new Produto(1, "Batata", "Batata organica", preco, quantidade, TipoCategoria.LEGUMES, 3.2, UnidadeMedida.PC);
+>>>>>>> develop
         produtosEmpresa1.add(produto2);
 
         preco = new BigDecimal("8.0");
@@ -131,5 +152,9 @@ public class GeradorSeeds {
         produtoCRUD.adicionarProduto(produto12);
         produtoCRUD.adicionarProduto(produto13);
 
+<<<<<<< HEAD
+        empresaCRUD.atualizarEmpresa(idEmpresaSeed, "Fazenda do tio Zé", "07269844000181", "FazendaZezinho", "0223233556", "Alimenticio", produtosEmpresa1, usuario1);
+=======
+>>>>>>> develop
     }
 }

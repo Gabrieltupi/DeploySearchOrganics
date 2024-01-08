@@ -1,8 +1,8 @@
 package servicos;
-import modelo.Cupom;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
+
+import modelo.Cupom;
 
 public class CupomCRUD {
 
@@ -21,6 +21,15 @@ public class CupomCRUD {
             cupom.imprimir();
         }
     }
+
+    public void imprimirCurponsDisponiveis(){
+        for (Cupom cupom : cupons) {
+            if(cupom.isAtivo()){
+                System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cumpom: " +
+                        cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
+            }
+        }
+    }
     public Cupom buscarCupomPorId(int id) {
         for (Cupom cupom : cupons) {
             System.out.println("Verificando Cupom por Id:" + cupom.getCupomId());
@@ -34,13 +43,13 @@ public class CupomCRUD {
         return null;
     }
 
-    public void atualizarCupom(int id, String novoNomeProduto, String novaDescricao, double novaTaxaDeDesconto) {
+    public void atualizarCupom(int id, String novoNomeProduto, String novaDescricao, BigDecimal novaTaxaDeDesconto) {
         for (Cupom cupom : cupons) {
             if (cupom.getCupomId() == id) {
                 System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
-                cupom.setNomeProduto(novoNomeProduto);
+                cupom.setNomeCupom(novoNomeProduto);
                 cupom.setDescricao(novaDescricao);
-                cupom.setTaxaDeDesconto(BigDecimal.valueOf(novaTaxaDeDesconto));
+                cupom.setTaxaDeDesconto(novaTaxaDeDesconto);
                 System.out.println("Cupom atualizado com sucesso!");
                 return;
             }

@@ -15,31 +15,23 @@ public class EnderecoCRUD {
     }
 
     public boolean adicionarEndereco(Endereco endereco){
-        if(endereco != null) {
-            if (!endereco.getEstado().equalsIgnoreCase("SP")){
-                System.out.println("Ainda não atendemos neste estado");
-                return false;
-            }
-            if (ValidadorCEP.isCepValido(endereco.getCep())) {
-                endereco.setRegiao(ValidadorCEP.getRegiao());
-                this.enderecos.add(endereco);
-                return true;
-            }
-            System.out.println("CEP inválido!");
-            return false;
+        if(endereco != null && ValidadorCEP.isCepValido(endereco.getCep()) != null) {
+            this.enderecos.add(endereco);
+            return true;
         }
+        System.out.println("CEP inválido!");
         return false;
     }
 
     public boolean atualizarEndereco(int id, String logradouro, String numero, String complemento,
                                           String cep, String cidade, String estado, String pais) {
-        System.out.println(ValidadorCEP.getRegiao());
-        if (ValidadorCEP.isCepValido(cep)) {
-            System.out.println(ValidadorCEP.getRegiao());
+
+        if(ValidadorCEP.isCepValido(cep) != null) {
+            System.out.println(ValidadorCEP.isCepValido(cep));
 
             for(Endereco x: enderecos){
                 if(id == x.getId()) {
-                    x.setRegiao(ValidadorCEP.getRegiao());
+                    x.setRegiao(ValidadorCEP.isCepValido(cep));
                     if (logradouro != null) x.setLogradouro(logradouro);
                     if (numero != null) x.setNumero(numero);
                     if (complemento != null) x.setComplemento(complemento);
@@ -51,6 +43,7 @@ public class EnderecoCRUD {
                 }
             }
         }
+        System.out.println("CEP invalido");
         return false;
     }
 

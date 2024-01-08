@@ -3,10 +3,12 @@ import modelo.Carrinho;
 import modelo.Endereco;
 import modelo.Produto;
 import modelo.Usuario;
+import modelo.*;
 import servicos.*;
+import utils.FormaPagamento;
 import utils.GeradorSeeds;
 import utils.TipoCategoria;
-import utils.UnidadeMedida;
+import utils.validadores.TipoEntrega;
 
 import java.math.BigDecimal;
 import java.time.DateTimeException;
@@ -47,6 +49,7 @@ public class Main {
                 switch (escolha) {
                     case 1:
                         Usuario usuario = login(scanner, usuarioCRUD);
+                        Carrinho carrinho = new Carrinho(usuario);
                         if (usuario != null) {
                             System.out.println("Bem vindo " + usuario.getNome());
                             while (true) {
@@ -60,7 +63,7 @@ public class Main {
                                     int escolhaMenuConsumidor = scanner.nextInt();
 
                                     scanner.nextLine();
-                                    Carrinho carrinho = new Carrinho(usuario);
+                                    
 
                                     if (escolhaMenuConsumidor == 1) {
                                         menuMinhaConta(scanner, usuario, enderecoCRUD);
@@ -70,7 +73,7 @@ public class Main {
 
                                     }
                                     if (escolhaMenuConsumidor == 3) {
-                                        menuCarrinho(scanner, carrinho);
+                                        menuCarrinho(scanner, carrinho, usuarioCRUD, pedidoCRUD);
                                     }
                                     if (escolhaMenuConsumidor == 0) {
                                         break;
@@ -108,7 +111,7 @@ public class Main {
         scanner.close();
     }
 
-    private static void menuCarrinho(Scanner scanner, Carrinho carrinho) {
+    private static void menuCarrinho(Scanner scanner, Carrinho carrinho, UsuarioCRUD usuarioCRUD, PedidoCRUD pedidoCRUD) {
         while (true) {
             System.out.println("""
                     1 - Ir para pagamento
@@ -123,7 +126,24 @@ public class Main {
             scanner.nextLine();
 
             if (escolhaMenuCarrinho == 1) {
-                // TODO: Ir para pagamento
+                System.out.println("""
+                        Escolha a forma de pagamento:
+                        1 - Pix
+                        2 - Cartão de crédito
+                        3 - Cartão de débito
+                        """);
+
+                int escolhaPagamento = scanner.nextInt();
+                scanner.nextLine();
+
+                BigDecimal taxaDesconto = new BigDecimal("1.0");
+
+                carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
+                        usuarioCRUD.buscarUsuarioPorId(carrinho.getUsuario().getUsuarioId()).getEndereco(),
+                        new Cupom(1, "Cupom de desconto", true, "Descricao", taxaDesconto),
+                        TipoEntrega.values()[escolhaPagamento - 1]);
+
+                System.out.println("Pedido finalizado com sucesso!");
             }
             if (escolhaMenuCarrinho == 2) {
                 System.out.println("Produtos do carrinho: ");
@@ -216,7 +236,7 @@ public class Main {
 
                 Produto produto = produtoCRUD.buscarProdutoPorId(idProduto);
                 carrinho.setIdEmpresa(produto.getEmpresaId());
-                carrinho.adicionarProdutoAoCarrinho(produtoCRUD.buscarProdutoPorId(idProduto), quantidadeProduto);
+                carrinho.adicionarProdutoAoCarrinho(produto, quantidadeProduto);
             }
 
             if (escolhaMenuProdutos == 0) {
@@ -229,18 +249,18 @@ public class Main {
         }
     }
     private static void menuMinhaConta(Scanner scanner, Usuario usuario, EnderecoCRUD enderecoCRUD) {
-        System.out.println("""
-                                        1 - Editar dados pessoais
-                                        2 - Editar endereço
-                                        3 - Editar login
-                                        0 - Voltar
-                                        """);
+        while (true) {
+            System.out.println("""
+                    1 - Editar dados pessoais
+                    2 - Editar endereço
+                    3 - Editar login
+                    0 - Voltar
+                    """);
 
-        int escolhaMenuDadosPessoais = scanner.nextInt();
-        scanner.nextLine();
+            int escolhaMenuDadosPessoais = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (escolhaMenuDadosPessoais) {
-            case 1:
+            if (escolhaMenuDadosPessoais == 1) {
                 System.out.println("Digite seu nome: ");
                 String nome = scanner.nextLine();
 
@@ -255,14 +275,15 @@ public class Main {
                 usuario.setNome(nome);
                 usuario.setSobrenome(sobrenome);
                 usuario.setDataNascimento(dataNascimento);
-                break;
-            case 2:
+            }
+            if (escolhaMenuDadosPessoais == 2) {
                 Endereco enderecoAtualizado = obterEndereco(scanner);
-                enderecoCRUD.atualizarEndereco(usuario.getEndereco().getId(), enderecoAtualizado.getLogradouro(),
-                        enderecoAtualizado.getNumero(), enderecoAtualizado.getComplemento(), enderecoAtualizado.getCep(),
-                        enderecoAtualizado.getCidade(), enderecoAtualizado.getEstado(), enderecoAtualizado.getPais());
-                break;
-            case 3:
+                enderecoCRUD.atualizarEndereco(usuario.getEndereco().getId(), enderecoAtualizado.getLogradouro(), 
+                enderecoAtualizado.getNumero(), enderecoAtualizado.getComplemento(), enderecoAtualizado.getCep(), 
+                enderecoAtualizado.getCidade(), enderecoAtualizado.getEstado(), enderecoAtualizado.getPais());
+            }
+
+            if (escolhaMenuDadosPessoais == 3) {
                 System.out.println("Digite seu login: ");
                 String loginEditado = scanner.nextLine();
 
@@ -271,15 +292,17 @@ public class Main {
 
                 usuario.setLogin(loginEditado);
                 usuario.setPassword(senhaEditada);
-                break;
-            case 0:
-                break;
-            default:
+            }
+
+            if (escolhaMenuDadosPessoais == 0) break;
+
+            if (escolhaMenuDadosPessoais != 1 && escolhaMenuDadosPessoais != 2 && escolhaMenuDadosPessoais != 3) {
                 System.out.println("Opção inválida");
+            }
         }
     }
 
-    private static Usuario login(Scanner scanner, UsuarioCRUD usuarioCRUD){
+    private static Usuario login(Scanner scanner, UsuarioCRUD usuarioCRUD) {
         System.out.println("Digite seu login: ");
         String login = scanner.nextLine();
 
@@ -291,7 +314,7 @@ public class Main {
         return usuario;
     }
 
-    private static void cadastro(Scanner scanner, UsuarioCRUD usuarioCRUD, EnderecoCRUD enderecoCRUD){
+    private static void cadastro(Scanner scanner, UsuarioCRUD usuarioCRUD, EnderecoCRUD enderecoCRUD) {
         System.out.println("Digite seu login: ");
         String loginCadastro = scanner.nextLine();
 
@@ -306,7 +329,6 @@ public class Main {
 
         System.out.println("Digite sua data de nascimento: ");
         String stringNascimentoCadastro = scanner.nextLine();
-
 
 
         LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro);
@@ -325,18 +347,18 @@ public class Main {
         }
     }
 
-    private static Endereco obterEndereco(Scanner scanner){
+    private static Endereco obterEndereco(Scanner scanner) {
         System.out.println("""
-                                                Infos de endereço:
-                                                Logradouro,
-                                                Número,
-                                                Complemento,
-                                                CEP,
-                                                Cidade,
-                                                Estado,
-                                                País,
-                                                Região
-                                                """);
+                Infos de endereço:
+                Logradouro,
+                Número,
+                Complemento,
+                CEP,
+                Cidade,
+                Estado,
+                País,
+                Região
+                """);
 
         System.out.println("Digite seu logradouro: ");
         String logradouro = scanner.nextLine();

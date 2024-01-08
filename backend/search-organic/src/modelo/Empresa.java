@@ -17,16 +17,15 @@ public class Empresa implements Impressao {
 
 
     public Empresa(String nomeFantasia, String cnpj, String razaoSocial, String inscricaoEstadual,
-                   String setor, ArrayList<Produto> produtos, Usuario usuario) {
+                   String setor, Usuario usuario) {
         this.idEmpresa = empresaId;
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
         this.setor = setor;
-
-        this.produtos = produtos;
         this.usuario = usuario;
+
         empresaId++;
     }
 
@@ -50,6 +49,14 @@ public class Empresa implements Impressao {
     public boolean adicionarProduto(Produto produto){
         if(produto != null){
             produtos.add(produto);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean adicionarProduto(ArrayList<Produto> produto){
+        if(produto != null){
+            produtos = produto;
             return true;
         }
         return false;
