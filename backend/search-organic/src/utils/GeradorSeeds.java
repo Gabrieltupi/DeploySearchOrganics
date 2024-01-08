@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class GeradorSeeds {
 
-        public static void gerarSeeds(EnderecoCRUD enderecoCRUD, UsuarioCRUD usuarioCRUD, ProdutoCRUD produtoCRUD, EmpresaCRUD empresaCRUD) {
+        public static void gerarSeeds(EnderecoCRUD enderecoCRUD, UsuarioCRUD usuarioCRUD, ProdutoCRUD produtoCRUD, EmpresaCRUD empresaCRUD, CupomCRUD cupomCRUD) {
                 LocalDate dataNascimento = LocalDate.of(1990, 1, 1);
                 LocalDate dataNascimento2 = LocalDate.of(1990, 1, 1);
 
@@ -21,18 +21,21 @@ public class GeradorSeeds {
                 enderecoCRUD.adicionarEndereco(endereco1);
                 enderecoCRUD.adicionarEndereco(endereco2);
                 enderecoCRUD.adicionarEndereco(endereco3);
-                        Usuario usuario1 = new Usuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
-                        Usuario usuario2 = new Usuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento);
-                        Usuario usuario3 = new Usuario("user", "user", "user", "user", endereco3, dataNascimento);
+                Usuario usuario1 = new Usuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
+                Usuario usuario2 = new Usuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento2);
+                Usuario usuario3 = new Usuario("deyvidlucas", "lucas2024", "Deyvid Lucas", "Cunha", endereco3, dataNascimento);
+
                 try {
                         usuarioCRUD.criarUsuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
-                        usuarioCRUD.criarUsuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento);
-                        usuarioCRUD.criarUsuario("user", "user", "user", "user", endereco3, dataNascimento);
+                        usuarioCRUD.criarUsuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento2);
+                        usuarioCRUD.criarUsuario("deyvidlucas", "lucas2024", "Deyvid Lucas", "Cunha", endereco3, dataNascimento);
                 }
                 catch (UsuarioJaCadastradoException uce) {
                         System.out.println("Ocorreu um erro de cadastro");
                 }
                 int idEmpresaSeed = empresaCRUD.criarEmpresa("Fazenda do tio Zé", "72.351.383/0001-53", "FazendaZezinho", "0223233556", "Alimenticio", usuario1);
+
+                int idEmpresaSeed2 = empresaCRUD.criarEmpresa("Fazenda Vargas", "22.333.383/0001-53", "FazendaVargas", "3728910286", "Alimenticio", usuario2);
 
                 ArrayList<Produto> produtosEmpresa1 = new ArrayList<>();
 
@@ -129,5 +132,13 @@ public class GeradorSeeds {
 
                 empresaCRUD.atualizarEmpresa(idEmpresaSeed, "Fazenda do tio Zé", "72.351.383/0001-53", "FazendaZezinho", "0223233556", "Alimenticio", produtosEmpresa1, usuario1);
 
+                Cupom cupom1 = new Cupom(1, "SQUAD1EH10", false, "Cupom de desconto de 10%", new BigDecimal("10"));
+                cupomCRUD.adicionarCupom(cupom1);
+                Cupom cupom2 = new Cupom(2, "SQUAD1EH20", true, "Cupom de desconto de 20%", new BigDecimal("20"));
+                cupomCRUD.adicionarCupom(cupom2);
+                cupomCRUD.adicionarCupom(new Cupom(3, "SQUAD1EH30", true, "Cupom de desconto de 30%", new BigDecimal("30")));
+
+                cupom1.ativarCupom();
+                cupom2.desativarCupom();
         }
 }
