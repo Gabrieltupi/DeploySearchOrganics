@@ -1,10 +1,11 @@
 package servicos;
+
 import modelo.Produto;
 import utils.TipoCategoria;
 import utils.UnidadeMedida;
 
-import java.util.ArrayList;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class ProdutoCRUD {
     private ArrayList<Produto> produtos;
@@ -48,7 +49,7 @@ public class ProdutoCRUD {
     }
 
     public void atualizarProduto(int id, String novoNome, String novaDescricao, BigDecimal novoPreco, BigDecimal novaQuantidade,
-                                 TipoCategoria novaCategoria, double novaTaxa, UnidadeMedida novaUnidadedeMedida) {
+                                 TipoCategoria novaCategoria, double novaTaxa, UnidadeMedida novaUnidadeMedida) {
         for (Produto produto : produtos) {
             if (produto.getIdProduto() == id) {
                 System.out.println("Produto encontrado, atualize as informações: " + produto.getIdProduto());
@@ -58,7 +59,7 @@ public class ProdutoCRUD {
                 produto.setQuantidade(novaQuantidade);
                 produto.setCategoria(novaCategoria);
                 produto.setTaxa(novaTaxa);
-                produto.setUnidadeMedida(novaUnidadedeMedida);
+                produto.setUnidadeMedida(novaUnidadeMedida);
                 System.out.println("Produto atualizado com sucesso!");
                 return;
             }
@@ -67,37 +68,27 @@ public class ProdutoCRUD {
     }
 
     public void deletarProduto(int id) {
+        Produto produtoRemover = null;
         for (Produto produto : produtos) {
             if (produto.getIdProduto() == id) {
-                produtos.remove(produto);
-                return;
+                produtoRemover = produto;
+                break;
             }
         }
-        System.out.println("Produto não pode ser encontrado em nosso Sistema");
-
+        if (produtoRemover != null) {
+            produtos.remove(produtoRemover);
+        } else {
+            System.out.println("Produto não pode ser encontrado em nosso Sistema");
+        }
     }
 
-    public void listarProdutosLoja(int idLoja){
-        for (Produto produto: produtos){
-            if(idLoja == produto.getEmpresaId()){
+    public void listarProdutosLoja(int idLoja) {
+        for (Produto produto : produtos) {
+            if (idLoja == produto.getEmpresaId()) {
                 System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " quantidade: " + produto.getQuantidade());
                 System.out.println("Descrição: " + produto.getDescricao());
                 System.out.println();
             }
         }
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

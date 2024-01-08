@@ -1,25 +1,25 @@
 package servicos;
 
-import interfaces.Impressao;
 import modelo.DadosPessoais;
 import modelo.Endereco;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class DadosPessoaisCRUD {
 
-    ArrayList <DadosPessoais> dadosPessoais = new ArrayList<>();
+    private ArrayList<DadosPessoais> dadosPessoais;
 
-    public DadosPessoaisCRUD(){}
+    public DadosPessoaisCRUD() {
+        this.dadosPessoais = new ArrayList<>();
+    }
 
     public ArrayList<DadosPessoais> getDadosPessoais() {
         return dadosPessoais;
     }
 
-    public boolean adicionarDadosPessoais(DadosPessoais dadosPessoais){
-        if(dadosPessoais != null) {
+    public boolean adicionarDadosPessoais(DadosPessoais dadosPessoais) {
+        if (dadosPessoais != null) {
             this.dadosPessoais.add(dadosPessoais);
             return true;
         }
@@ -27,31 +27,30 @@ public class DadosPessoaisCRUD {
     }
 
     public boolean atualizarDadosPessoais(int id, String nome, String sobrenome, Endereco endereco,
-                                          LocalDate dataNascimento){
-        for(DadosPessoais x: dadosPessoais){
-            if(id == x.getId()){
-                x.setNome(nome);
-                x.setSobrenome(sobrenome);
-                x.setEndereco(endereco);
-                x.setDataNascimento(dataNascimento);
+                                          LocalDate dataNascimento) {
+        for (DadosPessoais pessoa : dadosPessoais) {
+            if (id == pessoa.getId()) {
+                pessoa.setNome(nome);
+                pessoa.setSobrenome(sobrenome);
+                pessoa.setEndereco(endereco);
+                pessoa.setDataNascimento(dataNascimento);
                 return true;
             }
         }
         return false;
     }
 
-    public void imprimirDadosPessoais(){
-        for (DadosPessoais x: dadosPessoais){
+    public void imprimirDadosPessoais() {
+        for (DadosPessoais pessoa : dadosPessoais) {
             System.out.println("Dados pessoais");
-            System.out.println(x);
-
+            System.out.println(pessoa);
         }
     }
 
-    public boolean imprimirDadosPessoais(int id){
-        for (DadosPessoais x: dadosPessoais){
-            if(x.getId() == id) {
-                x.imprimir();
+    public boolean imprimirDadosPessoais(int id) {
+        for (DadosPessoais pessoa : dadosPessoais) {
+            if (pessoa.getId() == id) {
+                pessoa.imprimir();
                 return true;
             }
         }
@@ -60,14 +59,20 @@ public class DadosPessoaisCRUD {
     }
 
     public boolean excluirDadosPessoais(int id) {
-        for (DadosPessoais x : dadosPessoais) {
-            if (x.getId() == id) {
-                dadosPessoais.remove(x);
-                System.out.println("Dados do id " + id + "foi excluido!!");
-                return true;
+        DadosPessoais pessoaRemover = null;
+        for (DadosPessoais pessoa : dadosPessoais) {
+            if (pessoa.getId() == id) {
+                pessoaRemover = pessoa;
+                break;
             }
         }
-        System.out.println("ID não encontrada.");
-        return false;
+        if (pessoaRemover != null) {
+            dadosPessoais.remove(pessoaRemover);
+            System.out.println("Dados do ID " + id + " foram excluídos!!");
+            return true;
+        } else {
+            System.out.println("ID não encontrado.");
+            return false;
+        }
     }
 }

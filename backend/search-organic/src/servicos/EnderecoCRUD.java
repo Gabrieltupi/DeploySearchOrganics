@@ -1,21 +1,23 @@
 package servicos;
+
 import modelo.Endereco;
+import utils.validadores.ValidadorCEP;
 
 import java.util.ArrayList;
-import utils.validadores.ValidadorCEP;
 
 public class EnderecoCRUD {
 
-    ArrayList <Endereco> enderecos = new ArrayList<>();
+    private ArrayList<Endereco> enderecos = new ArrayList<>();
 
-    public EnderecoCRUD(){}
+    public EnderecoCRUD() {
+    }
 
     public ArrayList<Endereco> getEnderecos() {
         return enderecos;
     }
 
-    public boolean adicionarEndereco(Endereco endereco){
-        if(endereco != null && ValidadorCEP.isCepValido(endereco.getCep()) != null) {
+    public boolean adicionarEndereco(Endereco endereco) {
+        if (endereco != null && ValidadorCEP.isCepValido(endereco.getCep()) != null) {
             this.enderecos.add(endereco);
             return true;
         }
@@ -24,42 +26,41 @@ public class EnderecoCRUD {
     }
 
     public boolean atualizarEndereco(int id, String logradouro, String numero, String complemento,
-                                          String cep, String cidade, String estado, String pais) {
+                                     String cep, String cidade, String estado, String pais) {
 
-        if(ValidadorCEP.isCepValido(cep) != null) {
+        if (ValidadorCEP.isCepValido(cep) != null) {
             System.out.println(ValidadorCEP.isCepValido(cep));
 
-            for(Endereco x: enderecos){
-                if(id == x.getId()) {
-                    x.setRegiao(ValidadorCEP.isCepValido(cep));
-                    if (logradouro != null) x.setLogradouro(logradouro);
-                    if (numero != null) x.setNumero(numero);
-                    if (complemento != null) x.setComplemento(complemento);
-                    x.setCep(cep);
-                    if (cidade != null) x.setCidade(cidade);
-                    if (estado != null) x.setEstado(estado);
-                    if (pais != null) x.setPais(pais);
+            for (Endereco endereco : enderecos) {
+                if (id == endereco.getId()) {
+                    endereco.setRegiao(ValidadorCEP.isCepValido(cep));
+                    if (logradouro != null) endereco.setLogradouro(logradouro);
+                    if (numero != null) endereco.setNumero(numero);
+                    if (complemento != null) endereco.setComplemento(complemento);
+                    endereco.setCep(cep);
+                    if (cidade != null) endereco.setCidade(cidade);
+                    if (estado != null) endereco.setEstado(estado);
+                    if (pais != null) endereco.setPais(pais);
                     return true;
                 }
             }
         }
-        System.out.println("CEP invalido");
+        System.out.println("CEP inválido");
         return false;
     }
 
-    public void imprimirEnderecos(){
-        for (Endereco x: enderecos){
-            System.out.println("Dados pessoais");
-            System.out.println(x);
-
+    public void imprimirEnderecos() {
+        for (Endereco endereco : enderecos) {
+            System.out.println("Endereço:");
+            System.out.println(endereco);
         }
     }
 
-    public boolean imprimirEndereco(int id){
-        for (Endereco x: enderecos){
-            if(x.getId() == id) {
-                System.out.println("Endereço do id " + id);
-                System.out.println(x);
+    public boolean imprimirEndereco(int id) {
+        for (Endereco endereco : enderecos) {
+            if (endereco.getId() == id) {
+                System.out.println("Endereço do ID " + id);
+                System.out.println(endereco);
                 return true;
             }
         }
@@ -68,14 +69,14 @@ public class EnderecoCRUD {
     }
 
     public boolean excluirEndereco(int id) {
-        for (Endereco x: enderecos) {
-            if (x.getId() == id) {
-                enderecos.remove(x);
-                System.out.println("Endereço do id " + id + " foi excluido!!");
+        for (Endereco endereco : enderecos) {
+            if (endereco.getId() == id) {
+                enderecos.remove(endereco);
+                System.out.println("Endereço do ID " + id + " foi excluído!!");
                 return true;
             }
         }
-        System.out.println("ID não encontrada.");
+        System.out.println("ID não encontrado.");
         return false;
     }
 }

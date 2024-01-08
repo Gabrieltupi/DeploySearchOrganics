@@ -1,10 +1,10 @@
 package servicos;
-import java.time.LocalDate;
-import java.util.Date;
 
 import exceptions.UsuarioJaCadastradoException;
 import modelo.Usuario;
 import modelo.Endereco;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class UsuarioCRUD {
         System.out.println("-----------------");
     }
 
-    private boolean verificarUsuarioCadastrado( String login) {
+    private boolean verificarUsuarioCadastrado(String login) {
         for (Usuario usuario : usuarios) {
             if (usuario.getLogin().equalsIgnoreCase(login)) {
                 return true;
@@ -56,13 +56,12 @@ public class UsuarioCRUD {
         return null;
     }
 
-    public void exibirTodos(){
-        for(Usuario usuario : usuarios){
+    public void exibirTodos() {
+        for (Usuario usuario : usuarios) {
             usuario.imprimir();
             System.out.println("-----------------");
         }
     }
-
 
     public void editarUsuario(int usuarioId, Usuario usuarioEditado) {
         for (Usuario usuario : usuarios) {
@@ -83,6 +82,4 @@ public class UsuarioCRUD {
     public void removerUsuario(int usuarioId) {
         usuarios.removeIf(usuario -> usuario.getUsuarioId() == usuarioId);
     }
-
-
 }

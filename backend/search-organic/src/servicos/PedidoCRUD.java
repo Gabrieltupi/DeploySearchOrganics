@@ -6,7 +6,6 @@ import modelo.Pedido;
 import modelo.Produto;
 import utils.FormaPagamento;
 import utils.validadores.TipoEntrega;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

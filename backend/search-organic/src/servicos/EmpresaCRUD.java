@@ -1,4 +1,5 @@
 package servicos;
+
 import modelo.Empresa;
 import modelo.Produto;
 import modelo.Usuario;
@@ -25,7 +26,7 @@ public class EmpresaCRUD {
     }
 
     public static int criarEmpresa(String nomeFantasia, String cnpj, String razaoSocial,
-                                    String inscricaoEstadual, String setor, Usuario usuario) {
+                                   String inscricaoEstadual, String setor, Usuario usuario) {
 
         if (ValidadorCNPJ.validarCNPJ(cnpj)) {
             Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
@@ -93,12 +94,12 @@ public class EmpresaCRUD {
         System.out.println("Empresa não encontrada.");
     }
 
-    //opção 2.1 e 3.1
-    public boolean imprirProdutosDaLoja(int id){
+    // Opção 2.1 e 3.1
+    public boolean imprimirProdutosDaLoja(int id) {
         for (Empresa empresa : empresas) {
-            if(id == empresa.getId()) {
+            if (id == empresa.getId()) {
                 for (Produto produto : empresa.getProdutos()) {
-                    System.out.println("Nome: " + produto.getNome() + "Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
+                    System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
                     System.out.println("-------------------------------------------------------------");
                 }
                 return true;
@@ -108,26 +109,24 @@ public class EmpresaCRUD {
         return false;
     }
 
-    //opção 3
-    public void LojasPorCategoria(TipoCategoria categoria){
+    // Opção 3
+    public void lojasPorCategoria(TipoCategoria categoria) {
         for (Empresa empresa : empresas) {
             for (Produto produto : empresa.getProdutos()) {
-                if(produto.getCategoriaT().equals(categoria)){
-                    System.out.println("id da loja: " + empresa.getId() + "Nome: " + produto.getNome() + "Preço: " + produto.getPreco());
+                if (produto.getCategoriaT().equals(categoria)) {
+                    System.out.println("id da loja: " + empresa.getId() + " Nome: " + produto.getNome() + " Preço: " + produto.getPreco());
                     System.out.println("-------------------------------------------------------------");
                 }
             }
         }
     }
 
-
-
-    //opção 2.1.2 e 2.1.3
-    public boolean imprirProdutosDaLojaPorCategoria(int id, TipoCategoria categoria){
+    // Opção 2.1.2 e 2.1.3
+    public boolean imprimirProdutosDaLojaPorCategoria(int id, TipoCategoria categoria) {
         for (Empresa empresa : empresas) {
-            if(id == empresa.getId()) {
+            if (id == empresa.getId()) {
                 for (Produto produto : empresa.getProdutos()) {
-                    if(produto.getCategoriaT().equals(categoria)){
+                    if (produto.getCategoriaT().equals(categoria)) {
                         System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
                         System.out.println("-------------------------------------------------------------");
                     }
@@ -139,13 +138,13 @@ public class EmpresaCRUD {
         return false;
     }
 
-    //Opção 2
-    public void Lojas(){
+    // Opção 2
+    public void lojas() {
         for (Empresa empresa : empresas) {
             System.out.println(empresa.getNomeFantasia());
             System.out.println();
-            for (Produto produto: empresa.getProdutos()){
-                System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco()+ " Quantidade: " + produto.getQuantidade());
+            for (Produto produto : empresa.getProdutos()) {
+                System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
                 System.out.println("-------------------------------------------------------------");
             }
             System.out.println();
