@@ -35,8 +35,6 @@ public class GeradorSeeds {
                 }
                 int idEmpresaSeed = empresaCRUD.criarEmpresa("Fazenda do tio Zé", "72.351.383/0001-53", "FazendaZezinho", "0223233556", "Alimenticio", usuario1);
 
-                int idEmpresaSeed2 = empresaCRUD.criarEmpresa("Fazenda Vargas", "22.333.383/0001-53", "FazendaVargas", "3728910286", "Alimenticio", usuario2);
-
                 ArrayList<Produto> produtosEmpresa1 = new ArrayList<>();
 
 

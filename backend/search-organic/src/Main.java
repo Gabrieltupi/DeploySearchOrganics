@@ -34,7 +34,7 @@ public class Main {
 
         boolean sair = false;
 
-        GeradorSeeds.gerarSeeds(enderecoCRUD, usuarioCRUD, produtoCRUD, empresaCRUD, cupomCRUD);
+        geradorSeeds.gerarSeeds(enderecoCRUD, usuarioCRUD, produtoCRUD, empresaCRUD, cupomCRUD);
 
         while (!sair) {
             System.out.println("""
