@@ -1,7 +1,7 @@
 package servicos;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
 import modelo.Cupom;
 
 public class CupomCRUD {
@@ -22,14 +22,15 @@ public class CupomCRUD {
         }
     }
 
-    public void imprimirCurponsDisponiveis(){
+    public void imprimirCuponsDisponiveis() {
         for (Cupom cupom : cupons) {
-            if(cupom.isAtivo()){
-                System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cumpom: " +
+            if (cupom.isAtivo()) {
+                System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
                         cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
             }
         }
     }
+
     public Cupom buscarCupomPorId(int id) {
         for (Cupom cupom : cupons) {
             System.out.println("Verificando Cupom por Id:" + cupom.getCupomId());
@@ -55,19 +56,20 @@ public class CupomCRUD {
             }
         }
         System.out.println("Cupom não pode ser atualizado");
-
     }
 
     public void deletarCupom(int id) {
+        Cupom cupomRemover = null;
         for (Cupom cupom : cupons) {
             if (cupom.getCupomId() == id) {
-                cupons.remove(cupom);
-                return;
+                cupomRemover = cupom;
+                break;
             }
         }
-        System.out.println("Cupom não pode ser encontrado em nosso Sistema");
+        if (cupomRemover != null) {
+            cupons.remove(cupomRemover);
+        } else {
+            System.out.println("Cupom não pode ser encontrado em nosso Sistema");
+        }
     }
-
 }
-
-

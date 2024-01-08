@@ -1,4 +1,5 @@
 package servicos;
+
 import modelo.Consumidor;
 import java.util.ArrayList;
 
@@ -6,30 +7,30 @@ public class ConsumidorCRUD {
 
     private ArrayList<Consumidor> consumidores;
 
-    public ConsumidorCRUD(){
+    public ConsumidorCRUD() {
         this.consumidores = new ArrayList<>();
     }
 
-    public void criar(Consumidor novoConsumidor){
+    public void criar(Consumidor novoConsumidor) {
         consumidores.add(novoConsumidor);
     }
 
-    public void exibirTodos(){
-        for(Consumidor consumidor : consumidores){
+    public void exibirTodos() {
+        for (Consumidor consumidor : consumidores) {
             consumidor.imprimir();
         }
     }
 
-    public void exibirConsumidor(){
-        for(Consumidor consumidor : consumidores){
+    public void exibirConsumidor() {
+        for (Consumidor consumidor : consumidores) {
             System.out.println("Nome: " + consumidor);
         }
     }
 
-    //Opção 1.1
-    public void exibir(int id){
-        for(Consumidor consumidor : consumidores){
-            if(id == consumidor.getId()){
+    // Opção 1.1
+    public void exibir(int id) {
+        for (Consumidor consumidor : consumidores) {
+            if (id == consumidor.getId()) {
                 consumidor.imprimir();
                 return;
             }
@@ -37,10 +38,10 @@ public class ConsumidorCRUD {
         System.out.println("Consumidor não encontrado!");
     }
 
-    //opção 1.2
-    public void editar(int id, Consumidor consumidorEditado){
-        for(Consumidor consumidor : consumidores){
-            if(id == consumidor.getId()){
+    // Opção 1.2
+    public void editar(int id, Consumidor consumidorEditado) {
+        for (Consumidor consumidor : consumidores) {
+            if (id == consumidor.getId()) {
                 consumidor.setCpf(consumidorEditado.getCpf());
                 consumidor.setUsuario(consumidorEditado.getUsuario());
                 return;
@@ -49,14 +50,18 @@ public class ConsumidorCRUD {
         System.out.println("Consumidor não encontrado");
     }
 
-    public void remover(int id){
-        for(Consumidor consumidor: consumidores){
-            if(consumidor.getId() == id){
-                consumidores.remove(consumidor);
-                return;
+    public void remover(int id) {
+        Consumidor consumidorRemover = null;
+        for (Consumidor consumidor : consumidores) {
+            if (consumidor.getId() == id) {
+                consumidorRemover = consumidor;
+                break;
             }
         }
-        System.out.println("Consumidor não encontrado!");
+        if (consumidorRemover != null) {
+            consumidores.remove(consumidorRemover);
+        } else {
+            System.out.println("Consumidor não encontrado!");
+        }
     }
-
 }
