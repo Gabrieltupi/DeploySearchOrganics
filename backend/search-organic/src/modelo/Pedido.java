@@ -167,15 +167,17 @@ public class Pedido implements Impressao {
 
     @Override
     public void imprimir() {
+        String statusEntregue = entregue ? "Entregue" : "Não entregue";;
+
         System.out.printf("""
                 ID do Pedido: %d
                 Forma de pagamento: %s
                 Data: %s
                 Tipo de entrega: %s
-                Status de entraga: %b%n
+                Status de entrega: %s
                 CEP de entrega: %s
                 """,
-                id, formaPagamento, dataDeEntrega, tipoEntrega, entregue, endereco.getCep());
+                id, formaPagamento, dataDeEntrega, tipoEntrega, statusEntregue, endereco.getCep());
         System.out.println("Produtos: \n");
 
         for (int key : produtos.keySet()) {

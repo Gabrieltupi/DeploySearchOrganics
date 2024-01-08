@@ -78,11 +78,14 @@ public class Carrinho {
             return true;
     }
 
-    public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal quantidade) {
-        if (produtos.get(id) != null) {
-
-            quantidadeProduto.put(id, quantidade);
-            produtos.get(id).setQuantidade(quantidadeProduto.get(id));
+    public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
+        Produto produto = produtos.get(id);
+        if (produto != null) {
+            BigDecimal quantidadeAntiga = quantidadeProduto.get(id);
+            quantidadeProduto.put(id, novaQuantidade);
+            BigDecimal quantidadeEmEstoque = produto.getQuantidade();
+            BigDecimal quantidadeAtualizadaEmEstoque = quantidadeEmEstoque.subtract(novaQuantidade.subtract(quantidadeAntiga));
+            produto.setQuantidade(quantidadeAtualizadaEmEstoque);
             atualizarValorTotal();
             return true;
         }
@@ -111,6 +114,7 @@ public class Carrinho {
     public void limparSacola() {
         quantidadeProduto = new HashMap<>();
         produtos = new HashMap<>();
+        atualizarValorTotal();
     }
 
     public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
