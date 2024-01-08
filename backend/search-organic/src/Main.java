@@ -63,7 +63,7 @@ public class Main {
                                     int escolhaMenuConsumidor = scanner.nextInt();
 
                                     scanner.nextLine();
-                                    
+
 
                                     if (escolhaMenuConsumidor == 1) {
                                         menuMinhaConta(scanner, usuario, enderecoCRUD);
@@ -122,9 +122,9 @@ public class Main {
                     0 - Voltar
                     """);
 
+
             int escolhaMenuCarrinho = scanner.nextInt();
             scanner.nextLine();
-
             if (escolhaMenuCarrinho == 1) {
                 System.out.println("""
                         Escolha a forma de pagamento:
@@ -133,17 +133,22 @@ public class Main {
                         3 - Cartão de débito
                         """);
 
-                int escolhaPagamento = scanner.nextInt();
-                scanner.nextLine();
+                try {
+                    int escolhaPagamento = scanner.nextInt();
+                    scanner.nextLine();
 
-                BigDecimal taxaDesconto = new BigDecimal("1.0");
+                    BigDecimal taxaDesconto = new BigDecimal("1.0");
 
-                carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
-                        usuarioCRUD.buscarUsuarioPorId(carrinho.getUsuario().getUsuarioId()).getEndereco(),
-                        new Cupom(1, "Cupom de desconto", true, "Descricao", taxaDesconto),
-                        TipoEntrega.values()[escolhaPagamento - 1]);
+                    carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
+                            usuarioCRUD.buscarUsuarioPorId(carrinho.getUsuario().getUsuarioId()).getEndereco(),
+                            new Cupom(1, "Cupom de desconto", true, "Descricao", taxaDesconto),
+                            TipoEntrega.values()[escolhaPagamento - 1]);
 
-                System.out.println("Pedido finalizado com sucesso!");
+                    System.out.println("Pedido finalizado com sucesso!");
+                } catch (InputMismatchException ipt) {
+                    System.out.println("Opção inválida!");
+                    scanner.nextLine();
+                }
             }
             if (escolhaMenuCarrinho == 2) {
                 System.out.println("Produtos do carrinho: ");
@@ -181,6 +186,7 @@ public class Main {
             }
         }
     }
+
     private static void menuLojas(Scanner scanner, ProdutoCRUD produtoCRUD, Carrinho carrinho) {
         while (true) {
             System.out.println("""
@@ -200,31 +206,40 @@ public class Main {
                             0 - Voltar
                             """);
 
-                    int escolhaMenuListarProdutos = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (escolhaMenuListarProdutos == 1) {
-                        System.out.println("""
-                                Escolha uma catergoria:
-                                1 - LEGUMES,
-                                2 - VERDURAS E TEMPEROS,
-                                3 - FRUTAS,
-                                4 - OVOS,
-                                5 - LEITES,
-                                6 - ARROZ E FEIJAO
-                                """);
-                        int indexCategoria = scanner.nextInt();
+                    try {
+                        int escolhaMenuListarProdutos = scanner.nextInt();
                         scanner.nextLine();
 
-                        produtoCRUD.listarProdutosPorCategoria(TipoCategoria.values()[indexCategoria - 1]);
+                        if (escolhaMenuListarProdutos == 1) {
+                            System.out.println("""
+                                    Escolha uma catergoria:
+                                    1 - LEGUMES,
+                                    2 - VERDURAS E TEMPEROS,
+                                    3 - FRUTAS,
+                                    4 - OVOS,
+                                    5 - LEITES,
+                                    6 - ARROZ E FEIJAO
+                                    """);
+                            int indexCategoria = scanner.nextInt();
+                            scanner.nextLine();
+
+                            produtoCRUD.listarProdutosPorCategoria(TipoCategoria.values()[indexCategoria - 1]);
+                        }
+                        if (escolhaMenuListarProdutos == 2) {
+                            produtoCRUD.listarProdutos();
+                        }
+                        if (escolhaMenuListarProdutos == 0) {
+                            break;
+                        }
+
+                    } catch (InputMismatchException ipt) {
+                        System.out.println("Opção inválida!");
+                        scanner.nextLine();
                     }
-                    if (escolhaMenuListarProdutos == 2) {
-                        produtoCRUD.listarProdutos();
-                    }
-                    if (escolhaMenuListarProdutos == 0) {
-                        break;
-                    }
+
+
                 }
+
             }
 
             if (escolhaMenuProdutos == 2) {
@@ -248,6 +263,7 @@ public class Main {
             }
         }
     }
+
     private static void menuMinhaConta(Scanner scanner, Usuario usuario, EnderecoCRUD enderecoCRUD) {
         while (true) {
             System.out.println("""
@@ -278,9 +294,9 @@ public class Main {
             }
             if (escolhaMenuDadosPessoais == 2) {
                 Endereco enderecoAtualizado = obterEndereco(scanner);
-                enderecoCRUD.atualizarEndereco(usuario.getEndereco().getId(), enderecoAtualizado.getLogradouro(), 
-                enderecoAtualizado.getNumero(), enderecoAtualizado.getComplemento(), enderecoAtualizado.getCep(), 
-                enderecoAtualizado.getCidade(), enderecoAtualizado.getEstado(), enderecoAtualizado.getPais());
+                enderecoCRUD.atualizarEndereco(usuario.getEndereco().getId(), enderecoAtualizado.getLogradouro(),
+                        enderecoAtualizado.getNumero(), enderecoAtualizado.getComplemento(), enderecoAtualizado.getCep(),
+                        enderecoAtualizado.getCidade(), enderecoAtualizado.getEstado(), enderecoAtualizado.getPais());
             }
 
             if (escolhaMenuDadosPessoais == 3) {
@@ -335,15 +351,14 @@ public class Main {
 
         Endereco enderecoCadastro = obterEndereco(scanner);
         if (!enderecoCRUD.adicionarEndereco(enderecoCadastro)) {
-            return ;
+            return;
         }
 
         try {
             usuarioCRUD.criarUsuario(loginCadastro, senhaCadastro, nomeCadastro, sobrenomeCadastro, enderecoCadastro,
                     dataNascimentoCadastro);
-        }
-        catch (UsuarioJaCadastradoException uce) {
-            System.out.println("Ocorreu um erro de cadastro: " +  uce.getMessage());
+        } catch (UsuarioJaCadastradoException uce) {
+            System.out.println("Ocorreu um erro de cadastro: " + uce.getMessage());
         }
     }
 

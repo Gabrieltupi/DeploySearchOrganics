@@ -73,8 +73,8 @@ public class Produto implements Impressao {
         this.quantidade = quantidade;
     }
 
-    public TipoCategoria getCategoria() {
-        return categoria;
+    public String getCategoria() {
+        return categoria.toString();
     }
 
     public void setCategoria(TipoCategoria categoria) {
