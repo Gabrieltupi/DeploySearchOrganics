@@ -13,6 +13,7 @@ import utils.validadores.TipoEntrega;
 import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -29,12 +30,11 @@ public class Main {
         EmpresaCRUD empresaCRUD = new EmpresaCRUD();
         EnderecoCRUD enderecoCRUD = new EnderecoCRUD();
         PedidoCRUD pedidoCRUD = new PedidoCRUD();
-        UsuarioCRUD usuarioCRUD = new UsuarioCRUD();
         ProdutoCRUD produtoCRUD = new ProdutoCRUD();
 
         boolean sair = false;
 
-        geradorSeeds.gerarSeeds(enderecoCRUD, usuarioCRUD, produtoCRUD, empresaCRUD, cupomCRUD);
+        geradorSeeds.gerarSeeds(enderecoCRUD, consumidorCRUD, produtoCRUD, empresaCRUD, cupomCRUD);
 
         while (!sair) {
             System.out.println("""
@@ -48,10 +48,10 @@ public class Main {
 
                 switch (escolha) {
                     case 1:
-                        Usuario usuario = login(scanner, usuarioCRUD);
-                        Carrinho carrinho = new Carrinho(usuario);
-                        if (usuario != null) {
-                            System.out.println("Bem vindo " + usuario.getNome());
+                        Consumidor consumidor = login(scanner, consumidorCRUD);
+                        Carrinho carrinho = new Carrinho(consumidor);
+                        if (consumidor != null) {
+                            System.out.println("Bem vindo " + consumidor.getNome());
                             while (true) {
                                 System.out.println("""
                                         1 - Minha conta
@@ -66,14 +66,14 @@ public class Main {
 
 
                                     if (escolhaMenuConsumidor == 1) {
-                                        menuMinhaConta(scanner, usuario, enderecoCRUD);
+                                        menuMinhaConta(scanner, consumidor, enderecoCRUD);
                                     }
                                     if (escolhaMenuConsumidor == 2) {
                                         menuLojas(scanner, produtoCRUD, carrinho);
 
                                     }
                                     if (escolhaMenuConsumidor == 3) {
-                                        menuCarrinho(scanner, carrinho, usuarioCRUD, pedidoCRUD);
+                                        menuCarrinho(scanner, carrinho, consumidorCRUD, pedidoCRUD);
                                     }
                                     if (escolhaMenuConsumidor == 0) {
                                         break;
@@ -88,7 +88,7 @@ public class Main {
                         }
                         break;
                     case 2:
-                        cadastro(scanner, usuarioCRUD, enderecoCRUD);
+                        cadastro(scanner, consumidorCRUD, enderecoCRUD);
                         break;
                     case 0:
                         sair = true;
@@ -111,7 +111,7 @@ public class Main {
         scanner.close();
     }
 
-    private static void menuCarrinho(Scanner scanner, Carrinho carrinho, UsuarioCRUD usuarioCRUD, PedidoCRUD pedidoCRUD) {
+    private static void menuCarrinho(Scanner scanner, Carrinho carrinho, ConsumidorCRUD consumidorCRUD, PedidoCRUD pedidoCRUD) {
         while (true) {
             System.out.println("""
                     1 - Ir para pagamento
@@ -140,7 +140,7 @@ public class Main {
                     BigDecimal taxaDesconto = new BigDecimal("1.0");
 
                     carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
-                            usuarioCRUD.buscarUsuarioPorId(carrinho.getUsuario().getUsuarioId()).getEndereco(),
+                            consumidorCRUD.buscarUsuarioPorId(carrinho.getUsuario().getUsuarioId()).getEndereco(),
                             new Cupom(1, "Cupom de desconto", true, "Descricao", taxaDesconto),
                             TipoEntrega.values()[escolhaPagamento - 1]);
 
@@ -165,6 +165,7 @@ public class Main {
 
             }
             if (escolhaMenuCarrinho == 4) {
+                carrinho.listarProdutosDoCarrinho();
                 System.out.println("Digite o ID do produto: ");
                 int idProdutoRemover = scanner.nextInt();
 
@@ -224,6 +225,7 @@ public class Main {
                             scanner.nextLine();
 
                             produtoCRUD.listarProdutosPorCategoria(TipoCategoria.values()[indexCategoria - 1]);
+
                         }
                         if (escolhaMenuListarProdutos == 2) {
                             produtoCRUD.listarProdutos();
@@ -243,8 +245,11 @@ public class Main {
             }
 
             if (escolhaMenuProdutos == 2) {
+
                 System.out.println("Digite o ID do produto: ");
                 int idProduto = scanner.nextInt();
+
+                if(produtoCRUD.buscarProdutoPorId(idProduto) == null) continue;
 
                 System.out.println("Digite a quantidade: ");
                 BigDecimal quantidadeProduto = scanner.nextBigDecimal();
@@ -264,12 +269,13 @@ public class Main {
         }
     }
 
-    private static void menuMinhaConta(Scanner scanner, Usuario usuario, EnderecoCRUD enderecoCRUD) {
+    private static void menuMinhaConta(Scanner scanner, Consumidor consumidor, EnderecoCRUD enderecoCRUD) {
         while (true) {
             System.out.println("""
                     1 - Editar dados pessoais
                     2 - Editar endereço
                     3 - Editar login
+                    4 - Meu Perfil
                     0 - Voltar
                     """);
 
@@ -284,17 +290,18 @@ public class Main {
                 String sobrenome = scanner.nextLine();
 
                 System.out.println("Digite sua data de nascimento: ");
-                String stringNascimento = scanner.nextLine();
+                String stringNascimentoCadastro = scanner.nextLine();
 
-                LocalDate dataNascimento = LocalDate.parse(stringNascimento);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro, formatter);
 
-                usuario.setNome(nome);
-                usuario.setSobrenome(sobrenome);
-                usuario.setDataNascimento(dataNascimento);
+                consumidor.setNome(nome);
+                consumidor.setSobrenome(sobrenome);
+                consumidor.setDataNascimento(dataNascimentoCadastro);
             }
             if (escolhaMenuDadosPessoais == 2) {
                 Endereco enderecoAtualizado = obterEndereco(scanner);
-                enderecoCRUD.atualizarEndereco(usuario.getEndereco().getId(), enderecoAtualizado.getLogradouro(),
+                enderecoCRUD.atualizarEndereco(consumidor.getEndereco().getId(), enderecoAtualizado.getLogradouro(),
                         enderecoAtualizado.getNumero(), enderecoAtualizado.getComplemento(), enderecoAtualizado.getCep(),
                         enderecoAtualizado.getCidade(), enderecoAtualizado.getEstado(), enderecoAtualizado.getPais());
             }
@@ -306,31 +313,32 @@ public class Main {
                 System.out.println("Digite sua senha: ");
                 String senhaEditada = scanner.nextLine();
 
-                usuario.setLogin(loginEditado);
-                usuario.setPassword(senhaEditada);
+                consumidor.setLogin(loginEditado);
+                consumidor.setPassword(senhaEditada);
+            }
+            if(escolhaMenuDadosPessoais == 4){
+                consumidor.imprimir();
             }
 
             if (escolhaMenuDadosPessoais == 0) break;
 
-            if (escolhaMenuDadosPessoais != 1 && escolhaMenuDadosPessoais != 2 && escolhaMenuDadosPessoais != 3) {
+            if (escolhaMenuDadosPessoais != 1 && escolhaMenuDadosPessoais != 2 && escolhaMenuDadosPessoais != 3 && escolhaMenuDadosPessoais != 4) {
                 System.out.println("Opção inválida");
             }
         }
     }
 
-    private static Usuario login(Scanner scanner, UsuarioCRUD usuarioCRUD) {
+    private static Consumidor login(Scanner scanner, ConsumidorCRUD consumidorCRUD) {
         System.out.println("Digite seu login: ");
         String login = scanner.nextLine();
 
         System.out.println("Digite sua senha: ");
         String senha = scanner.nextLine();
 
-        Usuario usuario = usuarioCRUD.buscarUsuarioPorLoginESenha(login, senha);
-
-        return usuario;
+        return consumidorCRUD.buscarUsuarioPorLoginESenha(login, senha);
     }
 
-    private static void cadastro(Scanner scanner, UsuarioCRUD usuarioCRUD, EnderecoCRUD enderecoCRUD) {
+    private static void cadastro(Scanner scanner, ConsumidorCRUD consumidorCRUD, EnderecoCRUD enderecoCRUD) {
         System.out.println("Digite seu login: ");
         String loginCadastro = scanner.nextLine();
 
@@ -346,17 +354,17 @@ public class Main {
         System.out.println("Digite sua data de nascimento: ");
         String stringNascimentoCadastro = scanner.nextLine();
 
-
-        LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro);
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro, formatter);
         Endereco enderecoCadastro = obterEndereco(scanner);
+
         if (!enderecoCRUD.adicionarEndereco(enderecoCadastro)) {
             return;
         }
 
         try {
-            usuarioCRUD.criarUsuario(loginCadastro, senhaCadastro, nomeCadastro, sobrenomeCadastro, enderecoCadastro,
-                    dataNascimentoCadastro);
+            Consumidor consumidor = new Consumidor(loginCadastro, senhaCadastro, nomeCadastro, sobrenomeCadastro, enderecoCadastro, dataNascimentoCadastro, "123456789");
+            consumidorCRUD.criarUsuario(consumidor);
         } catch (UsuarioJaCadastradoException uce) {
             System.out.println("Ocorreu um erro de cadastro: " + uce.getMessage());
         }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class GeradorSeeds {
 
-        public static void gerarSeeds(EnderecoCRUD enderecoCRUD, UsuarioCRUD usuarioCRUD, ProdutoCRUD produtoCRUD, EmpresaCRUD empresaCRUD, CupomCRUD cupomCRUD) {
+        public static void gerarSeeds(EnderecoCRUD enderecoCRUD, ConsumidorCRUD consumidorCRUD, ProdutoCRUD produtoCRUD, EmpresaCRUD empresaCRUD, CupomCRUD cupomCRUD) {
                 LocalDate dataNascimento = LocalDate.of(1990, 1, 1);
                 LocalDate dataNascimento2 = LocalDate.of(1990, 1, 1);
 
@@ -24,11 +24,14 @@ public class GeradorSeeds {
                 Usuario usuario1 = new Usuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
                 Usuario usuario2 = new Usuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento2);
                 Usuario usuario3 = new Usuario("deyvidlucas", "lucas2024", "Deyvid Lucas", "Cunha", endereco3, dataNascimento);
+                Consumidor consumidor = new Consumidor("admin", "admin", "admin", "admin", endereco1, dataNascimento, "56608950046");
+                Consumidor consumidor2 = new Consumidor("admin2", "admin2", "admin2", "admin2", endereco1, dataNascimento, "19191550046");
+                Consumidor consumidor3 = new Consumidor("deyvidlucas", "lucas2024", "Deyvid Lucas", "Cunha", endereco3, dataNascimento, "11684910046");
 
                 try {
-                        usuarioCRUD.criarUsuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
-                        usuarioCRUD.criarUsuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento2);
-                        usuarioCRUD.criarUsuario("deyvidlucas", "lucas2024", "Deyvid Lucas", "Cunha", endereco3, dataNascimento);
+                        consumidorCRUD.criarUsuario(consumidor);
+                        consumidorCRUD.criarUsuario(consumidor2);
+                        consumidorCRUD.criarUsuario(consumidor3);
                 }
                 catch (UsuarioJaCadastradoException uce) {
                         System.out.println("Ocorreu um erro de cadastro");
@@ -108,7 +111,7 @@ public class GeradorSeeds {
 
                 preco = new BigDecimal("4.05");
                 quantidade = new BigDecimal("18");
-                Produto produto11 = new Produto(2, "Leite", "Leite", preco, quantidade, TipoCategoria.LEITES, 3.2, UnidadeMedida.KG);
+                Produto produto11 = new Produto(2, "Leite", "Leite", preco, quantidade, TipoCategoria.LEITES, 3.2, UnidadeMedida.L);
                 produtosEmpresa1.add(produto11);
 
                 preco = new BigDecimal("12");

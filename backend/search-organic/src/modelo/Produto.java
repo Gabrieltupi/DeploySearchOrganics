@@ -70,6 +70,10 @@ public class Produto implements Impressao {
     }
 
     public void setQuantidade(BigDecimal quantidade) {
+        if (quantidade.compareTo(BigDecimal.ZERO) < 0) {
+            System.out.println("Não foi possível realizar a compra. Temos apenas " + this.getQuantidade() + " unidades em estoque");
+            return;
+        }
         this.quantidade = quantidade;
     }
 
@@ -102,6 +106,7 @@ public class Produto implements Impressao {
 
     @Override
     public void imprimir() {
+        System.out.println("ID do produto: " + getIdProduto());
         System.out.println("ID da empresa: " + getEmpresaId());
         System.out.println("Categoria do produto: " + getCategoria());
         System.out.print("Nome do produto: " + getNome());

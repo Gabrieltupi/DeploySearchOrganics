@@ -1,10 +1,13 @@
 package servicos;
 
 import modelo.Empresa;
+import modelo.Endereco;
 import modelo.Produto;
 import modelo.Usuario;
 import utils.TipoCategoria;
 import utils.validadores.ValidadorCNPJ;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -16,8 +19,10 @@ public class EmpresaCRUD {
                                     Usuario usuario) {
 
         if (ValidadorCNPJ.validarCNPJ(cnpj)) {
-            Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
-                    setor, usuario);
+            Empresa novaEmpresa = new Empresa(usuario.getLogin(), usuario.getPassword(), usuario.getNome(),
+                    usuario.getSobrenome(), usuario.getEndereco(),
+                    usuario.getDataNascimento(), nomeFantasia, cnpj, razaoSocial,
+                    inscricaoEstadual, setor);
 
             empresas.add(novaEmpresa);
         } else {
@@ -29,8 +34,10 @@ public class EmpresaCRUD {
                                    String inscricaoEstadual, String setor, Usuario usuario) {
 
         if (ValidadorCNPJ.validarCNPJ(cnpj)) {
-            Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
-                    setor, usuario);
+            Empresa novaEmpresa = new Empresa(usuario.getLogin(), usuario.getPassword(), usuario.getNome(),
+                    usuario.getSobrenome(), usuario.getEndereco(),
+                    usuario.getDataNascimento(), nomeFantasia, cnpj, razaoSocial,
+                    inscricaoEstadual, setor);
             empresas.add(novaEmpresa);
             return novaEmpresa.getId();
         } else {
@@ -64,13 +71,18 @@ public class EmpresaCRUD {
         for (Empresa empresa : empresas) {
             if (empresa.getId() == id) {
                 if (ValidadorCNPJ.validarCNPJ(novoCnpj)) {
+                    empresa.setLogin(novoUsuario.getLogin());
+                    empresa.setPassword(novoUsuario.getPassword());
+                    empresa.setNome(novoUsuario.getNome());
+                    empresa.setSobrenome(novoUsuario.getSobrenome());
+                    empresa.setEndereco(novoUsuario.getEndereco());
+                    empresa.setDataNascimento(novoUsuario.getDataNascimento());
                     empresa.setNomeFantasia(novoNomeFantasia);
                     empresa.setCnpj(novoCnpj);
                     empresa.setRazaoSocial(novaRazaoSocial);
                     empresa.setInscricaoEstadual(novaInscricaoEstadual);
                     empresa.setSetor(novoSetor);
                     empresa.setProdutos(novosProdutos);
-                    empresa.setUsuario(novoUsuario);
                     System.out.println("Empresa atualizada.");
                 } else {
                     System.out.println("CNPJ inválido. A empresa não foi atualizada.");

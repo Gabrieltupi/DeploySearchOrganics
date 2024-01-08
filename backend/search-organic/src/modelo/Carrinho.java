@@ -73,13 +73,20 @@ public class Carrinho {
     public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
             this.produtos.put(produto.getIdProduto(), produto);
             this.quantidadeProduto.put(produto.getIdProduto(), quantidade);
-            valorTotal = valorTotal.add(produto.getPreco().multiply(quantidade));
+            atualizarValorTotal();
+            produto.setQuantidade(produto.getQuantidade().subtract(quantidade));
             return true;
     }
 
-    public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal quantidade) {
-        if (produtos.get(id) != null) {
-            quantidadeProduto.put(id, quantidade);
+    public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
+        Produto produto = produtos.get(id);
+        if (produto != null) {
+            BigDecimal quantidadeAntiga = quantidadeProduto.get(id);
+            quantidadeProduto.put(id, novaQuantidade);
+            BigDecimal quantidadeEmEstoque = produto.getQuantidade();
+            BigDecimal quantidadeAtualizadaEmEstoque = quantidadeEmEstoque.subtract(novaQuantidade.subtract(quantidadeAntiga));
+            produto.setQuantidade(quantidadeAtualizadaEmEstoque);
+            atualizarValorTotal();
             return true;
         }
         System.out.println("Produto não encontrado!");
@@ -88,6 +95,7 @@ public class Carrinho {
 
     public boolean removerProdutoDoCarrinho(int id) {
         if (produtos.remove(id) != null) {
+            atualizarValorTotal();
             return true;
         }
         System.out.println("ID não encontrado!!");
@@ -106,6 +114,7 @@ public class Carrinho {
     public void limparSacola() {
         quantidadeProduto = new HashMap<>();
         produtos = new HashMap<>();
+        atualizarValorTotal();
     }
 
     public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
@@ -118,6 +127,14 @@ public class Carrinho {
         } else {
             System.out.println("CEP invalido - pedido não foi finalizado");
         }
+    }
 
+    public void atualizarValorTotal() {
+        valorTotal = BigDecimal.ZERO;
+        for (Map.Entry<Integer, Produto> entry : produtos.entrySet()) {
+            BigDecimal quantidade = quantidadeProduto.get(entry.getKey());
+            BigDecimal precoProduto = entry.getValue().getPreco();
+            valorTotal = valorTotal.add(precoProduto.multiply(quantidade));
+        }
     }
 }
