@@ -37,8 +37,10 @@ public class Consumidor  implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do consumidor: " + getId());
+        usuario.imprimir();
         System.out.println("CPF do consumidor: " + getCpf());
         System.out.println("Usuário do consumidor: " + getUsuario());
+        System.out.println("-----------------------------------------");
+
     }
 }

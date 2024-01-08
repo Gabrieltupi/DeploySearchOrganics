@@ -74,13 +74,15 @@ public class Empresa implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("Nome da empresa: " + getNomeFantasia());
+        usuario.imprimir();
+
+        System.out.println("\nDados da Empresa: \n");
         System.out.println("ID da empresa: " + getId());
+        System.out.println("Nome da empresa: " + getNomeFantasia());
         System.out.println("CNPJ da empresa: " + getCnpj());
         System.out.println("Razao Social da empresa: " + getRazaoSocial());
         System.out.println("Incriçao Social da empresa: " + getInscricaoEstadual());
-        System.out.println("Setor da empresa: " + getSetor());
-        System.out.println("Usuario da empresa: " + getUsuario());
+        System.out.println("Setor da empresa: \n" + getSetor());
 
         if (produtos.isEmpty()) {
             System.out.println("A empresa não possui produtos.");

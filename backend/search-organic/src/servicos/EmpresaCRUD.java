@@ -2,6 +2,7 @@ package servicos;
 import modelo.Empresa;
 import modelo.Produto;
 import modelo.Usuario;
+import utils.TipoCategoria;
 import utils.validadores.ValidadorCNPJ;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -92,12 +93,60 @@ public class EmpresaCRUD {
         System.out.println("Empresa não encontrada.");
     }
 
+    //opção 2.1 e 3.1
+    public boolean imprirProdutosDaLoja(int id){
+        for (Empresa empresa : empresas) {
+            if(id == empresa.getId()) {
+                for (Produto produto : empresa.getProdutos()) {
+                    System.out.println("Nome: " + produto.getNome() + "Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
+                    System.out.println("-------------------------------------------------------------");
+                }
+                return true;
+            }
+        }
+        System.out.println("Loja não encontrada!");
+        return false;
+    }
+
+    //opção 3
+    public void LojasPorCategoria(TipoCategoria categoria){
+        for (Empresa empresa : empresas) {
+            for (Produto produto : empresa.getProdutos()) {
+                if(produto.getCategoriaT().equals(categoria)){
+                    System.out.println("id da loja: " + empresa.getId() + "Nome: " + produto.getNome() + "Preço: " + produto.getPreco());
+                    System.out.println("-------------------------------------------------------------");
+                }
+            }
+        }
+    }
+
+
+
+    //opção 2.1.2 e 2.1.3
+    public boolean imprirProdutosDaLojaPorCategoria(int id, TipoCategoria categoria){
+        for (Empresa empresa : empresas) {
+            if(id == empresa.getId()) {
+                for (Produto produto : empresa.getProdutos()) {
+                    if(produto.getCategoriaT().equals(categoria)){
+                        System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
+                        System.out.println("-------------------------------------------------------------");
+                    }
+                }
+                return true;
+            }
+        }
+        System.out.println("Loja não encontrada!");
+        return false;
+    }
+
+    //Opção 2
     public void Lojas(){
         for (Empresa empresa : empresas) {
             System.out.println(empresa.getNomeFantasia());
             System.out.println();
             for (Produto produto: empresa.getProdutos()){
-                System.out.println("Nome: " + produto.getNome() + "Preço: " + produto.getPreco());
+                System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco()+ " Quantidade: " + produto.getQuantidade());
+                System.out.println("-------------------------------------------------------------");
             }
             System.out.println();
         }
