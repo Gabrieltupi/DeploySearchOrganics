@@ -1,16 +1,26 @@
 package servicos;
 
+import modelo.Cupom;
+import modelo.Endereco;
 import modelo.Pedido;
 import modelo.Produto;
 import utils.FormaPagamento;
-
+import utils.validadores.TipoEntrega;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PedidoCRUD {
     private ArrayList<Pedido> pedidos = new java.util.ArrayList<>();
 
-    public void criarPedido(ArrayList<Produto> produtos, FormaPagamento formaPagamento, int consumidorId){
-        Pedido pedido = new Pedido(produtos, formaPagamento, consumidorId);
+    public void criarPedido(){}
+
+    public void adicionarPedido(Pedido pedido){
+        pedidos.add(pedido);
+    }
+
+    public void criarPedido(Pedido pedido){
         this.pedidos.add(pedido);
     }
 
@@ -19,7 +29,7 @@ public class PedidoCRUD {
             pedido.imprimir();
         }
     }
-    //UPDATE
+
     public void atualizarPedido(int idPedido, Pedido pedidoAtualizado) {
         if(idPedido > this.pedidos.size()){
             System.out.println("ID de pedido inválido");
@@ -31,7 +41,6 @@ public class PedidoCRUD {
         pedido.setFormaPagamento(pedidoAtualizado.getFormaPagamento());
     }
 
-    //DELETE
     public void excluirPedido(int idPedido) {
         if(idPedido > this.pedidos.size()){
             System.out.println("ID de pedido inválido");

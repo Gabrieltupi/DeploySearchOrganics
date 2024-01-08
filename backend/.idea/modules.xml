@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/search-organic.iml" filepath="$PROJECT_DIR$/search-organic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend.iml" filepath="$PROJECT_DIR$/backend.iml" />
     </modules>
   </component>
 </project>

@@ -2,55 +2,76 @@ package modelo;
 
 import interfaces.Impressao;
 import utils.FormaPagamento;
+import utils.validadores.TipoEntrega;
+import utils.validadores.ValidadorCEP;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Pedido implements Impressao {
     private static int pedidoId = 1;
     private int id;
-    private ArrayList<Produto> produtos;
+    private Map<Integer, Produto> produtos = new HashMap<>();
+    private Map<Integer, BigDecimal> quantidadeProduto = new HashMap<>();
     private BigDecimal total;
     private FormaPagamento formaPagamento;
     private Boolean entregue;
-    private LocalDate data;
-
+    private LocalDate dataDeEntrega;
+    private Endereco endereco;
     private int consumidorId;
+    private LocalDate inicioEntrega;
+    private TipoEntrega tipoEntrega;
 
-
-    public Pedido(ArrayList<Produto> produtos, FormaPagamento formaPagamento, int consumidorId) {
-        this.id = pedidoId;
-        this.produtos = produtos;
-        this.total = this.calcularTotal();
-        this.formaPagamento = formaPagamento;
-        this.entregue = false;
-        this.data = LocalDate.now();
-        this.consumidorId = consumidorId;
-        this.pedidoId++;
-    }
-
-    private BigDecimal calcularTotal(){
-        BigDecimal resultado = new BigDecimal(0);
-        for (Produto produto : produtos) {
-            BigDecimal quantidade = produto.getQuantidade();
-            BigDecimal preco = produto.getPreco();
-            resultado = resultado.add(quantidade.multiply(preco));
+    public Pedido(int consumidorId, Map<Integer, Produto> produtos,
+                  Map<Integer, BigDecimal> quantidadeProduto,
+                  FormaPagamento formaPagamento, LocalDate dataDeEntrega,
+                  Endereco endereco,
+                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total) {
+        if(cupom == null){
+            cupom.setTaxaDeDesconto(new BigDecimal(0));
         }
 
-        return resultado;
+        this.id = pedidoId;
+        this.produtos = produtos;
+        this.quantidadeProduto = quantidadeProduto;
+        this.formaPagamento = formaPagamento;
+        this.dataDeEntrega = dataDeEntrega;
+        this.endereco = endereco;
+        this.consumidorId = consumidorId;
+        this.tipoEntrega = tipoEntrega;
+        if(tipoEntrega == tipoEntrega.RETIRAR_NO_LOCAL){
+            this.total = total.subtract(cupom.getTaxaDeDesconto());
+
+        }else {
+            this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
+        }
+        this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
+        this.entregue = false;
+        this.inicioEntrega = LocalDate.now();
+        pedidoId++;
     }
+
 
     public int getId() {
         return id;
     }
 
-    public ArrayList<Produto> getProdutos() {
+    public Map<Integer, Produto> getProdutos() {
         return produtos;
     }
 
-    public void setProdutos(ArrayList<Produto> produtos) {
+    public void setProdutos(Map<Integer, Produto> produtos) {
         this.produtos = produtos;
+    }
+
+    public Map<Integer, BigDecimal> getQuantidadeProduto() {
+        return quantidadeProduto;
+    }
+
+    public void setQuantidadeProduto(Map<Integer, BigDecimal> quantidadeProduto) {
+        this.quantidadeProduto = quantidadeProduto;
     }
 
     public BigDecimal getTotal() {
@@ -77,27 +98,92 @@ public class Pedido implements Impressao {
         this.entregue = entregue;
     }
 
-    public LocalDate getData() {
-        return data;
+    public LocalDate getDataDeEntrega() {
+        return dataDeEntrega;
+    }
+
+    public void setDataDeEntrega(LocalDate dataDeEntrega) {
+        this.dataDeEntrega = dataDeEntrega;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
+    public int getConsumidorId() {
+        return consumidorId;
+    }
+
+    public void setConsumidorId(int consumidorId) {
+        this.consumidorId = consumidorId;
+    }
+
+    public TipoEntrega getTipoEntrega() {
+        return tipoEntrega;
+    }
+
+    public void setTipoEntrega(TipoEntrega tipoEntrega) {
+        this.tipoEntrega = tipoEntrega;
+    }
+
+    public LocalDate getInicioEntrega() {
+        return inicioEntrega;
+    }
+
+    public void setInicioEntrega(LocalDate inicioEntrega) {
+        this.inicioEntrega = inicioEntrega;
+    }
+
+    public BigDecimal calcularFrete(String cep) {
+        BigDecimal frete = new BigDecimal("0.00");
+        String regiao = ValidadorCEP.isCepValido(cep);
+
+        if (regiao == null) return null;
+
+        if (regiao.equals("SP - Capital")) {
+            frete = new BigDecimal("10.00");
+        }
+        if (regiao.equals("SP - Área Metropolitana")) {
+            frete = new BigDecimal("15.00");
+        }
+        if (regiao.equals("SP - Litoral")) {
+            frete = new BigDecimal("20.00");
+        }
+        if (regiao.equals("SP - Interior")) {
+            frete = new BigDecimal("25.00");
+        }
+
+        return frete;
+    }
+
+    public boolean pedidoEntrege(boolean entregue){
+        this.entregue = entregue;
+        return entregue;
     }
 
     @Override
     public void imprimir() {
+        String statusEntregue = entregue ? "Entregue" : "Não entregue";;
+
         System.out.printf("""
                 ID do Pedido: %d
-                Entregue: %b
                 Forma de pagamento: %s
                 Data: %s
-                Total: R$ %.2f         
+                Tipo de entrega: %s
+                Status de entrega: %s
+                CEP de entrega: %s
                 """,
-                id, entregue, formaPagamento, data, total);
-        System.out.println("Produtos: ");
-        for(Produto produto: this.produtos){
-            System.out.printf("""
-                    Nome: %s
-                    Quantidade: %d
-                    Preço: R$ %.2f
-                    """, produto.getNome(), produto.getQuantidade(),  produto.getPreco());
+                id, formaPagamento, dataDeEntrega, tipoEntrega, statusEntregue, endereco.getCep());
+        System.out.println("Produtos: \n");
+
+        for (int key : produtos.keySet()) {
+            System.out.println(" Nome do produto: " + produtos.get(key).getNome()
+                    + " Quantidade: " + quantidadeProduto.get(key));
         }
+        System.out.println("Valor total: " + total);
     }
 }

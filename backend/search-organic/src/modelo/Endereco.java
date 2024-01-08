@@ -1,8 +1,7 @@
 package modelo;
 
 import interfaces.Impressao;
-
-import java.util.UUID;
+import utils.validadores.ValidadorCEP;
 
 public class Endereco implements Impressao {
     private static int enderecoId = 1;
@@ -14,18 +13,26 @@ public class Endereco implements Impressao {
     private String cidade;
     private String estado;
     private String pais;
+    private String regiao;
+
+    private ValidadorCEP validadorCEP;
 
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
                     String estado, String pais) {
-        this.id = enderecoId;
-        this.logradouro = logradouro;
-        this.numero = numero;
-        this.complemento = complemento;
-        this.cep = cep;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.pais = pais;
-        enderecoId++;
+        if(ValidadorCEP.isCepValido(cep) != null) {
+            this.id = enderecoId;
+            this.logradouro = logradouro;
+            this.numero = numero;
+            this.complemento = complemento;
+            this.cep = cep;
+            this.cidade = cidade;
+            this.estado = estado;
+            this.pais = pais;
+            this.regiao = ValidadorCEP.isCepValido(cep);
+            enderecoId++;
+        } else{
+            System.out.println("Ainda não atendemos neste estado");
+        }
     }
 
     public int getId() {
@@ -88,14 +95,22 @@ public class Endereco implements Impressao {
         this.pais = pais;
     }
 
+    public String getRegiao() {
+        return regiao;
+    }
+
+    public void setRegiao(String regiao) {
+        this.regiao = regiao;
+    }
+
     @Override
     public void imprimir() {
-        System.out.printf("ID: %s\n", this.getId());
-        System.out.printf("Logradouro: %s\n", this.getLogradouro());
-        System.out.printf("Número: %s\n", this.getNumero());
+        System.out.printf("Logradouro: %s ", this.getLogradouro());
+        System.out.printf("Número: %s ", this.getNumero());
         System.out.printf("Complemento: %s\n", this.getComplemento());
         System.out.printf("CEP: %s\n", this.getCep());
-        System.out.printf("Cidade: %s\n", this.getCidade());
+        System.out.printf("Regiao: %s ", this.getRegiao());
+        System.out.printf("Cidade: %s ", this.getCidade());
         System.out.printf("Estado: %s\n", this.getEstado());
         System.out.printf("País: %s\n", this.getPais());
     }
@@ -103,6 +118,7 @@ public class Endereco implements Impressao {
     @Override
     public String toString() {
         return "ID: " + id +
+                "\nRegiao: " + regiao +
                 "\nLogradouro: " + logradouro +
                 "\nNúmero: " + numero +
                 "\nComplemento: " + complemento +

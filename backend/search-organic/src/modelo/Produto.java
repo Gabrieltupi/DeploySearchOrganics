@@ -1,23 +1,28 @@
 package modelo;
 
 import interfaces.Impressao;
+import utils.TipoCategoria;
 import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class Produto implements Impressao {
-    private final UUID id;
+    private static int produtoId = 1;
+    private int idProduto;
+    private int empresaId;
     private String nome;
     private String descricao;
     private BigDecimal preco;
     private BigDecimal quantidade;
-    private Categoria categoria;
+    private TipoCategoria categoria;
     private double taxa;
     private UnidadeMedida unidadeMedida;
 
-    public Produto(String nome, String descricao, BigDecimal preco, BigDecimal quantidade, Categoria categoria, double taxa, UnidadeMedida unidadeMedida) {
-        this.id = UUID.randomUUID();
+    public Produto(int empresaId, String nome, String descricao, BigDecimal preco,
+                   BigDecimal quantidade, TipoCategoria categoria, double taxa,
+                   UnidadeMedida unidadeMedida) {
+        this.idProduto = produtoId;
+        this.empresaId = empresaId;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
@@ -25,10 +30,15 @@ public class Produto implements Impressao {
         this.categoria = categoria;
         this.taxa = taxa;
         this.unidadeMedida = unidadeMedida;
+        this.produtoId++;
     }
 
-    public UUID getId() {
-        return id;
+    public int getIdProduto() {
+        return idProduto;
+    }
+
+    public int getEmpresaId(){
+        return empresaId;
     }
 
     public String getNome() {
@@ -60,14 +70,21 @@ public class Produto implements Impressao {
     }
 
     public void setQuantidade(BigDecimal quantidade) {
+        if (quantidade.compareTo(BigDecimal.ZERO) < 0) {
+            System.out.println("Não foi possível realizar a compra. Temos apenas " + this.getQuantidade() + " unidades em estoque");
+            return;
+        }
         this.quantidade = quantidade;
     }
 
-    public Categoria getCategoria() {
+    public String getCategoria() {
+        return categoria.toString();
+    }
+    public TipoCategoria getCategoriaT() {
         return categoria;
     }
 
-    public void setCategoria(Categoria categoria) {
+    public void setCategoria(TipoCategoria categoria) {
         this.categoria = categoria;
     }
 
@@ -89,13 +106,15 @@ public class Produto implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do produto: " + getId());
-        System.out.println("Nome do produto: " + getNome());
+        System.out.println("ID do produto: " + getIdProduto());
+        System.out.println("ID da empresa: " + getEmpresaId());
+        System.out.println("Categoria do produto: " + getCategoria());
+        System.out.print("Nome do produto: " + getNome());
+        System.out.print("   Preço do produto: R$: " + getPreco());
+        System.out.print("   Quantidade do produto: " + getQuantidade());
+        System.out.println(getUnidadeMedida());
         System.out.println("Descrição do produto: " + getDescricao());
-        System.out.println("Preço do produto: " + getPreco());
-        System.out.println("Quantidade do produto: " + getQuantidade());
-        System.out.println("Categoria do produto: " + getCategoria().getVariedade());
-        System.out.println("Taxa do produto: " + getTaxa());
-        System.out.println("Unidade de medida do produto: " + getUnidadeMedida());
+        System.out.println("Categoria do produto: " + getCategoria());
+        System.out.println("-------------------------------------------------------------");
     }
 }

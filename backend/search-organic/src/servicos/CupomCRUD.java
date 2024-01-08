@@ -1,7 +1,8 @@
 package servicos;
-import modelo.Cupom;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import modelo.Cupom;
 
 public class CupomCRUD {
 
@@ -20,11 +21,21 @@ public class CupomCRUD {
             cupom.imprimir();
         }
     }
+
+    public void imprimirCuponsDisponiveis() {
+        for (Cupom cupom : cupons) {
+            if (cupom.isAtivo()) {
+                System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
+                        cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
+            }
+        }
+    }
+
     public Cupom buscarCupomPorId(int id) {
         for (Cupom cupom : cupons) {
-            System.out.println("Verificando Cupom por Id:" + cupom.getId());
-            if (cupom.getId() == id) {
-                System.out.println("Cupom encontrado:" + cupom.getId());
+            System.out.println("Verificando Cupom por Id:" + cupom.getCupomId());
+            if (cupom.getCupomId() == id) {
+                System.out.println("Cupom encontrado:" + cupom.getCupomId());
                 cupom.imprimir();
                 return cupom;
             }
@@ -33,11 +44,11 @@ public class CupomCRUD {
         return null;
     }
 
-    public void atualizarCupom(int id, String novoNomeProduto, String novaDescricao, double novaTaxaDeDesconto) {
+    public void atualizarCupom(int id, String novoNomeProduto, String novaDescricao, BigDecimal novaTaxaDeDesconto) {
         for (Cupom cupom : cupons) {
-            if (cupom.getId() == id) {
-                System.out.println("Cupom encontrado, atualize as informações: " + cupom.getId());
-                cupom.setNomeProduto(novoNomeProduto);
+            if (cupom.getCupomId() == id) {
+                System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
+                cupom.setNomeCupom(novoNomeProduto);
                 cupom.setDescricao(novaDescricao);
                 cupom.setTaxaDeDesconto(novaTaxaDeDesconto);
                 System.out.println("Cupom atualizado com sucesso!");
@@ -45,19 +56,20 @@ public class CupomCRUD {
             }
         }
         System.out.println("Cupom não pode ser atualizado");
-
     }
 
     public void deletarCupom(int id) {
+        Cupom cupomRemover = null;
         for (Cupom cupom : cupons) {
-            if (cupom.getId() == id) {
-                cupons.remove(cupom);
-                return;
+            if (cupom.getCupomId() == id) {
+                cupomRemover = cupom;
+                break;
             }
         }
-        System.out.println("Cupom não pode ser encontrado em nosso Sistema");
+        if (cupomRemover != null) {
+            cupons.remove(cupomRemover);
+        } else {
+            System.out.println("Cupom não pode ser encontrado em nosso Sistema");
+        }
     }
-
 }
-
-

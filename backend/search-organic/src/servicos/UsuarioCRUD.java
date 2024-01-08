@@ -1,7 +1,10 @@
 package servicos;
-import java.util.Date;
+
+import exceptions.UsuarioJaCadastradoException;
 import modelo.Usuario;
 import modelo.Endereco;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,10 +12,29 @@ public class UsuarioCRUD {
     private static List<Usuario> usuarios = new ArrayList<>();
     private static int proximoId = 1;
 
-    public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, Date dataNascimento) {
-        Usuario novoUsuario = new Usuario(login, password, nome, sobrenome, endereco, dataNascimento);
-        novoUsuario.setUsuarioId(proximoId++);
-        usuarios.add(novoUsuario);
+    public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) throws UsuarioJaCadastradoException {
+        if (verificarUsuarioCadastrado(login)) {
+            throw new UsuarioJaCadastradoException();
+        }
+        criarUsuario(new Usuario(login, password, nome, sobrenome, endereco, dataNascimento));
+    }
+
+    public void criarUsuario(Usuario usuario) throws UsuarioJaCadastradoException {
+        if (verificarUsuarioCadastrado(usuario.getLogin())) {
+            throw new UsuarioJaCadastradoException();
+        }
+        usuario.setUsuarioId(proximoId++);
+        usuarios.add(usuario);
+        System.out.println("-----------------");
+    }
+
+    private boolean verificarUsuarioCadastrado(String login) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getLogin().equalsIgnoreCase(login)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Usuario buscarUsuarioPorId(int usuarioId) {
@@ -21,15 +43,15 @@ public class UsuarioCRUD {
                 return usuario;
             }
         }
-        return null; // Retorna null se o usuário não for encontrado
+        return null;
     }
 
-    public void exibirTodos(){
-        for(Usuario usuario : usuarios){
+    public void exibirTodos() {
+        for (Usuario usuario : usuarios) {
             usuario.imprimir();
+            System.out.println("-----------------");
         }
     }
-
 
     public void editarUsuario(int usuarioId, Usuario usuarioEditado) {
         for (Usuario usuario : usuarios) {
@@ -50,6 +72,4 @@ public class UsuarioCRUD {
     public void removerUsuario(int usuarioId) {
         usuarios.removeIf(usuario -> usuario.getUsuarioId() == usuarioId);
     }
-
-
 }

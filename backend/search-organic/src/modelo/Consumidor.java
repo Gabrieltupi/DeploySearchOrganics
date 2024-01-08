@@ -2,21 +2,15 @@ package modelo;
 
 import interfaces.Impressao;
 
-public class Consumidor  implements Impressao {
-    private static int consumidorId = 1;
-    private int id;
+import java.time.LocalDate;
+
+public class Consumidor extends Usuario  implements Impressao {
+
     private String cpf;
-    private Usuario usuario;
 
-    public Consumidor(String cpf, Usuario usuario) {
-        this.id = consumidorId;
+    public Consumidor(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento, String cpf) {
+        super(login, password, nome, sobrenome, endereco, dataNascimento);
         this.cpf = cpf;
-        this.usuario = usuario;
-        consumidorId++;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getCpf() {
@@ -27,18 +21,12 @@ public class Consumidor  implements Impressao {
         this.cpf = cpf;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
     @Override
     public void imprimir() {
-        System.out.println("CPF do consumidor: " + getCpf());
-        System.out.println("ID do consumidor: " + getId());
-        System.out.println("Usuário do consumidor: " + getUsuario());
+        System.out.println("ID do Usuário: " + getId());
+        System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
+        System.out.println("CPF: " + getCpf());
+        System.out.println("Data de nascimento " + getDataNascimento());
+        System.out.println("Status: " + verificarStatus());
     }
 }

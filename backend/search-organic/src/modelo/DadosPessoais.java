@@ -2,6 +2,7 @@ package modelo;
 
 import interfaces.Impressao;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class DadosPessoais implements Impressao {
@@ -10,9 +11,9 @@ public class DadosPessoais implements Impressao {
     private String nome;
     private String sobrenome;
     private Endereco endereco;
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
-    public DadosPessoais(String nome, String sobrenome, Endereco endereco, Date dataNascimento) {
+    public DadosPessoais(String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
         this.id = dadosPessoaisId;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -49,21 +50,20 @@ public class DadosPessoais implements Impressao {
         this.endereco = endereco;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 
     @Override
     public void imprimir() {
         System.out.println("ID dos dados pessoais: " + getId());
-        System.out.println("Nome dos dados pessoais: " + getNome());
-        System.out.println("Sobrenome dos dados pessoais: " + getSobrenome());
-        System.out.println("Endereco dos dados pessoais: " + getEndereco());
+        System.out.println("Nome dos dados pessoais: " + getNome() + " Sobrenome dos dados pessoais: " + getSobrenome());
         System.out.println("Data de nascimento dos dados pessoais: " + getDataNascimento());
+        System.out.println("Endereco dos dados pessoais: " + getEndereco());
     }
 
     @Override
@@ -73,13 +73,3 @@ public class DadosPessoais implements Impressao {
                 "\nData de Nascimento: " + endereco + "\n";
     }
 }
-
-
-
-
-
-
-
-
-
-

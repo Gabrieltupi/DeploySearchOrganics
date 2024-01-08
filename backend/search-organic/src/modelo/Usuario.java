@@ -1,17 +1,21 @@
 package modelo;
 import interfaces.Impressao;
+
+import java.time.LocalDate;
 import java.util.Date;
 public class Usuario extends DadosPessoais implements Impressao {
-    private int usuarioId = 1;
+    private  static int usuarioId = 1;
+    private int idUsuario = 1;
     private String login;
     private String password;
     private boolean ativo = true;
 
 
-    public Usuario(String login, String password, String nome, String sobrenome, Endereco endereco, Date dataNascimento) {
+    public Usuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
         super(nome, sobrenome, endereco, dataNascimento);
         this.login = login;
         this.password = password;
+        idUsuario = usuarioId;
         usuarioId++;
     }
 
@@ -57,12 +61,10 @@ public class Usuario extends DadosPessoais implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("Nome "+ getNome());
-        System.out.println("Sobrenome "+ getSobrenome());
-        System.out.println("ID do Usuário: " + usuarioId);
-        System.out.println("Login: " + login);
+
+        System.out.println("ID do Usuário: " + idUsuario);
+        System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
         System.out.println("Status: " + verificarStatus());
-        System.out.println("Data de nascimento "+getDataNascimento());
-        System.out.println("-------------------");
+        System.out.println("Data de nascimento " + getDataNascimento());
     }
 }
