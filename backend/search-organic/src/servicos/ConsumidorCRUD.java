@@ -26,6 +26,7 @@ public class ConsumidorCRUD {
         }
     }
 
+    //Opção 1.1
     public void exibir(int id){
         for(Consumidor consumidor : consumidores){
             if(id == consumidor.getId()){
@@ -36,12 +37,12 @@ public class ConsumidorCRUD {
         System.out.println("Consumidor não encontrado!");
     }
 
+    //opção 1.2
     public void editar(int id, Consumidor consumidorEditado){
         for(Consumidor consumidor : consumidores){
             if(id == consumidor.getId()){
                 consumidor.setCpf(consumidorEditado.getCpf());
                 consumidor.setUsuario(consumidorEditado.getUsuario());
-                System.out.println("Edição realizada com sucesso!");
                 return;
             }
         }

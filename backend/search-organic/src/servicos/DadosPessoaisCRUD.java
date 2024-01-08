@@ -1,5 +1,6 @@
 package servicos;
 
+import interfaces.Impressao;
 import modelo.DadosPessoais;
 import modelo.Endereco;
 
@@ -50,8 +51,7 @@ public class DadosPessoaisCRUD {
     public boolean imprimirDadosPessoais(int id){
         for (DadosPessoais x: dadosPessoais){
             if(x.getId() == id) {
-                System.out.println("Dados pessoais do id " + id);
-                System.out.println(x);
+                x.imprimir();
                 return true;
             }
         }

@@ -61,10 +61,9 @@ public class DadosPessoais implements Impressao {
     @Override
     public void imprimir() {
         System.out.println("ID dos dados pessoais: " + getId());
-        System.out.println("Nome dos dados pessoais: " + getNome());
-        System.out.println("Sobrenome dos dados pessoais: " + getSobrenome());
-        System.out.println("Endereco dos dados pessoais: " + getEndereco());
+        System.out.println("Nome dos dados pessoais: " + getNome() + " Sobrenome dos dados pessoais: " + getSobrenome());
         System.out.println("Data de nascimento dos dados pessoais: " + getDataNascimento());
+        System.out.println("Endereco dos dados pessoais: " + getEndereco());
     }
 
     @Override

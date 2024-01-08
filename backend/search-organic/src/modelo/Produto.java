@@ -76,6 +76,9 @@ public class Produto implements Impressao {
     public String getCategoria() {
         return categoria.toString();
     }
+    public TipoCategoria getCategoriaT() {
+        return categoria;
+    }
 
     public void setCategoria(TipoCategoria categoria) {
         this.categoria = categoria;
@@ -99,14 +102,14 @@ public class Produto implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do produto: " + getIdProduto());
         System.out.println("ID da empresa: " + getEmpresaId());
-        System.out.println("Nome do produto: " + getNome());
-        System.out.println("Descrição do produto: " + getDescricao());
-        System.out.println("Preço do produto: " + getPreco());
-        System.out.println("Quantidade do produto: " + getQuantidade());
         System.out.println("Categoria do produto: " + getCategoria());
-        System.out.println("Taxa do produto: " + getTaxa());
-        System.out.println("Unidade de medida do produto: " + getUnidadeMedida());
+        System.out.print("Nome do produto: " + getNome());
+        System.out.print("   Preço do produto: R$: " + getPreco());
+        System.out.print("   Quantidade do produto: " + getQuantidade());
+        System.out.println(getUnidadeMedida());
+        System.out.println("Descrição do produto: " + getDescricao());
+        System.out.println("Categoria do produto: " + getCategoria());
+        System.out.println("-------------------------------------------------------------");
     }
 }
