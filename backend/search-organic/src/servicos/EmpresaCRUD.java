@@ -18,7 +18,6 @@ public class EmpresaCRUD {
                     setor, usuario);
 
             empresas.add(novaEmpresa);
-            System.out.println("Empresa criada com sucesso.");
         } else {
             System.out.println("CNPJ inválido. A empresa não foi criada.");
         }
@@ -31,7 +30,6 @@ public class EmpresaCRUD {
             Empresa novaEmpresa = new Empresa(nomeFantasia, cnpj, razaoSocial, inscricaoEstadual,
                     setor, usuario);
             empresas.add(novaEmpresa);
-            System.out.println("Empresa criada com sucesso.");
             return novaEmpresa.getId();
         } else {
             System.out.println("CNPJ inválido. A empresa não foi criada.");

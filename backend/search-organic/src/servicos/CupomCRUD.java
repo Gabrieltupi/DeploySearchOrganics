@@ -1,8 +1,8 @@
 package servicos;
-import modelo.Cupom;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
+
+import modelo.Cupom;
 
 public class CupomCRUD {
 

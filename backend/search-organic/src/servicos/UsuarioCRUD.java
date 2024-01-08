@@ -1,6 +1,8 @@
 package servicos;
 import java.time.LocalDate;
 import java.util.Date;
+
+import exceptions.UsuarioJaCadastradoException;
 import modelo.Usuario;
 import modelo.Endereco;
 import java.util.ArrayList;
@@ -10,14 +12,29 @@ public class UsuarioCRUD {
     private static List<Usuario> usuarios = new ArrayList<>();
     private static int proximoId = 1;
 
-    public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
+    public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) throws UsuarioJaCadastradoException {
+        if (verificarUsuarioCadastrado(login)) {
+            throw new UsuarioJaCadastradoException();
+        }
         criarUsuario(new Usuario(login, password, nome, sobrenome, endereco, dataNascimento));
     }
 
-    public void criarUsuario(Usuario usuario) {
+    public void criarUsuario(Usuario usuario) throws UsuarioJaCadastradoException {
+        if (verificarUsuarioCadastrado(usuario.getLogin())) {
+            throw new UsuarioJaCadastradoException();
+        }
         usuario.setUsuarioId(proximoId++);
         usuarios.add(usuario);
         System.out.println("-----------------");
+    }
+
+    private boolean verificarUsuarioCadastrado( String login) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getLogin().equalsIgnoreCase(login)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Usuario buscarUsuarioPorLoginESenha(String login, String senha) {
