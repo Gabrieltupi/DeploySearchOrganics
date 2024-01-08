@@ -112,6 +112,11 @@ public class Carrinho {
     }
 
     public void limparSacola() {
+        for (Map.Entry<Integer, Produto> entry : produtos.entrySet()) {
+            Produto produto = entry.getValue();
+            BigDecimal quantidade = quantidadeProduto.get(entry.getKey());
+            produto.setQuantidade(produto.getQuantidade().add(quantidade));
+        }
         quantidadeProduto = new HashMap<>();
         produtos = new HashMap<>();
         atualizarValorTotal();
