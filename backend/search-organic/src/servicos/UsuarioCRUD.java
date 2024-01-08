@@ -37,16 +37,6 @@ public class UsuarioCRUD {
         return false;
     }
 
-    public Usuario buscarUsuarioPorLoginESenha(String login, String senha) {
-        for (Usuario usuario : usuarios) {
-            if (usuario.getLogin().equals(login) && usuario.getPassword().equals(senha)) {
-                System.out.println("-----------------");
-                return usuario;
-            }
-        }
-        return null;
-    }
-
     public Usuario buscarUsuarioPorId(int usuarioId) {
         for (Usuario usuario : usuarios) {
             if (usuario.getUsuarioId() == usuarioId) {

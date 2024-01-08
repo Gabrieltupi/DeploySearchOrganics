@@ -1,11 +1,12 @@
 package modelo;
 
 import interfaces.Impressao;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Empresa implements Impressao {
-    private static int empresaId = 1;
-    private int idEmpresa;
+public class Empresa extends Usuario implements Impressao {
+
     private String nomeFantasia;
     private String cnpj;
     private String razaoSocial;
@@ -13,23 +14,18 @@ public class Empresa implements Impressao {
     private String setor;
 
     private ArrayList<Produto> produtos = new ArrayList<>();
-    private Usuario usuario;
 
-
-    public Empresa(String nomeFantasia, String cnpj, String razaoSocial, String inscricaoEstadual,
-                   String setor, Usuario usuario) {
-        this.idEmpresa = empresaId;
+    public Empresa(String login, String password, String nome, String sobrenome, Endereco endereco,
+                   LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
+                   String inscricaoEstadual, String setor) {
+        super(login, password, nome, sobrenome, endereco, dataNascimento);
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
         this.setor = setor;
-        this.usuario = usuario;
-
-        empresaId++;
     }
 
-    public int getId() { return idEmpresa; }
     public String getNomeFantasia() { return nomeFantasia; }
     public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
     public String getCnpj() { return cnpj; }
@@ -43,9 +39,6 @@ public class Empresa implements Impressao {
 
     public ArrayList<Produto> getProdutos() { return produtos; }
     public void setProdutos(ArrayList<Produto> produtos) { this.produtos = produtos; }
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-
     public boolean adicionarProduto(Produto produto){
         if(produto != null){
             produtos.add(produto);
@@ -74,10 +67,12 @@ public class Empresa implements Impressao {
 
     @Override
     public void imprimir() {
-        usuario.imprimir();
+        System.out.println("ID do Usuário: " + getId());
+        System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
+        System.out.println("Status: " + verificarStatus());
+        System.out.println("Data de nascimento " + getDataNascimento());
 
         System.out.println("\nDados da Empresa: \n");
-        System.out.println("ID da empresa: " + getId());
         System.out.println("Nome da empresa: " + getNomeFantasia());
         System.out.println("CNPJ da empresa: " + getCnpj());
         System.out.println("Razao Social da empresa: " + getRazaoSocial());

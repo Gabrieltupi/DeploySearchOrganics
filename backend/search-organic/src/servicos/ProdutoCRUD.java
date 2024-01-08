@@ -28,7 +28,6 @@ public class ProdutoCRUD {
 
     public Produto buscarProdutoPorId(int id) {
         for (Produto produto : produtos) {
-            System.out.println("Verificando Produto por Id:" + produto.getIdProduto());
             if (produto.getIdProduto() == id) {
                 System.out.println("Produto encontrado:" + produto.getIdProduto());
                 produto.imprimir();
@@ -42,7 +41,7 @@ public class ProdutoCRUD {
 
     public void listarProdutosPorCategoria(TipoCategoria categoria) {
         for (Produto produto : produtos) {
-            if (produto.getCategoria().equals(categoria)) {
+            if (produto.getCategoriaT().equals(categoria)) {
                 produto.imprimir();
             }
         }
