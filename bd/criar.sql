@@ -185,6 +185,7 @@ CREATE TABLE Produto
             REFERENCES Empresa (id_empresa)
 );
 
+-- Alter
 ALTER TABLE Usuario
     ADD CONSTRAINT FK_USUARIO_ENDERECO_ID FOREIGN KEY (id_endereco) REFERENCES Endereco (id_endereco);
 
