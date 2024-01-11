@@ -182,6 +182,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
                 empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
                 empresa.setSetor(res.getString("SETOR"));
                 empresa.setUsuarioId(res.getInt("USUARIO_ID"));
+                empresas.add(empresa);
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
