@@ -143,7 +143,6 @@ CREATE TABLE MontagemCarrinho
 CREATE TABLE CatalogoProduto
 (
     id_catalogo    INT PRIMARY KEY,
-    id_produto     INT           NOT NULL,
     tipo_categoria NUMBER(1) CHECK (tipo_categoria BETWEEN 1 AND 6),
     Nome           VARCHAR2(200),
     Descrição      VARCHAR2(255) NOT NULL
@@ -171,6 +170,7 @@ CREATE TABLE Cupom
 CREATE TABLE Produto
 (
     id_produto            INT PRIMARY KEY,
+    id_catalogo			  INT 			NOT NULL,
     id_empresa            INT           NOT NULL,
     nome                  VARCHAR2(200) NOT NULL,
     descricao             VARCHAR2(255) NOT NULL,
@@ -181,10 +181,14 @@ CREATE TABLE Produto
     unidade_medida        CHAR(15),
     CONSTRAINT FK_PRODUTO_EMPRESA_ID
         FOREIGN KEY (id_empresa)
-            REFERENCES Empresa (id_empresa)
+            REFERENCES Empresa (id_empresa),
+    CONSTRAINT FK_PRODUTO_CATALOGO_ID
+        FOREIGN KEY (id_catalogo)
+            REFERENCES CatalogoProduto (id_catalogo)
 );
 
 -- Alter
+
 ALTER TABLE Usuario
     ADD CONSTRAINT FK_USUARIO_ENDERECO_ID FOREIGN KEY (id_endereco) REFERENCES Endereco (id_endereco);
 
@@ -197,8 +201,7 @@ ALTER TABLE Pedido
 ALTER TABLE MontagemCarrinho
     ADD CONSTRAINT FK_MONTAGEM_PRODUTO_ID FOREIGN KEY (id_produto) REFERENCES Produto (id_produto);
 
-ALTER TABLE CatalogoProduto
-    ADD CONSTRAINT FK_CATALOGO_PRODUTO_ID FOREIGN KEY (id_produto) REFERENCES Produto (id_produto);
-
 ALTER TABLE OrdemPedido
     ADD CONSTRAINT FK_ORDEM_PRODUTO_ID FOREIGN KEY (id_produto) REFERENCES Produto (id_produto);
+
+   
