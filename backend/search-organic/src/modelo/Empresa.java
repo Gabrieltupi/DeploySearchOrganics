@@ -7,11 +7,13 @@ import java.util.ArrayList;
 
 public class Empresa extends Usuario implements Impressao {
 
+    private static int proximoId = 1;
     private String nomeFantasia;
     private String cnpj;
     private String razaoSocial;
     private String inscricaoEstadual;
     private String setor;
+    private int id_empresa;
 
     private ArrayList<Produto> produtos = new ArrayList<>();
 
@@ -19,6 +21,7 @@ public class Empresa extends Usuario implements Impressao {
                    LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
                    String inscricaoEstadual, String setor) {
         super(login, password, nome, sobrenome, endereco, dataNascimento);
+        this.id_empresa = gerarProximoId();
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
@@ -36,6 +39,13 @@ public class Empresa extends Usuario implements Impressao {
     public void setInscricaoEstadual(String inscricaoEstadual) { this.inscricaoEstadual = inscricaoEstadual; }
     public String getSetor() { return setor; }
     public void setSetor(String setor) { this.setor = setor; }
+    public int getId_empresa() {
+        return id_empresa;
+    }
+
+    private static synchronized int gerarProximoId() {
+        return proximoId++;
+    }
 
     public ArrayList<Produto> getProdutos() { return produtos; }
     public void setProdutos(ArrayList<Produto> produtos) { this.produtos = produtos; }
@@ -57,7 +67,7 @@ public class Empresa extends Usuario implements Impressao {
 
     public boolean removerProduto(int id){
         for(Produto x: produtos){
-            if(id == x.getIdProduto()){
+            if(id == x.getId_Produto()){
                 produtos.remove(x);
                 return true;
             }

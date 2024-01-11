@@ -28,8 +28,8 @@ public class ProdutoCRUD {
 
     public Produto buscarProdutoPorId(int id) {
         for (Produto produto : produtos) {
-            if (produto.getIdProduto() == id) {
-                System.out.println("Produto encontrado:" + produto.getIdProduto());
+            if (produto.getId_Produto() == id) {
+                System.out.println("Produto encontrado:" + produto.getId_Produto());
                 produto.imprimir();
                 System.out.println("-----------------");
                 return produto;
@@ -48,10 +48,10 @@ public class ProdutoCRUD {
     }
 
     public void atualizarProduto(int id, String novoNome, String novaDescricao, BigDecimal novoPreco, BigDecimal novaQuantidade,
-                                 TipoCategoria novaCategoria, double novaTaxa, UnidadeMedida novaUnidadeMedida) {
+                                 TipoCategoria novaCategoria, float novaTaxa, UnidadeMedida novaUnidadeMedida) {
         for (Produto produto : produtos) {
-            if (produto.getIdProduto() == id) {
-                System.out.println("Produto encontrado, atualize as informações: " + produto.getIdProduto());
+            if (produto.getId_empresa() == id) {
+                System.out.println("Produto encontrado, atualize as informações: " + produto.getId_Produto());
                 produto.setNome(novoNome);
                 produto.setDescricao(novaDescricao);
                 produto.setPreco(novoPreco);
@@ -69,7 +69,7 @@ public class ProdutoCRUD {
     public void deletarProduto(int id) {
         Produto produtoRemover = null;
         for (Produto produto : produtos) {
-            if (produto.getIdProduto() == id) {
+            if (produto.getId_Produto() == id) {
                 produtoRemover = produto;
                 break;
             }
@@ -83,7 +83,7 @@ public class ProdutoCRUD {
 
     public void listarProdutosLoja(int idLoja) {
         for (Produto produto : produtos) {
-            if (idLoja == produto.getEmpresaId()) {
+            if (idLoja == produto.getId_empresa()) {
                 System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " quantidade: " + produto.getQuantidade());
                 System.out.println("Descrição: " + produto.getDescricao());
                 System.out.println();
