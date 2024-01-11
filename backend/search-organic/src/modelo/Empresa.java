@@ -20,15 +20,24 @@ public class Empresa extends Usuario implements Impressao {
     public Empresa(String login, String password, String nome, String sobrenome, Endereco endereco,
                    LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
                    String inscricaoEstadual, String setor) {
-        super(login, password, nome, sobrenome, endereco, dataNascimento);
+        super(nome, sobrenome, endereco,dataNascimento,login, password);
+        this.nomeFantasia = nomeFantasia;
         this.id_empresa = gerarProximoId();
+        this.cnpj = cnpj;
+        this.razaoSocial = razaoSocial;
+        this.inscricaoEstadual = inscricaoEstadual;
+        this.setor = setor;
+    }
+    public Empresa(String login, String password, String nome,String cpf, String email, String sobrenome, Endereco endereco,
+                   LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
+                   String inscricaoEstadual, String setor) {
+        super(nome, sobrenome, endereco,cpf, dataNascimento,email,login, password);;
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
         this.setor = setor;
     }
-
     public String getNomeFantasia() { return nomeFantasia; }
     public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
     public String getCnpj() { return cnpj; }

@@ -1,18 +1,41 @@
 package modelo;
 import interfaces.Impressao;
-
 import java.time.LocalDate;
-import java.util.Date;
-public class Usuario extends DadosPessoais implements Impressao {
+
+public class Usuario implements Impressao {
     private  static int usuarioId = 1;
     private int idUsuario = 1;
+    private String nome;
+    private String sobrenome ;
+    private Endereco endereco;
+    private String cpf;
+    private LocalDate dataNascimento;
+    private String email;
     private String login;
     private String password;
     private boolean ativo = true;
 
 
-    public Usuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) {
-        super(nome, sobrenome, endereco, dataNascimento);
+    public Usuario(String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento, String login, String password){
+        this.nome = this.nome;
+        this.sobrenome = this.sobrenome;
+        this.endereco = this.endereco;
+        this.cpf = cpf;
+        this.dataNascimento = this.dataNascimento;
+        this.email = email;
+        this.login = this.login;
+        this.password = this.password;
+        this.ativo = true;
+        idUsuario = usuarioId;
+        usuarioId++;
+    }
+    public Usuario(String nome, String sobrenome, Endereco endereco, String cpf, LocalDate dataNascimento, String email, String login, String password) {
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.endereco = endereco;
+        this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
+        this.email = email;
         this.login = login;
         this.password = password;
         idUsuario = usuarioId;
@@ -22,31 +45,62 @@ public class Usuario extends DadosPessoais implements Impressao {
     public int getUsuarioId() {
         return usuarioId;
     }
-
     public void setUsuarioId(int usuarioId) {
         this.usuarioId = usuarioId;
     }
+    public String getNome(){
+        return nome;
+    }
+    public void setNome(String nome){
+        this.nome=nome;
+    }
+    public String getSobrenome(){
+        return sobrenome;
+    }
+    public void setSobrenome(String sobrenome){
+        this.sobrenome=sobrenome;
+    }
+    public Endereco getEndereco(){
+        return endereco;
+    }
+    public void setEndereco(Endereco endereco){
+        this.endereco=endereco;
+    }
+    public String getCpf(){
+        return cpf;
+    }
+    public void setCpf(String cpf){
+        this.cpf=cpf;
+    }
 
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+    public String getEmail(){
+        return email;
+    }
+    public void setEmail(String email){
+        this.email=email;
+    }
     public String getLogin() {
         return login;
     }
-
     public void setLogin(String login) {
         this.login = login;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
-
     public boolean isAtivo() {
         return ativo;
     }
-
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }

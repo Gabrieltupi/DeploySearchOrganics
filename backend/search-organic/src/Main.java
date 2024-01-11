@@ -11,11 +11,9 @@ import utils.TipoCategoria;
 import utils.validadores.TipoEntrega;
 
 import java.math.BigDecimal;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -24,9 +22,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         GeradorSeeds geradorSeeds = new GeradorSeeds();
-        ConsumidorCRUD consumidorCRUD = new ConsumidorCRUD();
+        UsuarioCRUD usuarioCRUD=new UsuarioCRUD();
         CupomCRUD cupomCRUD = new CupomCRUD();
-        DadosPessoaisCRUD dadosPessoaisCRUD = new DadosPessoaisCRUD();
         EmpresaCRUD empresaCRUD = new EmpresaCRUD();
         EnderecoCRUD enderecoCRUD = new EnderecoCRUD();
         PedidoCRUD pedidoCRUD = new PedidoCRUD();
@@ -34,7 +31,7 @@ public class Main {
 
         boolean sair = false;
 
-        geradorSeeds.gerarSeeds(enderecoCRUD, consumidorCRUD, produtoCRUD, empresaCRUD, cupomCRUD);
+        geradorSeeds.gerarSeeds(enderecoCRUD,usuarioCRUD, produtoCRUD, empresaCRUD, cupomCRUD);
 
         while (!sair) {
             System.out.println("""
@@ -48,7 +45,7 @@ public class Main {
 
                 switch (escolha) {
                     case 1:
-                        Consumidor consumidor = login(scanner, consumidorCRUD);
+                        Usuario consumidor = login(scanner, usuarioCRUD);
                         Carrinho carrinho = new Carrinho(consumidor);
                         if (consumidor != null) {
                             System.out.println("Bem vindo " + consumidor.getNome());
@@ -328,7 +325,7 @@ public class Main {
         }
     }
 
-    private static Consumidor login(Scanner scanner, ConsumidorCRUD consumidorCRUD) {
+    private static Consumidor login(Scanner scanner, UsuarioCRUD consumidorCRUD) {
         System.out.println("Digite seu login: ");
         String login = scanner.nextLine();
 
