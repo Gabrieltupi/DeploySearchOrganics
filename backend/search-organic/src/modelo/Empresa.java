@@ -18,14 +18,23 @@ public class Empresa extends Usuario implements Impressao {
     public Empresa(String login, String password, String nome, String sobrenome, Endereco endereco,
                    LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
                    String inscricaoEstadual, String setor) {
-        super(login, password, nome, sobrenome, endereco, dataNascimento);
+        super(nome, sobrenome, endereco,dataNascimento,login, password);
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
         this.setor = setor;
     }
-
+    public Empresa(String login, String password, String nome,String cpf, String email, String sobrenome, Endereco endereco,
+                   LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
+                   String inscricaoEstadual, String setor) {
+        super(nome, sobrenome, endereco,cpf, dataNascimento,email,login, password);;
+        this.nomeFantasia = nomeFantasia;
+        this.cnpj = cnpj;
+        this.razaoSocial = razaoSocial;
+        this.inscricaoEstadual = inscricaoEstadual;
+        this.setor = setor;
+    }
     public String getNomeFantasia() { return nomeFantasia; }
     public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
     public String getCnpj() { return cnpj; }
@@ -67,7 +76,7 @@ public class Empresa extends Usuario implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do Usuário: " + getId());
+        System.out.println("ID do Usuário: " + getUsuarioId());
         System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
         System.out.println("Status: " + verificarStatus());
         System.out.println("Data de nascimento " + getDataNascimento());
