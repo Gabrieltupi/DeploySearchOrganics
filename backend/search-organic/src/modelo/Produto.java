@@ -8,21 +8,25 @@ import java.math.BigDecimal;
 
 public class Produto implements Impressao {
     private static int produtoId = 1;
-    private int idProduto;
-    private int empresaId;
+    private int id_Produto;
+    private int id_empresa;
     private String nome;
     private String descricao;
     private BigDecimal preco;
     private BigDecimal quantidade;
+    private Empresa empresa;
     private TipoCategoria categoria;
     private double taxa;
     private UnidadeMedida unidadeMedida;
 
-    public Produto(int empresaId, String nome, String descricao, BigDecimal preco,
+
+
+    public Produto(int id_Produto, String nome, String descricao, BigDecimal preco,
                    BigDecimal quantidade, TipoCategoria categoria, double taxa,
-                   UnidadeMedida unidadeMedida) {
-        this.idProduto = produtoId;
-        this.empresaId = empresaId;
+                   UnidadeMedida unidadeMedida, Empresa empresa) {
+        this.id_Produto = id_Produto;
+        this.id_empresa = empresa.getId_empresa();
+        this.empresa = empresa;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
@@ -30,15 +34,36 @@ public class Produto implements Impressao {
         this.categoria = categoria;
         this.taxa = taxa;
         this.unidadeMedida = unidadeMedida;
-        this.produtoId++;
+        gerarProximoId();
     }
 
-    public int getIdProduto() {
-        return idProduto;
+    private static synchronized int gerarProximoId() {
+        return produtoId++;
     }
 
-    public int getEmpresaId(){
-        return empresaId;
+    public int getIdEmpresa() {
+        return empresa != null ? empresa.getId_empresa() : 0;
+    }
+
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public int getId_Produto() {
+        return id_Produto;
+    }
+
+    public void setId_Produto(int id_Produto) {
+        this.id_Produto = id_Produto;
+    }
+
+    public int getId_empresa() {
+        return id_empresa;
+    }
+
+    public void setId_empresa(int id_empresa) {
+        this.id_empresa = id_empresa;
     }
 
     public String getNome() {
@@ -92,7 +117,7 @@ public class Produto implements Impressao {
         return taxa;
     }
 
-    public void setTaxa(double taxa) {
+    public void setTaxa(float taxa) {
         this.taxa = taxa;
     }
 
@@ -106,8 +131,8 @@ public class Produto implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do produto: " + getIdProduto());
-        System.out.println("ID da empresa: " + getEmpresaId());
+        System.out.println("ID do produto: " + getId_Produto());
+        System.out.println("ID da empresa: " + getId_empresa());
         System.out.println("Categoria do produto: " + getCategoria());
         System.out.print("Nome do produto: " + getNome());
         System.out.print("   Preço do produto: R$: " + getPreco());
@@ -115,6 +140,7 @@ public class Produto implements Impressao {
         System.out.println(getUnidadeMedida());
         System.out.println("Descrição do produto: " + getDescricao());
         System.out.println("Categoria do produto: " + getCategoria());
+        System.out.println("Taxa de servico: " + getTaxa());
         System.out.println("-------------------------------------------------------------");
     }
 }

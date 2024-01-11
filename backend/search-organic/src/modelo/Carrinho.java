@@ -71,11 +71,11 @@ public class Carrinho {
     }
 
     public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
-            this.produtos.put(produto.getIdProduto(), produto);
-            this.quantidadeProduto.put(produto.getIdProduto(), quantidade);
-            atualizarValorTotal();
-            produto.setQuantidade(produto.getQuantidade().subtract(quantidade));
-            return true;
+        this.produtos.put(produto.getId_Produto(), produto);
+        this.quantidadeProduto.put(produto.getId_Produto(), quantidade);
+        atualizarValorTotal();
+        produto.setQuantidade(produto.getQuantidade().subtract(quantidade));
+        return true;
     }
 
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
