@@ -126,7 +126,7 @@ public class Carrinho {
                                 Endereco endereco, Cupom cupom, TipoEntrega tipoEntrega){
 
         if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
-            pedido = new Pedido(usuario.getId(), produtos, quantidadeProduto,
+            pedido = new Pedido(usuario.getUsuarioId(), produtos, quantidadeProduto,
                     formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
             pedido.imprimir();
         } else {

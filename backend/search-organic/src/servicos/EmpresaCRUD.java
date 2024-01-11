@@ -39,7 +39,7 @@ public class EmpresaCRUD {
                     usuario.getDataNascimento(), nomeFantasia, cnpj, razaoSocial,
                     inscricaoEstadual, setor);
             empresas.add(novaEmpresa);
-            return novaEmpresa.getId();
+            return novaEmpresa.getUsuarioId();
         } else {
             System.out.println("CNPJ inválido. A empresa não foi criada.");
         }
@@ -48,7 +48,7 @@ public class EmpresaCRUD {
 
     public static void exibirEmpresa(int id) {
         for (Empresa empresa : empresas) {
-            if (empresa.getId() == id) {
+            if (empresa.getUsuarioId() == id) {
                 empresa.imprimir();
                 return;
             }
@@ -69,7 +69,7 @@ public class EmpresaCRUD {
                                  Usuario novoUsuario) {
 
         for (Empresa empresa : empresas) {
-            if (empresa.getId() == id) {
+            if (empresa.getUsuarioId() == id) {
                 if (ValidadorCNPJ.validarCNPJ(novoCnpj)) {
                     empresa.setLogin(novoUsuario.getLogin());
                     empresa.setPassword(novoUsuario.getPassword());
@@ -97,7 +97,7 @@ public class EmpresaCRUD {
         Iterator<Empresa> iterator = empresas.iterator();
         while (iterator.hasNext()) {
             Empresa empresa = iterator.next();
-            if (empresa.getId() == id) {
+            if (empresa.getUsuarioId() == id) {
                 iterator.remove();
                 System.out.println("Empresa com o ID " + id + " excluída.");
                 return;
@@ -109,7 +109,7 @@ public class EmpresaCRUD {
     // Opção 2.1 e 3.1
     public boolean imprimirProdutosDaLoja(int id) {
         for (Empresa empresa : empresas) {
-            if (id == empresa.getId()) {
+            if (id == empresa.getUsuarioId()) {
                 for (Produto produto : empresa.getProdutos()) {
                     System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
                     System.out.println("-------------------------------------------------------------");
@@ -126,7 +126,7 @@ public class EmpresaCRUD {
         for (Empresa empresa : empresas) {
             for (Produto produto : empresa.getProdutos()) {
                 if (produto.getCategoriaT().equals(categoria)) {
-                    System.out.println("id da loja: " + empresa.getId() + " Nome: " + produto.getNome() + " Preço: " + produto.getPreco());
+                    System.out.println("id da loja: " + empresa.getUsuarioId() + " Nome: " + produto.getNome() + " Preço: " + produto.getPreco());
                     System.out.println("-------------------------------------------------------------");
                 }
             }
@@ -136,7 +136,7 @@ public class EmpresaCRUD {
     // Opção 2.1.2 e 2.1.3
     public boolean imprimirProdutosDaLojaPorCategoria(int id, TipoCategoria categoria) {
         for (Empresa empresa : empresas) {
-            if (id == empresa.getId()) {
+            if (id == empresa.getUsuarioId()) {
                 for (Produto produto : empresa.getProdutos()) {
                     if (produto.getCategoriaT().equals(categoria)) {
                         System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());

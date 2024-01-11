@@ -12,11 +12,11 @@ public class UsuarioCRUD {
     private static List<Usuario> usuarios = new ArrayList<>();
     private static int proximoId = 1;
 
-    public void criarUsuario(String login, String password, String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento) throws UsuarioJaCadastradoException {
+    public void criarUsuario(String nome, String sobrenome,Endereco endereco, String cpf, LocalDate dataNascimento, String email, String login, String password, boolean ativo) throws UsuarioJaCadastradoException {
         if (verificarUsuarioCadastrado(login)) {
             throw new UsuarioJaCadastradoException();
         }
-        criarUsuario(new Usuario(login, password, nome, sobrenome, endereco, dataNascimento));
+        criarUsuario(new Usuario(nome, sobrenome, endereco,cpf,dataNascimento,email,login, password));
     }
 
     public void criarUsuario(Usuario usuario) throws UsuarioJaCadastradoException {
