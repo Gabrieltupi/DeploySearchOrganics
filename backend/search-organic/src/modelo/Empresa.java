@@ -17,12 +17,12 @@ public class Empresa extends Usuario implements Impressao {
 
     private ArrayList<Produto> produtos = new ArrayList<>();
 
+
     public Empresa(String login, String password, String nome, String sobrenome, Endereco endereco,
                    LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
                    String inscricaoEstadual, String setor) {
         super(nome, sobrenome, endereco,dataNascimento,login, password);
         this.nomeFantasia = nomeFantasia;
-        this.id_empresa = gerarProximoId();
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
@@ -50,6 +50,10 @@ public class Empresa extends Usuario implements Impressao {
     public void setSetor(String setor) { this.setor = setor; }
     public int getId_empresa() {
         return id_empresa;
+    }
+
+    public void setId_empresa(int id_empresa) {
+        this.id_empresa = id_empresa;
     }
 
     private static synchronized int gerarProximoId() {
