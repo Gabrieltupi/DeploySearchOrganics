@@ -63,3 +63,10 @@ CREATE SEQUENCE seq_produto
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
+
+  CONSTRAINT "FK_USUARIO"
+    FOREIGN KEY ("id_usuario")
+      REFERENCES "Usuario"("id_usuario")
+);
+
+CHECK ("ativo" IN ('T', 'F')),
