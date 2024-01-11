@@ -86,7 +86,7 @@ public class Empresa extends Usuario implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do Usuário: " + getId());
+        System.out.println("ID do da Empresa: " + getId_empresa());
         System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
         System.out.println("Status: " + verificarStatus());
         System.out.println("Data de nascimento " + getDataNascimento());
