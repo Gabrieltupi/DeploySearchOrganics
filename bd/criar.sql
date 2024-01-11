@@ -71,8 +71,7 @@ CREATE TABLE Usuario
     nome           VARCHAR2(100)       NOT NULL,
     sobrenome      VARCHAR2(100)       NOT NULL,
     email          VARCHAR2(50)        NOT NULL,
-    dataNascimento DATE                NOT NULL,
-    CONSTRAINT FK_USUARIO_ENDERECO_ID FOREIGN KEY (id_endereco) REFERENCES Endereco (id_endereco) -- ALTER TABLE dps
+    dataNascimento DATE                NOT NULL
 );
 
 CREATE TABLE Endereco
