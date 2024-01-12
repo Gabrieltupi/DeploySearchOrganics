@@ -65,7 +65,7 @@ CREATE TABLE Usuario
     id_usuario     INT PRIMARY KEY,
     id_endereco    INT,
     login          VARCHAR2(50) UNIQUE NOT NULL,
-    senha          VARCHAR2(20) UNIQUE NOT NULL,
+    senha          VARCHAR2(20)        NOT NULL,
     cpf            CHAR(11) UNIQUE     NOT NULL,
     ativo          CHAR(1)             NOT NULL CHECK (ativo IN ('T', 'F')),
     nome           VARCHAR2(100)       NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE Empresa
     cnpj              CHAR(14) UNIQUE NOT NULL,
     razaoSocial       VARCHAR2(150)   NOT NULL,
     inscricaoEstadual CHAR(9),
-    Campo             VARCHAR2(100)
+    setor             VARCHAR2(100)
 );
 
 CREATE TABLE Pedido
@@ -170,7 +170,7 @@ CREATE TABLE Cupom
 CREATE TABLE Produto
 (
     id_produto            INT PRIMARY KEY,
-    id_catalogo			  INT 			NOT NULL,
+    id_catalogo           INT           NOT NULL,
     id_empresa            INT           NOT NULL,
     nome                  VARCHAR2(200) NOT NULL,
     descricao             VARCHAR2(255) NOT NULL,
