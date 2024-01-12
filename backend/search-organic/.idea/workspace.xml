@@ -5,6 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5037af7c-51ae-43fa-8658-d906596709d8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Produto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Produto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/PedidoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/PedidoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/ProdutoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/ProdutoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/UsuarioCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/UsuarioService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repository/EmpresaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/repository/EmpresaRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,9 +52,9 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "refactor/service",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/wlad_/Documents/vem-ser/vs13-squad1-SEARCH-ORGANIC/backend/search-organic/ojdbc8.jar",
+    "last_opened_file_path": "C:/Users/aleso/OneDrive/Área de Trabalho/organic/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
