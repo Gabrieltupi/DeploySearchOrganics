@@ -117,7 +117,7 @@ public class Produto implements Impressao {
         return taxa;
     }
 
-    public void setTaxa(float taxa) {
+    public void setTaxa(double taxa) {
         this.taxa = taxa;
     }
 
