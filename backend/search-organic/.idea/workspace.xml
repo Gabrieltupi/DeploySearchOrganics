@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5037af7c-51ae-43fa-8658-d906596709d8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modelo/Cupom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Cupom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modelo/Empresa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Empresa.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -18,8 +16,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
