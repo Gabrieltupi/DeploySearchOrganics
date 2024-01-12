@@ -7,7 +7,6 @@ import java.util.List;
 
 public class EnderecoRepository implements Repository<Integer, Endereco> {
 
-
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SUA_SEQUENCIA.NEXTVAL FROM DUAL";
@@ -26,7 +25,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
     public Endereco adicionar(Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = DriverManager.getConnection("vemser-dbc.dbccompany.com.br", "VS_13_EQUIPE_1", "oracle");
+            con = ConexaoBancoDeDados.getConnection();
             Integer proximoId = getProximoId(con);
 
             String sql = "INSERT INTO ENDERECO (id_endereco, rua, numero, complemento, cep, cidade, estado, pais, regiao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -54,21 +53,15 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ConexaoBancoDeDados.closeConnection(con);
         }
     }
 
-
-
     @Override
     public boolean remover(Integer id) throws BancoDeDadosException {
-        try (Connection con = DriverManager.getConnection("vemser-dbc.dbccompany.com.br", "VS_13_EQUIPE_1", "oracle")) {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
             String sql = "DELETE FROM ENDERECO WHERE id_endereco = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setInt(1, id);
@@ -85,13 +78,16 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
+        } finally {
+            ConexaoBancoDeDados.closeConnection(con);
         }
     }
 
-
     @Override
     public boolean editar(Integer id, Endereco endereco) throws BancoDeDadosException {
-        try (Connection con = DriverManager.getConnection("vemser-dbc.dbccompany.com.br", "VS_13_EQUIPE_1", "oracle")) {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
             String sql = "UPDATE ENDERECO SET rua = ?, numero = ?, complemento = ?, cep = ?, cidade = ?, estado = ?, pais = ?, regiao = ? WHERE id_endereco = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setString(1, endereco.getLogradouro());
@@ -116,15 +112,18 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
+        } finally {
+            ConexaoBancoDeDados.closeConnection(con);
         }
     }
-
 
     @Override
     public List<Endereco> listar() throws BancoDeDadosException {
         List<Endereco> enderecos = new ArrayList<>();
 
-        try (Connection con = DriverManager.getConnection("vemser-dbc.dbccompany.com.br", "VS_13_EQUIPE_1", "oracle")) {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM ENDERECO";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 try (ResultSet rs = pstd.executeQuery()) {
@@ -147,6 +146,8 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
+        } finally {
+            ConexaoBancoDeDados.closeConnection(con);
         }
 
         return enderecos;
