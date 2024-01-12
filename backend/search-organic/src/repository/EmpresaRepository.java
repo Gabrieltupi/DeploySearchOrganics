@@ -43,7 +43,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
                 resultados++;
             }
 
-            if(resultados > 0) {
+            if(resultados == 0) {
                 System.err.println("Usuario não cadastrado");
                 return empresa;
             }
