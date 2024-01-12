@@ -1,4 +1,5 @@
 package modelo;
+import utils.TipoAtivo;
 import utils.UnidadeMedida;
 import interfaces.CupomServicos;
 import interfaces.Impressao;
@@ -8,11 +9,11 @@ public class Cupom implements Impressao, CupomServicos {
     private static int cupomIdCounter = 1;
     private final int cupomId;
     private String nomeCupom;
-    private boolean ativo;
+    private TipoAtivo ativo;
     private String descricao;
     private BigDecimal taxaDeDesconto;
 
-    public Cupom(int cupomId, String nomeCupom, boolean ativo, String descricao, BigDecimal taxaDeDesconto) {
+    public Cupom(int cupomId, String nomeCupom, TipoAtivo ativo, String descricao, BigDecimal taxaDeDesconto) {
         this.cupomId = cupomId;
         this.nomeCupom = nomeCupom;
         this.ativo = ativo;
@@ -31,7 +32,7 @@ public class Cupom implements Impressao, CupomServicos {
 
     @Override
     public boolean eValido() {
-        if (this.ativo) {
+        if (this.ativo == TipoAtivo.S) {
             System.out.println("O cupom é válido.");
             return true;
         } else {
@@ -43,18 +44,18 @@ public class Cupom implements Impressao, CupomServicos {
 
     @Override
     public void ativarCupom() {
-        if (this.ativo) {
+        if (this.ativo.getStatus()) {
             System.out.println("O cupom já está ativo!");
         } else {
-            this.ativo = true;
+            this.ativo = TipoAtivo.S;
             System.out.println("O cupom foi ativado!");
         }
     }
 
     @Override
     public boolean desativarCupom() {
-        if (this.ativo) {
-            this.ativo = false;
+        if (this.ativo.getStatus()) {
+            this.ativo = TipoAtivo.N;
             System.out.println("O cupom agora está inativo.");
             return true;
         } else {
@@ -85,11 +86,11 @@ public class Cupom implements Impressao, CupomServicos {
     }
 
     public boolean isAtivo() {
-        return ativo;
+        return ativo.getStatus();
     }
 
     public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+        this.ativo = TipoAtivo.fromBoolean(ativo);
     }
 
     public String getDescricao() {

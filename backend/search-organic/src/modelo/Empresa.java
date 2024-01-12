@@ -8,7 +8,8 @@ import java.util.ArrayList;
 public class Empresa extends Usuario implements Impressao {
 
     private static int proximoId = 1;
-    private String nomeFantasia;
+    private String nomeFantasia
+            ;
     private String cnpj;
     private String razaoSocial;
     private String inscricaoEstadual;
