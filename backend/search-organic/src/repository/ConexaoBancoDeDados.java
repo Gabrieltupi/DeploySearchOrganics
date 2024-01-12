@@ -21,4 +21,13 @@ public class ConexaoBancoDeDados {
 
         return con;
     }
+
+    public static void closeConnection(Connection connection) {
+        try {
+            if (connection != null)
+                connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
