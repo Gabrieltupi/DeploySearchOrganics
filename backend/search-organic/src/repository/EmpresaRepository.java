@@ -198,6 +198,9 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
         }
         return empresas;
     }
+<<<<<<< HEAD
+}
+=======
 
     public Empresa buscaPorId(Integer id) throws BancoDeDadosException {
         Connection con = null;
@@ -240,3 +243,4 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
 
     }
 
+>>>>>>> develop

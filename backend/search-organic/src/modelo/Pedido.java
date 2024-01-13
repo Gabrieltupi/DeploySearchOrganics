@@ -22,6 +22,8 @@ public class Pedido implements Impressao {
     private LocalDate inicioEntrega;
     private TipoEntrega tipoEntrega;
     private ArrayList<ProdutoCarrinho> produtos;
+
+    private Status
     private Cupom cupom;
     private BigDecimal valorFrete = new BigDecimal(0);
 

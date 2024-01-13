@@ -32,7 +32,7 @@ public class CupomServicos {
     public void imprimirCuponsDisponiveis() {
         try {
             for (Cupom cupom : cupons) {
-                if (cupom.isAtivo()) {
+                if (cupom.isAtivo().equals("S")) {
                     System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
                             cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
                 }
