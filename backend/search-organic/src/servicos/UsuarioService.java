@@ -1,94 +1,88 @@
 package servicos;
 
+import exceptions.BancoDeDadosException;
+import exceptions.SenhaIncorretaException;
 import exceptions.UsuarioJaCadastradoException;
 import modelo.Usuario;
-import modelo.Endereco;
+import repository.UsuarioRepository;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioService {
-    private static List<Usuario> usuarios = new ArrayList<>();
-    private static int proximoId = 1;
 
-    public void criarUsuario(Usuario usuario) throws UsuarioJaCadastradoException {
+    private UsuarioRepository usuarioRepository;
+
+    public UsuarioService() {
+        this.usuarioRepository = new UsuarioRepository();
+    }
+
+    public void criarUsuario(Usuario usuario) throws BancoDeDadosException{
         try {
-            if (verificarUsuarioCadastrado(usuario.getLogin())) {
-                throw new UsuarioJaCadastradoException();
-            }
-            criarUsuario(new Usuario(usuario.getNome(), usuario.getSobrenome(),usuario.getEndereco(),usuario.getCpf(),
-                    usuario.getDataNascimento(), usuario.getEmail(), usuario.getLogin(), usuario.getPassword()));
-            usuario.setUsuarioId(proximoId++);
-            usuarios.add(usuario);
-            System.out.println("-----------------");
-
-        } catch (UsuarioJaCadastradoException e) {
-            System.out.println("Usuário já cadastrado" + e.getMessage());
+            usuarioRepository.adicionar(usuario);
+            System.out.println("Usuário criado com sucesso!");
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao criar usuário: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
             System.out.println("Erro: " + e.getMessage());
             e.printStackTrace();
         }
     }
-    private boolean verificarUsuarioCadastrado(String login) {
-        for (Usuario usuario : usuarios) {
-            if (usuario.getLogin().equalsIgnoreCase(login)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    public Usuario buscarUsuarioPorId(int usuarioId) {
-        try {
-            for (Usuario usuario : usuarios) {
-                if (usuario.getUsuarioId() == usuarioId) {
-                    return usuario;
-                }
+    public Usuario autenticar(String login, String senha){
+        try{
+            Usuario usuario = usuarioRepository.buscaPorLogin(login);
+            if(!(usuario.getPassword().equals(senha))){
+                throw new SenhaIncorretaException();
             }
-        } catch (Exception e) {
-            System.out.println("Erro ao buscar usuário: " + e.getMessage());
-            e.printStackTrace();
+
+            return usuario;
+        } catch (SenhaIncorretaException senhaIncorrExce) {
+            throw new RuntimeException(senhaIncorrExce.getMessage());
+        } catch (BancoDeDadosException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public void exibirTodos() {
         try {
-            for (Usuario usuario : usuarios) {
+            List<Usuario> usuarios = usuarioRepository.listar();
+            usuarios.forEach(usuario -> {
                 usuario.imprimir();
                 System.out.println("-----------------");
-            }
-        } catch (Exception e){
-            System.out.println("Erro ao exibir usuários" + e.getMessage());
+            });
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao exibir usuários: " + e.getMessage());
+            e.printStackTrace();
         }
-}
+    }
 
     public void editarUsuario(int usuarioId, Usuario usuarioEditado) {
         try {
-            for (Usuario usuario : usuarios) {
-                if (usuario.getUsuarioId() == usuarioId) {
-                    usuario.setLogin(usuarioEditado.getLogin());
-                    usuario.setPassword(usuarioEditado.getPassword());
-                    usuario.setNome(usuarioEditado.getNome());
-                    usuario.setSobrenome(usuarioEditado.getSobrenome());
-                    usuario.setEndereco(usuarioEditado.getEndereco());
-                    usuario.setDataNascimento(usuarioEditado.getDataNascimento());
-                    System.out.println("Edição realizada com sucesso!");
-                    return;
-                }
+            boolean usuarioEditadoComSucesso = usuarioRepository.editar(usuarioId, usuarioEditado);
+            if (usuarioEditadoComSucesso) {
+                System.out.println("Usuário editado com sucesso!");
+            } else {
+                System.out.println("Usuário não encontrado");
             }
-            System.out.println("Usuário não encontrado");
-        } catch (Exception e) {
-            System.out.println(" Erro ao editar usuário" + e.getMessage());
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao editar usuário: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
     public void removerUsuario(int usuarioId) {
-        try{
-        usuarios.removeIf(usuario -> usuario.getUsuarioId() == usuarioId);
-        } catch (Exception e) {
-            System.out.println("Erro ao remover usuário" + e.getMessage());
+        try {
+            boolean usuarioRemovido = usuarioRepository.remover(usuarioId);
+            if (usuarioRemovido) {
+                System.out.println("Usuário removido com sucesso!");
+            } else {
+                System.out.println("Usuário não encontrado");
+            }
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao remover usuário: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
+

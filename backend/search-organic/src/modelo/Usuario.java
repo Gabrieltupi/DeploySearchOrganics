@@ -3,8 +3,8 @@ import interfaces.Impressao;
 import java.time.LocalDate;
 
 public class Usuario implements Impressao {
-    private  static int usuarioId = 1;
-    private int idUsuario = 1;
+    private  Integer idUsuario;
+    private int idEndereco;
     private String nome;
     private String sobrenome ;
     private Endereco endereco;
@@ -29,8 +29,7 @@ public class Usuario implements Impressao {
         this.login = this.login;
         this.password = this.password;
         this.ativo = true;
-        idUsuario = usuarioId;
-        usuarioId++;
+
     }
     public Usuario(String nome, String sobrenome, Endereco endereco, String cpf, LocalDate dataNascimento, String email, String login, String password) {
         this.nome = nome;
@@ -41,15 +40,13 @@ public class Usuario implements Impressao {
         this.email = email;
         this.login = login;
         this.password = password;
-        idUsuario = usuarioId;
-        usuarioId++;
     }
 
-    public int getUsuarioId() {
-        return usuarioId;
+    public int getIdUsuario() {
+        return idUsuario;
     }
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
     }
     public String getNome(){
         return nome;
@@ -106,6 +103,12 @@ public class Usuario implements Impressao {
     }
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+    public int getIdEndereco() {
+        return idEndereco;
+    }
+    public void setIdEndereco(int idEndereco) {
+        this.idEndereco = idEndereco;
     }
 
     public String verificarStatus() {
