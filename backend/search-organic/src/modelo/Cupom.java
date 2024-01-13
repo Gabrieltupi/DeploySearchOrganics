@@ -11,16 +11,26 @@ public class Cupom implements Impressao, CupomServicos {
     private TipoAtivo ativo;
     private String descricao;
     private BigDecimal taxaDeDesconto;
+    private Integer idEmpresa;
 
-    public Cupom(int cupomId, String nomeCupom, TipoAtivo ativo, String descricao, BigDecimal taxaDeDesconto) {
+    public Cupom(){}
+
+    public Cupom(int cupomId, String nomeCupom, TipoAtivo ativo, String descricao, BigDecimal taxaDeDesconto, Integer idEmpresa) {
         this.cupomId = cupomId;
         this.nomeCupom = nomeCupom;
         this.ativo = ativo;
         this.descricao = descricao;
         this.taxaDeDesconto = taxaDeDesconto;
+        this.idEmpresa = idEmpresa;
     }
 
-    public Cupom(){}
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
 
     @Override
     public void imprimir() {

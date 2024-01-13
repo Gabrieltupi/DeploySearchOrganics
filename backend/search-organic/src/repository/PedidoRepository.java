@@ -156,8 +156,7 @@ public class PedidoRepository implements Repository<Integer, Pedido>{
                 pedido.setEndereco(new EnderecoRepository().buscarPorId(res.getInt("ID_ENDERECO")));
                 pedido.setCupom(new CupomRepository().buscarPorId(res.getInt("ID_CUPOM")));
                 pedido.setFormaPagamento(FormaPagamento.valueOf(res.getString("FORMA_PAGAMENTO")));
-                pedido.setStatusPedido(StatusPedido.valueOf(res.getString("STATUS_PEDIDO"));
-
+                pedido.setStatusPedido(StatusPedido.valueOf(res.getString("STATUS_PEDIDO")));
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
