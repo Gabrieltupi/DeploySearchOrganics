@@ -57,10 +57,6 @@ private ProdutoRepository produtoRepository;
     }
 
 
-
-
-
-
     public Produto buscarProdutoPorId(int id) {
         try {
             Produto produto = produtoRepository.buscarProdutoPorId(id);
