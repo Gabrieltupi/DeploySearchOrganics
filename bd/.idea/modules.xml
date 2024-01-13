@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/vs13-squad1-SEARCH-ORGANIC.iml" filepath="$PROJECT_DIR$/vs13-squad1-SEARCH-ORGANIC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/bd.iml" filepath="$PROJECT_DIR$/.idea/bd.iml" />
     </modules>
   </component>
 </project>
