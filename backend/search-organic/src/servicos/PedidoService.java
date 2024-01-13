@@ -1,6 +1,7 @@
 package servicos;
 
 import modelo.Pedido;
+import repository.PedidoRepository;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,8 @@ public class PedidoService {
     private ArrayList<Pedido> pedidos = new java.util.ArrayList<>();
 
     public void criarPedido(){}
+
+    private PedidoRepository pedidoRepository = new PedidoRepository();
 
     public void adicionarPedido(Pedido pedido) {
         try {
@@ -30,9 +33,9 @@ public class PedidoService {
 
             public void listarPedidos () {
                 try {
-                    for (Pedido pedido : pedidos) {
-                        pedido.imprimir();
-                    }
+                        for (Pedido pedido : pedidoRepository.listar()) {
+
+                        }
                 } catch (Exception e) {
                     System.out.println("ERRO ao listar pedidos: " + e.getMessage());
                     e.printStackTrace();

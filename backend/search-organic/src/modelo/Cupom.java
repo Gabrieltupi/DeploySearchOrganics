@@ -6,8 +6,7 @@ import interfaces.Impressao;
 import java.math.BigDecimal;
 
 public class Cupom implements Impressao, CupomServicos {
-    private static int cupomIdCounter = 1;
-    private final int cupomId;
+    private final Integer cupomId;
     private String nomeCupom;
     private TipoAtivo ativo;
     private String descricao;
@@ -64,16 +63,7 @@ public class Cupom implements Impressao, CupomServicos {
         }
     }
 
-
-    public static int getCupomIdCounter() {
-        return cupomIdCounter;
-    }
-
-    public static void setCupomIdCounter(int cupomIdCounter) {
-        Cupom.cupomIdCounter = cupomIdCounter;
-    }
-
-    public int getCupomId() {
+    public Integer getCupomId() {
         return cupomId;
     }
 
