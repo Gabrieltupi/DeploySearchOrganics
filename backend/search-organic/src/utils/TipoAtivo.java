@@ -1,19 +1,19 @@
 package utils;
 
 public enum TipoAtivo {
-    S(true),
-    N(false);
+    S("S"),
+    N("N");
 
-    private Boolean status;
+    private String status;
 
-    TipoAtivo(boolean status) {
+    TipoAtivo(String status) {
         this.status = status;
     }
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public static TipoAtivo fromBoolean(boolean status) {
+    public static TipoAtivo fromString(String status) {
         for (TipoAtivo tipo : TipoAtivo.values()) {
             if (tipo.status.equals(status)) {
                 return tipo;

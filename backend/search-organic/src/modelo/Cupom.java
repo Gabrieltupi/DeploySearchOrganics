@@ -46,7 +46,7 @@ public class Cupom implements Impressao, CupomServicos {
 
     @Override
     public void ativarCupom() {
-        if (this.ativo.getStatus()) {
+        if (this.ativo.getStatus().equals("S")) {
             System.out.println("O cupom já está ativo!");
         } else {
             this.ativo = TipoAtivo.S;
@@ -56,7 +56,7 @@ public class Cupom implements Impressao, CupomServicos {
 
     @Override
     public boolean desativarCupom() {
-        if (this.ativo.getStatus()) {
+        if (this.ativo.getStatus().equals("S")) {
             this.ativo = TipoAtivo.N;
             System.out.println("O cupom agora está inativo.");
             return true;
@@ -81,12 +81,12 @@ public class Cupom implements Impressao, CupomServicos {
         this.nomeCupom = nomeProduto;
     }
 
-    public boolean isAtivo() {
+    public String isAtivo() {
         return ativo.getStatus();
     }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = TipoAtivo.fromBoolean(ativo);
+    public void setAtivo(String ativo) {
+        this.ativo = TipoAtivo.fromString(ativo);
     }
 
     public String getDescricao() {

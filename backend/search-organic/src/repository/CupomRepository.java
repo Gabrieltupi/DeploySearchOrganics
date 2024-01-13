@@ -42,7 +42,7 @@ public class CupomRepository implements Repository<Integer, Cupom> {
 
             stmt.setInt(1, cupom.getCupomId());
             stmt.setString(2, cupom.getNomeCupom());
-            stmt.setString(3, cupom.getAtivo());
+            stmt.setString(3, cupom.isAtivo());
             stmt.setString(4, cupom.getDescricao());
             stmt.setBigDecimal(5, cupom.getTaxaDeDesconto());
 
