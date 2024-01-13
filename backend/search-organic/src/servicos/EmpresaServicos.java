@@ -1,41 +1,46 @@
 package servicos;
 
+import exceptions.BancoDeDadosException;
 import modelo.Empresa;
 import modelo.Produto;
+import repository.EmpresaRepository;
 import utils.TipoCategoria;
 import utils.validadores.ValidadorCNPJ;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 //EmpresaRepository
 public class EmpresaServicos {
-    private static ArrayList<Empresa> empresas = new ArrayList<>();
+    private EmpresaRepository repository = new EmpresaRepository();
 
-    public static void criarEmpresa(Empresa empresa) {
+    public void criarEmpresa(Empresa empresa) {
         try {
             if (ValidadorCNPJ.validarCNPJ(empresa.getCnpj())) {
                 Empresa novaEmpresa = new Empresa(empresa.getLogin(), empresa.getPassword(), empresa.getNome(),
                         empresa.getSobrenome(), empresa.getEndereco(),
                         empresa.getDataNascimento(), empresa.getNomeFantasia(), empresa.getCnpj(), empresa.getRazaoSocial(),
                         empresa.getInscricaoEstadual(), empresa.getSetor());
-                empresas.add(novaEmpresa);
+                repository.adicionar(novaEmpresa);
             } else {
                 throw new IllegalArgumentException("CNPJ inválido. Certifique-se de inserir um CNPJ válido para criar a empresa.");
             }
+        } catch (BancoDeDadosException bancoDeDadosException) {
+            throw new RuntimeException(bancoDeDadosException.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao criar empresa: " + e.getMessage());
         }
     }
 
 
-    public static void exibirEmpresa(int id) {
+    public void exibirEmpresa(int id) {
+
         try {
-            for (Empresa empresa : empresas) {
-                if (empresa.getUsuarioId() == id) {
-                    empresa.imprimir();
-                    return;
-                }
-            }
+            Empresa empresa = repository.buscaPorId(id);
+            empresa.imprimir();
+        } catch (BancoDeDadosException bancoDeDadosException) {
+            throw new RuntimeException(bancoDeDadosException.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao exibir empresa: " + e.getMessage());
         }
@@ -43,11 +48,15 @@ public class EmpresaServicos {
 
 
     public void listarEmpresas() {
+
         try {
+            ArrayList<Empresa> empresas = (ArrayList<Empresa>) repository.listar();
             for (Empresa empresa : empresas) {
                 empresa.imprimir();
                 System.out.println("-----------------");
             }
+        } catch (BancoDeDadosException bdEx) {
+            throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao listar empresas: " + e.getMessage());
         }
@@ -56,45 +65,24 @@ public class EmpresaServicos {
 
     public void atualizarEmpresa(Empresa novaEmpresa) {
         try {
-            for (Empresa empresa : empresas) {
-                if (empresa.getUsuarioId() == novaEmpresa.getUsuarioId()) {
-                    if (ValidadorCNPJ.validarCNPJ(novaEmpresa.getCnpj())) {
-                        empresa.setLogin(novaEmpresa.getLogin());
-                        empresa.setPassword(novaEmpresa.getPassword());
-                        empresa.setNome(novaEmpresa.getNome());
-                        empresa.setSobrenome(novaEmpresa.getSobrenome());
-                        empresa.setEndereco(novaEmpresa.getEndereco());
-                        empresa.setDataNascimento(novaEmpresa.getDataNascimento());
-                        empresa.setNomeFantasia(novaEmpresa.getNomeFantasia());
-                        empresa.setCnpj(novaEmpresa.getCnpj());
-                        empresa.setRazaoSocial(novaEmpresa.getRazaoSocial());
-                        empresa.setInscricaoEstadual(novaEmpresa.getInscricaoEstadual());
-                        empresa.setSetor(novaEmpresa.getSetor());
-                        empresa.setProdutos(novaEmpresa.getProdutos());
-                        System.out.println("Empresa atualizada com sucesso.");
-                    } else {
-                        throw new IllegalArgumentException("CNPJ inválido. Certifique-se de inserir um CNPJ válido para atualizar a empresa.");
-                    }
-                    return;
-                }
-            }
+            repository.editar(novaEmpresa.getId_empresa(), novaEmpresa);
+        } catch (BancoDeDadosException bdEx) {
+            throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro ao atualizar empresa: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
+
     }
 
 
     public void excluirEmpresa(int id) {
         try {
-            Iterator<Empresa> iterator = empresas.iterator();
-            while (iterator.hasNext()) {
-                Empresa empresa = iterator.next();
-                if (empresa.getUsuarioId() == id) {
-                    iterator.remove();
-                    System.out.println("Empresa com o ID " + id + " excluída com sucesso.");
-                    return;
-                }
+            if (repository.remover(id)) {
+                System.out.println("Empresa com o ID " + id + " excluída com sucesso.");
             }
+            System.err.println("Ocorreu um erro ao excluir a empresa");
+        } catch (BancoDeDadosException bdEx) {
+            throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao excluir empresa: " + e.getMessage());
         }
@@ -104,43 +92,32 @@ public class EmpresaServicos {
     // Opção 2.1 e 3.1
     public boolean imprimirProdutosDaLoja(int id) {
         try {
-            if (empresas == null) {
-                System.out.println("Lista de empresas está nula");
+            Empresa empresa = repository.buscaPorId(id);
+            ArrayList<Produto> produtos = empresa.getProdutos();
+
+            if (produtos.isEmpty()) {
+                System.out.println("A empresa não possui produtos.");
                 return false;
             }
 
-            for (Empresa empresa : empresas) {
-                if (id == empresa.getUsuarioId()) {
-                    ArrayList<Produto> produtos = empresa.getProdutos();
-
-                    if (produtos.isEmpty()) {
-                        System.out.println("A empresa não possui produtos.");
-                        return false;
-                    }
-
-                    for (Produto produto : produtos) {
-                        System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
-                        System.out.println("-------------------------------------------------------------");
-                    }
-                    return true;
-                }
+            for (Produto produto : produtos) {
+                System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
+                System.out.println("-------------------------------------------------------------");
             }
-
-            System.out.println("Nenhuma empresa encontrada com o ID fornecido.");
-            return false;
+            return true;
         } catch (NullPointerException e) {
             System.out.println("Erro ao imprimir produtos da loja: " + e.getMessage());
             return false;
+        } catch (BancoDeDadosException bdEx) {
+            throw new RuntimeException(bdEx.getMessage());
         }
     }
-
-
-
 
 
     // Opção 3
     public void lojasPorCategoria(TipoCategoria categoria) {
         try {
+            ArrayList<Empresa> empresas = (ArrayList<Empresa>) repository.listar();
             for (Empresa empresa : empresas) {
                 for (Produto produto : empresa.getProdutos()) {
                     if (produto.getCategoriaT().equals(categoria)) {
@@ -149,6 +126,8 @@ public class EmpresaServicos {
                     }
                 }
             }
+        } catch (BancoDeDadosException bdEx) {
+            throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao listar lojas por categoria: " + e.getMessage());
         }
@@ -156,30 +135,31 @@ public class EmpresaServicos {
 
 
     // Opção 2.1.2 e 2.1.3
+    //Agora recebe o id da empresa
     public boolean imprimirProdutosDaLojaPorCategoria(int id, TipoCategoria categoria) {
         try {
-            for (Empresa empresa : empresas) {
-                if (id == empresa.getUsuarioId()) {
-                    for (Produto produto : empresa.getProdutos()) {
-                        if (produto.getCategoriaT().equals(categoria)) {
-                            System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
-                            System.out.println("-------------------------------------------------------------");
-                        }
-                    }
-                    return true;
+            Empresa empresa = repository.buscaPorId(id);
+            for (Produto produto : empresa.getProdutos()) {
+                if (produto.getCategoriaT().equals(categoria)) {
+                    System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
+                    System.out.println("-------------------------------------------------------------");
                 }
             }
+            return true;
+
+        } catch (BancoDeDadosException bdEx) {
+            throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao imprimir produtos da loja por categoria: " + e.getMessage());
             return false;
         }
-        return false;
     }
 
 
     // Opção 2
     public void lojas() {
         try {
+            ArrayList<Empresa> empresas = (ArrayList<Empresa>) repository.listar();
             for (Empresa empresa : empresas) {
                 System.out.println(empresa.getNomeFantasia());
                 System.out.println();
@@ -189,6 +169,8 @@ public class EmpresaServicos {
                 }
                 System.out.println();
             }
+        } catch (BancoDeDadosException bdEx) {
+            throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao listar lojas: " + e.getMessage());
         }

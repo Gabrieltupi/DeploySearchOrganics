@@ -1,6 +1,7 @@
 package repository;
 
 import exceptions.BancoDeDadosException;
+import exceptions.EmpresaNaoEncontradaException;
 import modelo.Empresa;
 
 import java.sql.*;
@@ -91,7 +92,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM PESSOA WHERE id_empresa = ?";
+            String sql = "DELETE FROM EMPRESA WHERE id_empresa = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -197,5 +198,45 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
         }
         return empresas;
     }
+
+    public Empresa buscaPorId(Integer id) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+
+            String sql = "SELECT * FROM EMPRESA WHERE id_empresa = ?";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+            ResultSet res = stmt.executeQuery(sql);
+            if (res.next()) {
+                Empresa empresa = new Empresa();
+                empresa.setId_empresa(res.getInt("ID_EMPRESA"));
+                empresa.setNomeFantasia(res.getString("NOMEFANTASIA"));
+                empresa.setCnpj(res.getString("CNPJ"));
+                empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
+                empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
+                empresa.setSetor(res.getString("SETOR"));
+                empresa.setUsuarioId(res.getInt("USUARIO_ID"));
+                return empresa;
+            }
+        throw new EmpresaNaoEncontradaException();
+
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } catch (EmpresaNaoEncontradaException e) {
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
-}
+
+    }
+
