@@ -18,6 +18,10 @@ public class Empresa extends Usuario implements Impressao {
 
     private ArrayList<Produto> produtos = new ArrayList<>();
 
+    public Empresa() {
+        super();
+    }
+
     public Empresa(String login, String password, String nome, String sobrenome, Endereco endereco,
                    LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
                    String inscricaoEstadual, String setor) {
@@ -45,6 +49,10 @@ public class Empresa extends Usuario implements Impressao {
         return idEmpresa;
     }
     public int getIdUsuario() { return idUsuario; }
+
+    public void setId_empresa(int id_empresa) {
+        this.idEmpresa = id_empresa;
+    }
 
     private static synchronized int gerarProximoId() {
         return proximoId++;

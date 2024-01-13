@@ -1,16 +1,13 @@
 package utils;
 
-import exceptions.UsuarioJaCadastradoException;
 import modelo.*;
 import servicos.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class GeradorSeeds {
 
-        public static void gerarSeeds(EnderecoCRUD enderecoCRUD, UsuarioCRUD usuarioCRUD, ProdutoCRUD produtoCRUD, EmpresaCRUD empresaCRUD, CupomCRUD cupomCRUD) {
+        public static void gerarSeeds(EnderecoServicos enderecoServicos, UsuarioCRUD usuarioCRUD, ProdutoCRUD produtoCRUD, EmpresaServicos empresaServicos, CupomServicos cupomServicos) {
                 LocalDate dataNascimento = LocalDate.of(1990, 1, 1);
                 LocalDate dataNascimento2 = LocalDate.of(1990, 1, 1);
 
@@ -18,9 +15,9 @@ public class GeradorSeeds {
                 Endereco endereco2 = new Endereco("Avenida Roberto Vila", "3123", "Casa", "01053-000", "Sao Paulo", "SP", "Brasil");
                 Endereco endereco3 = new Endereco("Rua Barão do Rio Branco", "18", "Vila eldizia", "09181-610", "Sao Paulo", "SP", "Brasil");
 
-                enderecoCRUD.adicionarEndereco(endereco1);
-                enderecoCRUD.adicionarEndereco(endereco2);
-                enderecoCRUD.adicionarEndereco(endereco3);
+                enderecoServicos.adicionarEndereco(endereco1);
+                enderecoServicos.adicionarEndereco(endereco2);
+                enderecoServicos.adicionarEndereco(endereco3);
 //                Usuario usuario1 = new Usuario("admin", "admin", "admin", "admin", endereco1, dataNascimento);
 //                Usuario usuario2 = new Usuario("admin2", "admin2", "admin2", "admin2", endereco2, dataNascimento2);
 //                Usuario usuario3 = new Usuario("deyvidlucas", "lucas2024", "Deyvid Lucas", "Cunha", endereco3, dataNascimento);
