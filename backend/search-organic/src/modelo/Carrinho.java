@@ -74,7 +74,7 @@ public class Carrinho {
 
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
         for (ProdutoCarrinho produtoCarrinho : produtos) {
-            if (id == produtoCarrinho.getProduto().getId_Produto()) {
+            if (id == produtoCarrinho.getProduto().getIdProduto()) {
                 if (produtoCarrinho.getProduto().getQuantidade().subtract(novaQuantidade).compareTo(BigDecimal.ZERO) < 0) {
                     System.err.println("Quantidade indisponível no estoque");
                     return false;
@@ -91,7 +91,7 @@ public class Carrinho {
 
     public boolean removerProdutoDoCarrinho(int id) {
         for(ProdutoCarrinho produtoCarrinho : produtos){
-            if (produtoCarrinho.getProduto().getId_Produto() == id) {
+            if (produtoCarrinho.getProduto().getIdProduto() == id) {
                 produtos.remove(produtoCarrinho);
                 atualizarValorTotal();
                 return true;
@@ -105,7 +105,7 @@ public class Carrinho {
 
     public void listarProdutosDoCarrinho() throws BancoDeDadosException {
         for(ProdutoCarrinho produtoCarrinho : produtos){
-            System.out.println("Número: " + produtoCarrinho.getProduto().getId_Produto() + " Nome do produto: " + produtoCarrinho.getProduto().getNome()
+            System.out.println("Número: " + produtoCarrinho.getProduto().getIdProduto() + " Nome do produto: " + produtoCarrinho.getProduto().getNome()
                     + " Quantidade: " + produtoCarrinho.getQuantidadePedida());
         }
 
