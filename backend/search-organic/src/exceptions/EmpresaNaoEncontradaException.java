@@ -2,6 +2,6 @@ package exceptions;
 
 public class EmpresaNaoEncontradaException extends  Exception{
     public EmpresaNaoEncontradaException() {
-        super("Usuário não encontrado");
+        super("Empresa não encontrada");
     }
 }
