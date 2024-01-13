@@ -185,9 +185,9 @@ public class Pedido implements Impressao {
         System.out.println("Produtos: \n");
 
 
-        for (ProdutoCarrinho produto: produtos) {
-            System.out.println(" Nome do produto: " + produto.getNome()
-                    + " Quantidade: " + produto.getQuantidadePedida());
+        for (ProdutoCarrinho produtoCarrinho: produtos) {
+            System.out.println(" Nome do produto: " + produtoCarrinho.getProduto().getNome()
+                    + " Quantidade: " + produtoCarrinho.getQuantidadePedida());
         }
         System.out.println("Valor total: " + total);
     }
