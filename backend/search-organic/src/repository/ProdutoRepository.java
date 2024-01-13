@@ -41,7 +41,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             PreparedStatement stmt = con.prepareStatement(sql);
                 stmt.setInt(1,produto.getId_Produto());
                 stmt.setInt(2, produto.getId_catalogo());
-                stmt.setInt(3,produto.getId_empresa());
+                stmt.setInt(3,produto.getIdEmpresa());
                 stmt.setString(4,produto.getNome());
                 stmt.setString(5,produto.getDescricao());
                 stmt.setBigDecimal(6,produto.getPreco());
