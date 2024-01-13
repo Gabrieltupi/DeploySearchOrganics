@@ -101,8 +101,9 @@ CREATE TABLE Pedido
     id_usuario      INT             NOT NULL,
     id_endereco     INT             NOT NULL,
     id_cupom        INT,
-    preco_total     DECIMAL         NOT NULL,
-    forma_pagamento VARCHAR2(255),
+    preco_frete     DECIMAL         NOT NULL,
+    forma_pagamento VARCHAR2(255) CHECK(forma_pagamento IN
+                                        ('PIX','CREDITO', 'DEBITO')),
     status_pedido   VARCHAR2(25) CHECK (status_pedido IN
                                         ('AGUARDANDO_PAGAMENTO', 'CANCELADO', 'PAGO', 'EM_SEPARACAO', 'COLETADO',
                                          'A CAMINHO', 'ENTREGUE')),

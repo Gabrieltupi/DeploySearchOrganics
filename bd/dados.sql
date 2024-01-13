@@ -447,3 +447,80 @@ VALUES (seq_cupom.NEXTVAL,
         'F',
         'Cupom de desconto de 30%',
         30);
+
+INSERT INTO Pedido(
+        id_pedido,
+        id_usuario,
+        id_endereco,
+        id_cupom,
+        preco_frete,
+        forma_pagamento,
+        status_pedido,
+        data_de_pedido,
+        data_entrega,
+        preco_carrinho
+        )
+VALUES(
+        seq_pedido.NEXTVAL,
+        2,
+        1,
+        1,
+        10.00,
+        'PIX',
+        'PAGO',
+        TO_DATE('01-01-2024', 'DD-MM-YYYY'),
+        TO_DATE('08-01-2024', 'DD-MM-YYYY'),
+        100.00
+        );
+
+INSERT INTO Pedido(
+        id_pedido,
+        id_usuario,
+        id_endereco,
+        id_cupom,
+        preco_frete,
+        forma_pagamento,
+        status_pedido,
+        data_de_pedido,
+        data_entrega,
+        preco_carrinho
+        )
+VALUES(
+        seq_pedido.NEXTVAL,
+        2,
+        1,
+        2,
+        10.00,
+        'PIX',
+        'PAGO',
+        TO_DATE('12-10-2023', 'DD-MM-YYYY'),
+        TO_DATE('14-10-2023', 'DD-MM-YYYY'),
+        150.00
+        );
+
+INSERT INTO OrdemPedido(
+        id_ordem,
+        id_pedido,
+        qtd_total,
+        preco_total
+        )
+VALUES(
+        seq_ordem_pedido.NEXTVAL,
+        2,
+        2,
+        160.00
+        );
+
+INSERT INTO OrdemPedido(
+        id_ordem,
+        id_pedido,
+        qtd_total,
+        preco_total
+        )
+VALUES(
+        seq_ordem_pedido.NEXTVAL,
+        1,
+        2,
+        110.00
+        );
+
