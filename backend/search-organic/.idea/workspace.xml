@@ -5,9 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5037af7c-51ae-43fa-8658-d906596709d8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/exceptions/BancoDeDadosException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exceptions/SenhaIncorretaException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exceptions/UsuarioNaoEncontrado.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/repository/EmpresaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/repository/EnderecoRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/repository/Repository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/servicos/AutenticacaoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/servicos/CupomServicos.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/servicos/EmpresaServicos.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/servicos/EnderecoServicos.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/servicos/PedidoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/servicos/ProdutoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/servicos/UsuarioService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/TipoAtivo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repository/EmpresaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/repository/EmpresaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/EmpresaServicos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/EmpresaServicos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Cupom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Cupom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Empresa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Empresa.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Endereco.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Endereco.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Produto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Produto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modelo/Usuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Usuario.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repository/ConexaoBancoDeDados.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/repository/ConexaoBancoDeDados.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/CupomCRUD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/EmpresaCRUD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/EnderecoCRUD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/PedidoCRUD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/ProdutoCRUD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/servicos/UsuarioCRUD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/GeradorSeeds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/GeradorSeeds.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,28 +70,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;refactor/service&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/aleso/OneDrive/Área de Trabalho/organic/vs13-squad1-SEARCH-ORGANIC/backend/search-organic&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "Merging feat/mudancas-empresa-espelhando-tabela",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/aleso/OneDrive/Área de Trabalho/organic/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\grego\OneDrive\Área de Trabalho\vs13-squad1-SEARCH-ORGANIC" />
@@ -120,6 +145,21 @@
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -144,21 +184,6 @@
                 </map>
               </option>
             </State>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="User">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="*" />
-                </option>
-              </RecentGroup>
-            </list>
           </value>
         </entry>
       </map>

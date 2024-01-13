@@ -15,6 +15,9 @@ public class Usuario implements Impressao {
     private String password;
     private boolean ativo = true;
 
+    public Usuario() {
+
+    }
 
     public Usuario(String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento, String login, String password){
         this.nome = this.nome;
