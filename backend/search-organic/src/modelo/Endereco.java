@@ -35,6 +35,8 @@ public class Endereco implements Impressao {
         }
     }
 
+    public Endereco(){}
+
     public int getId() {
         return id;
     }

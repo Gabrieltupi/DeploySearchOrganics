@@ -29,11 +29,11 @@ public class Pedido implements Impressao {
 
     public Pedido() {
     }
-
     public Pedido(int usuarioId, ArrayList<ProdutoCarrinho> produtos,
                   FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                   Endereco endereco,
-                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total, BigDecimal frete, StatusPedido status) {
+                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total, BigDecimal frete,
+                  StatusPedido status) {
         this.cupom = cupom;
         if(cupom == null){
             cupom.setTaxaDeDesconto(new BigDecimal(0));
