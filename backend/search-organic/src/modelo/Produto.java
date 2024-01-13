@@ -25,7 +25,7 @@ public class Produto implements Impressao {
                    BigDecimal quantidade, TipoCategoria categoria, double taxa,
                    UnidadeMedida unidadeMedida, Empresa empresa) {
         this.id_Produto = id_Produto;
-        this.id_empresa = empresa.getId_empresa();
+        this.id_empresa = empresa.getIdEmpresa();
         this.empresa = empresa;
         this.nome = nome;
         this.descricao = descricao;
@@ -42,7 +42,7 @@ public class Produto implements Impressao {
     }
 
     public int getIdEmpresa() {
-        return empresa != null ? empresa.getId_empresa() : 0;
+        return empresa != null ? empresa.getIdEmpresa() : 0;
     }
 
 

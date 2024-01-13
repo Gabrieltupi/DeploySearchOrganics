@@ -127,4 +127,7 @@ public class Endereco implements Impressao {
                 "\nEstado: " + estado +
                 "\nPaís: " + pais + "\n";
     }
+
+    public void setId(Integer proximoId) {
+    }
 }
