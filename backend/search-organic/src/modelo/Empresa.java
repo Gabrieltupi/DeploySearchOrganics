@@ -8,12 +8,13 @@ import java.util.ArrayList;
 public class Empresa extends Usuario implements Impressao {
 
     private static int proximoId = 1;
+    private int idEmpresa;
+    private int idUsuario;
     private String nomeFantasia;
     private String cnpj;
     private String razaoSocial;
     private String inscricaoEstadual;
     private String setor;
-    private int id_empresa;
 
     private ArrayList<Produto> produtos = new ArrayList<>();
 
@@ -22,22 +23,14 @@ public class Empresa extends Usuario implements Impressao {
                    String inscricaoEstadual, String setor) {
         super(nome, sobrenome, endereco,dataNascimento,login, password);
         this.nomeFantasia = nomeFantasia;
-        this.id_empresa = gerarProximoId();
+        this.idEmpresa = gerarProximoId();
+        this.idUsuario = getUsuarioId();
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
         this.setor = setor;
     }
-    public Empresa(String login, String password, String nome,String cpf, String email, String sobrenome, Endereco endereco,
-                   LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
-                   String inscricaoEstadual, String setor) {
-        super(nome, sobrenome, endereco,cpf, dataNascimento,email,login, password);;
-        this.nomeFantasia = nomeFantasia;
-        this.cnpj = cnpj;
-        this.razaoSocial = razaoSocial;
-        this.inscricaoEstadual = inscricaoEstadual;
-        this.setor = setor;
-    }
+
     public String getNomeFantasia() { return nomeFantasia; }
     public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
     public String getCnpj() { return cnpj; }
@@ -48,9 +41,10 @@ public class Empresa extends Usuario implements Impressao {
     public void setInscricaoEstadual(String inscricaoEstadual) { this.inscricaoEstadual = inscricaoEstadual; }
     public String getSetor() { return setor; }
     public void setSetor(String setor) { this.setor = setor; }
-    public int getId_empresa() {
-        return id_empresa;
+    public int getIdEmpresa() {
+        return idEmpresa;
     }
+    public int getIdUsuario() { return idUsuario; }
 
     private static synchronized int gerarProximoId() {
         return proximoId++;
@@ -86,7 +80,7 @@ public class Empresa extends Usuario implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do da Empresa: " + getId_empresa());
+        System.out.println("ID do da Empresa: " + getIdEmpresa());
         System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
         System.out.println("Status: " + verificarStatus());
         System.out.println("Data de nascimento " + getDataNascimento());
