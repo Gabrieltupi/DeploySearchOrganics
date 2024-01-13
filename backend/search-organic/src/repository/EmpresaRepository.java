@@ -31,7 +31,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
 
              String sqlVerificarUsuario = "SELECT ATIVO FROM USUARIO WHERE ID_USUARIO = ?";
              PreparedStatement pstd = con.prepareStatement(sqlVerificarUsuario);
-             pstd.setInt(1, empresa.getUsuarioId());
+             pstd.setInt(1, empresa.getIdUsuario());
              ResultSet resp = pstd.executeQuery();
              int resultados = 0;
 
@@ -58,7 +58,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setInt(1, empresa.getId_empresa());
+            stmt.setInt(1, empresa.getIdEmpresa());
             stmt.setString(2, empresa.getNomeFantasia());
             stmt.setString(3, empresa.getCnpj());
             stmt.setString(4, empresa.getRazaoSocial());
@@ -140,7 +140,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
             stmt.setString(3, empresaAtualizada.getRazaoSocial());
             stmt.setString(4, empresaAtualizada.getInscricaoEstadual());
             stmt.setString(5, empresaAtualizada.getSetor());
-            stmt.setInt(6, empresaAtualizada.getId_empresa());
+            stmt.setInt(6, empresaAtualizada.getIdEmpresa());
 
             int res = stmt.executeUpdate();
             if(res > 0) {
@@ -182,7 +182,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
                 empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
                 empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
                 empresa.setSetor(res.getString("SETOR"));
-                empresa.setUsuarioId(res.getInt("USUARIO_ID"));
+                empresa.setIdUsuario(res.getInt("USUARIO_ID"));
                 empresas.add(empresa);
             }
         } catch (SQLException e) {
@@ -218,7 +218,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
                 empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
                 empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
                 empresa.setSetor(res.getString("SETOR"));
-                empresa.setUsuarioId(res.getInt("USUARIO_ID"));
+                empresa.setIdUsuario(res.getInt("USUARIO_ID"));
                 return empresa;
             }
         throw new EmpresaNaoEncontradaException();

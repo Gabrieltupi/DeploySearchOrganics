@@ -65,7 +65,7 @@ public class EmpresaServicos {
 
     public void atualizarEmpresa(Empresa novaEmpresa) {
         try {
-            repository.editar(novaEmpresa.getId_empresa(), novaEmpresa);
+            repository.editar(novaEmpresa.getIdEmpresa(), novaEmpresa);
         } catch (BancoDeDadosException bdEx) {
             throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class EmpresaServicos {
             for (Empresa empresa : empresas) {
                 for (Produto produto : empresa.getProdutos()) {
                     if (produto.getCategoriaT().equals(categoria)) {
-                        System.out.println("id da loja: " + empresa.getUsuarioId() + " Nome: " + produto.getNome() + " Preço: " + produto.getPreco());
+                        System.out.println("id da loja: " + empresa.getIdUsuario() + " Nome: " + produto.getNome() + " Preço: " + produto.getPreco());
                         System.out.println("-------------------------------------------------------------");
                     }
                 }
