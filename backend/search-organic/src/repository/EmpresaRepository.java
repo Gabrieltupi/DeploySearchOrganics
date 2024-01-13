@@ -57,7 +57,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setInt(1, empresa.getId_empresa());
+            stmt.setInt(1, empresa.getIdEmpresa());
             stmt.setString(2, empresa.getNomeFantasia());
             stmt.setString(3, empresa.getCnpj());
             stmt.setString(4, empresa.getRazaoSocial());
@@ -91,7 +91,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM PESSOA WHERE id_empresa = ?";
+            String sql = "DELETE FROM EMPRESA WHERE id_empresa = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -139,7 +139,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
             stmt.setString(3, empresaAtualizada.getRazaoSocial());
             stmt.setString(4, empresaAtualizada.getInscricaoEstadual());
             stmt.setString(5, empresaAtualizada.getSetor());
-            stmt.setInt(6, empresaAtualizada.getId_empresa());
+            stmt.setInt(6, empresaAtualizada.getIdEmpresa());
 
             int res = stmt.executeUpdate();
             if(res > 0) {
@@ -196,6 +196,5 @@ public class EmpresaRepository implements Repository<Integer, Empresa>{
             }
         }
         return empresas;
-    }
     }
 }
