@@ -132,7 +132,7 @@ public class Produto implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do produto: " + getId_Produto());
+        System.out.println("ID do produto: " + getIdProduto());
         System.out.println("ID da empresa: " + getIdEmpresa());
         System.out.println("Categoria do produto: " + getCategoria());
         System.out.print("Nome do produto: " + getNome());

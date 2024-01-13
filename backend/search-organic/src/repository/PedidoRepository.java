@@ -66,6 +66,7 @@ public class PedidoRepository implements Repository<Integer, Pedido>{
                     stt.setInt(1, pedido.getId());
                     stt.setInt(2, produto.getProduto().getIdProduto());
                     stt.setBigDecimal(3, produto.getQuantidadePedida());
+                    stt.execute();
                 }
                 System.out.println("Pedido realizado");
             }
