@@ -7,7 +7,8 @@ import utils.UnidadeMedida;
 import java.math.BigDecimal;
 
 public class Produto implements Impressao {
-    private Integer id_Produto;
+    private static int produtoId = 1;
+    private int id_Produto;
     private int id_empresa;
     private String nome;
     private String descricao;
@@ -20,9 +21,11 @@ public class Produto implements Impressao {
 
 
 
-    public Produto(String nome, String descricao, BigDecimal preco,
+    public Produto(int id_Produto, String nome, String descricao, BigDecimal preco,
                    BigDecimal quantidade, TipoCategoria categoria, double taxa,
                    UnidadeMedida unidadeMedida, Empresa empresa) {
+        this.id_Produto = id_Produto;
+        this.id_empresa = empresa.getIdEmpresa();
         this.empresa = empresa;
         this.nome = nome;
         this.descricao = descricao;
@@ -31,11 +34,15 @@ public class Produto implements Impressao {
         this.categoria = categoria;
         this.taxa = taxa;
         this.unidadeMedida = unidadeMedida;
+        gerarProximoId();
     }
 
+    private static synchronized int gerarProximoId() {
+        return produtoId++;
+    }
 
     public int getIdEmpresa() {
-        return empresa != null ? empresa.getId_empresa() : 0;
+        return empresa != null ? empresa.getIdEmpresa() : 0;
     }
 
 
@@ -47,7 +54,7 @@ public class Produto implements Impressao {
         return id_Produto;
     }
 
-    public void setId_Produto(Integer id_Produto) {
+    public void setId_Produto(int id_Produto) {
         this.id_Produto = id_Produto;
     }
 
