@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5037af7c-51ae-43fa-8658-d906596709d8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modelo/Produto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modelo/Produto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/PedidoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/PedidoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/ProdutoCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/ProdutoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servicos/UsuarioCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/servicos/UsuarioService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repository/EmpresaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/repository/EmpresaRepository.java" afterDir="false" />
-    </list>
+    <list default="true" id="5037af7c-51ae-43fa-8658-d906596709d8" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +13,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -54,7 +48,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "refactor/service",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/aleso/OneDrive/Área de Trabalho/organic/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
+    "last_opened_file_path": "C:/projetos DBC/vs13-back/modulo-java/SearchOrganic/vs13-squad1-SEARCH-ORGANIC/backend/search-organic",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -111,6 +105,7 @@
       <workItem from="1704814755498" duration="5661000" />
       <workItem from="1704866999324" duration="131000" />
       <workItem from="1704920218107" duration="984000" />
+      <workItem from="1705088895227" duration="3122000" />
     </task>
     <servers />
   </component>
@@ -118,6 +113,21 @@
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -142,21 +152,6 @@
                 </map>
               </option>
             </State>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="User">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="*" />
-                </option>
-              </RecentGroup>
-            </list>
           </value>
         </entry>
       </map>

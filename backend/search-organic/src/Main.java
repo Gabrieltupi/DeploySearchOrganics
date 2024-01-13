@@ -138,7 +138,7 @@ public class Main {
 
                     carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
                             consumidorCRUD.buscarUsuarioPorId(carrinho.getUsuario().getUsuarioId()).getEndereco(),
-                            new Cupom(1, "Cupom de desconto", true, "Descricao", taxaDesconto),
+                            new Cupom(1, "Cupom de desconto", 'true', "Descricao", taxaDesconto),
                             TipoEntrega.values()[escolhaPagamento - 1]);
 
                     System.out.println("Pedido finalizado com sucesso!");
