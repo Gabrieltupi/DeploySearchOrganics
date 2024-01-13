@@ -7,7 +7,7 @@ import utils.UnidadeMedida;
 import java.math.BigDecimal;
 
 public class Produto implements Impressao {
-    private Integer id_Produto;
+    private Integer idProduto;
     private int idEmpresa;
     private String nome;
     private String descricao;
@@ -18,7 +18,8 @@ public class Produto implements Impressao {
     private double taxa;
     private UnidadeMedida unidadeMedida;
 
-
+    public Produto() {
+    }
 
     public Produto(String nome, String descricao, BigDecimal preco,
                    BigDecimal quantidade, TipoCategoria categoria, double taxa,
@@ -42,24 +43,20 @@ public class Produto implements Impressao {
         this.taxa = produto.getTaxa();
         this.unidadeMedida = produto.getUnidadeMedida();
     }
-
-
     public int getEmpresaId() {
         return empresa != null ? empresa.getIdEmpresa() : 0;
     }
-
-
 
     public Empresa getEmpresa() {
         return empresa;
     }
 
-    public int getId_Produto() {
-        return id_Produto;
+    public int getIdProduto() {
+        return idProduto;
     }
 
-    public void setId_Produto(Integer id_Produto) {
-        this.id_Produto = id_Produto;
+    public void setIdProduto(Integer id_Produto) {
+        this.idProduto = id_Produto;
     }
 
     public int getIdEmpresa() {

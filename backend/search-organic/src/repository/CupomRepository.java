@@ -34,13 +34,14 @@ public class CupomRepository implements Repository<Integer, Cupom> {
             Integer proximoId = this.getProximoId(con);
             cupom.setCupomId(proximoId);
 
-            String sql = "INSERT INTO VS_13_EQUIPE_1.CUPOM\n" +
-                    "(id_cupom, nome_cupom, ativo, descricao, taxa_desconto)\n" +
-                    "VALUES(?, ?, ?, ?, ?)\n";
+            String sql = "INSERT INTO CUPOM\n" +
+                    "(id_cupom, id_empresa, nome_cupom, ativo, descricao, taxa_desconto)\n" +
+                    "VALUES(?, ?, ?, ?, ?, :)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setInt(1, cupom.getCupomId());
+            stmt.setInt(2, cupom.getIdEmpresa());
             stmt.setString(2, cupom.getNomeCupom());
             stmt.setString(3, cupom.isAtivo());
             stmt.setString(4, cupom.getDescricao());
@@ -69,7 +70,7 @@ public class CupomRepository implements Repository<Integer, Cupom> {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM VS_13_EQUIPE_1.CUPOM WHERE id_cupom = ?";
+            String sql = "DELETE FROM CUPOM WHERE id_cupom = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -100,7 +101,7 @@ public class CupomRepository implements Repository<Integer, Cupom> {
             con = ConexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE VS_13_EQUIPE_1.CUPOM SET \n");
+            sql.append("UPDATE CUPOM SET \n");
 
             if (cupom.getCupomId() != 0) {
                 sql.append(" id_pessoa = ?,");
@@ -114,9 +115,12 @@ public class CupomRepository implements Repository<Integer, Cupom> {
             if (cupom.getTaxaDeDesconto() != null) {
                 sql.append(" descricao = ?,");
             }
+            if (cupom.getIdEmpresa() != null) {
+                sql.append(" id_empresa = ?,");
+            }
 
-            sql.deleteCharAt(sql.length() - 1); //remove o ultimo ','
-            sql.append(" WHERE id_contato = ? ");
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" WHERE id_cupom = ? ");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
@@ -175,6 +179,7 @@ public class CupomRepository implements Repository<Integer, Cupom> {
                 cupom.setAtivo(res.getString("ATIVO"));
                 cupom.setDescricao(res.getString("DESCRICAO"));
                 cupom.setTaxaDeDesconto(res.getBigDecimal("TAXA_DESCONTO"));
+                cupom.setIdEmpresa(res.getInt("ID_EMPRESA"));
                 cupoms.add(cupom);
             }
         } catch (SQLException e) {
@@ -190,4 +195,43 @@ public class CupomRepository implements Repository<Integer, Cupom> {
         }
         return cupoms;
     }
+
+    public Cupom buscarPorId(Integer id) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            Statement stmt = con.createStatement();
+
+            String sql = "SELECT * FROM CUPOM WHERE ID_CUPOM = ?";
+
+            PreparedStatement stt = con.prepareStatement(sql);
+            stt.setInt(1, id);
+
+            ResultSet res = stt.executeQuery();
+
+            if (res.next()) {
+                Cupom cupom = new Cupom();
+                cupom.setCupomId(res.getInt("ID_CUPOM"));
+                cupom.setNomeCupom(res.getString("NOME_CUPOM"));
+                cupom.setAtivo(res.getString("ATIVO"));
+                cupom.setDescricao(res.getString("DESCRICAO"));
+                cupom.setTaxaDeDesconto(res.getBigDecimal("TAXA_DESCONTO"));
+                cupom.setIdEmpresa(res.getInt("ID_EMPRESA"));
+                return cupom;
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
 }

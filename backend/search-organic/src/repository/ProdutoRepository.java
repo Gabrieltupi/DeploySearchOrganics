@@ -32,23 +32,22 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             con=ConexaoBancoDeDados.getConnection();
 
             Integer proximoId = this.getProximoId(con);
-            produto.setId_Produto(proximoId);
+            produto.setIdProduto(proximoId);
 
             String sql = "INSERT INTO PRODUTO\n" +
-                    "(iD_PRODUTO,ID_CATALOGO, ID_EMPRESA, NOME, DESCRICAO, PRECO, QUANTIDADE_DISPONIVEL,TIPO_CATEGORIA, TAXA, UNIDADE_MEDIDA)\n" +
+                    "(iD_PRODUTO, ID_EMPRESA, NOME, DESCRICAO, PRECO, QUANTIDADE_DISPONIVEL,TIPO_CATEGORIA, TAXA, UNIDADE_MEDIDA)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setInt(1,produto.getId_Produto());
-                stmt.setInt(2, produto.getId_catalogo());
-                stmt.setInt(3,produto.getIdEmpresa());
-                stmt.setString(4,produto.getNome());
-                stmt.setString(5,produto.getDescricao());
-                stmt.setBigDecimal(6,produto.getPreco());
-                stmt.setBigDecimal(7,produto.getQuantidade());
-                stmt.setString(8, produto.getCategoria());
-                stmt.setDouble(9,produto.getTaxa());
-                stmt.setString(10, produto.getUnidadeMedida().toString());
+                stmt.setInt(1,produto.getIdProduto());
+                stmt.setInt(2,produto.getIdEmpresa());
+                stmt.setString(3,produto.getNome());
+                stmt.setString(4,produto.getDescricao());
+                stmt.setBigDecimal(5,produto.getPreco());
+                stmt.setBigDecimal(6,produto.getQuantidade());
+                stmt.setString(7, produto.getCategoria());
+                stmt.setDouble(8,produto.getTaxa());
+                stmt.setString(9, produto.getUnidadeMedida().toString());
             int res = stmt.executeUpdate();
             if(res > 0) {
                 System.out.println("produto adicionada");
@@ -69,7 +68,6 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
                 e.printStackTrace();
             }
         }
-        return null;
     }
 
     @Override
@@ -123,7 +121,6 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
 
             PreparedStatement stmt=con.prepareStatement(sql.toString());
 
-
             stmt.setString(1,produto.getNome());
             stmt.setString(2,produto.getDescricao());
             stmt.setBigDecimal(3,produto.getPreco());
@@ -131,7 +128,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             stmt.setString(5, produto.getCategoria());
             stmt.setDouble(5,produto.getTaxa());
             stmt.setString(6, produto.getUnidadeMedida().toString());
-            stmt.setInt(7,produto.getId_Produto());
+            stmt.setInt(7,produto.getIdProduto());
             int res = stmt.executeUpdate();
 
             if(res > 0) {
@@ -167,8 +164,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
 
             while (res.next()) {
                 Produto produto = new Produto();
-                produto.setId_Produto(res.getInt("id_produto"));
-                produto.setId_Catalogo(res.getInt("id_catalogo"));
+                produto.setIdProduto(res.getInt("id_produto"));
                 produto.setId_empresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
@@ -205,8 +201,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
 
             if (res.next()) {
                 Produto produto = new Produto();
-                produto.setId_Produto(res.getInt("id_produto"));
-                produto.setId_catalogo(res.getInt("id_catalogo"));
+                produto.setIdProduto(res.getInt("id_produto"));
                 produto.setId_empresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
@@ -244,8 +239,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
 
             while (res.next()) {
                 Produto produto = new Produto();
-                produto.setId_Produto(res.getInt("id_produto"));
-                produto.setId_catalogo(res.getInt("id_catalogo"));
+                produto.setIdProduto(res.getInt("id_produto"));
                 produto.setId_empresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
@@ -282,8 +276,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
 
             while (res.next()) {
                 Produto produto = new Produto();
-                produto.setId_Produto(res.getInt("id_produto"));
-                produto.setId_catalogo(res.getInt("id_catalogo"));
+                produto.setIdProduto(res.getInt("id_produto"));
                 produto.setId_empresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
