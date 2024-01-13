@@ -7,39 +7,38 @@ import utils.validadores.ValidadorCEP;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Pedido implements Impressao {
-    private static int pedidoId = 1;
     private int id;
-    private Map<Integer, Produto> produtos = new HashMap<>();
-    private Map<Integer, BigDecimal> quantidadeProduto = new HashMap<>();
     private BigDecimal total;
     private FormaPagamento formaPagamento;
     private Boolean entregue;
     private LocalDate dataDeEntrega;
     private Endereco endereco;
-    private int consumidorId;
+    private int usuarioId;
     private LocalDate inicioEntrega;
     private TipoEntrega tipoEntrega;
+    private ArrayList<ProdutoCarrinho> produtos;
+    private Cupom cupom;
+    private BigDecimal valorFrete = new BigDecimal(0);
 
-    public Pedido(int consumidorId, Map<Integer, Produto> produtos,
-                  Map<Integer, BigDecimal> quantidadeProduto,
+    public Pedido(int usuarioId, ArrayList<ProdutoCarrinho> produtos,
                   FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                   Endereco endereco,
-                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total) {
+                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total, BigDecimal frete) {
+        this.cupom = cupom;
         if(cupom == null){
             cupom.setTaxaDeDesconto(new BigDecimal(0));
         }
 
-        this.id = pedidoId;
         this.produtos = produtos;
-        this.quantidadeProduto = quantidadeProduto;
         this.formaPagamento = formaPagamento;
         this.dataDeEntrega = dataDeEntrega;
         this.endereco = endereco;
-        this.consumidorId = consumidorId;
+        this.usuarioId = usuarioId;
         this.tipoEntrega = tipoEntrega;
         if(tipoEntrega == tipoEntrega.RETIRAR_NO_LOCAL){
             this.total = total.subtract(cupom.getTaxaDeDesconto());
@@ -47,10 +46,10 @@ public class Pedido implements Impressao {
         }else {
             this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
         }
-        this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
+        this.total = total.subtract(cupom.getTaxaDeDesconto());
         this.entregue = false;
         this.inicioEntrega = LocalDate.now();
-        pedidoId++;
+        this.valorFrete = frete;
     }
 
 
@@ -58,20 +57,13 @@ public class Pedido implements Impressao {
         return id;
     }
 
-    public Map<Integer, Produto> getProdutos() {
-        return produtos;
+
+    public BigDecimal getValorFrete() {
+        return valorFrete;
     }
 
-    public void setProdutos(Map<Integer, Produto> produtos) {
-        this.produtos = produtos;
-    }
-
-    public Map<Integer, BigDecimal> getQuantidadeProduto() {
-        return quantidadeProduto;
-    }
-
-    public void setQuantidadeProduto(Map<Integer, BigDecimal> quantidadeProduto) {
-        this.quantidadeProduto = quantidadeProduto;
+    public void setValorFrete(BigDecimal valorFrete) {
+        this.valorFrete = valorFrete;
     }
 
     public BigDecimal getTotal() {
@@ -114,12 +106,24 @@ public class Pedido implements Impressao {
         this.endereco = endereco;
     }
 
-    public int getConsumidorId() {
-        return consumidorId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setConsumidorId(int consumidorId) {
-        this.consumidorId = consumidorId;
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public ArrayList<ProdutoCarrinho> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(ArrayList<ProdutoCarrinho> produtos) {
+        this.produtos = produtos;
     }
 
     public TipoEntrega getTipoEntrega() {
@@ -180,10 +184,19 @@ public class Pedido implements Impressao {
                 id, formaPagamento, dataDeEntrega, tipoEntrega, statusEntregue, endereco.getCep());
         System.out.println("Produtos: \n");
 
-        for (int key : produtos.keySet()) {
-            System.out.println(" Nome do produto: " + produtos.get(key).getNome()
-                    + " Quantidade: " + quantidadeProduto.get(key));
+
+        for (ProdutoCarrinho produto: produtos) {
+            System.out.println(" Nome do produto: " + produto.getNome()
+                    + " Quantidade: " + produto.getQuantidadePedida());
         }
         System.out.println("Valor total: " + total);
+    }
+
+    public Cupom getCupom() {
+        return cupom;
+    }
+
+    public void setCupom(Cupom cupom) {
+        this.cupom = cupom;
     }
 }

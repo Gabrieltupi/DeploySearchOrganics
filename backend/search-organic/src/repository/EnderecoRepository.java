@@ -152,4 +152,37 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
 
         return enderecos;
     }
+
+    public Endereco buscarPorId(Integer id) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            String sql = "SELECT * FROM ENDERECO WHERE id_endereco = ?";
+            try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                pstd.setInt(1, id);
+
+                try (ResultSet rs = pstd.executeQuery()) {
+                    if (rs.next()) {
+                        Endereco endereco = new Endereco(
+                                rs.getString("rua"),
+                                rs.getString("numero"),
+                                rs.getString("complemento"),
+                                rs.getString("cep"),
+                                rs.getString("cidade"),
+                                rs.getString("estado"),
+                                rs.getString("pais")
+                        );
+                        endereco.setId(rs.getInt("id_endereco"));
+                        endereco.setRegiao(rs.getString("regiao"));
+                        return endereco;
+                    }
+                }
+            }
+            throw new IllegalArgumentException("Endereço com ID " + id + " não encontrado.");
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            ConexaoBancoDeDados.closeConnection(con);
+        }
+    }
 }

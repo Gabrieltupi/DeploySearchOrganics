@@ -32,6 +32,16 @@ public class Produto implements Impressao {
         this.taxa = taxa;
         this.unidadeMedida = unidadeMedida;
     }
+    public Produto(Produto produto) {
+        this.empresa = produto.getEmpresa();
+        this.nome = produto.getNome();
+        this.descricao = produto.getDescricao();
+        this.preco = produto.getPreco();
+        this.quantidade = produto.getQuantidade();
+        this.categoria = produto.getCategoriaT();
+        this.taxa = produto.getTaxa();
+        this.unidadeMedida = produto.getUnidadeMedida();
+    }
 
 
     public int getEmpresaId() {
