@@ -1,33 +1,43 @@
 package servicos;
 
+import exceptions.BancoDeDadosException;
 import modelo.Endereco;
+import repository.EnderecoRepository;
 import utils.validadores.ValidadorCEP;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class EnderecoServicos {
 
-    private ArrayList<Endereco> enderecos = new ArrayList<>();
+    private EnderecoRepository enderecoRepository = new EnderecoRepository();
 
     public EnderecoServicos() {
     }
 
-    public ArrayList<Endereco> getEnderecos() {
-        return enderecos;
+    public List<Endereco> getEnderecos() {
+        try {
+            return enderecoRepository.listar();
+        } catch (Exception e) {
+            System.out.println("Erro ao obter endereços: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     public boolean adicionarEndereco(Endereco endereco) {
         try {
             if (endereco != null && ValidadorCEP.isCepValido(endereco.getCep()) != null) {
-                this.enderecos.add(endereco);
+                enderecoRepository.adicionar(endereco);
                 return true;
             }
             throw new IllegalArgumentException("CEP inválido!");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao adicionar endereço: " + e.getMessage());
             return false;
-        } catch (Exception e) {
+        } catch (BancoDeDadosException e) {
+            throw new RuntimeException(e.getMessage());
+        }catch (Exception e) {
             System.out.println("Erro inesperado ao adicionar endereço: " + e.getMessage());
             return false;
         }
@@ -39,20 +49,8 @@ public class EnderecoServicos {
             if (regiao != null) {
                 System.out.println(regiao);
 
-                Iterator<Endereco> iterator = enderecos.iterator();
-                while (iterator.hasNext()) {
-                    Endereco endereco = iterator.next();
-                    if (novoEndereco.getId() == endereco.getId()) {
-                        endereco.setRegiao(regiao);
-                        if (novoEndereco.getLogradouro() != null) endereco.setLogradouro(novoEndereco.getLogradouro());
-                        if (novoEndereco.getNumero() != null) endereco.setNumero(novoEndereco.getNumero());
-                        if (novoEndereco.getComplemento() != null) endereco.setComplemento(novoEndereco.getComplemento());
-                        endereco.setCep(novoEndereco.getCep());
-                        if (novoEndereco.getCidade() != null) endereco.setCidade(novoEndereco.getCidade());
-                        if (novoEndereco.getEstado() != null) endereco.setEstado(novoEndereco.getEstado());
-                        if (novoEndereco.getPais() != null) endereco.setPais(novoEndereco.getPais());
-                        return true;
-                    }
+                if (enderecoRepository.editar(novoEndereco.getId(), novoEndereco)) {
+                    return true;
                 }
             }
             throw new IllegalArgumentException("CEP inválido");
@@ -67,6 +65,7 @@ public class EnderecoServicos {
 
     public void imprimirEnderecos() {
         try {
+            List<Endereco> enderecos = enderecoRepository.listar();
             for (Endereco endereco : enderecos) {
                 System.out.println("Endereço:");
                 System.out.println(endereco);
@@ -79,12 +78,11 @@ public class EnderecoServicos {
 
     public boolean imprimirEndereco(int id) {
         try {
-            for (Endereco endereco : enderecos) {
-                if (endereco.getId() == id) {
-                    System.out.println("Endereço do ID " + id);
-                    System.out.println(endereco);
-                    return true;
-                }
+            Endereco endereco = enderecoRepository.buscarPorId(id);
+            if (endereco != null) {
+                System.out.println("Endereço do ID " + id);
+                System.out.println(endereco);
+                return true;
             }
             throw new IllegalArgumentException("ID não encontrado!!");
         } catch (IllegalArgumentException e) {
@@ -96,16 +94,12 @@ public class EnderecoServicos {
         }
     }
 
+
     public boolean excluirEndereco(int id) {
         try {
-            Iterator<Endereco> iterator = enderecos.iterator();
-            while (iterator.hasNext()) {
-                Endereco endereco = iterator.next();
-                if (endereco.getId() == id) {
-                    iterator.remove();
-                    System.out.println("Endereço do ID " + id + " foi excluído!!");
-                    return true;
-                }
+            if (enderecoRepository.remover(id)) {
+                System.out.println("Endereço do ID " + id + " foi excluído!!");
+                return true;
             }
             throw new IllegalArgumentException("ID não encontrado.");
         } catch (IllegalArgumentException e) {
