@@ -28,7 +28,7 @@ public class Empresa extends Usuario implements Impressao {
         super(nome, sobrenome, endereco,dataNascimento,login, password);
         this.nomeFantasia = nomeFantasia;
         this.idEmpresa = gerarProximoId();
-        this.idUsuario = getUsuarioId();
+        this.idUsuario = getIdUsuario();
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
