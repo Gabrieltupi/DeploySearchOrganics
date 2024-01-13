@@ -22,11 +22,14 @@ public class Pedido implements Impressao {
     private LocalDate inicioEntrega;
     private TipoEntrega tipoEntrega;
     private ArrayList<ProdutoCarrinho> produtos;
+    private Cupom cupom;
+    private BigDecimal valorFrete = new BigDecimal(0);
 
     public Pedido(int usuarioId, ArrayList<ProdutoCarrinho> produtos,
                   FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                   Endereco endereco,
-                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total) {
+                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total, BigDecimal frete) {
+        this.cupom = cupom;
         if(cupom == null){
             cupom.setTaxaDeDesconto(new BigDecimal(0));
         }
@@ -43,10 +46,10 @@ public class Pedido implements Impressao {
         }else {
             this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
         }
-        this.total = total.add(calcularFrete(endereco.getCep())).subtract(cupom.getTaxaDeDesconto());
+        this.total = total.subtract(cupom.getTaxaDeDesconto());
         this.entregue = false;
         this.inicioEntrega = LocalDate.now();
-
+        this.valorFrete = frete;
     }
 
 
@@ -55,7 +58,13 @@ public class Pedido implements Impressao {
     }
 
 
+    public BigDecimal getValorFrete() {
+        return valorFrete;
+    }
 
+    public void setValorFrete(BigDecimal valorFrete) {
+        this.valorFrete = valorFrete;
+    }
 
     public BigDecimal getTotal() {
         return total;
@@ -181,5 +190,13 @@ public class Pedido implements Impressao {
                     + " Quantidade: " + produto.getQuantidadePedida());
         }
         System.out.println("Valor total: " + total);
+    }
+
+    public Cupom getCupom() {
+        return cupom;
+    }
+
+    public void setCupom(Cupom cupom) {
+        this.cupom = cupom;
     }
 }

@@ -19,6 +19,7 @@ public class Carrinho {
     private Usuario usuario;
     private Pedido pedido;
     private ProdutoRepository produtoRepository;
+    private BigDecimal frete = new BigDecimal(0);
 
     public Carrinho(Usuario usuario, int idEmpresa) {
         this.idEmpresa = idEmpresa;
@@ -127,7 +128,7 @@ public class Carrinho {
 
         if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
             pedido = new Pedido(usuario.getIdUsuario(), produtos,
-                    formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal);
+                    formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal, frete);
             pedido.imprimir();
         } else {
             System.out.println("CEP invalido - pedido não foi finalizado");
@@ -141,5 +142,13 @@ public class Carrinho {
             BigDecimal precoProduto = produto.getPreco();
             valorTotal = valorTotal.add(precoProduto.multiply(quantidade));
         }
+    }
+
+    public BigDecimal getFrete() {
+        return frete;
+    }
+
+    public void setFrete(BigDecimal frete) {
+        this.frete = frete;
     }
 }
