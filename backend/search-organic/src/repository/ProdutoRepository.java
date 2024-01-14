@@ -132,7 +132,6 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             int res = stmt.executeUpdate();
 
             if (res > 0) {
-                System.out.println("Produto atualizada com sucesso");
                 return true;
             }
             System.out.println("Ocorreu um erro ao atualizar");

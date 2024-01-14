@@ -138,10 +138,14 @@ public class Menu {
 
                 BigDecimal taxaDesconto = new BigDecimal("1.0");
 
-                carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
+                boolean finalizou = carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
                         usuario.getEndereco(),
                        new Cupom());
-                System.out.println("Pedido finalizado com sucesso!");
+                if(finalizou){
+                    System.out.println("Pedido finalizado com sucesso!");
+                    return;
+                }
+                System.out.println("Pedido não finalizado");
             }
 
             if (escolhaMenuCarrinho == 2) {

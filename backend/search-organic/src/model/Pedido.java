@@ -50,6 +50,7 @@ public class Pedido implements Impressao {
         this.entregue = false;
         this.inicioEntrega = LocalDate.now();
         this.valorFrete = frete;
+        this.precoCarrinho = precoCarrinho;
     }
 
     public Integer getId() {

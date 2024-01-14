@@ -114,4 +114,14 @@ public class ProdutoService {
             return null;
         }
     }
+
+    public void atualizarSilenciosamente(Produto produto) {
+        try {
+            produtoRepository.editar(produto.getIdProduto(), produto);
+
+        } catch (SQLException e) {
+            System.out.println("Erro " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

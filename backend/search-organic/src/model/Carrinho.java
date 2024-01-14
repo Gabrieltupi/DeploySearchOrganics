@@ -2,6 +2,7 @@ package model;
 
 import exceptions.BancoDeDadosException;
 import repository.ProdutoRepository;
+import service.PedidoService;
 import service.ProdutoService;
 import utils.FormaPagamento;
 import utils.StatusPedido;
@@ -20,6 +21,7 @@ public class Carrinho {
     private Pedido pedido;
     private BigDecimal frete = new BigDecimal(0);
     private    ProdutoService produtoService = new ProdutoService();
+    private PedidoService pedidoService = new PedidoService();
 
     public Carrinho(Usuario usuario, int idEmpresa) {
         this.idEmpresa = idEmpresa;
@@ -124,22 +126,25 @@ public class Carrinho {
         return valorCarrinho;
     }
 
-    public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
+    public Boolean finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                                 Endereco endereco, Cupom cupom){
 
         if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
             pedido = new Pedido(usuario.getIdUsuario(), produtos,
                     formaPagamento, dataDeEntrega, endereco, cupom, valorTotal, frete, StatusPedido.AGUARDANDO_PAGAMENTO, getValorCarrinho());
+            pedidoService.adicionar(pedido);
             pedido.imprimir();
             for (ProdutoCarrinho produtoCarrinho : produtos) {
                 Produto produto = produtoCarrinho.getProduto();
                 BigDecimal quantidadePedida = produtoCarrinho.getQuantidadePedida();
 
                 produto.setQuantidade(produto.getQuantidade().subtract(quantidadePedida));
-                produtoService.atualizarProduto(produto.getIdProduto(), produto);
+                produtoService.atualizarSilenciosamente(produto);
             }
+            return true;
         } else {
-            System.out.println("CEP invalido - pedido não foi finalizado");
+            System.out.println("CEP invalido");
+            return false;
         }
     }
 
