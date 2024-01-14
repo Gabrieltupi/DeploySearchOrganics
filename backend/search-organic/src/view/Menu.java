@@ -1,27 +1,10 @@
+package view;
+
 import exceptions.BancoDeDadosException;
-import exceptions.UsuarioJaCadastradoException;
-import modelo.Carrinho;
-import modelo.Endereco;
-import modelo.Produto;
-import modelo.Usuario;
-import modelo.*;
-import repository.ConexaoBancoDeDados;
-import servicos.*;
-import utils.*;
-import utils.validadores.TipoEntrega;
+import service.PedidoService;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
-public class Main {
-    public static void main(String[] args) throws BancoDeDadosException {
+public class Menu {
+    public static void run() {
 //        PedidoService pedidoService = new PedidoService();
 //        EnderecoServicos enderecoServicos = new EnderecoServicos();
 //        UsuarioService usuarioService = new UsuarioService();
@@ -57,6 +40,8 @@ public class Main {
 
 
 //        pedidoService.excluir(14);
+        PedidoService pedidoService = new PedidoService();
+        pedidoService.listar();
 
     }
 }

@@ -196,13 +196,17 @@ public class Pedido implements Impressao {
         System.out.println("Status do pedido: " + statusPedido);
         System.out.println("Data de entrega: " + dataDeEntrega);
         System.out.println("Início da entrega: " + inicioEntrega);
+        System.out.println("Valor do frete : " + valorFrete);
+        System.out.println("Valor dos produtos: " + precoCarrinho);
         System.out.println("Produtos: ");
 
         for (ProdutoCarrinho produtoCarrinho : produtos) {
             System.out.println(" Nome do produto: " + produtoCarrinho.getProduto().getNome()
-                    + " Quantidade: " + produtoCarrinho.getQuantidadePedida());
+                    + "\n Quantidade: " + produtoCarrinho.getQuantidadePedida() +
+                    "\n Preço: "+ produtoCarrinho.getProduto().getPreco());
         }
         System.out.println("Valor total: " + total);
+        System.out.println("---------------------------------------------------------");
     }
 
     public Cupom getCupom() {

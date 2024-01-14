@@ -26,7 +26,7 @@ public class PedidoService {
     public List<Pedido> listar() {
         try {
             for (Pedido pedido : pedidoRepository.listar()) {
-
+                    pedido.imprimir();
             }
         } catch (Exception e) {
             System.out.println("Erro ao obter endereços: " + e.getMessage());
