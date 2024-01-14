@@ -285,7 +285,7 @@ public class Menu {
                 System.out.println("Digite seu email: ");
                 String novoEmail = scanner.nextLine();
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDate novaDataNascimento = LocalDate.parse(stringNascimento, formatter);
 
                 usuarioService.editarUsuario(usuario.getIdUsuario(), new Usuario(novoNome, novoSobrenome, novoCpf, novaDataNascimento, novoEmail, usuario.getLogin(), usuario.getSenha()));
@@ -375,7 +375,7 @@ public class Menu {
         System.out.println("Digite seu email: ");
         String emailCadastro = scanner.nextLine();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro, formatter);
 
         try {

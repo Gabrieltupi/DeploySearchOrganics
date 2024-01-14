@@ -80,6 +80,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
                     "(ID_USUARIO, LOGIN, SENHA, CPF, ATIVO, NOME, SOBRENOME, EMAIL, DATANASCIMENTO)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
 
+
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, usuario.getIdUsuario());
             stmt.setString(2, usuario.getLogin());
