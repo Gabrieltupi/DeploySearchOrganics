@@ -18,10 +18,12 @@ Este projeto visa criar uma aplicação em Java que conecta o consumidor final a
 
 1. Faça o download do nosso repositório.
    Você pode obter uma cópia do projeto através do comando
-   É n
+   É necessário ter o git instalado
 ```bash
 git clone https://github.com/FanezeLeo/vs13-squad1-SEARCH-ORGANIC.git
 ```
+<br>
+Utilize uma IDE compatível com Java e execute a classe Main.
 
 ## :smile: Autores
 | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/86929017?v=4" width=115><br><sub>Alessandra Mariana</sub>](https://github.com/AlessandraMariana) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/120314387?v=4" width=115><br><sub>Deyvid Lucas</sub>](https://github.com/DeyvidLucas-DEV) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/115324992?v=4" width=115><br><sub>Gabriel Souza</sub>](https://github.com/Gabrieltupi) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/74692139?v=4" width=115><br><sub>Gregori Nunes</sub>](https://github.com/gregsnn) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/85557905?v=4" width=115><br><sub>Leonardo Faneze</sub>](https://github.com/FanezeLeo) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/110260819?v=4" width=115><br><sub>Vitor Colombo</sub>](https://github.com/VitorColombo) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/102919718?v=4" width=115><br><sub>Wladmir Rodriuges</sub>](https://github.com/getwlad) |
