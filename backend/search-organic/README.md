@@ -1,3 +1,39 @@
+## :bookmark: Índice
+
+- [Sobre o Projeto](#information_source-sobre-o-projeto)
+- [Funcionalidades](#heart_eyes-principais-funcionalidades)
+- [Como Utilizar](#books-como-utilizar)
+- [Autores](#smile-autores)
+## :information_source: Sobre o projeto
+Este projeto visa criar uma aplicação em Java que conecta o consumidor final ao produtor rural, proporcionando uma experiência de busca orgânica por produtos frescos e sustentáveis. A ideia principal é facilitar a busca por alimentos cultivados de maneira orgânica diretamente dos produtores locais, promovendo uma conexão direta entre quem produz e quem consome.
+
+## :heart_eyes: Principais Funcionalidades
+
+- **Pesquisa:**
+  A aplicação permite que os consumidores realizem buscas, facilitando a descoberta de produtos frescos. A busca é baseada de modo geral ou em categorias.
+
+- **Conexão Direta:**
+  O projeto facilita a comunicação entre consumidores e produtores rurais. Os produtores podem cadastrar seus produtos, e os consumidores podem visualizar, comprar e combinar a entrega.
+
+- **Cadastro:**
+  Tanto os consumidores quanto as empresas podem se cadastrar através de um cadastro único.
+
+- **Compra e venda:**
+  É possível comprar e vender na plataforma, para vender é necessário registrar a empresa. Cada compra gera um pedido que pode ser acompanhado ou fazer o cancelamento.
+## :books: Como utilizar:
+Pode efetuar o download a partir de um browser:
+<img src="./assets/Como-baixar.png" style="display: block; margin-bottom: 1rem; margin-top: 0.5rem;">
+<br>
+É necessário ter o Git instalado para esse tipo de download<br>
+Você pode obter uma cópia do projeto através do comando: <br>
+
+```bash
+git clone https://github.com/FanezeLeo/vs13-squad1-SEARCH-ORGANIC.git
+```
+
+Utilize uma IDE compatível com java para abrir o projeto na pasta \backend\search-organic <br>
+Execute a aplicação a partir da classe Main, o menu será carregado no terminal.
+
 
 
 
