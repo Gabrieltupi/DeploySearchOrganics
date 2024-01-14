@@ -56,6 +56,20 @@ public class UsuarioService {
         }
     }
 
+    public void exibirUsuario(int id) {
+        try {
+            List<Usuario> usuarios = usuarioRepository.listar();
+            for(Usuario usuario: usuarios){
+                if(usuario.getIdUsuario() == id){
+                    usuario.imprimir();
+                }
+            }
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao exibir usuários: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public void editarUsuario(int usuarioId, Usuario usuarioEditado) {
         try {
             boolean usuarioEditadoComSucesso = usuarioRepository.editar(usuarioId, usuarioEditado);

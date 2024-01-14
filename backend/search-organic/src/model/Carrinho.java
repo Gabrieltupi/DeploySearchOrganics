@@ -101,7 +101,7 @@ public class Carrinho {
 
     }
 
-    public void listarProdutosDoCarrinho() throws BancoDeDadosException {
+    public void listarProdutosDoCarrinho()   {
         for(ProdutoCarrinho produtoCarrinho : produtos){
             System.out.println("Número: " + produtoCarrinho.getProduto().getIdProduto() + " Nome do produto: " + produtoCarrinho.getProduto().getNome()
                     + " Quantidade: " + produtoCarrinho.getQuantidadePedida());

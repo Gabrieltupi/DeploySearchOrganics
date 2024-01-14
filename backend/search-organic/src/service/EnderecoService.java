@@ -24,22 +24,21 @@ public class EnderecoService {
         }
     }
 
-    public boolean adicionarEndereco(Endereco endereco) {
+    public Endereco adicionarEndereco(Endereco endereco) {
         try {
             if (endereco != null && ValidadorCEP.isCepValido(endereco.getCep()) != null) {
-                enderecoRepository.adicionar(endereco);
-                return true;
+             return enderecoRepository.adicionar(endereco);
             }
-            throw new IllegalArgumentException("CEP inválido!");
+          throw new IllegalArgumentException("CEP inválido!");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao adicionar endereço: " + e.getMessage());
-            return false;
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
             System.out.println("Erro inesperado ao adicionar endereço: " + e.getMessage());
-            return false;
+
         }
+        return endereco;
     }
 
     public boolean atualizarEndereco(Endereco novoEndereco) {
@@ -110,6 +109,20 @@ public class EnderecoService {
         } catch (Exception e) {
             System.out.println("Erro inesperado ao excluir endereço: " + e.getMessage());
             return null;
+        }
+    }
+    public boolean verificaSeUsuarioPossuiEndereco (Integer idUsuario) {
+        try {
+            return     enderecoRepository.verificaUsuarioTemEndereco(idUsuario);
+        } catch (BancoDeDadosException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public Endereco getEndereco(Integer idUsuario){
+        try {
+            return enderecoRepository.buscarPorUsuarioId(idUsuario);
+        } catch (BancoDeDadosException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
