@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Empresa implements Impressao {
     private int idEmpresa;
-    private int idUsuario;
+    private Integer idUsuario;
     private String nomeFantasia;
     private String cnpj;
     private String razaoSocial;
@@ -20,9 +20,9 @@ public class Empresa implements Impressao {
     }
 
     public Empresa(String nomeFantasia, String cnpj, String razaoSocial,
-                   String inscricaoEstadual, String setor) {
+                   String inscricaoEstadual, String setor, Integer idUsuario) {
         this.nomeFantasia = nomeFantasia;
-        this.idUsuario = getIdUsuario();
+        this.idUsuario = idUsuario;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.inscricaoEstadual = inscricaoEstadual;
@@ -42,13 +42,13 @@ public class Empresa implements Impressao {
     public int getIdEmpresa() {
         return idEmpresa;
     }
-    public int getIdUsuario() { return idUsuario; }
+    public Integer getIdUsuario() { return idUsuario; }
 
     public void setIdEmpresa(int idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 

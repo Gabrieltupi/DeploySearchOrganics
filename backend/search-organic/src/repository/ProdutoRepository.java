@@ -170,9 +170,9 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
                 produto.setQuantidade(res.getBigDecimal("quantidade_disponivel"));
-                produto.setCategoria(TipoCategoria.valueOf(res.getString("tipo_categoria")));
+                produto.setCategoria(TipoCategoria.fromInt(res.getInt("tipo_categoria")));
                 produto.setTaxa(res.getDouble("taxa"));
-                produto.setUnidadeMedida(UnidadeMedida.valueOf(res.getString("unidade_medida")));
+                produto.setUnidadeMedida(UnidadeMedida.fromString(res.getString("unidade_medida")));
                 produtos.add(produto);
             }
         } catch (SQLException e) {
@@ -207,9 +207,9 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
                 produto.setQuantidade(res.getBigDecimal("quantidade_disponivel"));
-                produto.setCategoria(TipoCategoria.valueOf(res.getString("tipo_categoria")));
+                produto.setCategoria(TipoCategoria.fromInt(res.getInt("tipo_categoria")));
                 produto.setTaxa(res.getDouble("taxa"));
-                produto.setUnidadeMedida(UnidadeMedida.valueOf(res.getString("unidade_medida")));
+                produto.setUnidadeMedida(UnidadeMedida.fromString(res.getString("unidade_medida")));
                 return produto;
             }
             return null;
@@ -245,9 +245,9 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
                 produto.setQuantidade(res.getBigDecimal("quantidade_disponivel"));
-                produto.setCategoria(TipoCategoria.valueOf(res.getString("tipo_categoria")));
+                produto.setCategoria(TipoCategoria.fromInt(res.getInt("tipo_categoria")));
                 produto.setTaxa(res.getDouble("taxa"));
-                produto.setUnidadeMedida(UnidadeMedida.valueOf(res.getString("unidade_medida")));
+                produto.setUnidadeMedida(UnidadeMedida.fromString(res.getString("unidade_medida")));
                 produtos.add(produto);
             }
         } catch (SQLException e) {
@@ -282,9 +282,9 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
                 produto.setQuantidade(res.getBigDecimal("quantidade_disponivel"));
-                produto.setCategoria(TipoCategoria.valueOf(res.getString("tipo_categoria")));
+                produto.setCategoria(TipoCategoria.fromInt(res.getInt("tipo_categoria")));
                 produto.setTaxa(res.getDouble("taxa"));
-                produto.setUnidadeMedida(UnidadeMedida.valueOf(res.getString("unidade_medida")));
+                produto.setUnidadeMedida(UnidadeMedida.fromString(res.getString("unidade_medida")));
                 produtos.add(produto);
             }
         } catch (SQLException e) {

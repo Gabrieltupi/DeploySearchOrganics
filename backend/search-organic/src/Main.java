@@ -1,3 +1,4 @@
+import exceptions.BancoDeDadosException;
 import exceptions.UsuarioJaCadastradoException;
 import modelo.Carrinho;
 import modelo.Endereco;
@@ -7,7 +8,6 @@ import modelo.*;
 import repository.ConexaoBancoDeDados;
 import servicos.*;
 import utils.FormaPagamento;
-import utils.GeradorSeeds;
 import utils.TipoCategoria;
 import utils.validadores.TipoEntrega;
 
@@ -21,19 +21,60 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ConexaoBancoDeDados conexaoBancoDeDados = new ConexaoBancoDeDados();
-        PedidoService empresaServicos = new PedidoService();
-        try {
-            Connection con = conexaoBancoDeDados.getConnection();
-            empresaServicos.listarPedidos();
-            ConexaoBancoDeDados.closeConnection(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws BancoDeDadosException {
+     UsuarioService usuarioService = new UsuarioService();
+    Usuario usuario = usuarioService.autenticar("joao", "123");
+    usuario.imprimir();
+        usuario.setNome("Mateus");
+        usuario.setSobrenome("nascimento");
+        usuario.setLogin("mateuzinho");
+        usuario.setEmail("asd@gmail.com");
+    usuarioService.editarUsuario(6,usuario);
+
+
+
+
+////   EmpresaServicos empresaServicos = new EmpresaServicos();
+//    Empresa empresa = new Empresa();
+//    empresa.setNomeFantasia("Empresa TESTE");
+//    empresa.setCnpj("42967894000133");
+//    empresa.setRazaoSocial("Empresa1");
+//    empresa.setInscricaoEstadual("123456789");
+//    Integer idUsuario = usuario.getIdUsuario();
+//        System.out.println(idUsuario);
+//    empresa.setSetor("Setor 1");
+//    empresa.setIdUsuario(usuario.getIdUsuario());
+//    empresaServicos.criarEmpresa(empresa);
+//    empresaServicos.listarEmpresas();
+
+//        Usuario usuario1 = new Usuario();
+//        usuario1.setNome("João");
+//        usuario1.setSobrenome("Silva");
+//        usuario1.setLogin("joao");
+//        usuario1.setSenha("123");
+//        usuario1.setCpf("123456789");
+//        usuario1.setDataNascimento(LocalDate.now());
+//        usuario1.setEmail("asdd@gmail.com");
+//        Endereco endereco1 = new Endereco();
+//        endereco1.setLogradouro("Rua 1");
+//        endereco1.setNumero("123");
+//        endereco1.setComplemento("Casa");
+//        endereco1.setCep("12345678");
+//        endereco1.setCidade("São Paulo");
+//        endereco1.setEstado("SP");
+//        endereco1.setPais("Brasil");
+//        usuario1.setEndereco(endereco1);
+//        usuarioService.criarUsuario(usuario1);
+
+       usuarioService.exibirTodos();
+
+
+
+
     }
+
 }
+
 
 //        Scanner scanner = new Scanner(System.in);
 //

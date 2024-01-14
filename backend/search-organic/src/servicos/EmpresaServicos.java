@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-//EmpresaRepository
+
 public class EmpresaServicos {
     private EmpresaRepository repository = new EmpresaRepository();
 
@@ -19,7 +19,7 @@ public class EmpresaServicos {
         try {
             if (ValidadorCNPJ.validarCNPJ(empresa.getCnpj())) {
                 Empresa novaEmpresa = new Empresa(empresa.getNomeFantasia(), empresa.getCnpj(), empresa.getRazaoSocial(),
-                        empresa.getInscricaoEstadual(), empresa.getSetor());
+                        empresa.getInscricaoEstadual(), empresa.getSetor(), empresa.getIdUsuario());
                 repository.adicionar(novaEmpresa);
             } else {
                 throw new IllegalArgumentException("CNPJ inválido. Certifique-se de inserir um CNPJ válido para criar a empresa.");

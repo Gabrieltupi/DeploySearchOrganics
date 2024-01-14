@@ -1,7 +1,7 @@
 package exceptions;
 
 public class EnderecoNaoEncontrado extends Exception{
-    public EnderecoNaoEncontradoException() {
+    public EnderecoNaoEncontrado() {
         super("Endereço não encontrado");
     }
 }

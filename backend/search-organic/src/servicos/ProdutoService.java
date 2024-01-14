@@ -30,7 +30,7 @@ private ProdutoRepository produtoRepository;
     public void listarProdutos() {
         try {
             List<Produto> listar= produtoRepository.listar();
-            listar.forEach(System.out::println);
+            listar.forEach(Produto::imprimir);
     } catch (BancoDeDadosException e) {
             System.out.println(" Erro ao listar produtos" + e.getMessage());
             e.printStackTrace();

@@ -32,7 +32,7 @@ public class UsuarioService {
     public Usuario autenticar(String login, String senha){
         try{
             Usuario usuario = usuarioRepository.buscaPorLogin(login);
-            if(!(usuario.getPassword().equals(senha))){
+            if(!(usuario.getSenha().equals(senha))){
                 throw new SenhaIncorretaException();
             }
 
