@@ -101,9 +101,9 @@ public class Menu {
     }
 
     private static Usuario login() {
-        System.out.println("Digite o email: ");
+        System.out.println("Digite seu login: ");
         String email = scanner.nextLine();
-        System.out.println("Digite a senha: ");
+        System.out.println("Digite sua senha: ");
         String senha = scanner.nextLine();
         return usuarioService.autenticar(email, senha);
     }
