@@ -140,7 +140,7 @@ public class Menu {
 
                 carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
                         usuario.getEndereco(),
-                        new Cupom());
+                       new Cupom());
                 System.out.println("Pedido finalizado com sucesso!");
             }
 

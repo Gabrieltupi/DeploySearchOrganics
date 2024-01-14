@@ -55,6 +55,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
             throw new RuntimeException("Usuário não encontrado com o login: " + login);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException(e.getCause());
         } finally {
             try {

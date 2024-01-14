@@ -39,6 +39,7 @@ public class UsuarioService {
         } catch (SenhaIncorretaException senhaIncorrExce) {
             throw new RuntimeException(senhaIncorrExce.getMessage());
         } catch (BancoDeDadosException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

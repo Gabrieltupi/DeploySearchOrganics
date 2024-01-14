@@ -33,9 +33,6 @@ public class Pedido implements Impressao {
                   Endereco endereco, Cupom cupom, BigDecimal total, BigDecimal frete,
                   StatusPedido status, BigDecimal precoCarrinho) {
         this.cupom = cupom;
-        if(cupom == null){
-            cupom.setTaxaDeDesconto(new BigDecimal(0));
-        }
         this.statusPedido = status;
         this.produtos = produtos;
         this.formaPagamento = formaPagamento;
