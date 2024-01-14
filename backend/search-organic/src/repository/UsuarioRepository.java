@@ -4,6 +4,7 @@ import exceptions.BancoDeDadosException;
 import exceptions.SenhaIncorretaException;
 import exceptions.UsuarioJaCadastradoException;
 import modelo.Usuario;
+import utils.TipoAtivo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,11 +40,10 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             if (res.next()) {
                 Usuario usuario = new Usuario();
                 usuario.setIdUsuario(res.getInt("ID_USUARIO"));
-                usuario.setIdEndereco(res.getInt("ID_ENDERECO"));
                 usuario.setLogin(res.getString("LOGIN"));
-                usuario.setPassword(res.getString("SENHA"));
+                usuario.setSenha(res.getString("SENHA"));
                 usuario.setCpf(res.getString("CPF"));
-                usuario.setAtivo(res.getBoolean("ATIVO"));
+                usuario.setTipoAtivo(TipoAtivo.fromString(res.getString("ATIVO")));
                 usuario.setNome(res.getString("NOME"));
                 usuario.setSobrenome(res.getString("SOBRENOME"));
                 usuario.setEmail(res.getString("EMAIL"));
@@ -75,20 +75,19 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             usuario.setIdUsuario(proximoId);
 
             String sql = "INSERT INTO Usuario\n" +
-                    "(ID_USUARIO, ID_ENDERECO, LOGIN, SENHA, CPF, ATIVO, NOME, SOBRENOME, EMAIL, DATA_NASCIMENTO)\n" +
+                    "(ID_USUARIO, LOGIN, SENHA, CPF, ATIVO, NOME, SOBRENOME, EMAIL, DATA_NASCIMENTO)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, usuario.getIdUsuario());
-            stmt.setInt(2, usuario.getIdEndereco());
-            stmt.setString(3, usuario.getLogin());
-            stmt.setString(4, usuario.getPassword());
-            stmt.setString(5, usuario.getCpf());
-            stmt.setBoolean(6, usuario.isAtivo());
-            stmt.setString(7, usuario.getNome());
-            stmt.setString(8, usuario.getSobrenome());
-            stmt.setString(9, usuario.getEmail());
-            stmt.setDate(3, Date.valueOf(usuario.getDataNascimento()));
+            stmt.setString(2, usuario.getLogin());
+            stmt.setString(3, usuario.getSenha());
+            stmt.setString(4, usuario.getCpf());
+            stmt.setString(5, usuario.getTipoAtivo().toString());
+            stmt.setString(6, usuario.getNome());
+            stmt.setString(7, usuario.getSobrenome());
+            stmt.setString(8, usuario.getEmail());
+            stmt.setDate(9, Date.valueOf(usuario.getDataNascimento()));
 
             int res = stmt.executeUpdate();
             if (res > 0) {
@@ -150,7 +149,6 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             con = ConexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE Usuario SET " +
-                    "ID_ENDERECO = ?, " +
                     "LOGIN = ?, " +
                     "SENHA = ?, " +
                     "CPF = ?, " +
@@ -163,16 +161,15 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setInt(1, usuario.getIdEndereco());
-            stmt.setString(2, usuario.getLogin());
-            stmt.setString(3, usuario.getPassword());
-            stmt.setString(4, usuario.getCpf());
-            stmt.setBoolean(5, usuario.isAtivo());
-            stmt.setString(6, usuario.getNome());
-            stmt.setString(7, usuario.getSobrenome());
-            stmt.setString(8, usuario.getEmail());
-            stmt.setDate(3, Date.valueOf(usuario.getDataNascimento()));
-            stmt.setInt(10, id);
+            stmt.setString(1, usuario.getLogin());
+            stmt.setString(2, usuario.getSenha());
+            stmt.setString(3, usuario.getCpf());
+            stmt.setString(4, usuario.getTipoAtivo().toString());
+            stmt.setString(5, usuario.getNome());
+            stmt.setString(6, usuario.getSobrenome());
+            stmt.setString(7, usuario.getEmail());
+            stmt.setDate(8, Date.valueOf(usuario.getDataNascimento()));
+            stmt.setInt(9, id);
 
             int res = stmt.executeUpdate();
 
@@ -210,11 +207,10 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             while (res.next()) {
                 Usuario usuario = new Usuario();
                 usuario.setIdUsuario(res.getInt("ID_USUARIO"));
-                usuario.setIdEndereco(res.getInt("ID_ENDERECO"));
                 usuario.setLogin(res.getString("LOGIN"));
-                usuario.setPassword(res.getString("SENHA"));
+                usuario.setSenha(res.getString("SENHA"));
                 usuario.setCpf(res.getString("CPF"));
-                usuario.setAtivo(res.getBoolean("ATIVO"));
+                usuario.setTipoAtivo(TipoAtivo.fromString(res.getString("ATIVO")));
                 usuario.setNome(res.getString("NOME"));
                 usuario.setSobrenome(res.getString("SOBRENOME"));
                 usuario.setEmail(res.getString("EMAIL"));

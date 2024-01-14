@@ -1,10 +1,11 @@
 package modelo;
 import interfaces.Impressao;
+import utils.TipoAtivo;
+
 import java.time.LocalDate;
 
 public class Usuario implements Impressao {
     private  Integer idUsuario;
-    private int idEndereco;
     private String nome;
     private String sobrenome ;
     private Endereco endereco;
@@ -12,34 +13,21 @@ public class Usuario implements Impressao {
     private LocalDate dataNascimento;
     private String email;
     private String login;
-    private String password;
-    private boolean ativo = true;
+    private String senha;
+    private TipoAtivo tipoAtivo = TipoAtivo.S;
 
     public Usuario() {
 
     }
 
-    public Usuario(String nome, String sobrenome, Endereco endereco, LocalDate dataNascimento, String login, String password){
-        this.nome = this.nome;
-        this.sobrenome = this.sobrenome;
-        this.endereco = this.endereco;
-        this.cpf = cpf;
-        this.dataNascimento = this.dataNascimento;
-        this.email = email;
-        this.login = this.login;
-        this.password = this.password;
-        this.ativo = true;
-
-    }
-    public Usuario(String nome, String sobrenome, Endereco endereco, String cpf, LocalDate dataNascimento, String email, String login, String password) {
+    public Usuario(String nome, String sobrenome, String cpf, LocalDate dataNascimento, String email, String login, String senha) {
         this.nome = nome;
         this.sobrenome = sobrenome;
-        this.endereco = endereco;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
         this.email = email;
         this.login = login;
-        this.password = password;
+        this.senha = senha;
     }
 
     public int getIdUsuario() {
@@ -92,39 +80,27 @@ public class Usuario implements Impressao {
     public void setLogin(String login) {
         this.login = login;
     }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public boolean isAtivo() {
-        return ativo;
-    }
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
-    public int getIdEndereco() {
-        return idEndereco;
-    }
-    public void setIdEndereco(int idEndereco) {
-        this.idEndereco = idEndereco;
+
+    public String getSenha() {
+        return senha;
     }
 
-    public String verificarStatus() {
-        if (ativo) {
-            return "Usuário online";
-        } else {
-            return "Usuário offline";
-        }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public TipoAtivo getTipoAtivo() {
+        return tipoAtivo;
+    }
+
+    public void setTipoAtivo(TipoAtivo tipoAtivo) {
+        this.tipoAtivo = tipoAtivo;
     }
 
     @Override
     public void imprimir() {
-
         System.out.println("ID do Usuário: " + idUsuario);
         System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
-        System.out.println("Status: " + verificarStatus());
         System.out.println("Data de nascimento " + getDataNascimento());
     }
 }

@@ -18,9 +18,7 @@ public class EmpresaServicos {
     public void criarEmpresa(Empresa empresa) {
         try {
             if (ValidadorCNPJ.validarCNPJ(empresa.getCnpj())) {
-                Empresa novaEmpresa = new Empresa(empresa.getLogin(), empresa.getPassword(), empresa.getNome(),
-                        empresa.getSobrenome(), empresa.getEndereco(),
-                        empresa.getDataNascimento(), empresa.getNomeFantasia(), empresa.getCnpj(), empresa.getRazaoSocial(),
+                Empresa novaEmpresa = new Empresa(empresa.getNomeFantasia(), empresa.getCnpj(), empresa.getRazaoSocial(),
                         empresa.getInscricaoEstadual(), empresa.getSetor());
                 repository.adicionar(novaEmpresa);
             } else {
