@@ -28,7 +28,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
             con = ConexaoBancoDeDados.getConnection();
             Integer proximoId = getProximoId(con);
 
-            String sql = "INSERT INTO ENDERECO (id_endereco, rua, numero, complemento, cep, cidade, estado, pais, regiao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO ENDERECO (id_endereco, rua, numero, complemento, cep, cidade, estado, pais, regiao, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setInt(1, proximoId);
                 pstd.setString(2, endereco.getLogradouro());
@@ -39,7 +39,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
                 pstd.setString(7, endereco.getEstado());
                 pstd.setString(8, endereco.getPais());
                 pstd.setString(9, endereco.getRegiao());
-
+                pstd.setInt(10, endereco.getIdUsuario());
                 int linhasAfetadas = pstd.executeUpdate();
 
                 if (linhasAfetadas > 0) {
@@ -139,7 +139,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
                         );
                         endereco.setId(rs.getInt("id_endereco"));
                         endereco.setRegiao(rs.getString("regiao"));
-
+                        endereco.setIdUsuario(rs.getInt("id_usuario"));
                         enderecos.add(endereco);
                     }
                 }
@@ -175,6 +175,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
                         );
                         endereco.setId(rs.getInt("id_endereco"));
                         endereco.setRegiao(rs.getString("regiao"));
+                        endereco.setIdUsuario(rs.getInt("id_usuario"));
                         return endereco;
                     }
                 }

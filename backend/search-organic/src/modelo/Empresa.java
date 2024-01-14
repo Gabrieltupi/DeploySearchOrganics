@@ -5,7 +5,7 @@ import interfaces.Impressao;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Empresa extends Usuario implements Impressao {
+public class Empresa implements Impressao {
     private int idEmpresa;
     private int idUsuario;
     private String nomeFantasia;
@@ -13,19 +13,15 @@ public class Empresa extends Usuario implements Impressao {
     private String razaoSocial;
     private String inscricaoEstadual;
     private String setor;
-
     private ArrayList<Produto> produtos = new ArrayList<>();
 
     public Empresa() {
         super();
     }
 
-    public Empresa(String login, String password, String nome, String sobrenome, Endereco endereco,
-                   LocalDate dataNascimento, String nomeFantasia, String cnpj, String razaoSocial,
+    public Empresa(String nomeFantasia, String cnpj, String razaoSocial,
                    String inscricaoEstadual, String setor) {
-        super(nome, sobrenome, endereco,dataNascimento,login, password);
         this.nomeFantasia = nomeFantasia;
-        this.idEmpresa = gerarProximoId();
         this.idUsuario = getIdUsuario();
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
@@ -50,6 +46,10 @@ public class Empresa extends Usuario implements Impressao {
 
     public void setIdEmpresa(int idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public ArrayList<Produto> getProdutos() { return produtos; }
@@ -83,10 +83,6 @@ public class Empresa extends Usuario implements Impressao {
     @Override
     public void imprimir() {
         System.out.println("ID do da Empresa: " + getIdEmpresa());
-        System.out.println("Nome "+ getNome() + " Sobrenome "+ getSobrenome());
-        System.out.println("Status: " + verificarStatus());
-        System.out.println("Data de nascimento " + getDataNascimento());
-
         System.out.println("\nDados da Empresa: \n");
         System.out.println("Nome da empresa: " + getNomeFantasia());
         System.out.println("CNPJ da empresa: " + getCnpj());

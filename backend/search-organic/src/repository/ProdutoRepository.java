@@ -165,7 +165,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             while (res.next()) {
                 Produto produto = new Produto();
                 produto.setIdProduto(res.getInt("id_produto"));
-                produto.setId_empresa(res.getInt("id_empresa"));
+                produto.setIdEmpresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
@@ -202,7 +202,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             if (res.next()) {
                 Produto produto = new Produto();
                 produto.setIdProduto(res.getInt("id_produto"));
-                produto.setId_empresa(res.getInt("id_empresa"));
+                produto.setIdEmpresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
@@ -240,7 +240,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             while (res.next()) {
                 Produto produto = new Produto();
                 produto.setIdProduto(res.getInt("id_produto"));
-                produto.setId_empresa(res.getInt("id_empresa"));
+                produto.setIdEmpresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
@@ -277,7 +277,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             while (res.next()) {
                 Produto produto = new Produto();
                 produto.setIdProduto(res.getInt("id_produto"));
-                produto.setId_empresa(res.getInt("id_empresa"));
+                produto.setIdEmpresa(res.getInt("id_empresa"));
                 produto.setNome(res.getString("nome"));
                 produto.setDescricao(res.getString("descricao"));
                 produto.setPreco(res.getBigDecimal("preco"));
