@@ -19,15 +19,16 @@ CREATE TABLE PedidoXProduto (
     id_produto INT,
     quantidade NUMBER(10) NOT NULL
 );
-
-CREATE TABLE Cupom (
-    id_cupom INT PRIMARY KEY,
-    nome_cupom VARCHAR(50) NOT NULL,
-    ativo CHAR(1) CHECK (ativo IN ('T', 'F')),
-    descricao VARCHAR(255) NOT NULL,
-    taxa_desconto DECIMAL NOT NULL,
-    id_empresa INT NOT NULL,
-    CONSTRAINT FK_CUPOM_EMPRESA_ID FOREIGN KEY (id_empresa) REFERENCES Empresa (id_empresa)
+CREATE TABLE Usuario (
+    id_usuario INT PRIMARY KEY,
+    login VARCHAR2(50) UNIQUE NOT NULL,
+    senha VARCHAR2(255) NOT NULL,
+    cpf CHAR(11) UNIQUE NOT NULL,
+    ativo CHAR(1) CHECK (ativo IN ('S', 'N')),
+    nome VARCHAR2(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    sobrenome VARCHAR(100) NOT NULL,
+    dataNascimento DATE NOT NULL
 );
 
 CREATE TABLE Endereco (
@@ -44,18 +45,43 @@ CREATE TABLE Endereco (
     CONSTRAINT FK_ENDERECO_USUARIO_ID FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario)
 );
 
-CREATE TABLE Usuario (
-    id_usuario INT PRIMARY KEY,
-    id_endereco INT,
-    login VARCHAR2(50) UNIQUE NOT NULL,
-    senha CHAR(8) NOT NULL,
-    cpf CHAR(11) UNIQUE NOT NULL,
-    ativo CHAR(1) CHECK (ativo IN ('T', 'F')),
-    nome VARCHAR2(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    sobrenome VARCHAR(100) NOT NULL,
-    dataNascimento DATE NOT NULL
+CREATE TABLE Empresa (
+    id_empresa INT PRIMARY KEY NOT NULL,
+    id_usuario INT NOT NULL,
+    nomeFantasia VARCHAR2(150) NOT NULL,
+    cnpj CHAR(14) UNIQUE NOT NULL,
+    razaoSocial VARCHAR2(150) NOT NULL,
+    inscricaoEstadual CHAR(9),
+    setor VARCHAR2(100),
+    CONSTRAINT FK_EMPRESA_USUARIO_ID FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario)
 );
+CREATE TABLE Cupom (
+    id_cupom INT PRIMARY KEY,
+    nome_cupom VARCHAR(50) NOT NULL,
+    ativo CHAR(1) CHECK (ativo IN ('S', 'N')),
+    descricao VARCHAR(255) NOT NULL,
+    taxa_desconto DECIMAL NOT NULL,
+    id_empresa INT NOT NULL,
+    CONSTRAINT FK_CUPOM_EMPRESA_ID FOREIGN KEY (id_empresa) REFERENCES Empresa (id_empresa)
+);
+
+CREATE TABLE Produto (
+    id_produto INT PRIMARY KEY NOT NULL,
+    id_empresa INT NOT NULL,
+    nome VARCHAR2(200) NOT NULL,
+    descricao VARCHAR2(255) NOT NULL,
+    preco DECIMAL NOT NULL,
+    quantidade_disponivel NUMBER(10) NOT NULL,
+    tipo_categoria NUMBER(1) CHECK (
+        tipo_categoria BETWEEN 1
+        AND 6
+    ),
+    taxa NUMBER(6, 2),
+    unidade_medida CHAR(15)
+);
+
+
+
 
 CREATE TABLE Pedido (
     id_pedido INT PRIMARY KEY NOT NULL,
@@ -82,16 +108,7 @@ CREATE TABLE Pedido (
     preco_carrinho DECIMAL NOT NULL
 );
 
-CREATE TABLE Empresa (
-    id_empresa INT PRIMARY KEY NOT NULL,
-    id_usuario INT NOT NULL,
-    nomeFantasia VARCHAR2(150) NOT NULL,
-    cnpj CHAR(14) UNIQUE NOT NULL,
-    razaoSocial VARCHAR2(150) NOT NULL,
-    inscricaoEstadual CHAR(9),
-    setor VARCHAR2(100),
-    CONSTRAINT FK_EMPRESA_USUARIO_ID FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario)
-);
+
 
 CREATE TABLE OrdemPedido (
     id_ordem INT PRIMARY KEY NOT NULL,
@@ -101,25 +118,7 @@ CREATE TABLE OrdemPedido (
     CONSTRAINT FK_ORDEM_PEDIDO_PEDIDO_ID FOREIGN KEY (id_pedido) REFERENCES Pedido (id_pedido)
 );
 
-CREATE TABLE Produto (
-    id_produto INT PRIMARY KEY NOT NULL,
-    id_empresa INT NOT NULL,
-    nome VARCHAR2(200) NOT NULL,
-    descricao VARCHAR2(255) NOT NULL,
-    preco DECIMAL NOT NULL,
-    quantidade_disponivel NUMBER(10) NOT NULL,
-    tipo_categoria NUMBER(1) CHECK (
-        tipo_categoria BETWEEN 1
-        AND 6
-    ),
-    taxa NUMBER(6, 2),
-    unidade_medida CHAR(15)
-);
 
-ALTER TABLE
-    Usuario
-ADD
-    CONSTRAINT FK_USUARIO_ENDERECO_ID FOREIGN KEY (id_endereco) REFERENCES Endereco (id_endereco);
 
 ALTER TABLE
     Pedido
