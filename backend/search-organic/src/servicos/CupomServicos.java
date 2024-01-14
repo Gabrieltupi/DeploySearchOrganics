@@ -2,18 +2,14 @@ package servicos;
 
 import java.util.ArrayList;
 import modelo.Cupom;
+import repository.CupomRepository;
 
 public class CupomServicos {
-
-    private ArrayList<Cupom> cupons;
-
-    public CupomServicos() {
-        this.cupons = new ArrayList<>();
-    }
+    CupomRepository repository = new CupomRepository();
 
     public void adicionarCupom(Cupom cupom) {
         try {
-            cupons.add(cupom);
+            repository.adicionar(cupom);
         } catch (Exception e) {
             System.out.println("Erro ao adicionar cupom: " + e.getMessage());
         }
@@ -21,7 +17,7 @@ public class CupomServicos {
 
     public void listarCupons() {
         try {
-            for (Cupom cupom : cupons) {
+            for (Cupom cupom : repository.listar()) {
                 cupom.imprimir();
             }
         } catch (Exception e) {
@@ -31,7 +27,7 @@ public class CupomServicos {
 
     public void imprimirCuponsDisponiveis() {
         try {
-            for (Cupom cupom : cupons) {
+            for (Cupom cupom : repository.listar()) {
                 if (cupom.isAtivo().equals("S")) {
                     System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
                             cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
@@ -44,7 +40,7 @@ public class CupomServicos {
 
     public Cupom buscarCupomPorId(int id) {
         try {
-            for (Cupom cupom : cupons) {
+            for (Cupom cupom : repository.listar()) {
                 System.out.println("Verificando Cupom por Id:" + cupom.getCupomId());
                 if (cupom.getCupomId() == id) {
                     System.out.println("Cupom encontrado:" + cupom.getCupomId());
@@ -61,7 +57,7 @@ public class CupomServicos {
 
     public void atualizarCupom(int id, Cupom cupoms) {
         try {
-            for (Cupom cupom : cupons) {
+            for (Cupom cupom : repository.listar()) {
                 if (cupom.getCupomId() == id) {
                     System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
                     cupom.setNomeCupom(cupoms.getNomeCupom());
@@ -77,18 +73,16 @@ public class CupomServicos {
         }
     }
 
-    public void deletarCupom(int id) {
+    public boolean removerCupom(int id) {
         try {
-            for (Cupom cupom : cupons) {
-                if (cupom.getCupomId() == id) {
-                    cupons.remove(cupom);
-                    System.out.println("Cupom removido com sucesso!");
-                    return;
-                }
+            if (repository.remover(id)){
+                return true;
             }
             System.out.println("Cupom não pode ser encontrado em nosso Sistema");
+            return false;
         } catch (Exception e) {
             System.out.println("Erro ao deletar cupom: " + e.getMessage());
         }
+        return false;
     }
 }
