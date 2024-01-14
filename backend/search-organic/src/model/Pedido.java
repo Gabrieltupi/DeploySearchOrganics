@@ -1,4 +1,4 @@
-package modelo;
+package model;
 
 import interfaces.Impressao;
 import utils.FormaPagamento;
@@ -9,8 +9,6 @@ import utils.validadores.ValidadorCEP;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Pedido implements Impressao {
     private Integer id;

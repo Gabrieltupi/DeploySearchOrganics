@@ -1,19 +1,18 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
-import modelo.Endereco;
+import model.Endereco;
 import repository.EnderecoRepository;
 import utils.validadores.ValidadorCEP;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class EnderecoServicos {
+public class EnderecoService {
 
     private EnderecoRepository enderecoRepository = new EnderecoRepository();
 
-    public EnderecoServicos() {
+    public EnderecoService() {
     }
 
     public List<Endereco> getEnderecos() {

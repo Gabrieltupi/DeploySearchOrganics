@@ -1,8 +1,7 @@
-package modelo;
+package model;
 
 import interfaces.Impressao;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Empresa implements Impressao {

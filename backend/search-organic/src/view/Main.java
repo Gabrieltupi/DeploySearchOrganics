@@ -22,18 +22,18 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws BancoDeDadosException {
-        PedidoService pedidoService = new PedidoService();
-        EnderecoServicos enderecoServicos = new EnderecoServicos();
-        UsuarioService usuarioService = new UsuarioService();
-        EmpresaServicos empresaServicos = new EmpresaServicos();
-        CupomServicos cupomServicos = new CupomServicos();
-        ProdutoService produtoService = new ProdutoService();
-        Endereco endereco = new Endereco();
-        Empresa empresa = new Empresa();
-        Pedido pedido = new Pedido();
-        Produto produto = new Produto();
-        Cupom cupom = new Cupom();
-        ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho();
+//        PedidoService pedidoService = new PedidoService();
+//        EnderecoServicos enderecoServicos = new EnderecoServicos();
+//        UsuarioService usuarioService = new UsuarioService();
+//        EmpresaServicos empresaServicos = new EmpresaServicos();
+//        CupomServicos cupomServicos = new CupomServicos();
+//        ProdutoService produtoService = new ProdutoService();
+//        Endereco endereco = new Endereco();
+//        Empresa empresa = new Empresa();
+//        Pedido pedido = new Pedido();
+//        Produto produto = new Produto();
+//        Cupom cupom = new Cupom();
+//        ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho();
 
 //        ArrayList<ProdutoCarrinho> produtos = new ArrayList<>();
 //
@@ -56,7 +56,7 @@ public class Main {
 //        System.out.println(pedido.getProdutos()); // ADICIONAR PRODUTO AO PRODUTOCARRINHO
 
 
-        pedidoService.excluir(14);
+//        pedidoService.excluir(14);
 
     }
 }

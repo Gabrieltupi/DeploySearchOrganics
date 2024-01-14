@@ -2,10 +2,10 @@ package servicos;
 
 import java.util.ArrayList;
 
-import modelo.Cupom;
+import model.Cupom;
 import repository.CupomRepository;
 
-public class CupomServicos {
+public class CupomService {
     CupomRepository repository = new CupomRepository();
 
     public void adicionarCupom(Cupom cupom) {

@@ -1,4 +1,4 @@
-package modelo;
+package model;
 
 import exceptions.BancoDeDadosException;
 import repository.ProdutoRepository;
@@ -10,8 +10,6 @@ import utils.validadores.ValidadorCEP;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Carrinho {
     private int idEmpresa;

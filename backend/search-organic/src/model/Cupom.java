@@ -1,6 +1,5 @@
-package modelo;
+package model;
 import utils.TipoAtivo;
-import utils.UnidadeMedida;
 import interfaces.CupomServicos;
 import interfaces.Impressao;
 import java.math.BigDecimal;

@@ -2,7 +2,7 @@ package repository;
 
 import exceptions.BancoDeDadosException;
 import exceptions.EmpresaNaoEncontradaException;
-import modelo.Empresa;
+import model.Empresa;
 
 import java.sql.*;
 import java.util.ArrayList;

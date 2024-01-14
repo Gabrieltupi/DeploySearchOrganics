@@ -1,10 +1,5 @@
 package utils;
 
-import modelo.*;
-import servicos.*;
-
-import java.time.LocalDate;
-
 //public class GeradorSeeds {
 
  //       public static void gerarSeeds(EnderecoServicos enderecoServicos, UsuarioCRUD usuarioCRUD, ProdutoCRUD produtoCRUD, EmpresaServicos empresaServicos, CupomServicos cupomServicos) {

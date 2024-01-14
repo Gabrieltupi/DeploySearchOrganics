@@ -1,7 +1,7 @@
 package repository;
 
 import exceptions.BancoDeDadosException;
-import modelo.Produto;
+import model.Produto;
 import utils.TipoCategoria;
 import utils.UnidadeMedida;
 

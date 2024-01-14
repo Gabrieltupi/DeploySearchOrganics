@@ -1,7 +1,7 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
-import modelo.Produto;
+import model.Produto;
 import repository.ProdutoRepository;
 import utils.TipoCategoria;
 

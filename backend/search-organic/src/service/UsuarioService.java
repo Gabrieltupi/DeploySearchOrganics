@@ -1,9 +1,8 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
 import exceptions.SenhaIncorretaException;
-import exceptions.UsuarioJaCadastradoException;
-import modelo.Usuario;
+import model.Usuario;
 import repository.UsuarioRepository;
 
 import java.util.List;

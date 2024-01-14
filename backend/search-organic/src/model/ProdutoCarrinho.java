@@ -1,7 +1,4 @@
-package modelo;
-
-import utils.TipoCategoria;
-import utils.UnidadeMedida;
+package model;
 
 import java.math.BigDecimal;
 

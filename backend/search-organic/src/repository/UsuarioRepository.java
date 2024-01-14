@@ -3,8 +3,8 @@ package repository;
 import exceptions.BancoDeDadosException;
 import exceptions.SenhaIncorretaException;
 import exceptions.UsuarioJaCadastradoException;
-import modelo.Usuario;
-import servicos.EnderecoServicos;
+import model.Usuario;
+import service.EnderecoService;
 import utils.TipoAtivo;
 
 import java.sql.*;
@@ -114,7 +114,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
     @Override
     public boolean remover(Integer id) throws BancoDeDadosException {
-        EnderecoServicos enderecoServicos = new EnderecoServicos();
+        EnderecoService enderecoServicos = new EnderecoService();
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
