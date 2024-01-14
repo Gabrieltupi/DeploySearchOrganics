@@ -2,9 +2,12 @@ package repository;
 
 import exceptions.BancoDeDadosException;
 import model.Pedido;
+import model.Produto;
 import model.ProdutoCarrinho;
 import utils.FormaPagamento;
 import utils.StatusPedido;
+import utils.TipoCategoria;
+import utils.UnidadeMedida;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -159,7 +162,10 @@ public class PedidoRepository implements Repository<Integer, Pedido>{
                 pedido.setPrecoCarrinho(res.getBigDecimal("PRECO_CARRINHO"));
                 pedido.setDataDeEntrega(res.getDate("DATA_ENTREGA").toLocalDate());
                 pedido.setInicioEntrega(res.getDate("DATA_DE_PEDIDO").toLocalDate());
+                pedido.setTotal(pedido.getPrecoCarrinho().add(pedido.getValorFrete()));
+                pedido.setProdutos(this.listarProdutosDoPedido(pedido.getId()));
                 pedidos.add(pedido);
+
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -175,14 +181,17 @@ public class PedidoRepository implements Repository<Integer, Pedido>{
         return pedidos;
     }
 
-    public ArrayList<Produto> listarProdutosDoPedido(int idPedido) throws BancoDeDadosException {
-        ArrayList<Produto> produtos = new ArrayList<>();
+    public ArrayList<ProdutoCarrinho> listarProdutosDoPedido(int idPedido) throws BancoDeDadosException {
+        ArrayList<ProdutoCarrinho> produtos = new ArrayList<>();
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
-            String sql = "SELECT * FROM PEDIDOXPRODUTO WHERE ID_PEDIDO = ?";
+            String sql = "SELECT PROD.*, PEXP.QUANTIDADE FROM PRODUTO PROD " +
+                    "INNER JOIN PEDIDOXPRODUTO  PEXP ON PROD.ID_PRODUTO = PEXP.ID_PRODUTO " +
+                    "INNER JOIN PEDIDO PED ON PEXP.ID_PEDIDO = PED.ID_PEDIDO " +
+                    "WHERE PED.ID_PEDIDO = ? ";
 
             PreparedStatement stt = con.prepareStatement(sql);
             stt.setInt(1, idPedido);
@@ -190,8 +199,19 @@ public class PedidoRepository implements Repository<Integer, Pedido>{
             ResultSet res = stt.executeQuery();
 
             while (res.next()) {
-                Produto produto = new ProdutoRepository().buscarProdutoPorId(res.getInt("ID_PRODUTO"));
-                produtos.add(produto);
+                Produto produto = new Produto();
+                produto.setIdProduto(res.getInt("id_produto"));
+                produto.setIdEmpresa(res.getInt("id_empresa"));
+                produto.setNome(res.getString("nome"));
+                produto.setDescricao(res.getString("descricao"));
+                produto.setPreco(res.getBigDecimal("preco"));
+                produto.setQuantidade(res.getBigDecimal("quantidade_disponivel"));
+                produto.setCategoria(TipoCategoria.fromInt(res.getInt("tipo_categoria")));
+                produto.setTaxa(res.getDouble("taxa"));
+                produto.setUnidadeMedida(UnidadeMedida.fromString(res.getString("unidade_medida")));
+                BigDecimal quantidadePedida = res.getBigDecimal("QUANTIDADE");
+                ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho(produto, quantidadePedida);
+                produtos.add(produtoCarrinho);
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
