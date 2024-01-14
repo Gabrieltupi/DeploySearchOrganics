@@ -1,6 +1,6 @@
 package repository;
 import exceptions.BancoDeDadosException;
-import modelo.Endereco;
+import model.Endereco;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
             con = ConexaoBancoDeDados.getConnection();
             Integer proximoId = getProximoId(con);
 
-            String sql = "INSERT INTO ENDERECO (id_endereco, rua, numero, complemento, cep, cidade, estado, pais, regiao, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO ENDERECO (id_endereco, logradouro, numero, complemento, cep, cidade, estado, pais, regiao, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setInt(1, proximoId);
                 pstd.setString(2, endereco.getLogradouro());
@@ -86,9 +86,10 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
     @Override
     public boolean editar(Integer id, Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
+        System.out.println("Endereço atualizado com sucesso!");
         try {
             con = ConexaoBancoDeDados.getConnection();
-            String sql = "UPDATE ENDERECO SET rua = ?, numero = ?, complemento = ?, cep = ?, cidade = ?, estado = ?, pais = ?, regiao = ? WHERE id_endereco = ?";
+            String sql = "UPDATE ENDERECO SET logradouro = ?, numero = ?, complemento = ?, cep = ?, cidade = ?, estado = ?, pais = ?, regiao = ? WHERE id_endereco = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setString(1, endereco.getLogradouro());
                 pstd.setString(2, endereco.getNumero());
@@ -129,7 +130,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
                 try (ResultSet rs = pstd.executeQuery()) {
                     while (rs.next()) {
                         Endereco endereco = new Endereco(
-                                rs.getString("rua"),
+                                rs.getString("logradouro"),
                                 rs.getString("numero"),
                                 rs.getString("complemento"),
                                 rs.getString("cep"),
@@ -164,7 +165,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
                 try (ResultSet rs = pstd.executeQuery()) {
                     if (rs.next()) {
                         Endereco endereco = new Endereco(
-                                rs.getString("rua"),
+                                rs.getString("logradouro"),
                                 rs.getString("numero"),
                                 rs.getString("complemento"),
                                 rs.getString("cep"),
@@ -187,4 +188,39 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
             ConexaoBancoDeDados.closeConnection(con);
         }
     }
-}
+        public Endereco buscarPorUsuarioId(Integer id) throws BancoDeDadosException {
+            Connection con = null;
+            try {
+                con = ConexaoBancoDeDados.getConnection();
+                String sql = "SELECT * FROM ENDERECO WHERE id_usuario = ?";
+                try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                    pstd.setInt(1, id);
+
+                    try (ResultSet rs = pstd.executeQuery()) {
+                        if (rs.next()) {
+                            Endereco endereco = new Endereco(
+                                    rs.getString("logradouro"),
+                                    rs.getString("numero"),
+                                    rs.getString("complemento"),
+                                    rs.getString("cep"),
+                                    rs.getString("cidade"),
+                                    rs.getString("estado"),
+                                    rs.getString("pais"),
+                                    rs.getInt("id_usuario")
+                            );
+                            endereco.setId(rs.getInt("id_endereco"));
+                            endereco.setRegiao(rs.getString("regiao"));
+                            endereco.setIdUsuario(rs.getInt("id_usuario"));
+                            return endereco;
+                        }
+                    }
+                }
+                throw new IllegalArgumentException("Endereço com ID " + id + " não encontrado.");
+            } catch (SQLException e) {
+                throw new BancoDeDadosException(e.getCause());
+            } finally {
+                ConexaoBancoDeDados.closeConnection(con);
+            }
+        }
+    }
+

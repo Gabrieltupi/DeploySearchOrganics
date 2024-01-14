@@ -1,4 +1,4 @@
-package modelo;
+package model;
 import interfaces.Impressao;
 import utils.TipoAtivo;
 
@@ -30,8 +30,8 @@ public class Usuario implements Impressao {
         this.senha = senha;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public Integer getIdUsuario() {
+        return this.idUsuario;
     }
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;

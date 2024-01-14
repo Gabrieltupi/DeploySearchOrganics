@@ -3,7 +3,8 @@ package repository;
 import exceptions.BancoDeDadosException;
 import exceptions.SenhaIncorretaException;
 import exceptions.UsuarioJaCadastradoException;
-import modelo.Usuario;
+import model.Usuario;
+import service.EnderecoService;
 import utils.TipoAtivo;
 
 import java.sql.*;
@@ -47,7 +48,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
                 usuario.setNome(res.getString("NOME"));
                 usuario.setSobrenome(res.getString("SOBRENOME"));
                 usuario.setEmail(res.getString("EMAIL"));
-                usuario.setDataNascimento(res.getDate("DATA_NASCIMENTO").toLocalDate());
+                usuario.setDataNascimento(res.getDate("DATANASCIMENTO").toLocalDate());
 
                 return usuario;
             }
@@ -65,6 +66,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             }
         }
     }
+
     @Override
     public Usuario adicionar(Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
@@ -75,8 +77,8 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             usuario.setIdUsuario(proximoId);
 
             String sql = "INSERT INTO Usuario\n" +
-                    "(ID_USUARIO, LOGIN, SENHA, CPF, ATIVO, NOME, SOBRENOME, EMAIL, DATA_NASCIMENTO)\n" +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
+                    "(ID_USUARIO, LOGIN, SENHA, CPF, ATIVO, NOME, SOBRENOME, EMAIL, DATANASCIMENTO)\n" +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, usuario.getIdUsuario());
@@ -112,9 +114,11 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
     @Override
     public boolean remover(Integer id) throws BancoDeDadosException {
+        EnderecoService enderecoServicos = new EnderecoService();
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
+            enderecoServicos.excluirPorIdUsuario(id);
             String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -156,7 +160,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
                     "NOME = ?, " +
                     "SOBRENOME = ?, " +
                     "EMAIL = ?, " +
-                    "DATA_NASCIMENTO = ? " +
+                    "DATANASCIMENTO = ? " +
                     "WHERE ID_USUARIO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -214,7 +218,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
                 usuario.setNome(res.getString("NOME"));
                 usuario.setSobrenome(res.getString("SOBRENOME"));
                 usuario.setEmail(res.getString("EMAIL"));
-                usuario.setDataNascimento(res.getDate("DATA_NASCIMENTO").toLocalDate());
+                usuario.setDataNascimento(res.getDate("DATANASCIMENTO").toLocalDate());
 
                 usuarios.add(usuario);
             }

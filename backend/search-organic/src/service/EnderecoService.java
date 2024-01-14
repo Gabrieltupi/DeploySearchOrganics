@@ -1,19 +1,18 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
-import modelo.Endereco;
+import model.Endereco;
 import repository.EnderecoRepository;
 import utils.validadores.ValidadorCEP;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class EnderecoServicos {
+public class EnderecoService {
 
     private EnderecoRepository enderecoRepository = new EnderecoRepository();
 
-    public EnderecoServicos() {
+    public EnderecoService() {
     }
 
     public List<Endereco> getEnderecos() {
@@ -37,7 +36,7 @@ public class EnderecoServicos {
             return false;
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Erro inesperado ao adicionar endereço: " + e.getMessage());
             return false;
         }
@@ -46,14 +45,17 @@ public class EnderecoServicos {
     public boolean atualizarEndereco(Endereco novoEndereco) {
         try {
             String regiao = ValidadorCEP.isCepValido(novoEndereco.getCep());
+            System.out.println(novoEndereco.getCep());
+            System.out.println(regiao);
             if (regiao != null) {
                 System.out.println(regiao);
 
                 if (enderecoRepository.editar(novoEndereco.getId(), novoEndereco)) {
                     return true;
                 }
+                throw new IllegalArgumentException("ID não encontrado.");
             }
-            throw new IllegalArgumentException("CEP inválido");
+            throw new IllegalArgumentException("CEP inválido!");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao atualizar endereço: " + e.getMessage());
             return false;
@@ -94,20 +96,20 @@ public class EnderecoServicos {
         }
     }
 
-
-    public boolean excluirEndereco(int id) {
+    public Endereco excluirPorIdUsuario(int idUsuario) {
         try {
-            if (enderecoRepository.remover(id)) {
-                System.out.println("Endereço do ID " + id + " foi excluído!!");
-                return true;
+            Endereco endereco =  enderecoRepository.buscarPorUsuarioId(idUsuario);
+            if (endereco != null) {
+                enderecoRepository.remover(endereco.getId());
+                return endereco;
             }
             throw new IllegalArgumentException("ID não encontrado.");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao excluir endereço: " + e.getMessage());
-            return false;
+            return null;
         } catch (Exception e) {
             System.out.println("Erro inesperado ao excluir endereço: " + e.getMessage());
-            return false;
+            return null;
         }
     }
 }

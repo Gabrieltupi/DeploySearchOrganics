@@ -1,6 +1,5 @@
-package modelo;
+package model;
 import utils.TipoAtivo;
-import utils.UnidadeMedida;
 import interfaces.CupomServicos;
 import interfaces.Impressao;
 import java.math.BigDecimal;
@@ -93,6 +92,10 @@ public class Cupom implements Impressao, CupomServicos {
 
     public String isAtivo() {
         return ativo.getStatus();
+    }
+
+    public TipoAtivo getAtivo() {
+        return ativo;
     }
 
     public void setAtivo(String ativo) {

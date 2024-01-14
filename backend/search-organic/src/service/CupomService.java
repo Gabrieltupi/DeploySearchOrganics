@@ -1,10 +1,11 @@
 package servicos;
 
 import java.util.ArrayList;
-import modelo.Cupom;
+
+import model.Cupom;
 import repository.CupomRepository;
 
-public class CupomServicos {
+public class CupomService {
     CupomRepository repository = new CupomRepository();
 
     public void adicionarCupom(Cupom cupom) {
@@ -55,17 +56,13 @@ public class CupomServicos {
         return null;
     }
 
-    public void atualizarCupom(int id, Cupom cupoms) {
+    public void atualizarCupom(int id, Cupom cupom) {
         try {
-            for (Cupom cupom : repository.listar()) {
-                if (cupom.getCupomId() == id) {
-                    System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
-                    cupom.setNomeCupom(cupoms.getNomeCupom());
-                    cupom.setDescricao(cupoms.getDescricao());
-                    cupom.setTaxaDeDesconto(cupoms.getTaxaDeDesconto());
-                    System.out.println("Cupom atualizado com sucesso!");
-                    return;
-                }
+            if (cupom.getCupomId() == id) {
+                System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
+                repository.editar(id, cupom);
+                System.out.println("Cupom atualizado com sucesso!");
+                return;
             }
             System.out.println("Cupom não pode ser atualizado");
         } catch (Exception e) {
@@ -75,7 +72,7 @@ public class CupomServicos {
 
     public boolean removerCupom(int id) {
         try {
-            if (repository.remover(id)){
+            if (repository.remover(id)) {
                 return true;
             }
             System.out.println("Cupom não pode ser encontrado em nosso Sistema");

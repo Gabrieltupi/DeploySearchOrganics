@@ -1,3 +1,4 @@
+import exceptions.BancoDeDadosException;
 import exceptions.UsuarioJaCadastradoException;
 import modelo.Carrinho;
 import modelo.Endereco;
@@ -6,9 +7,7 @@ import modelo.Usuario;
 import modelo.*;
 import repository.ConexaoBancoDeDados;
 import servicos.*;
-import utils.FormaPagamento;
-import utils.GeradorSeeds;
-import utils.TipoCategoria;
+import utils.*;
 import utils.validadores.TipoEntrega;
 
 import java.math.BigDecimal;
@@ -17,23 +16,51 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ConexaoBancoDeDados conexaoBancoDeDados = new ConexaoBancoDeDados();
-        PedidoService empresaServicos = new PedidoService();
-        try {
-            Connection con = conexaoBancoDeDados.getConnection();
-            empresaServicos.listarPedidos();
-            ConexaoBancoDeDados.closeConnection(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws BancoDeDadosException {
+//        PedidoService pedidoService = new PedidoService();
+//        EnderecoServicos enderecoServicos = new EnderecoServicos();
+//        UsuarioService usuarioService = new UsuarioService();
+//        EmpresaServicos empresaServicos = new EmpresaServicos();
+//        CupomServicos cupomServicos = new CupomServicos();
+//        ProdutoService produtoService = new ProdutoService();
+//        Endereco endereco = new Endereco();
+//        Empresa empresa = new Empresa();
+//        Pedido pedido = new Pedido();
+//        Produto produto = new Produto();
+//        Cupom cupom = new Cupom();
+//        ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho();
+
+//        ArrayList<ProdutoCarrinho> produtos = new ArrayList<>();
+//
+//        pedido.setEndereco(enderecoServicos.getEnderecos().get(0));
+//        pedido.setUsuarioId(2);
+//        pedido.setCupom(cupomServicos.buscarCupomPorId(4));
+//        pedido.setFormaPagamento(FormaPagamento.PIX);
+//        pedido.setValorFrete(new BigDecimal(10));
+//        pedido.setStatusPedido(StatusPedido.EM_SEPARACAO);
+//        pedido.setInicioEntrega(LocalDate.now());
+//        pedido.setDataDeEntrega(LocalDate.now());
+//        pedido.setPrecoCarrinho(new BigDecimal(10));
+//
+//        produtoCarrinho.setQuantidadePedida(new BigDecimal(5));
+//        produtoCarrinho.setProduto(produtoService.buscarProdutoPorId(3));
+//
+//        produtos.add(produtoCarrinho);
+//        pedido.setProdutos(produtos);
+//
+//        System.out.println(pedido.getProdutos()); // ADICIONAR PRODUTO AO PRODUTOCARRINHO
+
+
+//        pedidoService.excluir(14);
+
     }
 }
+
 
 //        Scanner scanner = new Scanner(System.in);
 //

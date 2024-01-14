@@ -1,10 +1,8 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
-import modelo.Endereco;
-import modelo.Pedido;
+import model.Pedido;
 import repository.PedidoRepository;
-import utils.validadores.ValidadorCEP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +25,21 @@ public class PedidoService {
 
     public List<Pedido> listar() {
         try {
-            return pedidoRepository.listar();
+            for (Pedido pedido : pedidoRepository.listar()) {
+
+            }
         } catch (Exception e) {
             System.out.println("Erro ao obter endereços: " + e.getMessage());
             return new ArrayList<>();
         }
+        return new ArrayList<>();
     }
 
     public void excluir(int idPedido) {
         try {
             if (pedidoRepository.remover(idPedido)) {
                 System.out.println("Endereço do ID " + idPedido + " foi excluído!!");
+                return;
             }
             throw new IllegalArgumentException("ID não encontrado.");
         } catch (IllegalArgumentException e) {

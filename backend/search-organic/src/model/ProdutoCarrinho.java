@@ -1,7 +1,4 @@
-package modelo;
-
-import utils.TipoCategoria;
-import utils.UnidadeMedida;
+package model;
 
 import java.math.BigDecimal;
 
@@ -11,6 +8,10 @@ public class ProdutoCarrinho{
     public ProdutoCarrinho(Produto produto, BigDecimal quantidadePedida){
         this.produto = produto;
         this.quantidadePedida = quantidadePedida;
+    }
+
+    public ProdutoCarrinho() {
+
     }
 
     public BigDecimal getQuantidadePedida() {

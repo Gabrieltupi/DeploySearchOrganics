@@ -1,37 +1,39 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
-import modelo.Produto;
+import model.Produto;
 import repository.ProdutoRepository;
 import utils.TipoCategoria;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProdutoService {
-private ProdutoRepository produtoRepository;
+    private ProdutoRepository produtoRepository;
+
     public ProdutoService() {
         this.produtoRepository = new ProdutoRepository();
     }
 
     public void adicionarProduto(Produto produto) {
         try {
-            Produto produtoASerAdd= produtoRepository.adicionar(produto);
+            produtoRepository.adicionar(produto);
             System.out.println("Produto adicionado com sucesso!");
-        } catch (BancoDeDadosException e){
+        } catch (BancoDeDadosException e) {
             System.out.println("Erro ao adicionar produto: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-        System.out.println("ERRO: " + e.getMessage());
-        e.printStackTrace();
+            System.out.println("ERRO: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     public void listarProdutos() {
         try {
-            List<Produto> listar= produtoRepository.listar();
-            listar.forEach(System.out::println);
-    } catch (BancoDeDadosException e) {
+            List<Produto> listar = produtoRepository.listar();
+            listar.forEach(Produto::imprimir);
+        } catch (BancoDeDadosException e) {
             System.out.println(" Erro ao listar produtos" + e.getMessage());
             e.printStackTrace();
         }
@@ -40,16 +42,17 @@ private ProdutoRepository produtoRepository;
 
     public void atualizarProduto(int id, Produto produtos) {
         try {
-            boolean produtoeditado= produtoRepository.editar(id, produtos);
+            produtoRepository.editar(id, produtos);
             System.out.println("Produto atualizado");
-        } catch (SQLException e ) {
+        } catch (SQLException e) {
             System.out.println("Erro ao atualizar produto: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     public void deletarProduto(Integer id) {
         try {
-            boolean produtoDeletado= produtoRepository.remover(id);
+            boolean produtoDeletado = produtoRepository.remover(id);
             System.out.println("Produto removido com sucesso");
         } catch (BancoDeDadosException e) {
             System.out.println("Erro ao deletar produto" + e.getMessage());
@@ -99,6 +102,16 @@ private ProdutoRepository produtoRepository;
         } catch (BancoDeDadosException e) {
             System.out.println("Erro ao listar produtos da loja: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public List<Produto> buscarProdutos() {
+        try {
+            return produtoRepository.listar();
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao buscar produtos: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 }

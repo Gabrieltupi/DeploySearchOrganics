@@ -2,7 +2,7 @@ package repository;
 
 import exceptions.BancoDeDadosException;
 import exceptions.EmpresaNaoEncontradaException;
-import modelo.Empresa;
+import model.Empresa;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,17 +35,19 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
             ResultSet resp = pstd.executeQuery();
             int resultados = 0;
 
-            while (resp.next()) {
+            System.out.println(empresa.getIdUsuario());
+            if (resp.next()) {
+                System.out.println("passou sera");
                 String ativo = resp.getString("ATIVO");
                 if (ativo.equalsIgnoreCase("N")) {
                     System.err.println("Usuario desativado");
                     return empresa;
                 }
-                resultados++;
+                resultados = 1;
             }
 
             if (resultados == 0) {
-                System.err.println("Usuario nÃ£o cadastrado");
+                System.err.println("Usuario nÃo cadastrado");
                 return empresa;
             }
 
@@ -54,17 +56,17 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
 
             String sql = "INSERT INTO EMPRESA (ID_EMPRESA, ID_USUARIO, NOMEFANTASIA, CNPJ, RAZAOSOCIAL, INSCRICAOESTADUAL, SETOR)\n" +
                     "VALUES\n" +
-                    "(?, ?, ?, ?, ?, ?);";
+                    "(?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setInt(1, empresa.getIdEmpresa());
             stmt.setInt(2, empresa.getIdUsuario());
-            stmt.setString(2, empresa.getNomeFantasia());
-            stmt.setString(3, empresa.getCnpj());
-            stmt.setString(4, empresa.getRazaoSocial());
-            stmt.setString(5, empresa.getInscricaoEstadual());
-            stmt.setString(6, empresa.getSetor());
+            stmt.setString(3, empresa.getNomeFantasia());
+            stmt.setString(4, empresa.getCnpj());
+            stmt.setString(5, empresa.getRazaoSocial());
+            stmt.setString(6, empresa.getInscricaoEstadual());
+            stmt.setString(7, empresa.getSetor());
 
             int res = stmt.executeUpdate();
             if (res > 0) {
@@ -124,16 +126,15 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE EMPRESA SET ");
-            sql.append(" NOMEFANTASIA = ?,");
-            sql.append(" CNPJ = ?,");
-            sql.append(" RAZAOSOCIAL = ? ");
-            sql.append(" INSCRICAOESTADUAL = ? ");
-            sql.append(" SETOR = ? ");
-            sql.append(" WHERE ID_EMPRESA = ? ");
+            String sql = "UPDATE EMPRESA SET " +
+                    " NOMEFANTASIA = ?," +
+                    " CNPJ = ?," +
+                    " RAZAOSOCIAL = ?, " +
+                    " INSCRICAOESTADUAL = ?, " +
+                    " SETOR = ? " +
+                    " WHERE ID_EMPRESA = ? ";
 
-            PreparedStatement stmt = con.prepareStatement(sql.toString());
+            PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setString(1, empresaAtualizada.getNomeFantasia());
             stmt.setString(2, empresaAtualizada.getCnpj());
@@ -182,7 +183,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
                 empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
                 empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
                 empresa.setSetor(res.getString("SETOR"));
-                empresa.setIdUsuario(res.getInt("USUARIO_ID"));
+                empresa.setIdUsuario(res.getInt("ID_USUARIO"));
                 empresas.add(empresa);
             }
         } catch (SQLException e) {
@@ -203,38 +204,42 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-
             String sql = "SELECT * FROM EMPRESA WHERE id_empresa = ?";
 
-            PreparedStatement stmt = con.prepareStatement(sql);
+            try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                pstd.setInt(1, id);
 
-            stmt.setInt(1, id);
-            ResultSet res = stmt.executeQuery(sql);
-            if (res.next()) {
-                Empresa empresa = new Empresa();
-                empresa.setIdEmpresa(res.getInt("ID_EMPRESA"));
-                empresa.setNomeFantasia(res.getString("NOMEFANTASIA"));
-                empresa.setCnpj(res.getString("CNPJ"));
-                empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
-                empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
-                empresa.setSetor(res.getString("SETOR"));
-                empresa.setIdUsuario(res.getInt("USUARIO_ID"));
-                return empresa;
+                try (ResultSet res = pstd.executeQuery()) {
+                    if (res.next()) {
+                        Empresa empresa = new Empresa();
+                        empresa.setIdEmpresa(res.getInt("ID_EMPRESA"));
+                        empresa.setNomeFantasia(res.getString("NOMEFANTASIA"));
+                        empresa.setCnpj(res.getString("CNPJ"));
+                        empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
+                        empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
+                        empresa.setSetor(res.getString("SETOR"));
+                        empresa.setIdUsuario(res.getInt("ID_USUARIO"));
+                        return empresa;
+                    }
+                    throw new EmpresaNaoEncontradaException();
+
+                } catch (SQLException e) {
+                    throw new BancoDeDadosException(e.getCause());
+                } catch (EmpresaNaoEncontradaException e) {
+                    throw new RuntimeException(e.getMessage());
+                } finally {
+                    try {
+                        if (con != null) {
+                            con.close();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            throw new EmpresaNaoEncontradaException();
-
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-        } catch (EmpresaNaoEncontradaException e) {
-            throw new RuntimeException(e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 }
