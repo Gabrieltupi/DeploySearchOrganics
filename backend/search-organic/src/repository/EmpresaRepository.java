@@ -45,20 +45,21 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
             }
 
             if (resultados == 0) {
-                System.err.println("Usuario não cadastrado");
+                System.err.println("Usuario nÃ£o cadastrado");
                 return empresa;
             }
 
             Integer proximoId = this.getProximoId(con);
             empresa.setIdEmpresa(proximoId);
 
-            String sql = "INSERT INTO EMPRESA (ID_EMPRESA, NOMEFANTASIA, CNPJ, RAZAOSOCIAL, INSCRICAOESTADUAL, SETOR)\n" +
+            String sql = "INSERT INTO EMPRESA (ID_EMPRESA, ID_USUARIO, NOMEFANTASIA, CNPJ, RAZAOSOCIAL, INSCRICAOESTADUAL, SETOR)\n" +
                     "VALUES\n" +
                     "(?, ?, ?, ?, ?, ?);";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setInt(1, empresa.getIdEmpresa());
+            stmt.setInt(2, empresa.getIdUsuario());
             stmt.setString(2, empresa.getNomeFantasia());
             stmt.setString(3, empresa.getCnpj());
             stmt.setString(4, empresa.getRazaoSocial());

@@ -2,6 +2,7 @@ package modelo;
 
 import interfaces.Impressao;
 import utils.FormaPagamento;
+import utils.StatusPedido;
 import utils.validadores.TipoEntrega;
 import utils.validadores.ValidadorCEP;
 
@@ -13,27 +14,31 @@ import java.util.Map;
 
 public class Pedido implements Impressao {
     private int id;
+    private int usuarioId;
     private BigDecimal total;
     private FormaPagamento formaPagamento;
+    private StatusPedido statusPedido;
     private Boolean entregue;
     private LocalDate dataDeEntrega;
     private Endereco endereco;
-    private int usuarioId;
     private LocalDate inicioEntrega;
     private TipoEntrega tipoEntrega;
     private ArrayList<ProdutoCarrinho> produtos;
     private Cupom cupom;
     private BigDecimal valorFrete = new BigDecimal(0);
 
+    public Pedido() {
+    }
     public Pedido(int usuarioId, ArrayList<ProdutoCarrinho> produtos,
                   FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                   Endereco endereco,
-                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total, BigDecimal frete) {
+                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total, BigDecimal frete,
+                  StatusPedido status) {
         this.cupom = cupom;
         if(cupom == null){
             cupom.setTaxaDeDesconto(new BigDecimal(0));
         }
-
+        this.statusPedido = status;
         this.produtos = produtos;
         this.formaPagamento = formaPagamento;
         this.dataDeEntrega = dataDeEntrega;
@@ -51,7 +56,6 @@ public class Pedido implements Impressao {
         this.inicioEntrega = LocalDate.now();
         this.valorFrete = frete;
     }
-
 
     public int getId() {
         return id;
@@ -140,6 +144,14 @@ public class Pedido implements Impressao {
 
     public void setInicioEntrega(LocalDate inicioEntrega) {
         this.inicioEntrega = inicioEntrega;
+    }
+
+    public StatusPedido getStatusPedido() {
+        return statusPedido;
+    }
+
+    public void setStatusPedido(StatusPedido statusPedido) {
+        this.statusPedido = statusPedido;
     }
 
     public BigDecimal calcularFrete(String cep) {

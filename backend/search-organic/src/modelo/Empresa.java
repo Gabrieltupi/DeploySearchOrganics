@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Empresa extends Usuario implements Impressao {
-
-    private static int proximoId = 1;
     private int idEmpresa;
     private int idUsuario;
     private String nomeFantasia;
@@ -52,10 +50,6 @@ public class Empresa extends Usuario implements Impressao {
 
     public void setIdEmpresa(int idEmpresa) {
         this.idEmpresa = idEmpresa;
-    }
-
-    private static synchronized int gerarProximoId() {
-        return proximoId++;
     }
 
     public ArrayList<Produto> getProdutos() { return produtos; }

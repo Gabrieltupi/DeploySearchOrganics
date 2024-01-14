@@ -4,8 +4,8 @@ import interfaces.Impressao;
 import utils.validadores.ValidadorCEP;
 
 public class Endereco implements Impressao {
-    private static int enderecoId = 1;
     private int id;
+    private int idUsuario;
     private String logradouro;
     private String numero;
     private String complemento;
@@ -20,7 +20,6 @@ public class Endereco implements Impressao {
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
                     String estado, String pais) {
         if(ValidadorCEP.isCepValido(cep) != null) {
-            this.id = enderecoId;
             this.logradouro = logradouro;
             this.numero = numero;
             this.complemento = complemento;
@@ -29,10 +28,36 @@ public class Endereco implements Impressao {
             this.estado = estado;
             this.pais = pais;
             this.regiao = ValidadorCEP.isCepValido(cep);
-            enderecoId++;
         } else{
             System.out.println("Ainda não atendemos neste estado");
         }
+    }
+
+    public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
+                    String estado, String pais, int idUsuario) {
+        if(ValidadorCEP.isCepValido(cep) != null) {
+            this.idUsuario = idUsuario;
+            this.logradouro = logradouro;
+            this.numero = numero;
+            this.complemento = complemento;
+            this.cep = cep;
+            this.cidade = cidade;
+            this.estado = estado;
+            this.pais = pais;
+            this.regiao = ValidadorCEP.isCepValido(cep);
+        } else{
+            System.out.println("Ainda não atendemos neste estado");
+        }
+    }
+
+    public Endereco(){}
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public int getId() {

@@ -3,12 +3,15 @@ package modelo;
 import exceptions.BancoDeDadosException;
 import repository.ProdutoRepository;
 import utils.FormaPagamento;
+import utils.StatusPedido;
 import utils.validadores.TipoEntrega;
 import utils.validadores.ValidadorCEP;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Carrinho {
     private int idEmpresa;
@@ -23,6 +26,7 @@ public class Carrinho {
         this.idEmpresa = idEmpresa;
         this.usuario = usuario;
     }
+    public Carrinho(){}
 
     public Carrinho(Usuario usuario) {
         this.usuario = usuario;
@@ -57,7 +61,7 @@ public class Carrinho {
     }
 
     public boolean adicionarProdutoAoCarrinho(Produto produto, BigDecimal quantidade) {
-        if (quantidade.compareTo(BigDecimal.ZERO) < 0) {
+        if (quantidade.compareTo(BigDecimal.ZERO) < 0 || produto.getQuantidade().compareTo(quantidade) < 0) {
             System.err.println("Quantidade inválida");
             return false;
         }
@@ -71,18 +75,13 @@ public class Carrinho {
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
         for (ProdutoCarrinho produtoCarrinho : produtos) {
             if (id == produtoCarrinho.getProduto().getIdProduto()) {
-                BigDecimal quantidadeAntiga = produtoCarrinho.getQuantidadePedida();
-                BigDecimal quantidadeEmEstoque = produtoCarrinho.getProduto().getQuantidade();
-                BigDecimal quantidadeAtualizadaEmEstoque = quantidadeEmEstoque.subtract(novaQuantidade.subtract(quantidadeAntiga));
-                if (quantidadeAtualizadaEmEstoque.compareTo(BigDecimal.ZERO) < 0) {
+                if (produtoCarrinho.getProduto().getQuantidade().subtract(novaQuantidade).compareTo(BigDecimal.ZERO) < 0) {
                     System.err.println("Quantidade indisponível no estoque");
                     return false;
                 }
-                produtoCarrinho.getProduto().setQuantidade(quantidadeAtualizadaEmEstoque);;
                 produtoCarrinho.setQuantidadePedida(novaQuantidade);
                 atualizarValorTotal();
                 return true;
-
             }
         }
 
@@ -114,9 +113,6 @@ public class Carrinho {
     }
 
     public void limparSacola() {
-            for (ProdutoCarrinho produtoCarrinho : produtos) {
-                produtoCarrinho.getProduto().setQuantidade(produtoCarrinho.getQuantidadePedida().add(produtoCarrinho.getProduto().getQuantidade()));
-            }
         produtos = new ArrayList<ProdutoCarrinho>();
         atualizarValorTotal();
     }
@@ -126,8 +122,11 @@ public class Carrinho {
 
         if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
             pedido = new Pedido(usuario.getIdUsuario(), produtos,
-                    formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal, frete);
+                    formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal, frete, StatusPedido.AGUARDANDO_PAGAMENTO);
             pedido.imprimir();
+            for (ProdutoCarrinho produtoCarrinho : produtos) {
+                produtoCarrinho.getProduto().setQuantidade(produtoCarrinho.getQuantidadePedida().subtract(produtoCarrinho.getProduto().getQuantidade()));
+            }
         } else {
             System.out.println("CEP invalido - pedido não foi finalizado");
         }

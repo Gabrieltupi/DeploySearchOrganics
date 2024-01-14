@@ -1,73 +1,49 @@
 package servicos;
 
+import exceptions.BancoDeDadosException;
+import modelo.Endereco;
 import modelo.Pedido;
+import repository.PedidoRepository;
+import utils.validadores.ValidadorCEP;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PedidoService {
-    private ArrayList<Pedido> pedidos = new java.util.ArrayList<>();
+    private PedidoRepository pedidoRepository = new PedidoRepository();
 
-    public void criarPedido(){}
-
-    public void adicionarPedido(Pedido pedido) {
+    public void adicionar(Pedido pedido) {
         try {
-            pedidos.add(pedido);
-            System.out.println("Pedido adicionado com sucesso!");
+            if (pedido != null) {
+                pedidoRepository.adicionar(pedido);
+            }
+        } catch (BancoDeDadosException e) {
+            throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao adicionar pedido" + e.getMessage());
             e.printStackTrace();
         }
     }
-        public void criarPedido (Pedido pedido) {
-            try {
-                this.pedidos.add(pedido);
-                System.out.println("Pedido criado com sucesso!");
-            } catch (Exception e) {
-                System.out.println("ERRO ao criar pedido: " + e.getMessage());
-                e.printStackTrace();
-            }
+
+    public List<Pedido> listar() {
+        try {
+            return pedidoRepository.listar();
+        } catch (Exception e) {
+            System.out.println("Erro ao obter endereços: " + e.getMessage());
+            return new ArrayList<>();
         }
+    }
 
-            public void listarPedidos () {
-                try {
-                    for (Pedido pedido : pedidos) {
-                        pedido.imprimir();
-                    }
-                } catch (Exception e) {
-                    System.out.println("ERRO ao listar pedidos: " + e.getMessage());
-                    e.printStackTrace();
-                }
+    public void excluir(int idPedido) {
+        try {
+            if (pedidoRepository.remover(idPedido)) {
+                System.out.println("Endereço do ID " + idPedido + " foi excluído!!");
             }
-
-            public void atualizarPedido ( int idPedido, Pedido pedidoAtualizado){
-                try {
-                    if (idPedido >= 0 && idPedido < this.pedidos.size()) {
-                        Pedido pedido = this.pedidos.get(idPedido);
-                        pedido.setEntregue(pedidoAtualizado.getEntregue());
-                        pedido.setProdutos(pedidoAtualizado.getProdutos());
-                        pedido.setTotal(pedidoAtualizado.getTotal());
-                        pedido.setFormaPagamento(pedidoAtualizado.getFormaPagamento());
-                        System.out.println("Pedido atualizado com sucesso!");
-                    } else {
-                        System.out.println("ID de pedido inválido");
-                    }
-                } catch (Exception e) {
-                    System.out.println("ERRO ao atualizar pedido: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-
-            public void excluirPedido ( int idPedido){
-                try {
-                    if (idPedido >= 0 && idPedido < this.pedidos.size()) {
-                        this.pedidos.remove(idPedido);
-                        System.out.println("Pedido removido com sucesso!");
-                    } else {
-                        System.out.println("ID de pedido inválido");
-                    }
-                } catch (Exception e) {
-                    System.out.println("ERRO ao excluir pedido: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
+            throw new IllegalArgumentException("ID não encontrado.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao excluir endereço: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Erro inesperado ao excluir endereço: " + e.getMessage());
         }
+    }
+}

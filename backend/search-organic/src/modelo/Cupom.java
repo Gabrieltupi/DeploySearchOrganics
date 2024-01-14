@@ -6,22 +6,31 @@ import interfaces.Impressao;
 import java.math.BigDecimal;
 
 public class Cupom implements Impressao, CupomServicos {
-    private static int cupomIdCounter = 1;
-    private int cupomId;
+    private Integer cupomId;
     private String nomeCupom;
     private TipoAtivo ativo;
     private String descricao;
     private BigDecimal taxaDeDesconto;
+    private Integer idEmpresa;
 
-    public Cupom(int cupomId, String nomeCupom, TipoAtivo ativo, String descricao, BigDecimal taxaDeDesconto) {
+    public Cupom(){}
+
+    public Cupom(int cupomId, String nomeCupom, TipoAtivo ativo, String descricao, BigDecimal taxaDeDesconto, Integer idEmpresa) {
         this.cupomId = cupomId;
         this.nomeCupom = nomeCupom;
         this.ativo = ativo;
         this.descricao = descricao;
         this.taxaDeDesconto = taxaDeDesconto;
+        this.idEmpresa = idEmpresa;
     }
 
-    public Cupom(){}
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
 
     @Override
     public void imprimir() {
@@ -66,10 +75,11 @@ public class Cupom implements Impressao, CupomServicos {
         }
     }
 
-    public int getCupomId() {
+
+    public Integer getCupomId() {
         return cupomId;
     }
-    public void setCupomId(int cupomId){
+    public void setCupomId(Integer cupomId){
         this.cupomId = cupomId;
     }
 

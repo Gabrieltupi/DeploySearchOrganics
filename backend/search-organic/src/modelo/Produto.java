@@ -18,7 +18,8 @@ public class Produto implements Impressao {
     private double taxa;
     private UnidadeMedida unidadeMedida;
 
-
+    public Produto() {
+    }
 
     public Produto(String nome, String descricao, BigDecimal preco,
                    BigDecimal quantidade, TipoCategoria categoria, double taxa,
@@ -42,13 +43,9 @@ public class Produto implements Impressao {
         this.taxa = produto.getTaxa();
         this.unidadeMedida = produto.getUnidadeMedida();
     }
-
-
     public int getEmpresaId() {
         return empresa != null ? empresa.getIdEmpresa() : 0;
     }
-
-
 
     public Empresa getEmpresa() {
         return empresa;
