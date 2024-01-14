@@ -1,10 +1,8 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
-import modelo.Endereco;
-import modelo.Pedido;
+import model.Pedido;
 import repository.PedidoRepository;
-import utils.validadores.ValidadorCEP;
 
 import java.util.ArrayList;
 import java.util.List;

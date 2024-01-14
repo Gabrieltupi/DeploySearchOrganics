@@ -1,18 +1,16 @@
-package servicos;
+package service;
 
 import exceptions.BancoDeDadosException;
-import modelo.Empresa;
-import modelo.Produto;
+import model.Empresa;
+import model.Produto;
 import repository.EmpresaRepository;
 import utils.TipoCategoria;
 import utils.validadores.ValidadorCNPJ;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
-public class EmpresaServicos {
+public class EmpresaService {
     private EmpresaRepository repository = new EmpresaRepository();
 
     public void criarEmpresa(Empresa empresa) {

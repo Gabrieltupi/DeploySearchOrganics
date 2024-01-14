@@ -1,9 +1,8 @@
 package repository;
 
 import exceptions.BancoDeDadosException;
-import modelo.Pedido;
-import modelo.Produto;
-import modelo.ProdutoCarrinho;
+import model.Pedido;
+import model.ProdutoCarrinho;
 import utils.FormaPagamento;
 import utils.StatusPedido;
 

@@ -1,9 +1,7 @@
 package repository;
 
 import exceptions.BancoDeDadosException;
-import exceptions.SenhaIncorretaException;
-import exceptions.UsuarioJaCadastradoException;
-import modelo.Usuario;
+import model.Usuario;
 import utils.TipoAtivo;
 
 import java.sql.*;

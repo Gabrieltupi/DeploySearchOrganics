@@ -1,7 +1,7 @@
 package repository;
 
 import exceptions.BancoDeDadosException;
-import modelo.Cupom;
+import model.Cupom;
 
 import java.sql.*;
 import java.util.ArrayList;

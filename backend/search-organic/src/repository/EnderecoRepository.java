@@ -1,6 +1,6 @@
 package repository;
 import exceptions.BancoDeDadosException;
-import modelo.Endereco;
+import model.Endereco;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

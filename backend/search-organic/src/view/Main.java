@@ -1,24 +1,8 @@
-import exceptions.BancoDeDadosException;
-import exceptions.UsuarioJaCadastradoException;
-import modelo.Carrinho;
-import modelo.Endereco;
-import modelo.Produto;
-import modelo.Usuario;
-import modelo.*;
-import repository.ConexaoBancoDeDados;
-import servicos.*;
-import utils.FormaPagamento;
-import utils.TipoCategoria;
-import utils.validadores.TipoEntrega;
+package view;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import exceptions.BancoDeDadosException;
+import model.Usuario;
+import service.*;
 
 public class Main {
     public static void main(String[] args) throws BancoDeDadosException {
