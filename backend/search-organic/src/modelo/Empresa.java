@@ -50,8 +50,8 @@ public class Empresa extends Usuario implements Impressao {
     }
     public int getIdUsuario() { return idUsuario; }
 
-    public void setId_empresa(int id_empresa) {
-        this.idEmpresa = id_empresa;
+    public void setIdEmpresa(int idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     private static synchronized int gerarProximoId() {
@@ -78,7 +78,7 @@ public class Empresa extends Usuario implements Impressao {
 
     public boolean removerProduto(int id){
         for(Produto x: produtos){
-            if(id == x.getId_Produto()){
+            if(id == x.getIdProduto()){
                 produtos.remove(x);
                 return true;
             }

@@ -9,8 +9,6 @@ import utils.validadores.ValidadorCEP;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Carrinho {
     private int idEmpresa;
@@ -72,7 +70,7 @@ public class Carrinho {
 
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
         for (ProdutoCarrinho produtoCarrinho : produtos) {
-            if (id == produtoCarrinho.getProduto().getId_Produto()) {
+            if (id == produtoCarrinho.getProduto().getIdProduto()) {
                 BigDecimal quantidadeAntiga = produtoCarrinho.getQuantidadePedida();
                 BigDecimal quantidadeEmEstoque = produtoCarrinho.getProduto().getQuantidade();
                 BigDecimal quantidadeAtualizadaEmEstoque = quantidadeEmEstoque.subtract(novaQuantidade.subtract(quantidadeAntiga));
@@ -94,7 +92,7 @@ public class Carrinho {
 
     public boolean removerProdutoDoCarrinho(int id) {
         for(ProdutoCarrinho produtoCarrinho : produtos){
-            if (produtoCarrinho.getProduto().getId_Produto() == id) {
+            if (produtoCarrinho.getProduto().getIdProduto() == id) {
                 produtos.remove(produtoCarrinho);
                 atualizarValorTotal();
                 return true;
@@ -108,7 +106,7 @@ public class Carrinho {
 
     public void listarProdutosDoCarrinho() throws BancoDeDadosException {
         for(ProdutoCarrinho produtoCarrinho : produtos){
-            System.out.println("Número: " + produtoCarrinho.getProduto().getId_Produto() + " Nome do produto: " + produtoCarrinho.getProduto().getNome()
+            System.out.println("Número: " + produtoCarrinho.getProduto().getIdProduto() + " Nome do produto: " + produtoCarrinho.getProduto().getNome()
                     + " Quantidade: " + produtoCarrinho.getQuantidadePedida());
         }
 

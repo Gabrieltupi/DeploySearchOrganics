@@ -7,7 +7,7 @@ import utils.UnidadeMedida;
 import java.math.BigDecimal;
 
 public class Produto implements Impressao {
-    private Integer id_Produto;
+    private Integer idProduto;
     private int idEmpresa;
     private String nome;
     private String descricao;
@@ -54,19 +54,19 @@ public class Produto implements Impressao {
         return empresa;
     }
 
-    public int getId_Produto() {
-        return id_Produto;
+    public int getIdProduto() {
+        return idProduto;
     }
 
-    public void setId_Produto(Integer id_Produto) {
-        this.id_Produto = id_Produto;
+    public void setIdProduto(Integer idProduto) {
+        this.idProduto = idProduto;
     }
 
     public int getIdEmpresa() {
         return idEmpresa;
     }
 
-    public void setId_empresa(int idEmpresa) {
+    public void setIdEmpresa(int idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 
@@ -135,7 +135,7 @@ public class Produto implements Impressao {
 
     @Override
     public void imprimir() {
-        System.out.println("ID do produto: " + getId_Produto());
+        System.out.println("ID do produto: " + getIdProduto());
         System.out.println("ID da empresa: " + getIdEmpresa());
         System.out.println("Categoria do produto: " + getCategoria());
         System.out.print("Nome do produto: " + getNome());

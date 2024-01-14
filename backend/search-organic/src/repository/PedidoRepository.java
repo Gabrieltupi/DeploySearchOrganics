@@ -3,8 +3,6 @@ package repository;
 import exceptions.BancoDeDadosException;
 import modelo.Pedido;
 import modelo.ProdutoCarrinho;
-import modelo.Usuario;
-import utils.FormaPagamento;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -62,7 +60,7 @@ public class PedidoRepository implements Repository<Integer, Pedido>{
                     String query = "INSERT INTO PEDIDOXPRODUTO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
                     PreparedStatement stt = con.prepareStatement(query);
                     stt.setInt(1, pedido.getId());
-                    stt.setInt(2, produto.getProduto().getId_Produto());
+                    stt.setInt(2, produto.getProduto().getIdProduto());
                     stt.setBigDecimal(3, produto.getQuantidadePedida());
                 }
                 System.out.println("Pedido realizado");
