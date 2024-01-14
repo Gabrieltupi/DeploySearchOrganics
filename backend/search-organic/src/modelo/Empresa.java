@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Empresa extends Usuario implements Impressao {
-
-    private static int proximoId = 1;
     private int idEmpresa;
     private int idUsuario;
     private String nomeFantasia;
@@ -54,10 +52,6 @@ public class Empresa extends Usuario implements Impressao {
         this.idEmpresa = id_empresa;
     }
 
-    private static synchronized int gerarProximoId() {
-        return proximoId++;
-    }
-
     public ArrayList<Produto> getProdutos() { return produtos; }
     public void setProdutos(ArrayList<Produto> produtos) { this.produtos = produtos; }
     public boolean adicionarProduto(Produto produto){
@@ -78,7 +72,7 @@ public class Empresa extends Usuario implements Impressao {
 
     public boolean removerProduto(int id){
         for(Produto x: produtos){
-            if(id == x.getId_Produto()){
+            if(id == x.getIdProduto()){
                 produtos.remove(x);
                 return true;
             }

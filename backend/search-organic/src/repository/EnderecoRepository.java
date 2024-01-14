@@ -9,7 +9,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
 
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
-        String sql = "SELECT SUA_SEQUENCIA.NEXTVAL FROM DUAL";
+        String sql = "SELECT SEQ_ENDERECO.NEXTVAL FROM DUAL";
 
         try (PreparedStatement pstd = connection.prepareStatement(sql);
              ResultSet res = pstd.executeQuery()) {
@@ -170,7 +170,8 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
                                 rs.getString("cep"),
                                 rs.getString("cidade"),
                                 rs.getString("estado"),
-                                rs.getString("pais")
+                                rs.getString("pais"),
+                                rs.getInt("id_usuario")
                         );
                         endereco.setId(rs.getInt("id_endereco"));
                         endereco.setRegiao(rs.getString("regiao"));
