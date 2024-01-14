@@ -1,105 +1,103 @@
 package view;
 
 import exceptions.BancoDeDadosException;
-import service.PedidoService;
+import service.*;
+
+import java.util.Scanner;
 
 public class Menu {
     public static void run() {
-//        PedidoService pedidoService = new PedidoService();
-//        EnderecoServicos enderecoServicos = new EnderecoServicos();
-//        UsuarioService usuarioService = new UsuarioService();
-//        EmpresaServicos empresaServicos = new EmpresaServicos();
-//        CupomServicos cupomServicos = new CupomServicos();
-//        ProdutoService produtoService = new ProdutoService();
-//        Endereco endereco = new Endereco();
-//        Empresa empresa = new Empresa();
-//        Pedido pedido = new Pedido();
-//        Produto produto = new Produto();
-//        Cupom cupom = new Cupom();
-//        ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho();
-
-//        ArrayList<ProdutoCarrinho> produtos = new ArrayList<>();
-//
-//        pedido.setEndereco(enderecoServicos.getEnderecos().get(0));
-//        pedido.setUsuarioId(2);
-//        pedido.setCupom(cupomServicos.buscarCupomPorId(4));
-//        pedido.setFormaPagamento(FormaPagamento.PIX);
-//        pedido.setValorFrete(new BigDecimal(10));
-//        pedido.setStatusPedido(StatusPedido.EM_SEPARACAO);
-//        pedido.setInicioEntrega(LocalDate.now());
-//        pedido.setDataDeEntrega(LocalDate.now());
-//        pedido.setPrecoCarrinho(new BigDecimal(10));
-//
-//        produtoCarrinho.setQuantidadePedida(new BigDecimal(5));
-//        produtoCarrinho.setProduto(produtoService.buscarProdutoPorId(3));
-//
-//        produtos.add(produtoCarrinho);
-//        pedido.setProdutos(produtos);
-//
-//        System.out.println(pedido.getProdutos()); // ADICIONAR PRODUTO AO PRODUTOCARRINHO
-
-
-//        pedidoService.excluir(14);
+        UsuarioService usuarioService = new UsuarioService();
         PedidoService pedidoService = new PedidoService();
-        pedidoService.listar();
+        EnderecoService enderecoService = new EnderecoService();
+        EmpresaService empresaService = new EmpresaService();
+        CupomService cupomService = new CupomService();
+        ProdutoService produtoService = new ProdutoService();
 
-    }
-}
+        int opcao = -1;
+        while(opcao != 0) {
+//            System.out.println("Digite 1 para criar usuário");
+//            System.out.println("Digite 2 para autenticar um usuário");
+//            System.out.println("Digite 3 para exibir todos os usuários");
+//            System.out.println("Digite 4 para editar um usuário");
+//            System.out.println("Digite 5 para remover um usuário");
+//            System.out.println("Digite 6 para adicionar um pedido");
+//            System.out.println("Digite 7 para listar um pedido");
+//            System.out.println("Digite 8 para excluir um pedido");
+//            System.out.println("Digite 9 para adicionar um produto");
+//            System.out.println("Digite 10 para listar produtos");
+//            System.out.println("Digite 11 para atualizar um produto");
+//            System.out.println("Digite 12 para deletar um produto");
+//            System.out.println("Digite 13 para buscar um produto");
+//            System.out.println("Digite 14 para adicionar um produto");
+//            System.out.println("Digite 15 para adicionar um produto");
+//            System.out.println("Digite 16 para adicionar um produto");
+//            System.out.println("Digite 17 para adicionar um produto");
+//            System.out.println("Digite 18 para adicionar um produto");
+//            System.out.println("Digite 19 para adicionar um produto");
+//            System.out.println("Digite 20 para adicionar um produto");
+//                System.out.println("Digite 0 para sair");
+//                opcao = scanner.nextInt();
+//            scanner.nextLine();
+
+//            switch(opcao) {
+//                case 1: {
+//                    break;
+//                }
+//                case 2: {
+//                    break;
+//                }
+//                case 0:
+//                     break;
+//                default:
+//                    system.err.println("Opcao Inválida");
+//                    brek;
+//            }
+//        }
+//
+//    }
+//}
+       boolean sair = false;
+
+       while (!sair) {
+            System.out.println("""
+                    1 - Login
+                    2 - Cadastro
+                    0 - Sair
+                    """);
+            try {
+                int escolha = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (escolha) {
+                    case 1:
+                        Usuario consumidor = login(scanner, usuarioCRUD);
+                        Carrinho carrinho = new Carrinho(consumidor);
+                        if (consumidor != null) {
+                            System.out.println("Bem vindo " + consumidor.getNome());
+                            while (true) {
+                                System.out.println("""
+                                        1 - Minha conta
+                                        2 - Lojas
+                                        3 - Carrinho
+                                        0 - Voltar
+                                        """);
+                                try {
+                                    int escolhaMenuConsumidor = scanner.nextInt();
+
+                                    scanner.nextLine();
 
 
-//        Scanner scanner = new Scanner(System.in);
-//
-//        GeradorSeeds geradorSeeds = new GeradorSeeds();
-//        UsuarioCRUD usuarioCRUD=new UsuarioCRUD();
-//        CupomCRUD cupomCRUD = new CupomCRUD();
-//        EmpresaCRUD empresaCRUD = new EmpresaCRUD();
-//        EnderecoCRUD enderecoCRUD = new EnderecoCRUD();
-//        PedidoCRUD pedidoCRUD = new PedidoCRUD();
-//        ProdutoCRUD produtoCRUD = new ProdutoCRUD();
-//
-//        boolean sair = false;
-//
-//        geradorSeeds.gerarSeeds(enderecoCRUD,usuarioCRUD, produtoCRUD, empresaCRUD, cupomCRUD);
-//
-//        while (!sair) {
-//            System.out.println("""
-//                    1 - Login
-//                    2 - Cadastro
-//                    0 - Sair
-//                    """);
-//            try {
-//                int escolha = scanner.nextInt();
-//                scanner.nextLine();
-//
-//                switch (escolha) {
-//                    case 1:
-//                        Usuario consumidor = login(scanner, usuarioCRUD);
-//                        Carrinho carrinho = new Carrinho(consumidor);
-//                        if (consumidor != null) {
-//                            System.out.println("Bem vindo " + consumidor.getNome());
-//                            while (true) {
-//                                System.out.println("""
-//                                        1 - Minha conta
-//                                        2 - Lojas
-//                                        3 - Carrinho
-//                                        0 - Voltar
-//                                        """);
-//                                try {
-//                                    int escolhaMenuConsumidor = scanner.nextInt();
-//
-//                                    scanner.nextLine();
-//
-//
-//                                    if (escolhaMenuConsumidor == 1) {
-//                                        menuMinhaConta(scanner, consumidor, enderecoCRUD);
-//                                    }
-//                                    if (escolhaMenuConsumidor == 2) {
-//                                        menuLojas(scanner, produtoCRUD, carrinho);
-//
-//                                    }
-//                                    if (escolhaMenuConsumidor == 3) {
-//                                        menuCarrinho(scanner, carrinho, consumidorCRUD, pedidoCRUD);
-//                                    }
+                                    if (escolhaMenuConsumidor == 1) {
+                                        menuMinhaConta(scanner, consumidor, enderecoCRUD);
+                                    }
+                                    if (escolhaMenuConsumidor == 2) {
+                                        menuLojas(scanner, produtoCRUD, carrinho);
+
+                                    }
+                                    if (escolhaMenuConsumidor == 3) {
+                                        menuCarrinho(scanner, carrinho, consumidorCRUD, pedidoCRUD);
+                                    }
 //                                    if (escolhaMenuConsumidor == 0) {
 //                                        break;
 //                                    }
@@ -399,38 +397,35 @@ public class Menu {
 //        System.out.println("""
 //                Infos de endereço:
 //                Logradouro,
-//                Número,
+//               Número,
 //                Complemento,
 //                CEP,
-//                Cidade,
+//              Cidade,
 //                Estado,
-//                País,
+//               País,
 //                Região
 //                """);
 //
-//        System.out.println("Digite seu logradouro: ");
-//        String logradouro = scanner.nextLine();
+//       System.out.println("Digite seu logradouro: ");
+//       String logradouro = scanner.nextLine();
+//       System.out.println("Digite seu número: ");
+//       String numero = scanner.nextLine();
 //
-//        System.out.println("Digite seu número: ");
-//        String numero = scanner.nextLine();
+//       System.out.println("Digite seu complemento: ");
+//       String complemento = scanner.nextLine();
 //
-//        System.out.println("Digite seu complemento: ");
-//        String complemento = scanner.nextLine();
-//
-//        System.out.println("Digite seu CEP: ");
-//        String cep = scanner.nextLine();
+//       System.out.println("Digite seu CEP: ");
+//       String cep = scanner.nextLine();
 //
 //
-//        System.out.println("Digite sua cidade: ");
-//        String cidade = scanner.nextLine();
-//
-//        System.out.println("Digite seu estado: ");
-//        String estado = scanner.nextLine();
-//
-//        System.out.println("Digite seu país: ");
-//        String pais = scanner.nextLine();
-//        Endereco endereco = new Endereco(logradouro, numero, complemento, cep, cidade, estado, pais);
-//        return endereco;
+//       System.out.println("Digite sua cidade: ");
+//       String cidade = scanner.nextLine();
+//       System.out.println("Digite seu estado: ");
+//       String estado = scanner.nextLine();
+//       System.out.println("Digite seu país: ");
+//       String pais = scanner.nextLine();
+//       Endereco endereco = new Endereco(logradouro, numero, complemento, cep, cidade, estado, pais);
+//       return endereco;
+//   }
 //    }
-//    }
-//}
+}
