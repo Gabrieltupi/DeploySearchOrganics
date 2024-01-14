@@ -55,15 +55,15 @@ public class Produto implements Impressao {
         return idProduto;
     }
 
-    public void setIdProduto(Integer id_Produto) {
-        this.idProduto = id_Produto;
+    public void setIdProduto(Integer idProduto) {
+        this.idProduto = idProduto;
     }
 
     public int getIdEmpresa() {
         return idEmpresa;
     }
 
-    public void setId_empresa(int idEmpresa) {
+    public void setIdEmpresa(int idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 

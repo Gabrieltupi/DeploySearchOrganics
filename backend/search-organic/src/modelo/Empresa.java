@@ -48,8 +48,8 @@ public class Empresa extends Usuario implements Impressao {
     }
     public int getIdUsuario() { return idUsuario; }
 
-    public void setId_empresa(int id_empresa) {
-        this.idEmpresa = id_empresa;
+    public void setIdEmpresa(int idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     public ArrayList<Produto> getProdutos() { return produtos; }

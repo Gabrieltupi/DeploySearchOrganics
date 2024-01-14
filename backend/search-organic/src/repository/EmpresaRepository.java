@@ -50,7 +50,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
             }
 
             Integer proximoId = this.getProximoId(con);
-            empresa.setId_empresa(proximoId);
+            empresa.setIdEmpresa(proximoId);
 
             String sql = "INSERT INTO EMPRESA (ID_EMPRESA, ID_USUARIO, NOMEFANTASIA, CNPJ, RAZAOSOCIAL, INSCRICAOESTADUAL, SETOR)\n" +
                     "VALUES\n" +
@@ -176,7 +176,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
 
             while (res.next()) {
                 Empresa empresa = new Empresa();
-                empresa.setId_empresa(res.getInt("ID_EMPRESA"));
+                empresa.setIdEmpresa(res.getInt("ID_EMPRESA"));
                 empresa.setNomeFantasia(res.getString("NOMEFANTASIA"));
                 empresa.setCnpj(res.getString("CNPJ"));
                 empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
@@ -212,7 +212,7 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
             ResultSet res = stmt.executeQuery(sql);
             if (res.next()) {
                 Empresa empresa = new Empresa();
-                empresa.setId_empresa(res.getInt("ID_EMPRESA"));
+                empresa.setIdEmpresa(res.getInt("ID_EMPRESA"));
                 empresa.setNomeFantasia(res.getString("NOMEFANTASIA"));
                 empresa.setCnpj(res.getString("CNPJ"));
                 empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
