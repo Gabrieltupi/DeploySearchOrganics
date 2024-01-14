@@ -126,16 +126,15 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE EMPRESA SET ");
-            sql.append(" NOMEFANTASIA = ?,");
-            sql.append(" CNPJ = ?,");
-            sql.append(" RAZAOSOCIAL = ? ");
-            sql.append(" INSCRICAOESTADUAL = ? ");
-            sql.append(" SETOR = ? ");
-            sql.append(" WHERE ID_EMPRESA = ? ");
+            String sql = "UPDATE EMPRESA SET " +
+                    " NOMEFANTASIA = ?," +
+                    " CNPJ = ?," +
+                    " RAZAOSOCIAL = ?, " +
+                    " INSCRICAOESTADUAL = ?, " +
+                    " SETOR = ? " +
+                    " WHERE ID_EMPRESA = ? ";
 
-            PreparedStatement stmt = con.prepareStatement(sql.toString());
+            PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setString(1, empresaAtualizada.getNomeFantasia());
             stmt.setString(2, empresaAtualizada.getCnpj());
@@ -205,38 +204,42 @@ public class EmpresaRepository implements Repository<Integer, Empresa> {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-
             String sql = "SELECT * FROM EMPRESA WHERE id_empresa = ?";
 
-            PreparedStatement stmt = con.prepareStatement(sql);
+            try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                pstd.setInt(1, id);
 
-            stmt.setInt(1, id);
-            ResultSet res = stmt.executeQuery(sql);
-            if (res.next()) {
-                Empresa empresa = new Empresa();
-                empresa.setIdEmpresa(res.getInt("ID_EMPRESA"));
-                empresa.setNomeFantasia(res.getString("NOMEFANTASIA"));
-                empresa.setCnpj(res.getString("CNPJ"));
-                empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
-                empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
-                empresa.setSetor(res.getString("SETOR"));
-                empresa.setIdUsuario(res.getInt("ID_USUARIO"));
-                return empresa;
+                try (ResultSet res = pstd.executeQuery()) {
+                    if (res.next()) {
+                        Empresa empresa = new Empresa();
+                        empresa.setIdEmpresa(res.getInt("ID_EMPRESA"));
+                        empresa.setNomeFantasia(res.getString("NOMEFANTASIA"));
+                        empresa.setCnpj(res.getString("CNPJ"));
+                        empresa.setRazaoSocial(res.getString("RAZAOSOCIAL"));
+                        empresa.setInscricaoEstadual(res.getString("INSCRICAOESTADUAL"));
+                        empresa.setSetor(res.getString("SETOR"));
+                        empresa.setIdUsuario(res.getInt("ID_USUARIO"));
+                        return empresa;
+                    }
+                    throw new EmpresaNaoEncontradaException();
+
+                } catch (SQLException e) {
+                    throw new BancoDeDadosException(e.getCause());
+                } catch (EmpresaNaoEncontradaException e) {
+                    throw new RuntimeException(e.getMessage());
+                } finally {
+                    try {
+                        if (con != null) {
+                            con.close();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            throw new EmpresaNaoEncontradaException();
-
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-        } catch (EmpresaNaoEncontradaException e) {
-            throw new RuntimeException(e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 }

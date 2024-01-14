@@ -95,6 +95,10 @@ public class Cupom implements Impressao, CupomServicos {
         return ativo.getStatus();
     }
 
+    public TipoAtivo getAtivo() {
+        return ativo;
+    }
+
     public void setAtivo(String ativo) {
         this.ativo = TipoAtivo.fromString(ativo);
     }

@@ -13,6 +13,10 @@ public class ProdutoCarrinho{
         this.quantidadePedida = quantidadePedida;
     }
 
+    public ProdutoCarrinho() {
+
+    }
+
     public BigDecimal getQuantidadePedida() {
         return quantidadePedida;
     }

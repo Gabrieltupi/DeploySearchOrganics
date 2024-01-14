@@ -117,12 +117,20 @@ public class Carrinho {
         atualizarValorTotal();
     }
 
+    public BigDecimal getValorCarrinho() {
+        BigDecimal valorCarrinho = new BigDecimal(0);
+        for (ProdutoCarrinho produtoCarrinho: produtos) {
+            valorCarrinho = valorCarrinho.add(produtoCarrinho.getProduto().getPreco().multiply(produtoCarrinho.getQuantidadePedida()));
+        }
+        return valorCarrinho;
+    }
+
     public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
-                                Endereco endereco, Cupom cupom, TipoEntrega tipoEntrega){
+                                Endereco endereco, Cupom cupom){
 
         if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
             pedido = new Pedido(usuario.getIdUsuario(), produtos,
-                    formaPagamento, dataDeEntrega, endereco, tipoEntrega, cupom, valorTotal, frete, StatusPedido.AGUARDANDO_PAGAMENTO);
+                    formaPagamento, dataDeEntrega, endereco, cupom, valorTotal, frete, StatusPedido.AGUARDANDO_PAGAMENTO, getValorCarrinho());
             pedido.imprimir();
             for (ProdutoCarrinho produtoCarrinho : produtos) {
                 produtoCarrinho.getProduto().setQuantidade(produtoCarrinho.getQuantidadePedida().subtract(produtoCarrinho.getProduto().getQuantidade()));

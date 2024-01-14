@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Empresa implements Impressao {
-    private int idEmpresa;
+    private Integer idEmpresa;
     private Integer idUsuario;
     private String nomeFantasia;
     private String cnpj;

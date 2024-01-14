@@ -20,7 +20,7 @@ public class CupomRepository implements Repository<Integer, Cupom> {
             }
 
             return null;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         }
     }
@@ -70,17 +70,15 @@ public class CupomRepository implements Repository<Integer, Cupom> {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM CUPOM WHERE id_cupom = ?";
+            String sql = "UPDATE CUPOM SET ativo = 'N' WHERE id_cupom = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setInt(1, id);
 
             int res = stmt.executeUpdate();
-            System.out.println("removerCupomPorId.res=" + res);
 
             return res > 0;
-
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -103,20 +101,20 @@ public class CupomRepository implements Repository<Integer, Cupom> {
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE CUPOM SET \n");
 
-            if (cupom.getCupomId() != 0) {
-                sql.append(" id_pessoa = ?,");
-            }
             if (cupom.getNomeCupom() != null) {
-                sql.append(" tipo = ?,");
+                sql.append(" nome_cupom = ?,");
+            }
+            if (cupom.getAtivo() != null) {
+                sql.append(" ativo = ?,");
             }
             if (cupom.getDescricao() != null) {
-                sql.append(" numero = ?,");
-            }
-            if (cupom.getTaxaDeDesconto() != null) {
                 sql.append(" descricao = ?,");
             }
+            if (cupom.getTaxaDeDesconto() != null) {
+                sql.append(" taxa_desconto = ?, ");
+            }
             if (cupom.getIdEmpresa() != null) {
-                sql.append(" id_empresa = ?,");
+                sql.append(" id_empresa = ? ");
             }
 
             sql.deleteCharAt(sql.length() - 1);
@@ -124,25 +122,24 @@ public class CupomRepository implements Repository<Integer, Cupom> {
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
-            int index = 1;
-
-            if (cupom.getCupomId() != 0) {
-                stmt.setInt(index++, cupom.getCupomId());
-            }
-
             if (cupom.getNomeCupom() != null) {
-                stmt.setString(index++, cupom.getNomeCupom());
+                stmt.setString(1, cupom.getNomeCupom());
+            }
+            if (cupom.getAtivo() != null) {
+                stmt.setString(2, cupom.getAtivo().getStatus());
             }
             if (cupom.getDescricao() != null) {
-                stmt.setString(index++, cupom.getDescricao());
+                stmt.setString(3, cupom.getDescricao());
             }
             if (cupom.getTaxaDeDesconto() != null) {
-                stmt.setBigDecimal(index++, cupom.getTaxaDeDesconto());
+                stmt.setBigDecimal(4, cupom.getTaxaDeDesconto());
+            }
+            if (cupom.getIdEmpresa() != null) {
+                stmt.setInt(5, cupom.getIdEmpresa());
             }
 
-            stmt.setInt(index++, id);
+            stmt.setInt(6, id);
 
-            // Executa-se a consulta
             int res = stmt.executeUpdate();
             System.out.println("editarCupom.res=" + res);
 

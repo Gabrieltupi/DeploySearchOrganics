@@ -86,6 +86,7 @@ public class EnderecoRepository implements Repository<Integer, Endereco> {
     @Override
     public boolean editar(Integer id, Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
+        System.out.println("Endereço atualizado com sucesso!");
         try {
             con = ConexaoBancoDeDados.getConnection();
             String sql = "UPDATE ENDERECO SET logradouro = ?, numero = ?, complemento = ?, cep = ?, cidade = ?, estado = ?, pais = ?, regiao = ? WHERE id_endereco = ?";

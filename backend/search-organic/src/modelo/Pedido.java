@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Pedido implements Impressao {
-    private int id;
-    private int usuarioId;
+    private Integer id;
+    private Integer usuarioId;
     private BigDecimal total;
     private FormaPagamento formaPagamento;
     private StatusPedido statusPedido;
@@ -26,14 +26,14 @@ public class Pedido implements Impressao {
     private ArrayList<ProdutoCarrinho> produtos;
     private Cupom cupom;
     private BigDecimal valorFrete = new BigDecimal(0);
+    private BigDecimal precoCarrinho = new BigDecimal(0);
 
     public Pedido() {
     }
-    public Pedido(int usuarioId, ArrayList<ProdutoCarrinho> produtos,
+    public Pedido(Integer usuarioId, ArrayList<ProdutoCarrinho> produtos,
                   FormaPagamento formaPagamento, LocalDate dataDeEntrega,
-                  Endereco endereco,
-                  TipoEntrega tipoEntrega, Cupom cupom, BigDecimal total, BigDecimal frete,
-                  StatusPedido status) {
+                  Endereco endereco, Cupom cupom, BigDecimal total, BigDecimal frete,
+                  StatusPedido status, BigDecimal precoCarrinho) {
         this.cupom = cupom;
         if(cupom == null){
             cupom.setTaxaDeDesconto(new BigDecimal(0));
@@ -57,7 +57,7 @@ public class Pedido implements Impressao {
         this.valorFrete = frete;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -110,15 +110,15 @@ public class Pedido implements Impressao {
         this.endereco = endereco;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getUsuarioId() {
+    public Integer getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(int usuarioId) {
+    public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
     }
 
@@ -154,6 +154,14 @@ public class Pedido implements Impressao {
         this.statusPedido = statusPedido;
     }
 
+    public BigDecimal getPrecoCarrinho() {
+        return precoCarrinho;
+    }
+
+    public void setPrecoCarrinho(BigDecimal precoCarrinho) {
+        this.precoCarrinho = precoCarrinho;
+    }
+
     public BigDecimal calcularFrete(String cep) {
         BigDecimal frete = new BigDecimal("0.00");
         String regiao = ValidadorCEP.isCepValido(cep);
@@ -183,21 +191,16 @@ public class Pedido implements Impressao {
 
     @Override
     public void imprimir() {
-        String statusEntregue = entregue ? "Entregue" : "Não entregue";;
+        System.out.println("ID do pedido: " + id);
+        System.out.println("ID do usuário: " + usuarioId);
+        System.out.println("Endereço: " + endereco.getId());
+        System.out.println("Forma de pagamento: " + formaPagamento);
+        System.out.println("Status do pedido: " + statusPedido);
+        System.out.println("Data de entrega: " + dataDeEntrega);
+        System.out.println("Início da entrega: " + inicioEntrega);
+        System.out.println("Produtos: ");
 
-        System.out.printf("""
-                ID do Pedido: %d
-                Forma de pagamento: %s
-                Data: %s
-                Tipo de entrega: %s
-                Status de entrega: %s
-                CEP de entrega: %s
-                """,
-                id, formaPagamento, dataDeEntrega, tipoEntrega, statusEntregue, endereco.getCep());
-        System.out.println("Produtos: \n");
-
-
-        for (ProdutoCarrinho produtoCarrinho: produtos) {
+        for (ProdutoCarrinho produtoCarrinho : produtos) {
             System.out.println(" Nome do produto: " + produtoCarrinho.getProduto().getNome()
                     + " Quantidade: " + produtoCarrinho.getQuantidadePedida());
         }

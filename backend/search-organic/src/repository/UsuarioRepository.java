@@ -4,6 +4,7 @@ import exceptions.BancoDeDadosException;
 import exceptions.SenhaIncorretaException;
 import exceptions.UsuarioJaCadastradoException;
 import modelo.Usuario;
+import servicos.EnderecoServicos;
 import utils.TipoAtivo;
 
 import java.sql.*;
@@ -65,6 +66,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             }
         }
     }
+
     @Override
     public Usuario adicionar(Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
@@ -112,9 +114,11 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
     @Override
     public boolean remover(Integer id) throws BancoDeDadosException {
+        EnderecoServicos enderecoServicos = new EnderecoServicos();
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
+            enderecoServicos.excluirPorIdUsuario(id);
             String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);

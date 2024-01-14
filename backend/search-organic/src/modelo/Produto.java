@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public class Produto implements Impressao {
     private Integer idProduto;
-    private int idEmpresa;
+    private Integer idEmpresa;
     private String nome;
     private String descricao;
     private BigDecimal preco;
@@ -21,29 +21,7 @@ public class Produto implements Impressao {
     public Produto() {
     }
 
-    public Produto(String nome, String descricao, BigDecimal preco,
-                   BigDecimal quantidade, TipoCategoria categoria, double taxa,
-                   UnidadeMedida unidadeMedida, Empresa empresa) {
-        this.empresa = empresa;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.quantidade = quantidade;
-        this.categoria = categoria;
-        this.taxa = taxa;
-        this.unidadeMedida = unidadeMedida;
-    }
-    public Produto(Produto produto) {
-        this.empresa = produto.getEmpresa();
-        this.nome = produto.getNome();
-        this.descricao = produto.getDescricao();
-        this.preco = produto.getPreco();
-        this.quantidade = produto.getQuantidade();
-        this.categoria = produto.getCategoriaT();
-        this.taxa = produto.getTaxa();
-        this.unidadeMedida = produto.getUnidadeMedida();
-    }
-    public int getEmpresaId() {
+    public Integer getEmpresaId() {
         return empresa != null ? empresa.getIdEmpresa() : 0;
     }
 
@@ -51,7 +29,7 @@ public class Produto implements Impressao {
         return empresa;
     }
 
-    public int getIdProduto() {
+    public Integer getIdProduto() {
         return idProduto;
     }
 
@@ -59,11 +37,11 @@ public class Produto implements Impressao {
         this.idProduto = idProduto;
     }
 
-    public int getIdEmpresa() {
+    public Integer getIdEmpresa() {
         return idEmpresa;
     }
 
-    public void setIdEmpresa(int idEmpresa) {
+    public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 

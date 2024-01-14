@@ -4,8 +4,8 @@ import interfaces.Impressao;
 import utils.validadores.ValidadorCEP;
 
 public class Endereco implements Impressao {
-    private int id;
-    private int idUsuario;
+    private Integer id;
+    private Integer idUsuario;
     private String logradouro;
     private String numero;
     private String complemento;
@@ -52,15 +52,15 @@ public class Endereco implements Impressao {
 
     public Endereco(){}
 
-    public int getIdUsuario() {
+    public Integer getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -106,6 +106,7 @@ public class Endereco implements Impressao {
 
     public void setCep(String cep) {
         this.cep = cep;
+        this.regiao = ValidadorCEP.isCepValido(cep);
     }
 
     public void setCidade(String cidade) {
@@ -154,5 +155,6 @@ public class Endereco implements Impressao {
     }
 
     public void setId(Integer proximoId) {
+        this.id = proximoId;
     }
 }

@@ -7,8 +7,7 @@ import modelo.Usuario;
 import modelo.*;
 import repository.ConexaoBancoDeDados;
 import servicos.*;
-import utils.FormaPagamento;
-import utils.TipoCategoria;
+import utils.*;
 import utils.validadores.TipoEntrega;
 
 import java.math.BigDecimal;
@@ -17,62 +16,49 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws BancoDeDadosException {
-     UsuarioService usuarioService = new UsuarioService();
-    Usuario usuario = usuarioService.autenticar("joao", "123");
-    usuario.imprimir();
-        usuario.setNome("Mateus");
-        usuario.setSobrenome("nascimento");
-        usuario.setLogin("mateuzinho");
-        usuario.setEmail("asd@gmail.com");
-    usuarioService.editarUsuario(6,usuario);
+        PedidoService pedidoService = new PedidoService();
+        EnderecoServicos enderecoServicos = new EnderecoServicos();
+        UsuarioService usuarioService = new UsuarioService();
+        EmpresaServicos empresaServicos = new EmpresaServicos();
+        CupomServicos cupomServicos = new CupomServicos();
+        ProdutoService produtoService = new ProdutoService();
+        Endereco endereco = new Endereco();
+        Empresa empresa = new Empresa();
+        Pedido pedido = new Pedido();
+        Produto produto = new Produto();
+        Cupom cupom = new Cupom();
+        ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho();
+
+//        ArrayList<ProdutoCarrinho> produtos = new ArrayList<>();
+//
+//        pedido.setEndereco(enderecoServicos.getEnderecos().get(0));
+//        pedido.setUsuarioId(2);
+//        pedido.setCupom(cupomServicos.buscarCupomPorId(4));
+//        pedido.setFormaPagamento(FormaPagamento.PIX);
+//        pedido.setValorFrete(new BigDecimal(10));
+//        pedido.setStatusPedido(StatusPedido.EM_SEPARACAO);
+//        pedido.setInicioEntrega(LocalDate.now());
+//        pedido.setDataDeEntrega(LocalDate.now());
+//        pedido.setPrecoCarrinho(new BigDecimal(10));
+//
+//        produtoCarrinho.setQuantidadePedida(new BigDecimal(5));
+//        produtoCarrinho.setProduto(produtoService.buscarProdutoPorId(3));
+//
+//        produtos.add(produtoCarrinho);
+//        pedido.setProdutos(produtos);
+//
+//        System.out.println(pedido.getProdutos()); // ADICIONAR PRODUTO AO PRODUTOCARRINHO
 
 
-
-
-////   EmpresaServicos empresaServicos = new EmpresaServicos();
-//    Empresa empresa = new Empresa();
-//    empresa.setNomeFantasia("Empresa TESTE");
-//    empresa.setCnpj("42967894000133");
-//    empresa.setRazaoSocial("Empresa1");
-//    empresa.setInscricaoEstadual("123456789");
-//    Integer idUsuario = usuario.getIdUsuario();
-//        System.out.println(idUsuario);
-//    empresa.setSetor("Setor 1");
-//    empresa.setIdUsuario(usuario.getIdUsuario());
-//    empresaServicos.criarEmpresa(empresa);
-//    empresaServicos.listarEmpresas();
-
-//        Usuario usuario1 = new Usuario();
-//        usuario1.setNome("João");
-//        usuario1.setSobrenome("Silva");
-//        usuario1.setLogin("joao");
-//        usuario1.setSenha("123");
-//        usuario1.setCpf("123456789");
-//        usuario1.setDataNascimento(LocalDate.now());
-//        usuario1.setEmail("asdd@gmail.com");
-//        Endereco endereco1 = new Endereco();
-//        endereco1.setLogradouro("Rua 1");
-//        endereco1.setNumero("123");
-//        endereco1.setComplemento("Casa");
-//        endereco1.setCep("12345678");
-//        endereco1.setCidade("São Paulo");
-//        endereco1.setEstado("SP");
-//        endereco1.setPais("Brasil");
-//        usuario1.setEndereco(endereco1);
-//        usuarioService.criarUsuario(usuario1);
-
-       usuarioService.exibirTodos();
-
-
-
+        pedidoService.excluir(14);
 
     }
-
 }
 
 

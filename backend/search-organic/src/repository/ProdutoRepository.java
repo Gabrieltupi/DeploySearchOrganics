@@ -13,10 +13,10 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
 
     @Override
     public Integer getProximoId(Connection con) throws SQLException {
-        String sql= "SELECT SEQ_PRODUTO.nextval mysequence from DUAL";
+        String sql = "SELECT SEQ_PRODUTO.nextval mysequence from DUAL";
 
-        Statement stmt= con.createStatement();
-        ResultSet res= stmt.executeQuery(sql);
+        Statement stmt = con.createStatement();
+        ResultSet res = stmt.executeQuery(sql);
 
         if (res.next()) {
             return res.getInt("mysequence");
@@ -27,35 +27,36 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
 
     @Override
     public Produto adicionar(Produto produto) throws BancoDeDadosException {
-        Connection con= null;
-        try{
-            con=ConexaoBancoDeDados.getConnection();
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
 
             Integer proximoId = this.getProximoId(con);
             produto.setIdProduto(proximoId);
 
             String sql = "INSERT INTO PRODUTO\n" +
-                    "(iD_PRODUTO, ID_EMPRESA, NOME, DESCRICAO, PRECO, QUANTIDADE_DISPONIVEL,TIPO_CATEGORIA, TAXA, UNIDADE_MEDIDA)\n" +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
+                    "(ID_PRODUTO, ID_EMPRESA, NOME, DESCRICAO, PRECO, QUANTIDADE_DISPONIVEL, TIPO_CATEGORIA, TAXA, UNIDADE_MEDIDA)\n" +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setInt(1,produto.getIdProduto());
-                stmt.setInt(2,produto.getIdEmpresa());
-                stmt.setString(3,produto.getNome());
-                stmt.setString(4,produto.getDescricao());
-                stmt.setBigDecimal(5,produto.getPreco());
-                stmt.setBigDecimal(6,produto.getQuantidade());
-                stmt.setString(7, produto.getCategoria());
-                stmt.setDouble(8,produto.getTaxa());
-                stmt.setString(9, produto.getUnidadeMedida().toString());
+            stmt.setInt(1, produto.getIdProduto());
+            stmt.setInt(2, produto.getIdEmpresa());
+            stmt.setString(3, produto.getNome());
+            stmt.setString(4, produto.getDescricao());
+            stmt.setBigDecimal(5, produto.getPreco());
+            stmt.setBigDecimal(6, produto.getQuantidade());
+            stmt.setInt(7, produto.getCategoriaT().ordinal());
+            stmt.setDouble(8, produto.getTaxa());
+            stmt.setString(9, produto.getUnidadeMedida().toString());
+
             int res = stmt.executeUpdate();
-            if(res > 0) {
+            if (res > 0) {
                 System.out.println("produto adicionada");
-            }
-            else {
+            } else {
                 System.out.println("Ocorreu um erro ao adicionar");
             }
 
+            System.out.println("aqui");
             return produto;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -81,13 +82,13 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             stmt.setInt(1, id);
 
             int res = stmt.executeUpdate();
-            if(res > 0) {
+            if (res > 0) {
                 System.out.println("Produto removida com sucesso");
                 return true;
             }
             System.out.println("Não foi possivel remover");
 
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             try {
@@ -108,30 +109,29 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE PRODUTO SET ");
-            sql.append(" nome = ?,");
-            sql.append(" descricao = ?,");
-            sql.append(" preco = ? ");
-            sql.append(" quantidade_disponivel = ?,");
-            sql.append(" tipo_categoria = ?,");
-            sql.append(" taxa = ? ");
-            sql.append(" unidade_medida = ? ");
-            sql.append(" WHERE id_produto = ? ");
+            String sql = "UPDATE PRODUTO SET " +
+                    " nome = ?," +
+                    " descricao = ?," +
+                    " preco = ?, " +
+                    " quantidade_disponivel = ?," +
+                    " tipo_categoria = ?," +
+                    " taxa = ?, " +
+                    " unidade_medida = ? " +
+                    " WHERE id_produto = ? ";
 
-            PreparedStatement stmt=con.prepareStatement(sql.toString());
+            PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setString(1,produto.getNome());
-            stmt.setString(2,produto.getDescricao());
-            stmt.setBigDecimal(3,produto.getPreco());
-            stmt.setBigDecimal(4,produto.getQuantidade());
-            stmt.setString(5, produto.getCategoria());
-            stmt.setDouble(5,produto.getTaxa());
-            stmt.setString(6, produto.getUnidadeMedida().toString());
-            stmt.setInt(7,produto.getIdProduto());
+            stmt.setString(1, produto.getNome());
+            stmt.setString(2, produto.getDescricao());
+            stmt.setBigDecimal(3, produto.getPreco());
+            stmt.setBigDecimal(4, produto.getQuantidade());
+            stmt.setInt(5, produto.getCategoriaT().ordinal());
+            stmt.setDouble(6, produto.getTaxa());
+            stmt.setString(7, produto.getUnidadeMedida().toString());
+            stmt.setInt(8, produto.getIdProduto());
             int res = stmt.executeUpdate();
 
-            if(res > 0) {
+            if (res > 0) {
                 System.out.println("Produto atualizada com sucesso");
                 return true;
             }
@@ -263,6 +263,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
         }
         return produtos;
     }
+
     public List<Produto> listarProdutosLoja(int idLoja) throws BancoDeDadosException {
         List<Produto> produtos = new ArrayList<>();
         Connection con = null;
