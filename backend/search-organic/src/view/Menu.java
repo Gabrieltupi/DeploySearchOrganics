@@ -14,6 +14,7 @@ import utils.TipoCategoria;
 import utils.validadores.TipoEntrega;
 
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
@@ -79,7 +80,6 @@ public class Menu {
                                 menuCarrinho(carrinho);
                             }
                             if (escolhaMenuUsuario == 0) {
-                                scanner.close();
                                 break;
                             }
                             scanner.nextLine();
@@ -92,6 +92,7 @@ public class Menu {
                     break;
                 case 0:
                     sair = true;
+                    scanner.close();
                     break;
                 default:
                     System.out.println("Opção inválida");
@@ -135,9 +136,7 @@ public class Menu {
                         """);
                 int escolhaPagamento = scanner.nextInt();
                 scanner.nextLine();
-
-                BigDecimal taxaDesconto = new BigDecimal("1.0");
-
+                
                 boolean finalizou = carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
                         usuario.getEndereco(),
                        new Cupom());
@@ -241,13 +240,16 @@ public class Menu {
             }
 
             if (escolhaMenuProdutos == 2) {
-
+                System.out.println("----------------------------------------");
+                System.out.println("Digite o ID do produto que quer adicionar ao carrinho");
                 int idProduto = scanner.nextInt();
 
                 if (produtoService.buscarProdutoPorId(idProduto) == null) continue;
                 System.out.println("Digite a quantidade: ");
                 BigDecimal quantidadeProduto = scanner.nextBigDecimal();
-                carrinho.adicionarProdutoAoCarrinho(produtoService.buscarProdutoPorId(idProduto), quantidadeProduto);
+                if(carrinho.adicionarProdutoAoCarrinho(produtoService.buscarProdutoPorId(idProduto), quantidadeProduto)){
+                    System.out.println("Produto adicionado com sucesso");
+                };
             }
 
             if (escolhaMenuProdutos == 0) {
@@ -265,7 +267,7 @@ public class Menu {
             System.out.println("""
                     1 - Editar dados pessoais
                     2 - Editar endereço
-                    3 - Editar login
+                    3 - Editar senha
                     4 - Meu Perfil
                     0 - Voltar
                     """);
@@ -295,6 +297,12 @@ public class Menu {
                 usuarioService.editarUsuario(usuario.getIdUsuario(), new Usuario(novoNome, novoSobrenome, novoCpf, novaDataNascimento, novoEmail, usuario.getLogin(), usuario.getSenha()));
             }
             if (escolhaMenuDadosPessoais == 2) {
+                if (usuario.getEndereco() == null){
+                    System.out.println("Usuário sem endereço cadastrado!");
+                    Endereco endereco = adicionarEndereco(usuario.getIdUsuario());
+                    usuario.setEndereco(endereco);
+                    break;
+                }
                 System.out.println("Digite seu logradouro: ");
                 String novoLogradouro = scanner.nextLine();
                 System.out.println("Digite seu número: ");
@@ -312,22 +320,29 @@ public class Menu {
                 String novoEstado = scanner.nextLine();
                 System.out.println("Digite seu país: ");
                 String novoPais = scanner.nextLine();
-                enderecoService.atualizarEndereco(new Endereco(novoLogradouro, novoNumero, novoComplemento, novoCep, novaCidade, novoEstado, novoPais));
+
+                Endereco novoEndereco = new Endereco();
+                novoEndereco.setId(usuario.getEndereco().getId());
+                novoEndereco.setLogradouro(novoLogradouro);
+                novoEndereco.setNumero(novoNumero);
+                novoEndereco.setComplemento(novoComplemento);
+                novoEndereco.setCep(novoCep);
+                novoEndereco.setCidade(novaCidade);
+                novoEndereco.setEstado(novoEstado);
+                novoEndereco.setPais(novoPais);
+
+                enderecoService.atualizarEndereco(novoEndereco);
             }
 
 
             if (escolhaMenuDadosPessoais == 3) {
-                System.out.println("Digite seu login: ");
-                String loginEditado = scanner.nextLine();
 
-                System.out.println("Digite sua senha: ");
+                System.out.println("Digite a nova senha: ");
                 String senhaEditada = scanner.nextLine();
 
+                usuario.setSenha(senhaEditada);
 
-                usuarioService.editarUsuario(usuario.getIdUsuario(), new Usuario(
-                        usuario.getNome(), usuario.getSobrenome(), usuario.getCpf(),
-                        usuario.getDataNascimento(), usuario.getEmail(),
-                        loginEditado, senhaEditada));
+                usuarioService.editarUsuario(usuario.getIdUsuario(), usuario);
 
             }
             if (escolhaMenuDadosPessoais == 4) {
