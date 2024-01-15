@@ -138,6 +138,33 @@ public class PedidoRepository implements Repository<Integer, Pedido>{
         return false;
     }
 
+    public boolean editarStatusPedido(Integer id, StatusPedido statusPedido) throws BancoDeDadosException {
+        Connection con = null;
+        System.out.println("Status atualizado com sucesso!");
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            String sql = "UPDATE PEDIDO SET STATUS_PEDIDO = ? WHERE ID_PEDIDO = ?";
+            try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                pstd.setString(1, statusPedido.toString());
+                pstd.setInt(2, id);
+
+                int linhasAfetadas = pstd.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("Status editado com sucesso!");
+                    return true;
+                } else {
+                    System.out.println("Status não foi editado!");
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            ConexaoBancoDeDados.closeConnection(con);
+        }
+    }
+
     @Override
     public List<Pedido> listar() throws BancoDeDadosException {
         List<Pedido> pedidos = new ArrayList<>();

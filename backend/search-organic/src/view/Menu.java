@@ -11,6 +11,7 @@ import service.EnderecoService;
 import service.ProdutoService;
 import service.EmpresaService;
 import utils.FormaPagamento;
+import utils.StatusPedido;
 import utils.TipoCategoria;
 import utils.validadores.TipoEntrega;
 
@@ -127,6 +128,7 @@ public class Menu {
                         3 - Editar quantidade de produto do carrinho
                         4 - Remover produto do carrinho
                         5 - Limpar carrinho
+                        6 - Mostrar pedidos
                         0 - Voltar
                         """);
 
@@ -191,12 +193,16 @@ public class Menu {
 
                 }
 
+                if (escolhaMenuCarrinho == 6){
+                    statusPedido(usuario.getIdUsuario());
+                }
+
                 if (escolhaMenuCarrinho == 0) {
                     break;
                 }
 
                 if (escolhaMenuCarrinho != 1 && escolhaMenuCarrinho != 2 && escolhaMenuCarrinho != 3 && escolhaMenuCarrinho
-                        != 4 && escolhaMenuCarrinho != 5) {
+                        != 4 && escolhaMenuCarrinho != 5 && escolhaMenuCarrinho != 6) {
                     System.out.println("Opção inválida");
                 }
             }
@@ -476,7 +482,56 @@ public class Menu {
         String pais = scanner.nextLine();
         Endereco endereco = enderecoService.adicionarEndereco(new Endereco(logradouro, numero, complemento, cep, cidade, estado, pais, idUsuario));
         return endereco;
+    }
 
+    public static void statusPedido(int id){
+        for (Pedido pedidos : pedidoService.listarPorId(id)) {
+            System.out.println(pedidos);
+        }
+
+        System.out.println("""
+                    1 - Pedido Entregue
+                    2 - Cancelar pedido
+                    0 - Voltar
+                                    
+                    """);
+
+        int escolha = scanner.nextInt();
+
+        switch (escolha) {
+
+            case 1:
+                System.out.println("Digite o id do pedido entregue: ");
+                int idPedidoConcluido = scanner.nextInt();
+
+                System.out.println("""
+                            1 - AGUARDANDO_PAGAMENTO
+                            2 - CANCELADO
+                            3 - PAGO
+                            4 - EM_SEPARACAO
+                            5 - COLETADO
+                            6 - A_CAMINHO
+                            7 - ENTREGUE
+                            """);
+
+                int novoStatusPedido = scanner.nextInt();
+
+                pedidoService.editarStatusPedido(idPedidoConcluido, StatusPedido.fromInt(novoStatusPedido));
+                break;
+
+            case 2:
+                System.out.println("Digite o id do pedido que deseja Cancelar: ");
+                int idPedidoCancelar = scanner.nextInt();
+                pedidoService.excluir(idPedidoCancelar);
+                break;
+
+            case 3:
+                break;
+
+            default:
+                System.out.println("Opção invalida!");
+                break;
+        }
     }
 }
 
