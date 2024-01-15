@@ -10,17 +10,20 @@ import java.util.List;
 public class PedidoService {
     private PedidoRepository pedidoRepository = new PedidoRepository();
 
-    public void adicionar(Pedido pedido) {
+    public boolean adicionar(Pedido pedido) {
         try {
             if (pedido != null) {
                 pedidoRepository.adicionar(pedido);
+                return true;
             }
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao adicionar pedido" + e.getMessage());
             e.printStackTrace();
+            return false;
         }
+        return false;
     }
 
     public List<Pedido> listar() {

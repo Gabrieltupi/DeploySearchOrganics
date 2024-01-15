@@ -95,7 +95,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
             int res = stmt.executeUpdate();
             if (res > 0) {
-                System.out.println("Usuário adicionado com sucesso");
+                System.out.println("Usuário adicionado com sucesso!");
             } else {
                 System.out.println("Ocorreu um erro ao adicionar");
             }
@@ -128,7 +128,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
             int res = stmt.executeUpdate();
             if (res > 0) {
-                System.out.println("Usuário removido com sucesso");
+                System.out.println("Usuário removido com sucesso!");
                 return true;
             }
             System.out.println("Não foi possível remover o usuário");
@@ -180,7 +180,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             int res = stmt.executeUpdate();
 
             if (res > 0) {
-                System.out.println("Usuário atualizado com sucesso");
+                System.out.println("Usuário atualizado com sucesso!");
                 return true;
             }
             System.out.println("Ocorreu um erro ao atualizar o usuário");

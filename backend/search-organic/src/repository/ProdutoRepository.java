@@ -225,14 +225,14 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
         }
     }
 
-    public List<Produto> listarProdutosPorCategoria(TipoCategoria categoria) throws BancoDeDadosException {
+    public List<Produto> listarProdutosPorCategoria(int categoria) throws BancoDeDadosException {
         List<Produto> produtos = new ArrayList<>();
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM PRODUTO WHERE TIPO_CATEGORIA = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, categoria.name());
+            stmt.setInt(1, categoria);
 
             ResultSet res = stmt.executeQuery();
 

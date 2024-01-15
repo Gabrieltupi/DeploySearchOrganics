@@ -18,7 +18,6 @@ public class UsuarioService {
     public void criarUsuario(Usuario usuario) throws BancoDeDadosException{
         try {
             usuarioRepository.adicionar(usuario);
-            System.out.println("Usuário criado com sucesso!");
         } catch (BancoDeDadosException e) {
             System.out.println("Erro ao criar usuário: " + e.getMessage());
             e.printStackTrace();
@@ -75,7 +74,6 @@ public class UsuarioService {
         try {
             boolean usuarioEditadoComSucesso = usuarioRepository.editar(usuarioId, usuarioEditado);
             if (usuarioEditadoComSucesso) {
-                System.out.println("Usuário editado com sucesso!");
             } else {
                 System.out.println("Usuário não encontrado");
             }
@@ -89,7 +87,6 @@ public class UsuarioService {
         try {
             boolean usuarioRemovido = usuarioRepository.remover(usuarioId);
             if (usuarioRemovido) {
-                System.out.println("Usuário removido com sucesso!");
             } else {
                 System.out.println("Usuário não encontrado");
             }

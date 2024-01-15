@@ -78,7 +78,7 @@ public class ProdutoService {
         }
     }
 
-    public void listarProdutosPorCategoria(TipoCategoria categoria) {
+    public void listarProdutosPorCategoria(int categoria) {
         try {
             List<Produto> produtos = produtoRepository.listarProdutosPorCategoria(categoria);
             produtos.forEach(produto -> {

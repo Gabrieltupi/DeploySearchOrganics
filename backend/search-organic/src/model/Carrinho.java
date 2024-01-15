@@ -145,7 +145,7 @@ public class Carrinho {
             }
             return true;
         } else {
-            System.out.println("CEP invalido");
+            System.out.println("CEP invalido!!!!!!!!!!");
             return false;
         }
     }

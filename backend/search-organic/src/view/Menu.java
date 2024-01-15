@@ -123,26 +123,33 @@ public class Menu {
             int escolhaMenuCarrinho = scanner.nextInt();
             scanner.nextLine();
             if (escolhaMenuCarrinho == 1) {
-               if (usuario.getEndereco() == null){
-                   System.out.println("Usuário sem endereço cadastrado!");
-                   Endereco endereco = adicionarEndereco(usuario.getIdUsuario());
-                   usuario.setEndereco(endereco);
-               }
-                System.out.println("""
-                        Escolha a forma de pagamento:
-                        1 - Pix
-                        2 - Cartão de crédito
-                        3 - Cartão de débito
-                        """);
-                int escolhaPagamento = scanner.nextInt();
-                scanner.nextLine();
+                if (usuario.getEndereco() == null) {
+                    System.out.println("Usuário sem endereço cadastrado!");
+                    Endereco endereco = adicionarEndereco(usuario.getIdUsuario());
+                    if(endereco.getCep() != null){
+                        usuario.setEndereco(endereco);
+                    } else {
+                        usuario.setEndereco(null);
+                    }
+                }
 
-                boolean finalizou = carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
-                        usuario.getEndereco(),
-                       new Cupom());
-                if(finalizou){
-                    System.out.println("Pedido finalizado com sucesso!");
-                    return;
+                if (usuario.getEndereco() != null) {
+                    System.out.println("""
+                            Escolha a forma de pagamento:
+                            1 - Pix
+                            2 - Cartão de crédito
+                            3 - Cartão de débito
+                            """);
+                    int escolhaPagamento = scanner.nextInt();
+                    scanner.nextLine();
+
+                    boolean finalizou = carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
+                            usuario.getEndereco(),
+                            new Cupom());
+                    if (finalizou) {
+                        System.out.println("Pedido finalizado com sucesso!");
+                        return;
+                    }
                 }
                 System.out.println("Pedido não finalizado");
             }
@@ -223,7 +230,7 @@ public class Menu {
                             int indexCategoria = scanner.nextInt();
                             scanner.nextLine();
 
-                            produtoService.listarProdutosPorCategoria(TipoCategoria.fromInt(indexCategoria));
+                            produtoService.listarProdutosPorCategoria(indexCategoria);
                         }
                         if (escolhaMenuListarProdutos == 2) {
                             produtoService.listarProdutos();
