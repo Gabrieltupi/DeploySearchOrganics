@@ -136,7 +136,7 @@ public class Menu {
                         """);
                 int escolhaPagamento = scanner.nextInt();
                 scanner.nextLine();
-                
+
                 boolean finalizou = carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
                         usuario.getEndereco(),
                        new Cupom());
@@ -294,7 +294,13 @@ public class Menu {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDate novaDataNascimento = LocalDate.parse(stringNascimento, formatter);
 
-                usuarioService.editarUsuario(usuario.getIdUsuario(), new Usuario(novoNome, novoSobrenome, novoCpf, novaDataNascimento, novoEmail, usuario.getLogin(), usuario.getSenha()));
+                usuario.setNome(novoNome);
+                usuario.setSobrenome(novoSobrenome);
+                usuario.setCpf(novoCpf);
+                usuario.setDataNascimento(novaDataNascimento);
+                usuario.setEmail(novoEmail);
+
+                usuarioService.editarUsuario(usuario.getIdUsuario(), usuario);
             }
             if (escolhaMenuDadosPessoais == 2) {
                 if (usuario.getEndereco() == null){
