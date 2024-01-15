@@ -45,7 +45,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             stmt.setString(4, produto.getDescricao());
             stmt.setBigDecimal(5, produto.getPreco());
             stmt.setBigDecimal(6, produto.getQuantidade());
-            stmt.setInt(7, produto.getCategoriaT().ordinal());
+            stmt.setInt(7, produto.getCategoriaOrdinalBancoDados());
             stmt.setDouble(8, produto.getTaxa());
             stmt.setString(9, produto.getUnidadeMedida().toString());
 
@@ -125,7 +125,7 @@ public class ProdutoRepository implements Repository<Integer, Produto> {
             stmt.setString(2, produto.getDescricao());
             stmt.setBigDecimal(3, produto.getPreco());
             stmt.setBigDecimal(4, produto.getQuantidade());
-            stmt.setInt(5, produto.getCategoriaT().ordinal());
+            stmt.setInt(5, produto.getCategoriaOrdinalBancoDados());
             stmt.setDouble(6, produto.getTaxa());
             stmt.setString(7, produto.getUnidadeMedida().toString());
             stmt.setInt(8, produto.getIdProduto());

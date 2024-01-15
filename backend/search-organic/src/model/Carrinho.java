@@ -69,17 +69,18 @@ public class Carrinho {
         ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho(produto, quantidade);
         this.produtos.add(produtoCarrinho);
         atualizarValorTotal();
-        produto.setQuantidade(produto.getQuantidade().subtract(quantidade));
         return true;
     }
 
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
         for (ProdutoCarrinho produtoCarrinho : produtos) {
-            if (id == produtoCarrinho.getProduto().getIdProduto()) {
-                if (produtoCarrinho.getProduto().getQuantidade().subtract(novaQuantidade).compareTo(BigDecimal.ZERO) < 0) {
+            Produto produto = produtoCarrinho.getProduto();
+            if (id == produto.getIdProduto()) {
+                if (produto.getQuantidade().subtract(novaQuantidade).compareTo(BigDecimal.ZERO) < 0) {
                     System.err.println("Quantidade indisponível no estoque");
                     return false;
                 }
+
                 produtoCarrinho.setQuantidadePedida(novaQuantidade);
                 atualizarValorTotal();
                 return true;
@@ -92,7 +93,8 @@ public class Carrinho {
 
     public boolean removerProdutoDoCarrinho(int id) {
         for(ProdutoCarrinho produtoCarrinho : produtos){
-            if (produtoCarrinho.getProduto().getIdProduto() == id) {
+            Produto produto = produtoCarrinho.getProduto();
+            if (produto.getIdProduto() == id) {
                 produtos.remove(produtoCarrinho);
                 atualizarValorTotal();
                 return true;
