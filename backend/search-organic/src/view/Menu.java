@@ -85,7 +85,7 @@ public class Menu {
                                 if (escolhaMenuUsuario == 0) {
                                     break;
                                 }
-                                scanner.nextLine();
+
                             }
 
                         }
@@ -198,7 +198,7 @@ public class Menu {
                 }
 
                 if (escolhaMenuCarrinho == 0) {
-                    break;
+                    return;
                 }
 
                 if (escolhaMenuCarrinho != 1 && escolhaMenuCarrinho != 2 && escolhaMenuCarrinho != 3 && escolhaMenuCarrinho
@@ -224,7 +224,7 @@ public class Menu {
                     """);
 
             int escolhaMenuProdutos = scanner.nextInt();
-            scanner.nextLine();
+
 
             if (escolhaMenuProdutos == 1) {
                 while (true) {
@@ -236,7 +236,7 @@ public class Menu {
 
                     try {
                         int escolhaMenuListarProdutos = scanner.nextInt();
-                        scanner.nextLine();
+
 
                         if (escolhaMenuListarProdutos == 1) {
                             System.out.println("""
@@ -273,13 +273,16 @@ public class Menu {
                 System.out.println("----------------------------------------");
                 System.out.println("Digite o ID do produto que quer adicionar ao carrinho");
                 int idProduto = scanner.nextInt();
-
-                if (produtoService.buscarProdutoPorId(idProduto) == null) continue;
+                Produto produto = produtoService.buscarProdutoPorId(idProduto);
+                if(produto == null) continue;;
                 System.out.println("Digite a quantidade: ");
                 BigDecimal quantidadeProduto = scanner.nextBigDecimal();
-                if(carrinho.adicionarProdutoAoCarrinho(produtoService.buscarProdutoPorId(idProduto), quantidadeProduto)){
+                if(carrinho.adicionarProdutoAoCarrinho(produto, quantidadeProduto)){
                     System.out.println("Produto adicionado com sucesso");
-                };
+                }
+                else {
+                    System.out.println("Ocorreu um erro");
+                }
             }
 
             if (escolhaMenuProdutos == 0) {
@@ -387,6 +390,7 @@ public class Menu {
 
             if (escolhaMenuDadosPessoais == 0) {
                 break;
+
             }
 
             if (escolhaMenuDadosPessoais != 1 && escolhaMenuDadosPessoais != 2 && escolhaMenuDadosPessoais != 3 && escolhaMenuDadosPessoais != 4) {
@@ -396,6 +400,7 @@ public class Menu {
                 System.out.println("Entrada inválida. Por favor, insira um número.");
                 scanner.nextLine();
             }
+            break;
         }
     }
 
