@@ -14,6 +14,17 @@ public enum TipoCategoria {
         this.mostrar = mostrar;
     }
 
+
+    public static TipoCategoria fromInt(int valor) {
+        valor -= 1;
+        for (TipoCategoria tipo : TipoCategoria.values()) {
+            if (tipo.ordinal() == valor) {
+                return tipo;
+            }
+        }
+        throw new IllegalArgumentException("TipoCategoria inválido: " + valor);
+    }
+
     @Override
     public String toString(){
         return mostrar;
