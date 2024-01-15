@@ -87,6 +87,9 @@ public class Produto implements Impressao {
     public TipoCategoria getCategoriaT() {
         return categoria;
     }
+    public Integer getCategoriaOrdinalBancoDados(){
+        return categoria.ordinal() + 1;
+    }
 
     public void setCategoria(TipoCategoria categoria) {
         this.categoria = categoria;

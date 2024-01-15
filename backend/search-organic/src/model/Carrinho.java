@@ -2,6 +2,8 @@ package model;
 
 import exceptions.BancoDeDadosException;
 import repository.ProdutoRepository;
+import service.PedidoService;
+import service.ProdutoService;
 import utils.FormaPagamento;
 import utils.StatusPedido;
 import utils.validadores.TipoEntrega;
@@ -17,8 +19,9 @@ public class Carrinho {
     private BigDecimal valorTotal = new BigDecimal(0);
     private Usuario usuario;
     private Pedido pedido;
-    private ProdutoRepository produtoRepository;
     private BigDecimal frete = new BigDecimal(0);
+    private    ProdutoService produtoService = new ProdutoService();
+    private PedidoService pedidoService = new PedidoService();
 
     public Carrinho(Usuario usuario, int idEmpresa) {
         this.idEmpresa = idEmpresa;
@@ -66,17 +69,18 @@ public class Carrinho {
         ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho(produto, quantidade);
         this.produtos.add(produtoCarrinho);
         atualizarValorTotal();
-        produto.setQuantidade(produto.getQuantidade().subtract(quantidade));
         return true;
     }
 
     public boolean editarQuantidadeProdutoDaSacola(int id, BigDecimal novaQuantidade) {
         for (ProdutoCarrinho produtoCarrinho : produtos) {
-            if (id == produtoCarrinho.getProduto().getIdProduto()) {
-                if (produtoCarrinho.getProduto().getQuantidade().subtract(novaQuantidade).compareTo(BigDecimal.ZERO) < 0) {
+            Produto produto = produtoCarrinho.getProduto();
+            if (id == produto.getIdProduto()) {
+                if (produto.getQuantidade().subtract(novaQuantidade).compareTo(BigDecimal.ZERO) < 0) {
                     System.err.println("Quantidade indisponível no estoque");
                     return false;
                 }
+
                 produtoCarrinho.setQuantidadePedida(novaQuantidade);
                 atualizarValorTotal();
                 return true;
@@ -89,7 +93,8 @@ public class Carrinho {
 
     public boolean removerProdutoDoCarrinho(int id) {
         for(ProdutoCarrinho produtoCarrinho : produtos){
-            if (produtoCarrinho.getProduto().getIdProduto() == id) {
+            Produto produto = produtoCarrinho.getProduto();
+            if (produto.getIdProduto() == id) {
                 produtos.remove(produtoCarrinho);
                 atualizarValorTotal();
                 return true;
@@ -101,7 +106,7 @@ public class Carrinho {
 
     }
 
-    public void listarProdutosDoCarrinho() throws BancoDeDadosException {
+    public void listarProdutosDoCarrinho()   {
         for(ProdutoCarrinho produtoCarrinho : produtos){
             System.out.println("Número: " + produtoCarrinho.getProduto().getIdProduto() + " Nome do produto: " + produtoCarrinho.getProduto().getNome()
                     + " Quantidade: " + produtoCarrinho.getQuantidadePedida());
@@ -123,18 +128,25 @@ public class Carrinho {
         return valorCarrinho;
     }
 
-    public void finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
+    public Boolean finalizarPedido(FormaPagamento formaPagamento, LocalDate dataDeEntrega,
                                 Endereco endereco, Cupom cupom){
 
         if(ValidadorCEP.isCepValido(endereco.getCep()) != null){
             pedido = new Pedido(usuario.getIdUsuario(), produtos,
                     formaPagamento, dataDeEntrega, endereco, cupom, valorTotal, frete, StatusPedido.AGUARDANDO_PAGAMENTO, getValorCarrinho());
+            pedidoService.adicionar(pedido);
             pedido.imprimir();
             for (ProdutoCarrinho produtoCarrinho : produtos) {
-                produtoCarrinho.getProduto().setQuantidade(produtoCarrinho.getQuantidadePedida().subtract(produtoCarrinho.getProduto().getQuantidade()));
+                Produto produto = produtoCarrinho.getProduto();
+                BigDecimal quantidadePedida = produtoCarrinho.getQuantidadePedida();
+
+                produto.setQuantidade(produto.getQuantidade().subtract(quantidadePedida));
+                produtoService.atualizarSilenciosamente(produto);
             }
+            return true;
         } else {
-            System.out.println("CEP invalido - pedido não foi finalizado");
+            System.out.println("CEP invalido");
+            return false;
         }
     }
 

@@ -9,7 +9,7 @@ public class Cupom implements Impressao, CupomServicos {
     private String nomeCupom;
     private TipoAtivo ativo;
     private String descricao;
-    private BigDecimal taxaDeDesconto;
+    private BigDecimal taxaDeDesconto = new BigDecimal(0);
     private Integer idEmpresa;
 
     public Cupom(){}

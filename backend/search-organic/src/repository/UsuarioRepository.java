@@ -55,6 +55,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
 
             throw new RuntimeException("Usuário não encontrado com o login: " + login);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException(e.getCause());
         } finally {
             try {
@@ -79,6 +80,7 @@ public class UsuarioRepository implements Repository<Integer, Usuario> {
             String sql = "INSERT INTO Usuario\n" +
                     "(ID_USUARIO, LOGIN, SENHA, CPF, ATIVO, NOME, SOBRENOME, EMAIL, DATANASCIMENTO)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
+
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, usuario.getIdUsuario());
