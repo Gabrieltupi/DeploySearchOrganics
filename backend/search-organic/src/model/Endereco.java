@@ -28,8 +28,6 @@ public class Endereco implements Impressao {
             this.estado = estado;
             this.pais = pais;
             this.regiao = ValidadorCEP.isCepValido(cep);
-        } else{
-            System.out.println("Ainda não atendemos neste estado");
         }
     }
 

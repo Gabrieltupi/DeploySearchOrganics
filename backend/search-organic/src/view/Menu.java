@@ -1,5 +1,6 @@
 package view;
 
+import java.time.format.DateTimeParseException;
 import exceptions.BancoDeDadosException;
 import model.*;
 import service.*;
@@ -10,6 +11,7 @@ import service.EnderecoService;
 import service.ProdutoService;
 import service.EmpresaService;
 import utils.FormaPagamento;
+import utils.StatusPedido;
 import utils.TipoCategoria;
 import utils.validadores.TipoEntrega;
 
@@ -41,63 +43,71 @@ public class Menu {
     public static void run() {
 
         boolean sair = false;
-        while (!sair) {
-            System.out.println("""
-                    1 - Login
-                    2 - Cadastro
-                    0 - Sair
-                    """);
-            int escolha = scanner.nextInt();
-            scanner.nextLine();
-            switch (escolha) {
-                case 1:
-                    usuario = login();
-                    if (usuario != null) {
-                     if (enderecoService.verificaSeUsuarioPossuiEndereco(usuario.getIdUsuario()))  {
-                         Endereco endereco = enderecoService.getEndereco(usuario.getIdUsuario());
-                         usuario.setEndereco(endereco);
-                     }
-                        System.out.println("Bem vindo " + usuario.getNome());
-                        Carrinho carrinho = new Carrinho(usuario);
-                        while (true) {
-                            System.out.println("""
-                                    1 - Minha conta
-                                    2 - Lojas
-                                    3 - Carrinho
-                                    0 - Voltar
-                                    """);
+        try {
+            while (!sair) {
+                System.out.println("""
+                        1 - Login
+                        2 - Cadastro
+                        0 - Sair
+                        """);
+                int escolha = scanner.nextInt();
+                scanner.nextLine();
+                switch (escolha) {
+                    case 1:
+                        usuario = login();
+                        if (usuario != null) {
+                            if (enderecoService.verificaSeUsuarioPossuiEndereco(usuario.getIdUsuario())) {
+                                Endereco endereco = enderecoService.getEndereco(usuario.getIdUsuario());
+                                usuario.setEndereco(endereco);
+                            }
+                            System.out.println("Bem vindo " + usuario.getNome());
+                            Carrinho carrinho = new Carrinho(usuario);
+                            while (true) {
+                                System.out.println("""
+                                        1 - Minha conta
+                                        2 - Lojas
+                                        3 - Carrinho
+                                        0 - Voltar
+                                        """);
 
-                            int escolhaMenuUsuario = scanner.nextInt();
-                            scanner.nextLine();
+                                int escolhaMenuUsuario = scanner.nextInt();
+                                scanner.nextLine();
 
-                            if (escolhaMenuUsuario == 1) {
-                                menuMinhaConta(usuario);
+                                if (escolhaMenuUsuario == 1) {
+                                    menuMinhaConta(usuario);
+                                }
+                                if (escolhaMenuUsuario == 2) {
+                                    menuLojas(carrinho);
+                                }
+                                if (escolhaMenuUsuario == 3) {
+                                    menuCarrinho(carrinho);
+                                }
+                                if (escolhaMenuUsuario == 0) {
+                                    break;
+                                }
+                                scanner.nextLine();
                             }
-                            if (escolhaMenuUsuario == 2) {
-                                menuLojas(carrinho);
-                            }
-                            if (escolhaMenuUsuario == 3) {
-                                menuCarrinho(carrinho);
-                            }
-                            if (escolhaMenuUsuario == 0) {
-                                break;
-                            }
-                            scanner.nextLine();
+
                         }
+                        break;
+                    case 2:
+                        cadastro();
+                        break;
+                    case 0:
+                        sair = true;
+                        scanner.close();
+                        break;
+                    default:
+                        System.out.println("Opção inválida");
 
-                    }
-                    break;
-                case 2:
-                    cadastro();
-                    break;
-                case 0:
-                    sair = true;
-                    scanner.close();
-                    break;
-                default:
-                    System.out.println("Opção inválida");
-
+                }
             }
+        } catch(InputMismatchException e){
+            System.out.println("Entrada inválida. Por favor, insira um número válido.");
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println("Ocorreu um erro inesperado: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -110,78 +120,98 @@ public class Menu {
     }
 
     private static void menuCarrinho(Carrinho carrinho) {
-        while (true) {
-            System.out.println("""
-                    1 - Ir para pagamento
-                    2 - Listar produtos do carrinho
-                    3 - Editar quantidade de produto do carrinho
-                    4 - Remover produto do carrinho
-                    5 - Limpar carrinho
-                    0 - Voltar
-                    """);
-
-            int escolhaMenuCarrinho = scanner.nextInt();
-            scanner.nextLine();
-            if (escolhaMenuCarrinho == 1) {
-               if (usuario.getEndereco() == null){
-                   System.out.println("Usuário sem endereço cadastrado!");
-                   Endereco endereco = adicionarEndereco(usuario.getIdUsuario());
-                   usuario.setEndereco(endereco);
-               }
+        try {
+            while (true) {
                 System.out.println("""
-                        Escolha a forma de pagamento:
-                        1 - Pix
-                        2 - Cartão de crédito
-                        3 - Cartão de débito
+                        1 - Ir para pagamento
+                        2 - Listar produtos do carrinho
+                        3 - Editar quantidade de produto do carrinho
+                        4 - Remover produto do carrinho
+                        5 - Limpar carrinho
+                        6 - Mostrar pedidos
+                        0 - Voltar
                         """);
-                int escolhaPagamento = scanner.nextInt();
+
+                int escolhaMenuCarrinho = scanner.nextInt();
                 scanner.nextLine();
+                if (escolhaMenuCarrinho == 1) {
+                    if (usuario.getEndereco() == null) {
+                        System.out.println("Usuário sem endereço cadastrado!");
+                        Endereco endereco = adicionarEndereco(usuario.getIdUsuario());
+                        if (endereco.getCep() != null) {
+                            usuario.setEndereco(endereco);
+                        } else {
+                            usuario.setEndereco(null);
+                        }
+                    }
 
-                boolean finalizou = carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
-                        usuario.getEndereco(),
-                       new Cupom());
-                if(finalizou){
-                    System.out.println("Pedido finalizado com sucesso!");
-                    return;
+                    if (usuario.getEndereco() != null) {
+                        System.out.println("""
+                                Escolha a forma de pagamento:
+                                1 - Pix
+                                2 - Cartão de crédito
+                                3 - Cartão de débito
+                                """);
+                        int escolhaPagamento = scanner.nextInt();
+                        scanner.nextLine();
+
+                        boolean finalizou = carrinho.finalizarPedido(FormaPagamento.values()[escolhaPagamento - 1], LocalDate.now(),
+                                usuario.getEndereco(),
+                                new Cupom());
+                        if (finalizou) {
+                            System.out.println("Pedido finalizado com sucesso!");
+                            return;
+                        }
+                    }
+                    System.out.println("Pedido não finalizado");
                 }
-                System.out.println("Pedido não finalizado");
+
+                if (escolhaMenuCarrinho == 2) {
+                    System.out.println("Produtos do carrinho: ");
+                    carrinho.listarProdutosDoCarrinho();
+                }
+                if (escolhaMenuCarrinho == 3) {
+                    System.out.println("Digite o ID do produto: ");
+                    int idProdutoEditar = scanner.nextInt();
+
+                    System.out.println("Digite a quantidade: ");
+                    BigDecimal quantidade = scanner.nextBigDecimal();
+
+                    carrinho.editarQuantidadeProdutoDaSacola(idProdutoEditar, quantidade);
+
+                }
+                if (escolhaMenuCarrinho == 4) {
+                    carrinho.listarProdutosDoCarrinho();
+                    System.out.println("Digite o ID do produto: ");
+                    int idProdutoRemover = scanner.nextInt();
+
+                    carrinho.removerProdutoDoCarrinho(idProdutoRemover);
+
+                }
+                if (escolhaMenuCarrinho == 5) {
+                    carrinho.limparSacola();
+
+                }
+
+                if (escolhaMenuCarrinho == 6){
+                    statusPedido(usuario.getIdUsuario());
+                }
+
+                if (escolhaMenuCarrinho == 0) {
+                    break;
+                }
+
+                if (escolhaMenuCarrinho != 1 && escolhaMenuCarrinho != 2 && escolhaMenuCarrinho != 3 && escolhaMenuCarrinho
+                        != 4 && escolhaMenuCarrinho != 5 && escolhaMenuCarrinho != 6) {
+                    System.out.println("Opção inválida");
+                }
             }
-
-            if (escolhaMenuCarrinho == 2) {
-                System.out.println("Produtos do carrinho: ");
-                carrinho.listarProdutosDoCarrinho();
-            }
-            if (escolhaMenuCarrinho == 3) {
-                System.out.println("Digite o ID do produto: ");
-                int idProdutoEditar = scanner.nextInt();
-
-                System.out.println("Digite a quantidade: ");
-                BigDecimal quantidade = scanner.nextBigDecimal();
-
-                carrinho.editarQuantidadeProdutoDaSacola(idProdutoEditar, quantidade);
-
-            }
-            if (escolhaMenuCarrinho == 4) {
-                carrinho.listarProdutosDoCarrinho();
-                System.out.println("Digite o ID do produto: ");
-                int idProdutoRemover = scanner.nextInt();
-
-                carrinho.removerProdutoDoCarrinho(idProdutoRemover);
-
-            }
-            if (escolhaMenuCarrinho == 5) {
-                carrinho.limparSacola();
-
-            }
-
-            if (escolhaMenuCarrinho == 0) {
-                break;
-            }
-
-            if (escolhaMenuCarrinho != 1 && escolhaMenuCarrinho != 2 && escolhaMenuCarrinho != 3 && escolhaMenuCarrinho
-                    != 4 && escolhaMenuCarrinho != 5) {
-                System.out.println("Opção inválida");
-            }
+        } catch (InputMismatchException e) {
+            System.out.println("Entrada inválida. Por favor, insira um número válido.");
+            scanner.nextLine(); // Limpa o buffer de entrada
+        } catch (Exception e) {
+            System.out.println("Ocorreu um erro inesperado: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -223,7 +253,7 @@ public class Menu {
                             int indexCategoria = scanner.nextInt();
                             scanner.nextLine();
 
-                            produtoService.listarProdutosPorCategoria(TipoCategoria.fromInt(indexCategoria));
+                            produtoService.listarProdutosPorCategoria(indexCategoria);
                         }
                         if (escolhaMenuListarProdutos == 2) {
                             produtoService.listarProdutos();
@@ -271,7 +301,7 @@ public class Menu {
                     4 - Meu Perfil
                     0 - Voltar
                     """);
-
+            try{
             int escolhaMenuDadosPessoais = scanner.nextInt();
             scanner.nextLine();
 
@@ -362,6 +392,10 @@ public class Menu {
             if (escolhaMenuDadosPessoais != 1 && escolhaMenuDadosPessoais != 2 && escolhaMenuDadosPessoais != 3 && escolhaMenuDadosPessoais != 4) {
                 System.out.println("Opção inválida");
             }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor, insira um número.");
+                scanner.nextLine();
+            }
         }
     }
 
@@ -400,15 +434,17 @@ public class Menu {
         System.out.println("Digite seu email: ");
         String emailCadastro = scanner.nextLine();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro, formatter);
-
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate dataNascimentoCadastro = LocalDate.parse(stringNascimentoCadastro, formatter);
+
             usuarioService.criarUsuario(new Usuario(nomeCadastro, sobrenomeCadastro,
-                    cpfCadastro, dataNascimentoCadastro, emailCadastro, loginCadastro,
-                    senhaCadastro));
+                cpfCadastro, dataNascimentoCadastro, emailCadastro, loginCadastro,
+                senhaCadastro));
+        }catch (DateTimeParseException e) {
+                System.out.println("Erro ao converter data de nascimento. Certifique-se de inserir a data no formato correto (dd-MM-yyyy).");
         } catch (BancoDeDadosException e) {
-            throw new RuntimeException(e);
+                throw new RuntimeException(e);
 
         }
     }
@@ -446,7 +482,56 @@ public class Menu {
         String pais = scanner.nextLine();
         Endereco endereco = enderecoService.adicionarEndereco(new Endereco(logradouro, numero, complemento, cep, cidade, estado, pais, idUsuario));
         return endereco;
+    }
 
+    public static void statusPedido(int id){
+        for (Pedido pedidos : pedidoService.listarPorId(id)) {
+            System.out.println(pedidos);
+        }
+
+        System.out.println("""
+                    1 - Pedido Entregue
+                    2 - Cancelar pedido
+                    0 - Voltar
+                                    
+                    """);
+
+        int escolha = scanner.nextInt();
+
+        switch (escolha) {
+
+            case 1:
+                System.out.println("Digite o id do pedido entregue: ");
+                int idPedidoConcluido = scanner.nextInt();
+
+                System.out.println("""
+                            1 - AGUARDANDO_PAGAMENTO
+                            2 - CANCELADO
+                            3 - PAGO
+                            4 - EM_SEPARACAO
+                            5 - COLETADO
+                            6 - A_CAMINHO
+                            7 - ENTREGUE
+                            """);
+
+                int novoStatusPedido = scanner.nextInt();
+
+                pedidoService.editarStatusPedido(idPedidoConcluido, StatusPedido.fromInt(novoStatusPedido));
+                break;
+
+            case 2:
+                System.out.println("Digite o id do pedido que deseja Cancelar: ");
+                int idPedidoCancelar = scanner.nextInt();
+                pedidoService.excluir(idPedidoCancelar);
+                break;
+
+            case 3:
+                break;
+
+            default:
+                System.out.println("Opção invalida!");
+                break;
+        }
     }
 }
 

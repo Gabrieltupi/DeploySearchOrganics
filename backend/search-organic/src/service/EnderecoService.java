@@ -20,6 +20,7 @@ public class EnderecoService {
             return enderecoRepository.listar();
         } catch (Exception e) {
             System.out.println("Erro ao obter endereços: " + e.getMessage());
+            System.out.println();
             return new ArrayList<>();
         }
     }

@@ -7,5 +7,15 @@ public enum StatusPedido {
     EM_SEPARACAO,
     COLETADO,
     A_CAMINHO,
-    ENTREGUE
+    ENTREGUE;
+
+    public static StatusPedido fromInt(int valor) {
+        valor -= 1;
+        for (StatusPedido status : StatusPedido.values()) {
+            if (status.ordinal() == valor) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("StatusCategoria inválido: " + valor);
+    }
 }
