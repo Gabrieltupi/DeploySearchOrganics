@@ -43,20 +43,14 @@ public class EnderecoService {
         return endereco;
     }
 
-    public boolean atualizarEndereco(Endereco novoEndereco) {
+    public boolean atualizarEndereco(Integer id, Endereco novoEndereco) {
         try {
-            String regiao = ValidadorCEP.isCepValido(novoEndereco.getCep());
-            System.out.println(novoEndereco.getCep());
-            System.out.println(regiao);
-            if (regiao != null) {
-                System.out.println(regiao);
-
-                if (enderecoRepository.editar(novoEndereco.getId(), novoEndereco)) {
-                    return true;
-                }
+            if (enderecoRepository.editar(id, novoEndereco)) {
+                System.out.println("Endereço atualizado com sucesso!");
+                return true;
+            } else {
                 throw new IllegalArgumentException("ID não encontrado.");
             }
-            throw new IllegalArgumentException("CEP inválido!");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao atualizar endereço: " + e.getMessage());
             return false;
@@ -65,6 +59,7 @@ public class EnderecoService {
             return false;
         }
     }
+
 
     public void imprimirEnderecos() {
         try {
@@ -126,5 +121,7 @@ public class EnderecoService {
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e.getMessage());
         }
+
+
     }
 }

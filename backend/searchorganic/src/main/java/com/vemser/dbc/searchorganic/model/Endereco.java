@@ -3,17 +3,33 @@ package com.vemser.dbc.searchorganic.model;
 
 import com.vemser.dbc.searchorganic.interfaces.IImpressao;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Getter
+@Setter
 
 public class Endereco implements IImpressao {
     private Integer id;
     private Integer idUsuario;
+    @NotEmpty(message = "logradouro nao pode ser nulo ou vazio")
     private String logradouro;
+    @NotEmpty(message = "numero nao pode ser nulo ou vazio")
     private String numero;
+    @NotEmpty(message = "complemento nao pode ser nulo ou vazio")
     private String complemento;
+    @NotEmpty(message = "cep nao pode ser nulo ou vazio")
     private String cep;
+    @NotEmpty(message = "cidade nao pode ser nulo ou vazio")
     private String cidade;
+    @NotEmpty(message = "estado nao pode ser nulo ou vazio")
     private String estado;
+    @NotEmpty(message = "pais nao pode ser nulo ou vazio")
     private String pais;
+    @NotEmpty(message = "regiao nao pode ser nulo ou vazio")
     private String regiao;
 
     private ValidadorCEP validadorCEP;
@@ -49,84 +65,12 @@ public class Endereco implements IImpressao {
         }
     }
 
-    public Endereco(){}
-
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public String getPais() {
-        return pais;
-    }
-
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
     public void setCep(String cep) {
         this.cep = cep;
         this.regiao = ValidadorCEP.isCepValido(cep);
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public void setPais(String pais) {
-        this.pais = pais;
-    }
-
-    public String getRegiao() {
-        return regiao;
-    }
-
-    public void setRegiao(String regiao) {
-        this.regiao = regiao;
-    }
 
     @Override
     public void imprimir() {
@@ -140,20 +84,5 @@ public class Endereco implements IImpressao {
         System.out.printf("País: %s\n", this.getPais());
     }
 
-    @Override
-    public String toString() {
-        return "ID: " + id +
-                "\nRegiao: " + regiao +
-                "\nLogradouro: " + logradouro +
-                "\nNúmero: " + numero +
-                "\nComplemento: " + complemento +
-                "\nCEP: " + cep +
-                "\nCidade: " + cidade +
-                "\nEstado: " + estado +
-                "\nPaís: " + pais + "\n";
-    }
 
-    public void setId(Integer proximoId) {
-        this.id = proximoId;
-    }
 }
