@@ -43,12 +43,15 @@ public class UsuarioService {
             throw new RegraDeNegocioException("Usuario não encontrado");
     }
 
+
     public void removerUsuario(int usuarioId) throws Exception {
            if(usuarioRepository.remover(usuarioId)){
                return;
            };
         throw new RegraDeNegocioException("Usuario não encontrado");
 
+
     }
+
 }
 

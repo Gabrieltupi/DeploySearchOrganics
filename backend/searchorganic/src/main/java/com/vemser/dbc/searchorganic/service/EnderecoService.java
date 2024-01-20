@@ -43,28 +43,28 @@ public class EnderecoService {
         return endereco;
     }
 
-    public boolean atualizarEndereco(Endereco novoEndereco) {
+    public boolean atualizarEndereco(Integer id, Endereco novoEndereco) {
         try {
-            String regiao = ValidadorCEP.isCepValido(novoEndereco.getCep());
-            System.out.println(novoEndereco.getCep());
-            System.out.println(regiao);
-            if (regiao != null) {
-                System.out.println(regiao);
+            boolean enderecoAtualizado = enderecoRepository.editar(id, novoEndereco);
 
-                if (enderecoRepository.editar(novoEndereco.getId(), novoEndereco)) {
-                    return true;
-                }
-                throw new IllegalArgumentException("ID não encontrado.");
+            if (enderecoAtualizado) {
+                System.out.println("Endereço atualizado com sucesso!");
+                return true;
+            } else {
+                System.out.println("ID não encontrado.");
+                return false;
             }
-            throw new IllegalArgumentException("CEP inválido!");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao atualizar endereço: " + e.getMessage());
-            return false;
+            throw e;
         } catch (Exception e) {
-            System.out.println("Erro inesperado ao atualizar endereço: " + e.getMessage());
-            return false;
+            System.out.println("Erro ao atualizar endereço: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
+
+
+
 
     public void imprimirEnderecos() {
         try {
@@ -97,7 +97,7 @@ public class EnderecoService {
         }
     }
 
-    public Endereco excluirPorIdUsuario(int idUsuario) {
+    public Endereco excluirEndereco(int idUsuario) {
         try {
             Endereco endereco =  enderecoRepository.buscarPorUsuarioId(idUsuario);
             if (endereco != null) {
@@ -126,5 +126,7 @@ public class EnderecoService {
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e.getMessage());
         }
+
+
     }
 }
