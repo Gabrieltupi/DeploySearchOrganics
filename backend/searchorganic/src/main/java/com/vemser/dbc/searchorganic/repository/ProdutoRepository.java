@@ -74,22 +74,22 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public void remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
             String sql = "DELETE FROM PRODUTO WHERE id_produto = ?";
 
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setInt(1, id);
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setInt(1, id);
 
-            int res = stmt.executeUpdate();
-            if (res > 0) {
-                System.out.println("Produto removida com sucesso");
-                return true;
+                int res = stmt.executeUpdate();
+                if (res > 0) {
+                    System.out.println("Produto removido com sucesso");
+                } else {
+                    System.out.println("Não foi possível remover o produto. Produto não encontrado.");
+                }
             }
-            System.out.println("Não foi possivel remover");
-
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -101,9 +101,8 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
                 e.printStackTrace();
             }
         }
-
-        return false;
     }
+
 
     @Override
     public boolean editar(Integer id, Produto produto) throws BancoDeDadosException {

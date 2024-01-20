@@ -3,17 +3,50 @@ package com.vemser.dbc.searchorganic.model;
 
 import com.vemser.dbc.searchorganic.interfaces.IImpressao;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Getter
+@Setter
 
 public class Endereco implements IImpressao {
     private Integer id;
     private Integer idUsuario;
+
+    @NotEmpty(message = "logradouro não pode ser nulo ou vazio")
+    @Size(min = 1, max = 255, message = "O tamanho do logradouro deve estar entre 1 e 255 caracteres")
     private String logradouro;
+
+    @NotEmpty(message = "numero não pode ser nulo ou vazio")
+    @Size(min = 1, max = 10, message = "O tamanho do número deve estar entre 1 e 10 caracteres")
     private String numero;
+
+    @NotEmpty(message = "complemento não pode ser nulo ou vazio")
+    @Size(max = 255, message = "O tamanho do complemento deve estar no máximo 255 caracteres")
     private String complemento;
+
+    @NotEmpty(message = "cep não pode ser nulo ou vazio")
+    @Size(min = 8, max = 8, message = "O CEP deve ter exatamente 8 caracteres")
     private String cep;
+
+    @NotEmpty(message = "cidade não pode ser nula ou vazia")
+    @Size(min = 1, max = 255, message = "O tamanho da cidade deve estar entre 1 e 255 caracteres")
     private String cidade;
+
+    @NotEmpty(message = "estado não pode ser nulo ou vazio")
+    @Size(min = 1, max = 50, message = "O tamanho do estado deve estar entre 1 e 50 caracteres")
     private String estado;
+
+    @NotEmpty(message = "país não pode ser nulo ou vazio")
+    @Size(min = 1, max = 50, message = "O tamanho do país deve estar entre 1 e 50 caracteres")
     private String pais;
+
+    @NotEmpty(message = "região não pode ser nula ou vazia")
+    @Size(min = 1, max = 50, message = "O tamanho da região deve estar entre 1 e 50 caracteres")
     private String regiao;
 
     private ValidadorCEP validadorCEP;
@@ -49,84 +82,12 @@ public class Endereco implements IImpressao {
         }
     }
 
-    public Endereco(){}
-
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public String getPais() {
-        return pais;
-    }
-
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
     public void setCep(String cep) {
         this.cep = cep;
         this.regiao = ValidadorCEP.isCepValido(cep);
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public void setPais(String pais) {
-        this.pais = pais;
-    }
-
-    public String getRegiao() {
-        return regiao;
-    }
-
-    public void setRegiao(String regiao) {
-        this.regiao = regiao;
-    }
 
     @Override
     public void imprimir() {
@@ -140,20 +101,5 @@ public class Endereco implements IImpressao {
         System.out.printf("País: %s\n", this.getPais());
     }
 
-    @Override
-    public String toString() {
-        return "ID: " + id +
-                "\nRegiao: " + regiao +
-                "\nLogradouro: " + logradouro +
-                "\nNúmero: " + numero +
-                "\nComplemento: " + complemento +
-                "\nCEP: " + cep +
-                "\nCidade: " + cidade +
-                "\nEstado: " + estado +
-                "\nPaís: " + pais + "\n";
-    }
 
-    public void setId(Integer proximoId) {
-        this.id = proximoId;
-    }
 }

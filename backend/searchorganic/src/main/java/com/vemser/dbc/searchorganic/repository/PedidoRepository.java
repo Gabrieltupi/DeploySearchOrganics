@@ -87,42 +87,42 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public void remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE PEDIDO SET STATUS_PEDIDO = 'CANCELADO' WHERE ID_PEDIDO = ?";
 
-            PreparedStatement stmt = con.prepareStatement(sql);
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setInt(1, id);
 
-            stmt.setInt(1, id);
+                int res = stmt.executeUpdate();
 
-            int res = stmt.executeUpdate();
+                String query = "SELECT P.ID_PRODUTO, PEXP.QUANTIDADE, P.QUANTIDADE_DISPONIVEL FROM PRODUTO P " +
+                        "INNER JOIN PEDIDOXPRODUTO PEXP ON PEXP.ID_PRODUTO = P.ID_PRODUTO " +
+                        "INNER JOIN PEDIDO PED ON PED.ID_PEDIDO = PEXP.ID_PEDIDO";
+                try (ResultSet rst = stmt.executeQuery(query)) {
+                    while (rst.next()) {
+                        int idProduto = rst.getInt("ID_PRODUTO");
+                        BigDecimal quantidadeDisponivel = rst.getBigDecimal("QUANTIDADE_DISPONIVEL");
+                        BigDecimal quantidade = rst.getBigDecimal("QUANTIDADE");
+                        quantidadeDisponivel = quantidadeDisponivel.add(quantidade);
+                        String novaQuery = "UPDATE PRODUTO SET QUANTIDADE_DISPONIVEL = ? WHERE ID_PRODUTO = ?";
+                        try (PreparedStatement sttq = con.prepareStatement(novaQuery)) {
+                            sttq.setBigDecimal(1, quantidadeDisponivel);
+                            sttq.setInt(2, idProduto);
+                            sttq.executeUpdate();
+                        }
+                    }
+                }
 
-            String query = "SELECT P.ID_PRODUTO, PEXP.QUANTIDADE, P.QUANTIDADE_DISPONIVEL FROM PRODUTO P " +
-                    "INNER JOIN PEDIDOXPRODUTO PEXP ON PEXP.ID_PRODUTO = P.ID_PRODUTO " +
-                    "INNER JOIN PEDIDO PED ON PED.ID_PEDIDO = PEXP.ID_PEDIDO";
-            ResultSet rst = stmt.executeQuery(query);
-
-            while (rst.next()) {
-                    int idProduto = rst.getInt("ID_PRODUTO");
-                    BigDecimal quantidadeDisponivel= rst.getBigDecimal("QUANTIDADE_DISPONIVEL");
-                    BigDecimal quantidade = rst.getBigDecimal("QUANTIDADE");
-                    quantidadeDisponivel.add(quantidade);
-                    String novaQuery = "UPDATE PRODUTO SET QUANTIDADE_DISPONIVEL = ? WHERE ID_PRODUTO = ?";
-                    PreparedStatement sttq = con.prepareStatement(novaQuery);
-                    sttq.setBigDecimal(1, quantidadeDisponivel);
-                    sttq.setInt(2, idProduto);
-                    sttq.execute();
+                if (res > 0) {
+                    System.out.println("Pedido cancelado com sucesso");
+                } else {
+                    System.out.println("Ocorreu um erro ao cancelar o pedido");
+                }
             }
-
-            if(res > 0) {
-                System.out.println("Pedido cancelado");
-                return true;
-            }
-            System.out.println("Ocorreu um erro ao cancelar");
-            return false;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -135,6 +135,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
             }
         }
     }
+
 
     @Override
     public boolean editar(Integer id, Pedido pedido) throws BancoDeDadosException {

@@ -88,17 +88,15 @@ public class EmpresaService {
 
     public void excluirEmpresa(int id) {
         try {
-            if (empresaRepository.remover(id)) {
-                System.out.println("Empresa com o ID " + id + " excluída com sucesso.");
-                return;
-            }
-            System.err.println("Ocorreu um erro ao excluir a empresa");
+            empresaRepository.remover(id);
+            System.out.println("Empresa com o ID " + id + " excluída com sucesso.");
         } catch (BancoDeDadosException bdEx) {
             throw new RuntimeException(bdEx.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro ao excluir empresa: " + e.getMessage());
+            System.err.println("Erro ao excluir empresa: " + e.getMessage());
         }
     }
+
 
 
     // Opção 2.1 e 3.1

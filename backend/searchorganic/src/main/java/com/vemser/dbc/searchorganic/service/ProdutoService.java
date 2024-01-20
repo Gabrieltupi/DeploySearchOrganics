@@ -52,12 +52,14 @@ public class ProdutoService {
 
     public void deletarProduto(Integer id) {
         try {
-            boolean produtoDeletado = produtoRepository.remover(id);
+            produtoRepository.remover(id);
             System.out.println("Produto removido com sucesso");
         } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao deletar produto" + e.getMessage());
+            System.err.println("Erro ao deletar produto: " + e.getMessage());
         }
     }
+
+
 
 
     public Produto buscarProdutoPorId(int id) {

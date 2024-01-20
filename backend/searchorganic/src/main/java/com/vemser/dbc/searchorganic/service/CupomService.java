@@ -70,16 +70,15 @@ public class CupomService {
         }
     }
 
-    public boolean removerCupom(int id) {
+    public void removerCupom(int id) {
         try {
-            if (repository.remover(id)) {
-                return true;
-            }
-            System.out.println("Cupom não pode ser encontrado em nosso Sistema");
-            return false;
+            repository.remover(id);
+            System.out.println("Cupom removido com sucesso");
         } catch (Exception e) {
             System.out.println("Erro ao deletar cupom: " + e.getMessage());
+            e.printStackTrace();
         }
-        return false;
     }
+
+
 }
