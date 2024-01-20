@@ -1,6 +1,5 @@
 package com.vemser.dbc.searchorganic.dto.usuario;
 
-import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
