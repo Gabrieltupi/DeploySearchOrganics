@@ -1,6 +1,5 @@
 package com.vemser.dbc.searchorganic.service;
-import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
-import com.vemser.dbc.searchorganic.exceptions.SenhaIncorretaException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -12,86 +11,46 @@ public class UsuarioService {
 
     private UsuarioRepository usuarioRepository;
 
-    public UsuarioService() {
-        this.usuarioRepository = new UsuarioRepository();
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
     }
 
-    public void criarUsuario(Usuario usuario) throws BancoDeDadosException {
-        try {
-            usuarioRepository.adicionar(usuario);
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao criar usuário: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public Usuario criarUsuario(Usuario usuario) throws Exception {
+            return usuarioRepository.adicionar(usuario);
     }
 
-    public Usuario autenticar(String login, String senha){
-        try{
+    public Usuario autenticar(String login, String senha) throws Exception {
             Usuario usuario = usuarioRepository.buscaPorLogin(login);
             if(!(usuario.getSenha().equals(senha))){
-                throw new SenhaIncorretaException();
+                throw new RegraDeNegocioException("Senha incorreta");
             }
-
             return usuario;
-        } catch (SenhaIncorretaException senhaIncorrExce) {
-            throw new RuntimeException(senhaIncorrExce.getMessage());
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
     }
 
-    public void exibirTodos() {
-        try {
-            List<Usuario> usuarios = usuarioRepository.listar();
-            usuarios.forEach(usuario -> {
-                usuario.imprimir();
-                System.out.println("-----------------");
-            });
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao exibir usuários: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public List<Usuario> exibirTodos() throws Exception {
+         return usuarioRepository.listar();
     }
 
-    public void exibirUsuario(int id) {
-        try {
-            List<Usuario> usuarios = usuarioRepository.listar();
-            for(Usuario usuario: usuarios){
-                if(usuario.getIdUsuario() == id){
-                    usuario.imprimir();
-                }
+    public Usuario obterUsuarioPorId(Integer id) throws Exception {
+        return this.usuarioRepository.buscaPorId(id);
+    }
+
+    public Usuario editarUsuario(int usuarioId, Usuario usuarioEditado) throws Exception {
+            if(usuarioRepository.editar(usuarioId, usuarioEditado)){
+                usuarioEditado.setIdUsuario(usuarioId);
+                return usuarioEditado;
             }
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao exibir usuários: " + e.getMessage());
-            e.printStackTrace();
-        }
+            throw new RegraDeNegocioException("Usuario não encontrado");
     }
 
-    public void editarUsuario(int usuarioId, Usuario usuarioEditado) {
-        try {
-            boolean usuarioEditadoComSucesso = usuarioRepository.editar(usuarioId, usuarioEditado);
-            if (usuarioEditadoComSucesso) {
-            } else {
-                System.out.println("Usuário não encontrado");
-            }
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao editar usuário: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
-    public void removerUsuario(int usuarioId) {
-        try {
-            usuarioRepository.remover(usuarioId);
-            System.out.println("Usuário removido com sucesso");
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao remover usuário: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public void removerUsuario(int usuarioId) throws Exception {
+           if(usuarioRepository.remover(usuarioId)){
+               return;
+           };
+        throw new RegraDeNegocioException("Usuario não encontrado");
+
+
     }
 
 }

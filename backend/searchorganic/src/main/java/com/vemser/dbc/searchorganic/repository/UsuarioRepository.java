@@ -2,6 +2,7 @@ package com.vemser.dbc.searchorganic.repository;
 
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.EnderecoService;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
@@ -236,5 +237,47 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
             }
         }
         return usuarios;
+    }
+
+    public Usuario buscaPorId(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+
+            String sql = "SELECT * FROM Usuario WHERE ID_USUARIO = ?";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, id);
+
+            ResultSet res = stmt.executeQuery();
+
+            if (res.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setIdUsuario(res.getInt("ID_USUARIO"));
+                usuario.setLogin(res.getString("LOGIN"));
+                usuario.setSenha(res.getString("SENHA"));
+                usuario.setCpf(res.getString("CPF"));
+                usuario.setTipoAtivo(TipoAtivo.fromString(res.getString("ATIVO")));
+                usuario.setNome(res.getString("NOME"));
+                usuario.setSobrenome(res.getString("SOBRENOME"));
+                usuario.setEmail(res.getString("EMAIL"));
+                usuario.setDataNascimento(res.getDate("DATANASCIMENTO").toLocalDate());
+
+                return usuario;
+            }
+
+            throw new RegraDeNegocioException("Usuário não encontrado");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

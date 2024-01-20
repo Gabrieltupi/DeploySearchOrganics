@@ -1,7 +1,7 @@
 package com.vemser.dbc.searchorganic.repository;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
-import com.vemser.dbc.searchorganic.exceptions.EmpresaNaoEncontradaException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import org.springframework.stereotype.Repository;
 import java.sql.*;
@@ -201,7 +201,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
         return empresas;
     }
 
-    public Empresa buscaPorId(Integer id) throws BancoDeDadosException {
+    public Empresa buscaPorId(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -222,12 +222,10 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
                         empresa.setIdUsuario(res.getInt("ID_USUARIO"));
                         return empresa;
                     }
-                    throw new EmpresaNaoEncontradaException();
+                    throw new RegraDeNegocioException("Empresa não encontrada");
 
                 } catch (SQLException e) {
                     throw new BancoDeDadosException(e.getCause());
-                } catch (EmpresaNaoEncontradaException e) {
-                    throw new RuntimeException(e.getMessage());
                 } finally {
                     try {
                         if (con != null) {
