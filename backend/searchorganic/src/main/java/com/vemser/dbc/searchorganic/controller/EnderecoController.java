@@ -15,36 +15,32 @@ import java.util.List;
 @Validated
 public class EnderecoController {
 
-    private EnderecoService enderecoService;
+    private final EnderecoService enderecoService;
 
-    public EnderecoController(EnderecoService enderecoService){
+    public EnderecoController(EnderecoService enderecoService) {
         this.enderecoService = enderecoService;
     }
 
-
-    @GetMapping// GET /enderecos
+    @GetMapping // GET /endereco
     public ResponseEntity<List<Endereco>> listaDeEnderecos() {
         return new ResponseEntity<>(enderecoService.getEnderecos(), HttpStatus.OK);
     }
 
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<Endereco> listarPorIdEUsario(@Valid @PathVariable("idUsuario") Integer idUsuario){
+    public ResponseEntity<Endereco> listarEnderecoPorIdDeUsuario(@Valid @PathVariable("idUsuario") Integer idUsuario) {
         return new ResponseEntity<>(enderecoService.getEndereco(idUsuario), HttpStatus.OK);
     }
 
-    @DeleteMapping("/idUsuario")
-    public ResponseEntity<Endereco> excluirUsuario(@Valid @PathVariable("idUsuario") Integer idUsuario){
-    return new ResponseEntity<>(enderecoService.excluirPorIdUsuario(idUsuario),HttpStatus.OK);
+    @DeleteMapping("/{idUsuario}")
+    public ResponseEntity<Void> excluirEnderecosPorIdUsuario(@PathVariable("idUsuario") Integer idUsuario) {
+        enderecoService.excluirEndereco(idUsuario);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Boolean> atualizarUsuario(@Valid @PathVariable("id") Integer id,
-                                                    @RequestBody Endereco novoEndereco) {
-        boolean sucesso = enderecoService.atualizarEndereco(id, novoEndereco);
-
-        return sucesso
-                ? ResponseEntity.ok(true)
-                : ResponseEntity.status(sucesso ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST).body(false);
+    public ResponseEntity<Boolean> atualizarEndereco(@PathVariable("id") Integer id,
+                                                      @Valid @RequestBody Endereco novoEndereco) {
+        return new ResponseEntity<>(enderecoService.atualizarEndereco(id, novoEndereco), HttpStatus.OK);
     }
 
     @PostMapping
@@ -52,11 +48,5 @@ public class EnderecoController {
         Endereco enderecoAdicionado = enderecoService.adicionarEndereco(endereco);
         return new ResponseEntity<>(enderecoAdicionado, HttpStatus.OK);
     }
-
-
-
-
-
-
-
 }
+

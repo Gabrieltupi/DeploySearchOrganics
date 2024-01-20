@@ -86,15 +86,13 @@ public class UsuarioService {
 
     public void removerUsuario(int usuarioId) {
         try {
-            boolean usuarioRemovido = usuarioRepository.remover(usuarioId);
-            if (usuarioRemovido) {
-            } else {
-                System.out.println("Usuário não encontrado");
-            }
+            usuarioRepository.remover(usuarioId);
+            System.out.println("Usuário removido com sucesso");
         } catch (BancoDeDadosException e) {
             System.out.println("Erro ao remover usuário: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 }
 

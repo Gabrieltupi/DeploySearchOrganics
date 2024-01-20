@@ -45,20 +45,25 @@ public class EnderecoService {
 
     public boolean atualizarEndereco(Integer id, Endereco novoEndereco) {
         try {
-            if (enderecoRepository.editar(id, novoEndereco)) {
+            boolean enderecoAtualizado = enderecoRepository.editar(id, novoEndereco);
+
+            if (enderecoAtualizado) {
                 System.out.println("Endereço atualizado com sucesso!");
                 return true;
             } else {
-                throw new IllegalArgumentException("ID não encontrado.");
+                System.out.println("ID não encontrado.");
+                return false;
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao atualizar endereço: " + e.getMessage());
-            return false;
+            throw e;
         } catch (Exception e) {
-            System.out.println("Erro inesperado ao atualizar endereço: " + e.getMessage());
-            return false;
+            System.out.println("Erro ao atualizar endereço: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
+
+
 
 
     public void imprimirEnderecos() {
@@ -92,7 +97,7 @@ public class EnderecoService {
         }
     }
 
-    public Endereco excluirPorIdUsuario(int idUsuario) {
+    public Endereco excluirEndereco(int idUsuario) {
         try {
             Endereco endereco =  enderecoRepository.buscarPorUsuarioId(idUsuario);
             if (endereco != null) {

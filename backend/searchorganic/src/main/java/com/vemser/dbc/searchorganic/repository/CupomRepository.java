@@ -66,22 +66,26 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public void remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE CUPOM SET ativo = 'N' WHERE id_cupom = ?";
 
-            PreparedStatement stmt = con.prepareStatement(sql);
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setInt(1, id);
 
-            stmt.setInt(1, id);
+                int res = stmt.executeUpdate();
 
-            int res = stmt.executeUpdate();
-
-            return res > 0;
+                if (res > 0) {
+                    System.out.println("Cupom removido com sucesso");
+                } else {
+                    System.out.println("Cupom não encontrado ou já inativo");
+                }
+            }
         } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
+            throw new BancoDeDadosException(e);
         } finally {
             try {
                 if (con != null) {
@@ -92,6 +96,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
             }
         }
     }
+
 
     @Override
     public boolean editar(Integer id, Cupom cupom) throws BancoDeDadosException {

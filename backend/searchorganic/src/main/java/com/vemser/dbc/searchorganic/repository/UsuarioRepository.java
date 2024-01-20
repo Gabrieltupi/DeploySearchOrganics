@@ -116,24 +116,24 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public void remover(Integer id) throws BancoDeDadosException {
         EnderecoService enderecoServicos = new EnderecoService();
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            enderecoServicos.excluirPorIdUsuario(id);
+            enderecoServicos.excluirEndereco(id);
+
             String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setInt(1, id);
 
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setInt(1, id);
-
-            int res = stmt.executeUpdate();
-            if (res > 0) {
-                System.out.println("Usuário removido com sucesso!");
-                return true;
+                int res = stmt.executeUpdate();
+                if (res > 0) {
+                    System.out.println("Usuário removido com sucesso!");
+                } else {
+                    System.out.println("Não foi possível remover o usuário. Usuário não encontrado.");
+                }
             }
-            System.out.println("Não foi possível remover o usuário");
-
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -145,9 +145,8 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
                 e.printStackTrace();
             }
         }
-
-        return false;
     }
+
 
     @Override
     public boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {

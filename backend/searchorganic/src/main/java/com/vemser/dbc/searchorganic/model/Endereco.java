@@ -4,6 +4,7 @@ package com.vemser.dbc.searchorganic.model;
 import com.vemser.dbc.searchorganic.interfaces.IImpressao;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @AllArgsConstructor
@@ -15,21 +16,37 @@ import lombok.*;
 public class Endereco implements IImpressao {
     private Integer id;
     private Integer idUsuario;
-    @NotEmpty(message = "logradouro nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "logradouro não pode ser nulo ou vazio")
+    @Size(min = 1, max = 255, message = "O tamanho do logradouro deve estar entre 1 e 255 caracteres")
     private String logradouro;
-    @NotEmpty(message = "numero nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "numero não pode ser nulo ou vazio")
+    @Size(min = 1, max = 10, message = "O tamanho do número deve estar entre 1 e 10 caracteres")
     private String numero;
-    @NotEmpty(message = "complemento nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "complemento não pode ser nulo ou vazio")
+    @Size(max = 255, message = "O tamanho do complemento deve estar no máximo 255 caracteres")
     private String complemento;
-    @NotEmpty(message = "cep nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "cep não pode ser nulo ou vazio")
+    @Size(min = 8, max = 8, message = "O CEP deve ter exatamente 8 caracteres")
     private String cep;
-    @NotEmpty(message = "cidade nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "cidade não pode ser nula ou vazia")
+    @Size(min = 1, max = 255, message = "O tamanho da cidade deve estar entre 1 e 255 caracteres")
     private String cidade;
-    @NotEmpty(message = "estado nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "estado não pode ser nulo ou vazio")
+    @Size(min = 1, max = 50, message = "O tamanho do estado deve estar entre 1 e 50 caracteres")
     private String estado;
-    @NotEmpty(message = "pais nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "país não pode ser nulo ou vazio")
+    @Size(min = 1, max = 50, message = "O tamanho do país deve estar entre 1 e 50 caracteres")
     private String pais;
-    @NotEmpty(message = "regiao nao pode ser nulo ou vazio")
+
+    @NotEmpty(message = "região não pode ser nula ou vazia")
+    @Size(min = 1, max = 50, message = "O tamanho da região deve estar entre 1 e 50 caracteres")
     private String regiao;
 
     private ValidadorCEP validadorCEP;
