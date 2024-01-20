@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class ProdutoCarrinho{
     private Integer idProduto;
     private Integer quantidade;
-
+    private Integer idEmpresa;
 }

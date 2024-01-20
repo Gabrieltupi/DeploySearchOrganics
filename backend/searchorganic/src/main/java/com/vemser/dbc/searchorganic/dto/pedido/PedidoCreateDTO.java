@@ -28,9 +28,6 @@ public class PedidoCreateDTO {
     private Integer idCupom;
     @NotBlank
     @NotNull
-    private BigDecimal total;
-    @NotBlank
-    @NotNull
     private FormaPagamento formaPagamento;
     @NotBlank
     @NotNull
