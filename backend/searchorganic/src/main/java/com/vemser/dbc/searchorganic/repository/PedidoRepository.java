@@ -40,7 +40,9 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         try {
             con = ConexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
+
             pedido.setIdPedido(proximoId);
+            pedido.setStatusPedido(StatusPedido.AGUARDANDO_PAGAMENTO);
             String sql = "INSERT INTO PEDIDO (ID_PEDIDO, ID_USUARIO, ID_ENDERECO, ID_CUPOM, FORMA_PAGAMENTO, STATUS_PEDIDO, " +
                     "DATA_DE_PEDIDO, DATA_ENTREGA, PRECO_CARRINHO, PRECO_FRETE) " +
                     "VALUES\n" +
@@ -58,7 +60,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
                 stmt.setNull(4, Types.INTEGER);
             }
             stmt.setString(5, pedido.getFormaPagamento().toString());
-            stmt.setString(6,"AGUARDANDO_PAGAMENTO");
+            stmt.setString(6,pedido.getStatusPedido().toString());
             stmt.setDate(7, Date.valueOf(pedido.getDataDePedido()));
             stmt.setDate(8, Date.valueOf(pedido.getDataEntrega()));
             stmt.setBigDecimal(9, pedido.getPrecoCarrinho());
