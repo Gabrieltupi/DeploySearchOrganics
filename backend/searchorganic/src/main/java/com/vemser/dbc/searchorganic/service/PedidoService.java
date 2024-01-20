@@ -64,15 +64,13 @@ public class PedidoService {
 
     public void excluir(int idPedido) {
         try {
-            if (pedidoRepository.remover(idPedido)) {
-                System.out.println("Endereço do ID " + idPedido + " foi excluído!!");
-                return;
-            }
-            throw new IllegalArgumentException("ID não encontrado.");
+            pedidoRepository.remover(idPedido);
+            System.out.println("Pedido do ID " + idPedido + " foi excluído!!");
         } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao excluir endereço: " + e.getMessage());
+            System.out.println("Erro ao excluir pedido: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro inesperado ao excluir endereço: " + e.getMessage());
+            System.out.println("Erro inesperado ao excluir pedido: " + e.getMessage());
         }
     }
+
 }
