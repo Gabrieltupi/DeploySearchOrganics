@@ -120,13 +120,14 @@ public class EnderecoService {
             throw new RuntimeException(e);
         }
     }
-    public Endereco getEndereco(Integer idUsuario){
+    public Endereco getEnderecoUsuario(Integer idUsuario){
         try {
             return enderecoRepository.buscarPorUsuarioId(idUsuario);
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e.getMessage());
         }
-
-
+    }
+    public Endereco getEndereco(Integer id) throws Exception {
+            return enderecoRepository.buscarPorId(id);
     }
 }

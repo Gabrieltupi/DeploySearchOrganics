@@ -2,6 +2,7 @@ package com.vemser.dbc.searchorganic.repository;
 
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Pedido;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
@@ -39,7 +40,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         try {
             con = ConexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
-            pedido.setId(proximoId);
+            pedido.setIdPedido(proximoId);
             String sql = "INSERT INTO PEDIDO (ID_PEDIDO, ID_USUARIO, ID_ENDERECO, ID_CUPOM, FORMA_PAGAMENTO, STATUS_PEDIDO, " +
                     "DATA_DE_PEDIDO, DATA_ENTREGA, PRECO_CARRINHO, PRECO_FRETE) " +
                     "VALUES\n" +
@@ -47,30 +48,30 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setInt(1, pedido.getId());
-            stmt.setInt(2, pedido.getUsuarioId());
-            stmt.setInt(3, pedido.getEndereco().getId());
-            if(pedido.getCupom().getCupomId() != null ){
-                stmt.setInt(4, pedido.getCupom().getCupomId());
+            stmt.setInt(1, pedido.getIdPedido());
+            stmt.setInt(2, pedido.getIdUsuario());
+            stmt.setInt(3, pedido.getIdEndereco());
+            if(pedido.getIdCupom() != null ){
+                stmt.setInt(4, pedido.getIdCupom());
             }
             else {
                 stmt.setNull(4, Types.INTEGER);
             }
             stmt.setString(5, pedido.getFormaPagamento().toString());
             stmt.setString(6,"AGUARDANDO_PAGAMENTO");
-            stmt.setDate(7, Date.valueOf(pedido.getInicioEntrega()));
-            stmt.setDate(8, Date.valueOf(pedido.getDataDeEntrega()));
+            stmt.setDate(7, Date.valueOf(pedido.getDataDePedido()));
+            stmt.setDate(8, Date.valueOf(pedido.getDataEntrega()));
             stmt.setBigDecimal(9, pedido.getPrecoCarrinho());
-            stmt.setBigDecimal(10, pedido.getValorFrete());
+            stmt.setBigDecimal(10, pedido.getPrecoFrete());
 
             int res = stmt.executeUpdate();
             if(res > 0) {
                 for(ProdutoCarrinho produto : pedido.getProdutos()){ // TODO: implementar logica
                     String query = "INSERT INTO PEDIDOXPRODUTO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
                     PreparedStatement stt = con.prepareStatement(query);
-                    stt.setInt(1, pedido.getId());
-                    stt.setInt(2, produto.getProduto().getIdProduto());
-                    stt.setBigDecimal(3, produto.getQuantidadePedida());
+                    stt.setInt(1, pedido.getIdPedido());
+                    stt.setInt(2, produto.getIdProduto());
+                    stt.setInt(3, produto.getQuantidade());
                     stt.execute();
                 }
                 System.out.println("Pedido realizado");
@@ -87,7 +88,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     }
 
     @Override
-    public void remover(Integer id) throws BancoDeDadosException {
+    public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -119,8 +120,10 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
                 if (res > 0) {
                     System.out.println("Pedido cancelado com sucesso");
+                    return true;
                 } else {
                     System.out.println("Ocorreu um erro ao cancelar o pedido");
+                    return false;
                 }
             }
         } catch (SQLException e) {
@@ -138,8 +141,47 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
 
     @Override
-    public boolean editar(Integer id, Pedido pedido) throws BancoDeDadosException {
-        return false;
+    public boolean editar(Integer id, Pedido pedido) throws Exception {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            String sql = "UPDATE PEDIDO SET " +
+                    "ID_ENDERECO = ?," +
+                    "ID_CUPOM = ?," +
+                    "FORMA_PAGAMENTO = ?," +
+                    "STATUS_PEDIDO = ?," +
+                    "DATA_ENTREGA = ?," +
+                    "PRECO_CARRINHO = ?," +
+                    "PRECO_FRETE = ? " +
+                    "WHERE ID_PEDIDO = ?";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, pedido.getIdEndereco());
+            if (pedido.getIdCupom() != null) {
+                stmt.setInt(2, pedido.getIdCupom());
+            } else {
+                stmt.setNull(2, Types.INTEGER);
+            }
+            stmt.setString(3, pedido.getFormaPagamento().toString());
+            stmt.setString(4, pedido.getStatusPedido().toString());
+            stmt.setDate(5, Date.valueOf(pedido.getDataEntrega()));
+            stmt.setBigDecimal(6, pedido.getPrecoCarrinho());
+            stmt.setBigDecimal(7, pedido.getPrecoFrete());
+            stmt.setInt(8, id);
+
+
+            int res = stmt.executeUpdate();
+          if(res > 0){
+              return true;
+          }
+          throw new RegraDeNegocioException("Pedido não encontrado");
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        }
+        finally {
+            ConexaoBancoDeDados.closeConnection(con);
+        }
     }
 
     public boolean editarStatusPedido(Integer id, StatusPedido statusPedido) throws BancoDeDadosException {
@@ -183,18 +225,16 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
             while (res.next()) {
                 Pedido pedido = new Pedido();
-                pedido.setId(res.getInt("ID_PEDIDO"));
-                pedido.setUsuarioId(res.getInt("ID_USUARIO"));
-                pedido.setEndereco(new EnderecoRepository().buscarPorId(res.getInt("ID_ENDERECO")));
-                pedido.setCupom(new CupomRepository().buscarPorId(res.getInt("ID_CUPOM")));
+                pedido.setIdPedido(res.getInt("ID_PEDIDO"));
+                pedido.setIdUsuario(res.getInt("ID_USUARIO"));
+                pedido.setIdEndereco(res.getInt("ID_ENDERECO"));
+                pedido.setIdCupom(res.getInt("ID_CUPOM"));
                 pedido.setFormaPagamento(FormaPagamento.valueOf(res.getString("FORMA_PAGAMENTO")));
                 pedido.setStatusPedido(StatusPedido.valueOf(res.getString("STATUS_PEDIDO")));
-                pedido.setValorFrete(res.getBigDecimal("PRECO_FRETE"));
+                pedido.setPrecoFrete(res.getBigDecimal("PRECO_FRETE"));
                 pedido.setPrecoCarrinho(res.getBigDecimal("PRECO_CARRINHO"));
-                pedido.setDataDeEntrega(res.getDate("DATA_ENTREGA").toLocalDate());
-                pedido.setInicioEntrega(res.getDate("DATA_DE_PEDIDO").toLocalDate());
-                pedido.setTotal(pedido.getPrecoCarrinho().add(pedido.getValorFrete()));
-                pedido.setProdutos(this.listarProdutosDoPedido(pedido.getId()));
+                pedido.setDataEntrega(res.getDate("DATA_ENTREGA").toLocalDate());
+                pedido.setDataDePedido(res.getDate("DATA_DE_PEDIDO").toLocalDate());
                 pedidos.add(pedido);
 
             }
@@ -240,8 +280,8 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
                 produto.setCategoria(TipoCategoria.fromInt(res.getInt("tipo_categoria")));
                 produto.setTaxa(res.getDouble("taxa"));
                 produto.setUnidadeMedida(UnidadeMedida.fromString(res.getString("unidade_medida")));
-                BigDecimal quantidadePedida = res.getBigDecimal("QUANTIDADE");
-                ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho(produto, quantidadePedida);
+                Integer quantidadePedida = res.getInt("QUANTIDADE");
+                ProdutoCarrinho produtoCarrinho = new ProdutoCarrinho(produto.getIdProduto(), quantidadePedida, produto.getIdEmpresa(), produto);
                 produtos.add(produtoCarrinho);
             }
         } catch (SQLException e) {
@@ -250,5 +290,88 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
             ConexaoBancoDeDados.closeConnection(con);
         }
         return produtos;
+    }
+
+    public List<Pedido> obterPedidoPorIdUsuario(Integer idUsuario) throws BancoDeDadosException {
+        List<Pedido> pedidos = new ArrayList<>();
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            Statement stmt = con.createStatement();
+
+            String sql = "SELECT * FROM PEDIDO WHERE ID_USUARIO = ?";
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idUsuario);
+
+            ResultSet res = stm.executeQuery();
+
+            while (res.next()) {
+                Pedido pedido = new Pedido();
+                pedido.setIdPedido(res.getInt("ID_PEDIDO"));
+                pedido.setIdUsuario(res.getInt("ID_USUARIO"));
+                pedido.setIdEndereco(res.getInt("ID_ENDERECO"));
+                pedido.setIdCupom(res.getInt("ID_CUPOM"));
+                pedido.setFormaPagamento(FormaPagamento.valueOf(res.getString("FORMA_PAGAMENTO")));
+                pedido.setStatusPedido(StatusPedido.valueOf(res.getString("STATUS_PEDIDO")));
+                pedido.setPrecoFrete(res.getBigDecimal("PRECO_FRETE"));
+                pedido.setPrecoCarrinho(res.getBigDecimal("PRECO_CARRINHO"));
+                pedido.setDataEntrega(res.getDate("DATA_ENTREGA").toLocalDate());
+                pedido.setDataDePedido(res.getDate("DATA_DE_PEDIDO").toLocalDate());
+                pedido.setProdutos(this.listarProdutosDoPedido(pedido.getIdPedido()));
+                pedidos.add(pedido);
+
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return pedidos;
+    }
+
+    public Pedido buscaPorId(Integer idPedido) throws Exception {
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            Statement stmt = con.createStatement();
+
+            String sql = "SELECT * FROM PEDIDO WHERE ID_PEDIDO = ?";
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idPedido);
+
+            ResultSet res = stm.executeQuery();
+
+            if (res.next()) {
+                Pedido pedido = new Pedido();
+                pedido.setIdPedido(res.getInt("ID_PEDIDO"));
+                pedido.setIdUsuario(res.getInt("ID_USUARIO"));
+                pedido.setIdEndereco(res.getInt("ID_ENDERECO"));
+                pedido.setIdCupom(res.getInt("ID_CUPOM"));
+                pedido.setFormaPagamento(FormaPagamento.valueOf(res.getString("FORMA_PAGAMENTO")));
+                pedido.setStatusPedido(StatusPedido.valueOf(res.getString("STATUS_PEDIDO")));
+                pedido.setPrecoFrete(res.getBigDecimal("PRECO_FRETE"));
+                pedido.setPrecoCarrinho(res.getBigDecimal("PRECO_CARRINHO"));
+                pedido.setDataEntrega(res.getDate("DATA_ENTREGA").toLocalDate());
+                pedido.setDataDePedido(res.getDate("DATA_DE_PEDIDO").toLocalDate());
+                return pedido;
+            }
+            throw new RegraDeNegocioException("Pedido não encontrado");
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

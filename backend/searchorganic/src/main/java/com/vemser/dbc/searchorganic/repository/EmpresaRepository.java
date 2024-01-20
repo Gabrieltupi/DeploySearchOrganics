@@ -90,7 +90,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
     }
 
     @Override
-    public void remover(Integer id) throws BancoDeDadosException {
+    public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -104,8 +104,10 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
             int res = stmt.executeUpdate();
             if (res > 0) {
                 System.out.println("Empresa removida com sucesso");
+                return true;
             } else {
                 System.out.println("Ocorreu um erro ao remover");
+                return false;
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());

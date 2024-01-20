@@ -2,7 +2,7 @@ package com.vemser.dbc.searchorganic.repository;
 
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
-import com.vemser.dbc.searchorganic.exceptions.EnderecoNaoRemovidoException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import org.springframework.stereotype.Repository;
 
@@ -68,7 +68,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
 
 
     @Override
-    public void remover(Integer id) throws EnderecoNaoRemovidoException {
+    public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -81,13 +81,14 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
                 if (linhasAfetadas > 0) {
                     System.out.println("Endereço removido com sucesso.");
                 } else {
-                    throw new EnderecoNaoRemovidoException("Nenhum endereço removido. Verifique o ID.");
+                    throw new RegraDeNegocioException("Nenhum endereço removido. Verifique o ID.");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             ConexaoBancoDeDados.closeConnection(con);
+            return true;
         }
     }
 
