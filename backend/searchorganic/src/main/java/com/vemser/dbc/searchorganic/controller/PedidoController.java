@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,8 +34,9 @@ public class PedidoController {
     }
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<List<PedidoDTO>> obterPedidos(@PathVariable("idUsuario") Integer id) throws Exception {
-        List<PedidoDTO> pedidos = this.pedidoService.obterPedidoPorIdUsuario(id);
-        return new ResponseEntity<>(pedidos, HttpStatus.OK);
+        List<Pedido> pedidos = this.pedidoService.obterPedidoPorIdUsuario(id);
+        ArrayList<PedidoDTO>  pedidosDTO= this.pedidoService.preencherInformacoesArray(pedidos);
+        return new ResponseEntity<>(pedidosDTO, HttpStatus.OK);
     }
     @GetMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> obterPedido(@PathVariable("idPedido") Integer id) throws Exception {

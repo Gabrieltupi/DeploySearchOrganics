@@ -30,14 +30,8 @@ public class PedidoService {
         return pedidoRepository.adicionar(pedido);
     }
 
-    public List<PedidoDTO> obterPedidoPorIdUsuario(Integer idUsuario) throws Exception {
-        List<Pedido> pedidos = this.pedidoRepository.obterPedidoPorIdUsuario(idUsuario);
-        List<PedidoDTO> pedidosDTO = new ArrayList<>();
-        for(Pedido pedido: pedidos){
-            PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
-            pedidosDTO.add(pedidoDTO);
-        }
-        return pedidosDTO;
+    public List<Pedido> obterPedidoPorIdUsuario(Integer idUsuario) throws Exception {
+       return this.pedidoRepository.obterPedidoPorIdUsuario(idUsuario);
     }
 
     public Pedido obterPorId(Integer id) throws Exception {
@@ -63,6 +57,14 @@ public class PedidoService {
         pedidoDTO.setPrecoCarrinho(pedido.getPrecoCarrinho());
         pedidoDTO.setProdutos(pedidoRepository.listarProdutosDoPedido(pedido.getIdPedido()));
         return pedidoDTO;
+    }
+    public ArrayList<PedidoDTO> preencherInformacoesArray(List<Pedido> pedidos) throws Exception {
+        ArrayList<PedidoDTO> pedidosDTO = new ArrayList<>();
+        for(Pedido pedido: pedidos){
+            PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
+            pedidosDTO.add(pedidoDTO);
+        }
+        return pedidosDTO;
     }
 
     public Pedido atualizarPedido(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
