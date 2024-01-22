@@ -1,50 +1,51 @@
 package com.vemser.dbc.searchorganic.service;
+import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.repository.EmpresaRepository;
+import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
-import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCNPJ;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class EmpresaService {
     private final EmpresaRepository empresaRepository;
+    private final ProdutoRepository produtoRepository;
+
    private final ProdutoService produtoService;
-    public EmpresaService(EmpresaRepository empresaRepository, ProdutoService produtoService){
+    public EmpresaService(EmpresaRepository empresaRepository, ProdutoService produtoService,ProdutoRepository produtoRepository){
         this.empresaRepository = empresaRepository;
         this.produtoService = produtoService;
+        this.produtoRepository = produtoRepository;
     }
 
 
-    public void criarEmpresa(Empresa empresa) {
-        try {
-            if (ValidadorCNPJ.validarCNPJ(empresa.getCnpj())) {
-                Empresa novaEmpresa = new Empresa(empresa.getNomeFantasia(), empresa.getCnpj(), empresa.getRazaoSocial(),
-                        empresa.getInscricaoEstadual(), empresa.getSetor(), empresa.getIdUsuario());
-                empresaRepository.adicionar(novaEmpresa);
-            } else {
-                throw new IllegalArgumentException("CNPJ inválido. Certifique-se de inserir um CNPJ válido para criar a empresa.");
-            }
-        } catch (BancoDeDadosException bancoDeDadosException) {
-            throw new RuntimeException(bancoDeDadosException.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro ao criar empresa: " + e.getMessage());
-        }
+    public Empresa adicionarEmpresa(Empresa empresa) throws BancoDeDadosException {
+        return empresaRepository.adicionar(empresa);
     }
 
 
-    public void exibirEmpresa(int id) {
+
+    public Empresa exibirEmpresa(int id) {
         try {
             Empresa empresa = empresaRepository.buscaPorId(id);
             empresa.imprimir();
+            return empresa;
         } catch (BancoDeDadosException bancoDeDadosException) {
             throw new RuntimeException(bancoDeDadosException.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao exibir empresa: " + e.getMessage());
+            return null;
         }
     }
+
 
     public Empresa buscarEmpresa(int id) {
         try {
@@ -74,18 +75,18 @@ public class EmpresaService {
     }
 
 
-    public void atualizarEmpresa(Empresa novaEmpresa) {
-        try {
-            empresaRepository.editar(novaEmpresa.getIdEmpresa(), novaEmpresa);
-        } catch (BancoDeDadosException bdEx) {
-            throw new RuntimeException(bdEx.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
+    public Empresa atualizarEmpresa(Integer idEmpresa, UpdateEmpresaDTO novaEmpresa) {
+        Empresa empresa = buscarEmpresa(idEmpresa);
+        empresa.setIdEmpresa(novaEmpresa.getIdEmpresa());
+        empresa.setIdUsuario(novaEmpresa.getIdUsuario());
+        empresa.setProdutos(novaEmpresa.getProdutos());
+        empresa.setNomeFantasia(novaEmpresa.getNomeFantasia());
+        empresa.setInscricaoEstadual(novaEmpresa.getInscricaoEstadual());
+        empresa.setCnpj(novaEmpresa.getCnpj());
+        empresa.setSetor(novaEmpresa.getSetor());
+        empresa.setRazaoSocial(novaEmpresa.getRazaoSocial());
+        return empresa;
     }
-
-
     public void excluirEmpresa(int id) {
         try {
             empresaRepository.remover(id);
@@ -100,16 +101,25 @@ public class EmpresaService {
 
 
     // Opção 2.1 e 3.1
-    public boolean imprimirProdutosDaLoja(int id) {
+    public List<Produto> listarEImprimirProdutosDaLoja(int idLoja) {
         try {
+            List<Produto> produtos = produtoService.listarProdutosLoja(idLoja);
 
-            produtoService.listarProdutosLoja(id);
-            return true;
+            // Imprime os produtos
+            for (Produto produto : produtos) {
+                System.out.println(produto);
+            }
+
+            return produtos;
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao listar ou imprimir produtos da loja: " + e.getMessage());
+            return Collections.emptyList();
         } catch (NullPointerException e) {
-            System.out.println("Erro ao imprimir produtos da loja: " + e.getMessage());
-            return false;
+            System.out.println("Erro ao listar ou imprimir produtos da loja: " + e.getMessage());
+            return Collections.emptyList();
         }
     }
+
 
 
     // Opção 3
@@ -175,6 +185,28 @@ public class EmpresaService {
         } catch (Exception e) {
             System.out.println("Erro ao listar lojas: " + e.getMessage());
         }
+    }
+
+    public EmpresaDTO preencherInformacoes(Empresa empresa) throws Exception{
+        EmpresaDTO empresaDTO = new EmpresaDTO();
+        empresaDTO.setIdEmpresa(empresa.getIdEmpresa());
+        empresaDTO.setIdUsuario(empresa .getIdUsuario());
+        empresaDTO.setProdutos(empresa.getProdutos());
+        empresaDTO.setNomeFantasia(empresa.getNomeFantasia());
+        empresaDTO.setInscricaoEstadual(empresa.getInscricaoEstadual());
+        empresaDTO.setCnpj(empresa.getCnpj());
+        empresaDTO.setSetor(empresa.getSetor());
+        empresaDTO.setRazaoSocial(empresa.getRazaoSocial());
+        return empresaDTO;
+    }
+
+    public List<Produto> listarProdutosDaLoja(Integer idEmpresa) throws BancoDeDadosException, RegraDeNegocioException {
+        Empresa empresa = empresaRepository.buscaPorId(idEmpresa);
+
+        if (empresa != null) {
+            return produtoRepository.listarProdutosLoja(idEmpresa);
+        }
+        return List.of();
     }
 }
 
