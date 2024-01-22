@@ -47,7 +47,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
             stmt.setString(4, produto.getDescricao());
             stmt.setBigDecimal(5, produto.getPreco());
             stmt.setBigDecimal(6, produto.getQuantidade());
-            stmt.setInt(7, produto.getCategoriaOrdinalBancoDados());
+            stmt.setInt(7, produto.getCategoria().getValor());
             stmt.setDouble(8, produto.getTaxa());
             stmt.setString(9, produto.getUnidadeMedida().toString());
 
@@ -74,7 +74,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     }
 
     @Override
-    public void remover(Integer id) throws BancoDeDadosException {
+    public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -86,8 +86,10 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
                 int res = stmt.executeUpdate();
                 if (res > 0) {
                     System.out.println("Produto removido com sucesso");
+                    return true;
                 } else {
                     System.out.println("Não foi possível remover o produto. Produto não encontrado.");
+                    return false;
                 }
             }
         } catch (SQLException e) {
@@ -126,7 +128,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
             stmt.setString(2, produto.getDescricao());
             stmt.setBigDecimal(3, produto.getPreco());
             stmt.setBigDecimal(4, produto.getQuantidade());
-            stmt.setInt(5, produto.getCategoriaOrdinalBancoDados());
+            stmt.setInt(5, produto.getCategoria().getValor());
             stmt.setDouble(6, produto.getTaxa());
             stmt.setString(7, produto.getUnidadeMedida().toString());
             stmt.setInt(8, produto.getIdProduto());

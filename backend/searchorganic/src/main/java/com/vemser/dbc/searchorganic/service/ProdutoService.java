@@ -32,7 +32,7 @@ public class ProdutoService {
     public void listarProdutos() {
         try {
             List<Produto> listar = produtoRepository.listar();
-            listar.forEach(Produto::imprimir);
+
         } catch (BancoDeDadosException e) {
             System.out.println(" Erro ao listar produtos" + e.getMessage());
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class ProdutoService {
             Produto produto = produtoRepository.buscarProdutoPorId(id);
             if (produto != null) {
                 System.out.println("Produto encontrado:");
-                produto.imprimir();
+
                 System.out.println("-----------------");
             } else {
                 System.out.println("Produto com ID " + id + " não encontrado");
@@ -84,7 +84,7 @@ public class ProdutoService {
         try {
             List<Produto> produtos = produtoRepository.listarProdutosPorCategoria(categoria);
             produtos.forEach(produto -> {
-                produto.imprimir();
+
                 System.out.println("-----------------");
             });
         } catch (BancoDeDadosException e) {

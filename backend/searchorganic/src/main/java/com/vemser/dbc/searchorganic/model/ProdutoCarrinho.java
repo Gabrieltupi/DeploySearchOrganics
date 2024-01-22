@@ -1,32 +1,28 @@
 package com.vemser.dbc.searchorganic.model;
 
-import java.math.BigDecimal;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class ProdutoCarrinho{
+    private Integer idProduto;
+    private Integer quantidade;
+    private Integer idEmpresa;
     private Produto produto;
-    private BigDecimal quantidadePedida= new BigDecimal(0);
-    public ProdutoCarrinho(Produto produto, BigDecimal quantidadePedida){
-        this.produto = produto;
-        this.quantidadePedida = quantidadePedida;
+
+    public ProdutoCarrinho(Integer idProduto, Integer quantidade, Integer idEmpresa) {
+        this.idProduto = idProduto;
+        this.quantidade = quantidade;
+        this.idEmpresa = idEmpresa;
     }
 
-    public ProdutoCarrinho() {
-
-    }
-
-    public BigDecimal getQuantidadePedida() {
-        return quantidadePedida;
-    }
-
-    public void setQuantidadePedida(BigDecimal quantidadePedida) {
-        this.quantidadePedida = quantidadePedida;
-    }
-
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
+    public ProdutoCarrinho(Integer idProduto, Integer quantidade, Integer idEmpresa, Produto produto) {
+        this.idProduto = idProduto;
+        this.quantidade = quantidade;
+        this.idEmpresa = idEmpresa;
         this.produto = produto;
     }
 }
+
+

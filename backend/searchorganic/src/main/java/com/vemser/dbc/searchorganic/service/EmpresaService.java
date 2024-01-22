@@ -128,7 +128,7 @@ public class EmpresaService {
             ArrayList<Empresa> empresas = (ArrayList<Empresa>) empresaRepository.listar();
             for (Empresa empresa : empresas) {
                 for (Produto produto : empresa.getProdutos()) {
-                    if (produto.getCategoriaT().equals(categoria)) {
+                    if (produto.getCategoria().equals(categoria)) {
                         System.out.println("id da loja: " + empresa.getIdUsuario() + " Nome: " + produto.getNome() + " Preço: " + produto.getPreco());
                         System.out.println("-------------------------------------------------------------");
                     }
@@ -149,8 +149,8 @@ public class EmpresaService {
             Empresa empresa = empresaRepository.buscaPorId(id);
             for (Produto produto : produtoService.buscarProdutos()) {
                 if (produto.getIdEmpresa() == empresa.getIdEmpresa()) {
-                    System.out.println(produto.getCategoriaT());
-                    if (produto.getCategoriaT().ordinal() == categoria) {
+                    System.out.println(produto.getCategoria().getNome());
+                    if (produto.getCategoria().getValor() == categoria) {
                         System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " Quantidade: " + produto.getQuantidade());
                         System.out.println("-------------------------------------------------------------");
                     }

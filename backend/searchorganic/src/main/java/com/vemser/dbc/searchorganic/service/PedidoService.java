@@ -1,5 +1,9 @@
 package com.vemser.dbc.searchorganic.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Pedido;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
@@ -10,67 +14,69 @@ import java.util.List;
 
 @Service
 public class PedidoService {
-    private PedidoRepository pedidoRepository = new PedidoRepository();
+    private final PedidoRepository pedidoRepository;
+    private final ObjectMapper objectMapper;
+    private final EnderecoService enderecoService;
+    private final CupomService cupomService;
 
-    public boolean adicionar(Pedido pedido) {
-        try {
-            if (pedido != null) {
-                pedidoRepository.adicionar(pedido);
-                return true;
-            }
-        } catch (BancoDeDadosException e) {
-            throw new RuntimeException(e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro ao adicionar pedido" + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-        return false;
+    public PedidoService(PedidoRepository pedidoRepository, ObjectMapper objectMapper, EnderecoService enderecoService, CupomService cupomService){
+        this.pedidoRepository = pedidoRepository;
+        this.objectMapper = objectMapper;
+        this.enderecoService = enderecoService;
+        this.cupomService = cupomService;
     }
 
-    public List<Pedido> listar() {
-        try {
-            for (Pedido pedido : pedidoRepository.listar()) {
-                    pedido.imprimir();
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao obter endereços: " + e.getMessage());
-            return new ArrayList<>();
-        }
-        return new ArrayList<>();
+    public Pedido adicionar(Pedido pedido) throws Exception {
+        return pedidoRepository.adicionar(pedido);
     }
 
-    public List<Pedido> listarPorId(int id) {
-        try {
-            for (Pedido pedido : pedidoRepository.listar()) {
-                if(id == pedido.getUsuarioId()) {
-                    pedido.imprimir();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao obter endereços: " + e.getMessage());
-            return new ArrayList<>();
-        }
-        return new ArrayList<>();
+    public List<Pedido> obterPedidoPorIdUsuario(Integer idUsuario) throws Exception {
+       return this.pedidoRepository.obterPedidoPorIdUsuario(idUsuario);
     }
 
-    public void editarStatusPedido(int id, StatusPedido statusPedido){
-        try {
-            pedidoRepository.editarStatusPedido(id, statusPedido);
-        } catch (Exception e) {
-            System.out.println("Erro ao obter endereços: " + e.getMessage());
-        }
+    public Pedido obterPorId(Integer id) throws Exception {
+        return pedidoRepository.buscaPorId(id);
     }
 
-    public void excluir(int idPedido) {
-        try {
+    public void excluir(int idPedido) throws Exception {
             pedidoRepository.remover(idPedido);
-            System.out.println("Pedido do ID " + idPedido + " foi excluído!!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao excluir pedido: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro inesperado ao excluir pedido: " + e.getMessage());
+    }
+    public PedidoDTO preencherInformacoes(Pedido pedido) throws Exception {
+        PedidoDTO pedidoDTO = new PedidoDTO();
+        pedidoDTO.setIdPedido(pedido.getIdPedido());
+        pedidoDTO.setIdUsuario(pedido.getIdUsuario());
+        pedidoDTO.setFormaPagamento(pedido.getFormaPagamento());
+        pedidoDTO.setTotal(pedido.getPrecoCarrinho().add(pedido.getPrecoFrete()));
+        pedidoDTO.setStatusPedido(pedido.getStatusPedido());
+        pedidoDTO.setDataDePedido(pedido.getDataDePedido());
+        pedidoDTO.setDataEntrega(pedido.getDataEntrega());
+        pedidoDTO.setEndereco(enderecoService.getEndereco(pedido.getIdEndereco()));
+        pedidoDTO.setProdutos(pedido.getProdutos());
+        pedidoDTO.setCupom(cupomService.buscarCupomPorId(pedido.getIdCupom()));
+        pedidoDTO.setPrecoFrete(pedido.getPrecoFrete());
+        pedidoDTO.setPrecoCarrinho(pedido.getPrecoCarrinho());
+        pedidoDTO.setProdutos(pedidoRepository.listarProdutosDoPedido(pedido.getIdPedido()));
+        return pedidoDTO;
+    }
+    public ArrayList<PedidoDTO> preencherInformacoesArray(List<Pedido> pedidos) throws Exception {
+        ArrayList<PedidoDTO> pedidosDTO = new ArrayList<>();
+        for(Pedido pedido: pedidos){
+            PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
+            pedidosDTO.add(pedidoDTO);
         }
+        return pedidosDTO;
     }
 
+    public Pedido atualizarPedido(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
+        Pedido pedidoEntity = obterPorId(id);
+        enderecoService.getEndereco(pedidoAtualizar.getIdEndereco());
+        pedidoEntity.setIdEndereco(pedidoEntity.getIdEndereco());
+        pedidoEntity.setFormaPagamento(pedidoAtualizar.getFormaPagamento());
+        pedidoEntity.setDataEntrega(pedidoAtualizar.getDataEntrega());
+        pedidoEntity.setStatusPedido(pedidoAtualizar.getStatusPedido());
+        pedidoEntity.setPrecoFrete(pedidoAtualizar.getPrecoFrete());
+        pedidoEntity.setTipoEntrega(pedidoAtualizar.getTipoEntrega());
+        pedidoRepository.editar(pedidoEntity.getIdPedido(), pedidoEntity);
+        return pedidoEntity;
+    }
 }
