@@ -93,20 +93,9 @@ public class ProdutoService {
         }
     }
 
-    public void listarProdutosLoja(int idLoja) {
-        try {
-            List<Produto> produtos = produtoRepository.listarProdutosLoja(idLoja);
-            produtos.forEach(produto -> {
-                System.out.println("Nome: " + produto.getNome() + " Preço: " + produto.getPreco() + " quantidade: " + produto.getQuantidade());
-                System.out.println("Descrição: " + produto.getDescricao());
-                System.out.println();
-            });
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao listar produtos da loja: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public List<Produto> listarProdutosLoja(int idLoja) throws BancoDeDadosException {
+        return produtoRepository.listarProdutosLoja(idLoja);
     }
-
     public List<Produto> buscarProdutos() {
         try {
             return produtoRepository.listar();
@@ -126,4 +115,11 @@ public class ProdutoService {
             e.printStackTrace();
         }
     }
+
+
+
+
+
 }
+
+
