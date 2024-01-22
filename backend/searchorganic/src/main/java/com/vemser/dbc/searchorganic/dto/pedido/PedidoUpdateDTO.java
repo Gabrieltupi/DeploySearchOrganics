@@ -9,6 +9,7 @@ import com.vemser.dbc.searchorganic.utils.validadores.TipoEntrega;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,31 +21,17 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PedidoUpdateDTO {
-    @NotBlank
     @NotNull
     private Integer idEndereco;
-    @NotBlank
-    @NotNull
-    private Integer idCupom;
-    @NotBlank
     @NotNull
     private FormaPagamento formaPagamento;
-    @NotBlank
     @NotNull
     private StatusPedido statusPedido;
-    @NotBlank
     @NotNull
-    private Boolean entregue;
-    @NotBlank
-    @NotNull
-    private LocalDate dataDeEntrega;
-    @NotBlank
-    @NotNull
-    private LocalDate inicioEntrega;
-    @NotBlank
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dataEntrega;
     @NotNull
     private TipoEntrega tipoEntrega;
-    @NotBlank
     @NotNull
-    private ArrayList<ProdutoCarrinho> produtos;
+    private BigDecimal precoFrete;
 }

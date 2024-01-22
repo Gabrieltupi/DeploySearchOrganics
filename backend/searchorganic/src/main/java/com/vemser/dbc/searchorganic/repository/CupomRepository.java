@@ -66,7 +66,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     }
 
     @Override
-    public void remover(Integer id) throws BancoDeDadosException {
+    public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -80,8 +80,10 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
 
                 if (res > 0) {
                     System.out.println("Cupom removido com sucesso");
+                    return true;
                 } else {
                     System.out.println("Cupom não encontrado ou já inativo");
+                    return false;
                 }
             }
         } catch (SQLException e) {

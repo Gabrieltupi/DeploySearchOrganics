@@ -54,7 +54,7 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-    @PutMapping("{/idUsuario}")
+    @PutMapping("/{idUsuario}")
     public  ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id, @Valid @RequestBody UsuarioUpdateDTO usuarioAtualizar) throws Exception {
         Usuario usuarioEntity  = objectMapper.convertValue(usuarioAtualizar, Usuario.class);
         usuarioEntity = this.usuarioService.editarUsuario(id, usuarioEntity);

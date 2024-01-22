@@ -2,12 +2,13 @@ package com.vemser.dbc.searchorganic.controller;
 
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.service.EnderecoService;
-import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,8 @@ public class EnderecoController {
     }
 
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<Endereco> listarEnderecoPorIdDeUsuario(@Valid @PathVariable("idUsuario") Integer idUsuario) {
-        return new ResponseEntity<>(enderecoService.getEndereco(idUsuario), HttpStatus.OK);
+    public ResponseEntity<Endereco> listarEnderecoPorIdDeUsuario(@Valid @PathVariable("idUsuario") Integer idUsuario) throws Exception {
+        return new ResponseEntity<>(enderecoService.getEnderecoUsuario(idUsuario), HttpStatus.OK);
     }
 
     @DeleteMapping("/{idUsuario}")
