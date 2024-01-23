@@ -1,30 +1,39 @@
 package com.vemser.dbc.searchorganic.service;
 
+import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CupomService {
     CupomRepository repository = new CupomRepository();
 
-    public void adicionarCupom(Cupom cupom) {
+    public void adicionarCupom(Integer idEmpresa,Cupom cupom) {
         try {
+            cupom.setIdEmpresa(idEmpresa);
             repository.adicionar(cupom);
         } catch (Exception e) {
             System.out.println("Erro ao adicionar cupom: " + e.getMessage());
         }
     }
 
-    public void listarCupons() {
+    public List<Cupom> listarCupons() {
+        List<Cupom> cupons = new ArrayList<>();
         try {
             for (Cupom cupom : repository.listar()) {
                 cupom.imprimir();
+                cupons.add(cupom);
             }
         } catch (Exception e) {
             System.out.println("Erro ao listar cupons: " + e.getMessage());
         }
+        return cupons;
     }
+
 
     public void imprimirCuponsDisponiveis() {
         try {
@@ -79,6 +88,13 @@ public class CupomService {
             e.printStackTrace();
         }
     }
+    public List<Cupom> listarCupomPorEmpresa(int idEmpresa) throws BancoDeDadosException {
+        return repository.listarCupomPorEmpresa(idEmpresa);
+    }
+
+
+
+
 
 
 }

@@ -1,12 +1,15 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
+import com.vemser.dbc.searchorganic.service.CupomService;
 import com.vemser.dbc.searchorganic.service.EmpresaService;
 import com.vemser.dbc.searchorganic.service.ProdutoService;
 import com.vemser.dbc.searchorganic.service.UsuarioService;
@@ -26,12 +29,14 @@ public class EmpresaController {
     private final EmpresaService empresaService;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
+    private final CupomService cupomService;
     private final ProdutoService produtoService;
 
-    public EmpresaController(EmpresaService empresaService, UsuarioService usuarioService, ObjectMapper objectMapper, ProdutoService produtoService){
+    public EmpresaController(EmpresaService empresaService, UsuarioService usuarioService, ObjectMapper objectMapper, CupomService cupomService, ProdutoService produtoService){
         this.empresaService = empresaService;
         this.usuarioService = usuarioService;
         this.objectMapper = objectMapper;
+        this.cupomService = cupomService;
         this.produtoService = produtoService;
     }
 
@@ -71,4 +76,49 @@ public class EmpresaController {
             List<Produto> produtos = empresaService.listarProdutosDaLoja(idLoja);
             return new ResponseEntity<>(produtos, HttpStatus.OK);
     }
+
+    @GetMapping("/{idEmpresa}/cupom")
+    public ResponseEntity<List<Cupom>> listarCupomDaLoja(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
+        List<Cupom> cupoms = cupomService.listarCupomPorEmpresa(idEmpresa);
+        return new ResponseEntity<>(cupoms, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/{idEmpresa}/cupom")
+    public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa,
+                                               @RequestBody Cupom cupom) {
+        cupomService.adicionarCupom(idEmpresa, cupom);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{idEmpresa}/cupons")
+    public ResponseEntity<List<Cupom>> listarCuponsDaEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) {
+        try {
+            List<Cupom> cupons = cupomService.listarCupomPorEmpresa(idEmpresa);
+            return new ResponseEntity<>(cupons, HttpStatus.OK);
+        } catch (BancoDeDadosException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/cupom/{idCupom}")
+    public ResponseEntity<Void> removerCupom(@PathVariable("idCupom") Integer idCupom) {
+        cupomService.removerCupom(idCupom);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/cupom/{idCupom}")
+    public ResponseEntity<Void> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
+                                               @RequestBody Cupom cupom) {
+        cupomService.atualizarCupom(idCupom, cupom);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/cupom")
+    public ResponseEntity<List<Cupom>> listarCupom() throws Exception {
+        List<Cupom> cupoms = cupomService.listarCupons();
+        return new ResponseEntity<>(cupoms, HttpStatus.OK);
+    }
+
+
 }
