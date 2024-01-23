@@ -1,20 +1,21 @@
-package com.vemser.dbc.searchorganic.enderecoDTO;
+package com.vemser.dbc.searchorganic.dto.endereco;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class EnderecoDTO {
+    private Integer id;
+    private Integer idUsuario;
     private String logradouro;
     private String numero;
     private String complemento;
+    private String cep;
     private String cidade;
     private String estado;
-    private String cep;
-    private String bairros;
-
+    private String pais;
+    private String regiao;
 }
