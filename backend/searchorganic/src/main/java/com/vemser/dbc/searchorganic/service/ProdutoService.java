@@ -6,10 +6,12 @@ import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Produto;
+import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -102,9 +104,18 @@ public class ProdutoService {
     }
 
 
-
-
-
+    public String getMensagemProdutoEmail(ArrayList<ProdutoCarrinho> produtos) {
+        StringBuilder mensagemFinal = new StringBuilder();
+        for(ProdutoCarrinho produtoCarrinho : produtos){
+            String mensagemProduto = String.format("""
+                Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
+                """, produtoCarrinho.getProduto().getNome(),
+                    produtoCarrinho.getQuantidade(),
+                    produtoCarrinho.getProduto().getPreco());
+            mensagemFinal.append(mensagemProduto);
+        }
+        return mensagemFinal.toString();
+    }
 }
 
 

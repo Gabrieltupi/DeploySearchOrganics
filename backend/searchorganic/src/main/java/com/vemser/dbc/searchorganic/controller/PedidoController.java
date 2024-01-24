@@ -1,18 +1,10 @@
 package com.vemser.dbc.searchorganic.controller;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
 import com.vemser.dbc.searchorganic.model.Pedido;
-import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.PedidoService;
-import com.vemser.dbc.searchorganic.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/pedido")
 public class PedidoController {
     private final PedidoService pedidoService;
-    private final UsuarioService usuarioService;
-    private final ObjectMapper objectMapper;
-    public PedidoController(PedidoService pedidoService, ObjectMapper objectMapper, UsuarioService usuarioService){
-        this.pedidoService = pedidoService;
-        this.objectMapper = objectMapper;
-        this.usuarioService = usuarioService;
-    }
+
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<List<PedidoDTO>> obterPedidos(@PathVariable("idUsuario") Integer id) throws Exception {
         List<Pedido> pedidos = this.pedidoService.obterPedidoPorIdUsuario(id);
@@ -47,12 +34,7 @@ public class PedidoController {
 
     @PostMapping("/{idUsuario}")
     public ResponseEntity<PedidoDTO> criarPedido(@PathVariable("idUsuario") Integer id, @Valid @RequestBody PedidoCreateDTO pedidoCreateDTO) throws Exception {
-        usuarioService.obterUsuarioPorId(id);
-        Pedido pedidoEntity = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
-        pedidoEntity.setIdUsuario(id);
-        pedidoEntity = this.pedidoService.adicionar(pedidoEntity);
-
-        PedidoDTO pedidoDTO = this.pedidoService.preencherInformacoes(pedidoEntity);
+        PedidoDTO pedidoDTO = this.pedidoService.adicionar(id, pedidoCreateDTO);
         return new ResponseEntity<>(pedidoDTO, HttpStatus.CREATED);
     }
 
