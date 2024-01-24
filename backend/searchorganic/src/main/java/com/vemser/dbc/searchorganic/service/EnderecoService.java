@@ -3,18 +3,17 @@ import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.repository.EnderecoRepository;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EnderecoService {
 
-    private EnderecoRepository enderecoRepository = new EnderecoRepository();
-
-    public EnderecoService() {
-    }
+    private final EnderecoRepository enderecoRepository;
 
     public List<Endereco> getEnderecos() {
         try {

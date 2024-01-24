@@ -3,14 +3,16 @@ package com.vemser.dbc.searchorganic.service;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CupomService {
-    CupomRepository repository = new CupomRepository();
+    private final CupomRepository repository;
 
     public void adicionarCupom(Integer idEmpresa,Cupom cupom) {
         try {

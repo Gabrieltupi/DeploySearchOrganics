@@ -3,13 +3,16 @@ package com.vemser.dbc.searchorganic.repository;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_EMPRESA.nextval mysequence from DUAL";
@@ -28,7 +31,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
     public Empresa adicionar(Empresa empresa) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sqlVerificarUsuario = "SELECT ATIVO FROM USUARIO WHERE ID_USUARIO = ?";
             PreparedStatement pstd = con.prepareStatement(sqlVerificarUsuario);
@@ -93,7 +96,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
     public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM EMPRESA WHERE id_empresa = ?";
 
@@ -127,7 +130,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
     public boolean editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE EMPRESA SET " +
                     " NOMEFANTASIA = ?," +
@@ -171,7 +174,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
         List<Empresa> empresas = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM EMPRESA";
@@ -206,7 +209,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
     public Empresa buscaPorId(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM EMPRESA WHERE id_empresa = ?";
 
             try (PreparedStatement pstd = con.prepareStatement(sql)) {

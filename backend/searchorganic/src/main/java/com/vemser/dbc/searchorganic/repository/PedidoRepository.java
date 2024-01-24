@@ -10,6 +10,7 @@ import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -18,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
-
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_PEDIDO.nextval mysequence from DUAL";
@@ -38,7 +40,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     public Pedido adicionar(Pedido pedido) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
 
             pedido.setIdPedido(proximoId);
@@ -85,7 +87,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-           ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 
@@ -93,7 +95,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE PEDIDO SET STATUS_PEDIDO = 'CANCELADO' WHERE ID_PEDIDO = ?";
 
@@ -146,7 +148,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     public boolean editar(Integer id, Pedido pedido) throws Exception {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "UPDATE PEDIDO SET " +
                     "ID_ENDERECO = ?," +
                     "ID_CUPOM = ?," +
@@ -182,7 +184,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
             throw new BancoDeDadosException(e.getCause());
         }
         finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 
@@ -190,7 +192,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         Connection con = null;
         System.out.println("Status atualizado com sucesso!");
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "UPDATE PEDIDO SET STATUS_PEDIDO = ? WHERE ID_PEDIDO = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setString(1, statusPedido.toString());
@@ -209,7 +211,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 
@@ -218,7 +220,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         List<Pedido> pedidos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM PEDIDO";
@@ -258,7 +260,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         ArrayList<ProdutoCarrinho> produtos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT PROD.*, PEXP.QUANTIDADE FROM PRODUTO PROD " +
@@ -289,7 +291,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
         return produtos;
     }
@@ -298,7 +300,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
         List<Pedido> pedidos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM PEDIDO WHERE ID_USUARIO = ?";
@@ -340,7 +342,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     public Pedido buscaPorId(Integer idPedido) throws Exception {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM PEDIDO WHERE ID_PEDIDO = ?";
