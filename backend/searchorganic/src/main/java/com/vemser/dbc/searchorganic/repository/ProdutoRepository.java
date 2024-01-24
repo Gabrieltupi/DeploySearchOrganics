@@ -7,12 +7,14 @@ import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
+@RequiredArgsConstructor
 public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
-
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
     @Override
     public Integer getProximoId(Connection con) throws SQLException {
         String sql = "SELECT SEQ_PRODUTO.nextval mysequence from DUAL";
@@ -31,7 +33,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     public Produto adicionar(Produto produto) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             Integer proximoId = this.getProximoId(con);
             produto.setIdProduto(proximoId);
@@ -77,7 +79,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "DELETE FROM PRODUTO WHERE id_produto = ?";
 
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -110,7 +112,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     public boolean editar(Integer id, Produto produto) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE PRODUTO SET " +
                     " nome = ?," +
@@ -157,7 +159,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         List<Produto> produtos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM PRODUTO";
@@ -194,7 +196,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     public Produto buscarProdutoPorId(int id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM PRODUTO WHERE ID_PRODUTO = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);
@@ -232,7 +234,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         List<Produto> produtos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM PRODUTO WHERE TIPO_CATEGORIA = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, categoria);
@@ -270,7 +272,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         List<Produto> produtos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM PRODUTO WHERE ID_EMPRESA = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, idLoja);

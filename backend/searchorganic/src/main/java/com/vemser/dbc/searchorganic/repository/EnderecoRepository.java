@@ -4,6 +4,7 @@ package com.vemser.dbc.searchorganic.repository;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Endereco;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -14,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
-
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_ENDERECO.NEXTVAL FROM DUAL";
@@ -34,7 +36,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
     public Endereco adicionar(Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Integer proximoId = getProximoId(con);
 
             String sql = "INSERT INTO ENDERECO (id_endereco, logradouro, numero, complemento, cep, cidade, estado, pais, regiao, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -62,7 +64,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 
@@ -71,7 +73,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
     public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "DELETE FROM ENDERECO WHERE id_endereco = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setInt(1, id);
@@ -87,7 +89,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
             return true;
         }
     }
@@ -98,7 +100,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         Connection con = null;
         System.out.println("Endereço atualizado com sucesso!");
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "UPDATE ENDERECO SET logradouro = ?, numero = ?, complemento = ?, cep = ?, cidade = ?, estado = ?, pais = ?, regiao = ? WHERE id_endereco = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setString(1, endereco.getLogradouro());
@@ -124,7 +126,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 
@@ -134,7 +136,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
 
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM ENDERECO";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 try (ResultSet rs = pstd.executeQuery()) {
@@ -158,7 +160,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
 
         return enderecos;
@@ -167,7 +169,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
     public Endereco buscarPorId(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM ENDERECO WHERE id_endereco = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setInt(1, id);
@@ -195,14 +197,14 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 
     public Endereco buscarPorUsuarioId(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM ENDERECO WHERE id_usuario = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setInt(1, id);
@@ -230,14 +232,14 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 
     public Boolean verificaUsuarioTemEndereco(Integer usuarioId) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT id_usuario FROM ENDERECO WHERE id_usuario = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
                 pstd.setInt(1, usuarioId);
@@ -252,7 +254,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            ConexaoBancoDeDados.closeConnection(con);
+            conexaoBancoDeDados.closeConnection(con);
         }
     }
 }

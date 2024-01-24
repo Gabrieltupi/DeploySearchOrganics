@@ -2,11 +2,13 @@ package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CupomService {
-    CupomRepository repository = new CupomRepository();
+    private final CupomRepository repository;
 
     public void adicionarCupom(Cupom cupom) {
         try {

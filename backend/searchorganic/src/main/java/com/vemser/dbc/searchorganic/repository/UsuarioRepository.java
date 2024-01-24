@@ -6,6 +6,7 @@ import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.EnderecoService;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -13,8 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
-
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
+    private final   EnderecoService enderecoServicos;
     @Override
     public Integer getProximoId(Connection con) throws SQLException {
         String sql = "SELECT SEQ_USUARIO.nextval mysequence from DUAL";
@@ -31,7 +34,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
     public Usuario buscaPorLogin(String login) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM Usuario WHERE LOGIN = ?";
 
@@ -74,7 +77,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
     public Usuario adicionar(Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             Integer proximoId = this.getProximoId(con);
             usuario.setIdUsuario(proximoId);
@@ -118,10 +121,10 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
 
     @Override
     public Boolean remover(Integer id) throws BancoDeDadosException {
-        EnderecoService enderecoServicos = new EnderecoService();
+
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             enderecoServicos.excluirEndereco(id);
 
             String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
@@ -155,7 +158,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
     public boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE Usuario SET " +
                     "LOGIN = ?, " +
@@ -206,7 +209,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
         List<Usuario> usuarios = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM Usuario";
@@ -244,7 +247,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
     public Usuario buscaPorId(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM Usuario WHERE ID_USUARIO = ?";
 

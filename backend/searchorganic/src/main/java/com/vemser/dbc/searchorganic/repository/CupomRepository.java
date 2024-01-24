@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.repository;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Cupom;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -8,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
@@ -30,7 +33,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     public Cupom adicionar(Cupom cupom) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             Integer proximoId = this.getProximoId(con);
             cupom.setCupomId(proximoId);
@@ -69,7 +72,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE CUPOM SET ativo = 'N' WHERE id_cupom = ?";
 
@@ -104,7 +107,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     public boolean editar(Integer id, Cupom cupom) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE CUPOM SET \n");
@@ -170,7 +173,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
         List<Cupom> cupoms = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM CUPOM";
@@ -204,7 +207,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     public Cupom buscarPorId(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM CUPOM WHERE ID_CUPOM = ?";
