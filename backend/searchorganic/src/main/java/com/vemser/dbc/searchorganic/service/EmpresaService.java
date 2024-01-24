@@ -19,6 +19,7 @@ public class EmpresaService {
     private final EmpresaRepository empresaRepository;
     private final ProdutoRepository produtoRepository;
 
+
    private final ProdutoService produtoService;
     public EmpresaService(EmpresaRepository empresaRepository, ProdutoService produtoService,ProdutoRepository produtoRepository){
         this.empresaRepository = empresaRepository;
@@ -208,5 +209,7 @@ public class EmpresaService {
         }
         return List.of();
     }
+
+
 }
 
