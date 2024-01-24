@@ -191,7 +191,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         return produtos;
     }
 
-    public Produto buscarProdutoPorId(int id) throws BancoDeDadosException {
+    public Produto buscarProdutoPorId(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();

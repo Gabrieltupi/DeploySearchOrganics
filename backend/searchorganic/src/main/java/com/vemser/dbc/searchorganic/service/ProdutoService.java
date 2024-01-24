@@ -1,5 +1,9 @@
 package com.vemser.dbc.searchorganic.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
@@ -10,35 +14,39 @@ import java.util.List;
 
 @Service
 public class ProdutoService {
-    private ProdutoRepository produtoRepository;
+    private final ProdutoRepository produtoRepository;
+    private final ObjectMapper objectMapper;
 
-    public ProdutoService(ProdutoRepository produtoRepository) {
+    public ProdutoService(ProdutoRepository produtoRepository, ObjectMapper objectMapper) {
         this.produtoRepository = produtoRepository;
+        this.objectMapper = objectMapper;
     }
 
-    public void adicionarProduto(Produto produto) {
-        try {
-            produtoRepository.adicionar(produto);
-            System.out.println("Produto adicionado com sucesso!");
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao adicionar produto: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("ERRO: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public ProdutoDTO adicionarProduto(ProdutoCreateDTO produto) throws BancoDeDadosException {
+
+        Produto produtoEntity= objectMapper.convertValue(produto, Produto.class);
+        produtoEntity=produtoRepository.adicionar(produtoEntity);
+        ProdutoDTO produtoDto = objectMapper.convertValue(produtoEntity, ProdutoDTO.class);
+
+        return produtoDto;
+
     }
 
-    public void listarProdutos() {
-        try {
-            List<Produto> listar = produtoRepository.listar();
+    public List<ProdutoDTO> list() throws BancoDeDadosException {
 
-        } catch (BancoDeDadosException e) {
-            System.out.println(" Erro ao listar produtos" + e.getMessage());
-            e.printStackTrace();
-        }
+        List<Produto> produtos = produtoRepository.listar();
+        return objectMapper.convertValue(produtos, new TypeReference<List<ProdutoDTO>>() {});
     }
 
+    public void deleterProduto(Integer idEndereco) throws BancoDeDadosException {
+        produtoRepository.remover(idEndereco);
+    }
+
+
+    public static ProdutoDTO buscarProdutoPorId(Integer id) throws BancoDeDadosException {
+        Produto produto = produtoRepository.buscarProdutoPorId(id);
+        return produto;
+    }
 
     public void atualizarProduto(int id, Produto produtos) {
         try {
@@ -50,35 +58,12 @@ public class ProdutoService {
         }
     }
 
-    public void deletarProduto(Integer id) {
-        try {
-            produtoRepository.remover(id);
-            System.out.println("Produto removido com sucesso");
-        } catch (BancoDeDadosException e) {
-            System.err.println("Erro ao deletar produto: " + e.getMessage());
-        }
-    }
 
 
 
 
-    public Produto buscarProdutoPorId(int id) {
-        try {
-            Produto produto = produtoRepository.buscarProdutoPorId(id);
-            if (produto != null) {
-                System.out.println("Produto encontrado:");
 
-                System.out.println("-----------------");
-            } else {
-                System.out.println("Produto com ID " + id + " não encontrado");
-            }
-            return produto;
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao buscar produto por ID: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
+
 
     public void listarProdutosPorCategoria(int categoria) {
         try {
