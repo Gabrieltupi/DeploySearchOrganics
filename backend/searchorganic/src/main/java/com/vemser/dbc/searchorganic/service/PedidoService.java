@@ -1,37 +1,81 @@
 package com.vemser.dbc.searchorganic.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
-import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Pedido;
+import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
-import com.vemser.dbc.searchorganic.utils.StatusPedido;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final ObjectMapper objectMapper;
     private final EnderecoService enderecoService;
     private final CupomService cupomService;
+    private final UsuarioService usuarioService;
+    private final EmailService emailService;
+    private final ProdutoService produtoService;
 
-    public PedidoService(PedidoRepository pedidoRepository, ObjectMapper objectMapper, EnderecoService enderecoService, CupomService cupomService){
-        this.pedidoRepository = pedidoRepository;
-        this.objectMapper = objectMapper;
-        this.enderecoService = enderecoService;
-        this.cupomService = cupomService;
+    public PedidoDTO adicionar(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
+        Usuario usuario = usuarioService.obterUsuarioPorId(id);
+        Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
+        pedido.setIdUsuario(id);
+        pedido = pedidoRepository.adicionar(pedido);
+        PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
+
+        this.emailPedidoCriado(pedidoDTO, usuario);
+
+        return pedidoDTO;
     }
 
-    public Pedido adicionar(Pedido pedido) throws Exception {
-        return pedidoRepository.adicionar(pedido);
+    private void emailPedidoCriado(PedidoDTO pedidoDTO, Usuario usuario) throws Exception {
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataEntrega = formato.format(pedidoDTO.getDataEntrega());
+        String dataPedido = formato.format(pedidoDTO.getDataDePedido());
+        String endereco = enderecoService.getMensagemEnderecoEmail(pedidoDTO.getEndereco());
+        String produtos = produtoService.getMensagemProdutoEmail(pedidoDTO.getProdutos());
+        String mensagem = String.format("""
+                <span style="display: block; font-size: 16px; font-weight: bold;">Pedido Realizado</span>
+                <section style="color: #ffffff;">
+                    <p style="color: #ffffff;">Olá %s, seu pedido foi realizado com sucesso,</p>
+                    <p style="color: #ffffff;">O Status atual do seu pedido é %s,</p>
+                    <p style="color: #ffffff;">Abaixo seguem detalhes do seu pedido:</p>
+                    <p style="color: #ffffff;">Pedido N°: %d,</p>
+                    <p style="color: #ffffff;">Total: %s,</p>
+                    <p style="color: #ffffff;">Forma de pagamento: %s,</p>
+                    <p style="color: #ffffff;">Data do pedido: %s,</p>
+                    <p style="color: #ffffff;">Data da entrega: %s,</p>
+                    <p style="color: #ffffff;">Produtos: <br> %s </p>
+                    <p style="color: #ffffff;">Endereço: <br> %s </p>
+                </section>
+                """,
+                usuario.getNome(),
+                pedidoDTO.getStatusPedido().toString(),
+                pedidoDTO.getIdPedido(),
+                pedidoDTO.getTotal(),
+                pedidoDTO.getFormaPagamento().toString(),
+                dataPedido,
+                dataEntrega,
+                produtos,
+                endereco
+        );
+        String assunto = "Pedido realizado";
+        String destinatario = usuario.getEmail();
+        this.emailService.sendEmail(mensagem, assunto, destinatario);
     }
+
 
     public List<Pedido> obterPedidoPorIdUsuario(Integer idUsuario) throws Exception {
-       return this.pedidoRepository.obterPedidoPorIdUsuario(idUsuario);
+        return this.pedidoRepository.obterPedidoPorIdUsuario(idUsuario);
     }
 
     public Pedido obterPorId(Integer id) throws Exception {
@@ -39,8 +83,9 @@ public class PedidoService {
     }
 
     public void excluir(int idPedido) throws Exception {
-            pedidoRepository.remover(idPedido);
+        pedidoRepository.remover(idPedido);
     }
+
     public PedidoDTO preencherInformacoes(Pedido pedido) throws Exception {
         PedidoDTO pedidoDTO = new PedidoDTO();
         pedidoDTO.setIdPedido(pedido.getIdPedido());
@@ -58,9 +103,10 @@ public class PedidoService {
         pedidoDTO.setProdutos(pedidoRepository.listarProdutosDoPedido(pedido.getIdPedido()));
         return pedidoDTO;
     }
+
     public ArrayList<PedidoDTO> preencherInformacoesArray(List<Pedido> pedidos) throws Exception {
         ArrayList<PedidoDTO> pedidosDTO = new ArrayList<>();
-        for(Pedido pedido: pedidos){
+        for (Pedido pedido : pedidos) {
             PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
             pedidosDTO.add(pedidoDTO);
         }

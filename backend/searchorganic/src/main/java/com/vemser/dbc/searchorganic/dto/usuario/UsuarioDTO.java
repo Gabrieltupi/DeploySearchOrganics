@@ -16,5 +16,6 @@ public class UsuarioDTO {
     private String sobrenome ;
     private LocalDate dataNascimento;
     private String login;
-    private TipoAtivo tipoAtivo = TipoAtivo.S;
+    private String email;
+    private TipoAtivo tipoAtivo;
 }

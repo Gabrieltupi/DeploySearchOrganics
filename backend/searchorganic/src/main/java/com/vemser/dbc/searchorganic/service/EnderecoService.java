@@ -130,4 +130,25 @@ public class EnderecoService {
     public Endereco getEndereco(Integer id) throws Exception {
             return enderecoRepository.buscarPorId(id);
     }
+
+    public String getMensagemEnderecoEmail(Endereco endereco) {
+        String mensagem = String.format("""
+                        Logradouro: %s  <br>
+                        Número: %s       <br>
+                        Complemento: %s   <br>
+                        CEP: %s           <br>
+                        Cidade: %s        <br>
+                        Estado: %s        <br>
+                        País: %s           <br>
+                        """,
+                endereco.getLogradouro(),
+                endereco.getNumero(),
+                endereco.getComplemento(),
+                endereco.getCep(),
+                endereco.getCidade(),
+                endereco.getEstado(),
+                endereco.getPais()
+        );
+        return mensagem;
+    }
 }
