@@ -28,12 +28,16 @@ public class EmailService {
 
     private final freemarker.template.Configuration fmConfiguration;
 
+    // Endereço de email remetente obtido do application.properties
     @Value("${spring.mail.username}")
     private String from;
+
+    // Endereço de email destinatário
     private String to;
 
     private final JavaMailSender emailSender;
 
+    // Método para enviar mensagem simples
     public void sendSimpleMessage() {
         SimpleMailMessage message = new SimpleMailMessage();
 
@@ -41,16 +45,17 @@ public class EmailService {
         message.setTo(to);
         message.setSubject("Assunto TESTE");
         message.setText("Meu e-mail!");
+
         emailSender.send(message);
     }
 
+    // Método para enviar mensagem com anexo
     public void sendWithAttachment() throws Exception {
         MimeMessage message = emailSender.createMimeMessage();
 
         MimeMessageHelper mimeMessageHelper = null;
         try {
-            mimeMessageHelper = new MimeMessageHelper(message,
-                    true);
+            mimeMessageHelper = new MimeMessageHelper(message, true);
         } catch (MessagingException e) {
             throw new Exception(e.getMessage());
         }
@@ -60,30 +65,28 @@ public class EmailService {
         mimeMessageHelper.setSubject("Assunto 1");
         mimeMessageHelper.setText("Meu e-mail!");
 
-//        File file = new File("static/imagem.jpg");
-//        FileSystemResource fileSr
-//                = new FileSystemResource(file);
-//        mimeMessageHelper.addAttachment(file.getName(), fileSr);
-
+        // Anexo de arquivo
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("static/imagem.jpg").getFile());
         FileSystemResource fileRs = new FileSystemResource(file);
         mimeMessageHelper.addAttachment(file.getName(), fileRs);
 
         System.out.println("File: " + file.getPath());
-
         emailSender.send(message);
     }
 
+    // Método para enviar email com base em um template FreeMarker
+   
+
     @Async
-    public void sendEmail( Map<String, Object> dados, String assunto) throws Exception {
+    public void sendEmail(Map<String, Object> dados, String assunto, String destinatario) throws Exception {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setTo(destinatario);
             mimeMessageHelper.setSubject(assunto);
-            mimeMessageHelper.setText(geContentFromTemplate(dados), true);
+            mimeMessageHelper.setText(getContentFromTemplate(dados), true);
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
             e.printStackTrace();
@@ -91,7 +94,8 @@ public class EmailService {
         }
     }
 
-    public String geContentFromTemplate(  Map<String, Object> dados) throws IOException, TemplateException {
+    // Método para obter o conteúdo de um template
+    public String getContentFromTemplate(Map<String, Object> dados) throws IOException, TemplateException {
         Template template = fmConfiguration.getTemplate("email-template.ftl");
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
         return html;
@@ -99,11 +103,20 @@ public class EmailService {
 
     @Async
     public void sendEmail(String mensagem, String assunto, String destinatario) throws Exception {
-        this.to = destinatario;
-        Map<String, Object> dados = new HashMap<>();
-        dados.put("mensagem", mensagem);
-        dados.put("email", from);
-        sendEmail(dados, assunto);
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(destinatario);
+            mimeMessageHelper.setSubject(assunto);
+            mimeMessageHelper.setText(mensagem, true);
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new Exception(e.getMessage());
+        }
     }
+
+
 
 }

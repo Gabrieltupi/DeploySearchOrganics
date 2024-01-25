@@ -4,41 +4,80 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>DBC Company</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Circular', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #1c58f8 50%, #ffffff 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background 0.5s ease-in-out;
+        }
+
+        .container {
+            width: 600px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            color: #000000; /* Alterado para cor preta */
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .content {
+            padding: 20px;
+            color: #333333;
+        }
+
+        .footer {
+            background-color: #1c58f8;
+            padding: 10px;
+            text-align: center;
+            color: #ffffff;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        a {
+            color: #1c58f8;
+            text-decoration: none;
+        }
+
+        body:hover {
+            background: linear-gradient(to right, #ffffff 50%, #1c58f8 50%);
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Circular:wght@300&display=swap">
 </head>
 
 <body>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td align="center" valign="top" bgcolor="#1c58f8" style="background-color: #285d56;">
-            <br> <br>
-            <table width="600" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td align="center" valign="top" bgcolor="#285d56"
-                        style="background-color: #285d56; font-family: Arial, Helvetica, sans-serif; color: #ffffff; padding: 0px 15px 10px 15px;">
-
-
-                    <div style="color: #ffffff;">
-                            <section style="font-size: 14px">
-                                ${mensagem}
-                            </section>
-
-                            <section style="font-size: 12px">
-                                <p style="color: #ffffff">Qualquer dúvida é só contatar o suporte pelo e-mail <a
-                                            style="color: #ffffff; text-decoration: none;"
-                                            href="mailto:${email}">${email}</a></p>
-                            </section>
-
-                            <section>
-                                <p style="color: #ffffff">Att, Sistema.</p>
-                            </section>
-
-                        </div>
-                    </td>
-                </tr>
-            </table> <br> <br>
-        </td>
-    </tr>
-</table>
+    <div class="container">
+        <div class="header">
+            <h1 style="font-family: 'Circular', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #000000;">DBC Company</h1>
+        </div>
+        <div class="content">
+            <div style="font-size: 14px;">
+                ${mensagem}
+            </div>
+            <div style="font-size: 12px; color: #333333;">
+                <p>Qualquer dúvida é só contatar o suporte pelo e-mail <a href="mailto:${email}">${email}</a></p>
+            </div>
+            <div>
+                <p style="color: #333333;">Att, Sistema.</p>
+            </div>
+        </div>
+        <div class="footer">
+            © 2024 DBC Company. Todos os direitos reservados.
+        </div>
+    </div>
 </body>
 
 </html>
