@@ -94,9 +94,21 @@ public class CupomService {
         return repository.listarCupomPorEmpresa(idEmpresa);
     }
 
-
-
-
+    public Cupom getCupomByNameAndEmpresa(String nomeCupom, int idEmpresa) {
+        try {
+            return repository.getCupomByNameAndEmpresa(nomeCupom, idEmpresa);
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao buscar cupom por nome e empresa: " + e.getMessage());
+            return null;
+        }
+    }
 
 
 }
+
+
+
+
+
+
+

@@ -277,5 +277,41 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
         return cupoms;
     }
 
+    public Cupom getCupomByNameAndEmpresa(String nomeCupom, int idEmpresa) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            String sql = "SELECT * FROM CUPOM WHERE NOME_CUPOM = ? AND ID_EMPRESA = ?";
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setString(1, nomeCupom);
+                stmt.setInt(2, idEmpresa);
+                ResultSet res = stmt.executeQuery();
+
+                if (res.next()) {
+                    Cupom cupom = new Cupom();
+                    cupom.setCupomId(res.getInt("ID_CUPOM"));
+                    cupom.setNomeCupom(res.getString("NOME_CUPOM"));
+                    cupom.setAtivo(res.getString("ATIVO"));
+                    cupom.setDescricao(res.getString("DESCRICAO"));
+                    cupom.setTaxaDeDesconto(res.getBigDecimal("TAXA_DESCONTO"));
+                    cupom.setIdEmpresa(res.getInt("ID_EMPRESA"));
+                    return cupom;
+                }
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
 
 }
