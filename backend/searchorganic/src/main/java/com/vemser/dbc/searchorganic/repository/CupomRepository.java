@@ -15,7 +15,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
-            String sql = "SELECT SEQ_CUPOM.nextval mysequence from DUAL;";
+            String sql = "SELECT SEQ_CUPOM.nextval mysequence from DUAL";
             Statement stmt = connection.createStatement();
             ResultSet res = stmt.executeQuery(sql);
 
