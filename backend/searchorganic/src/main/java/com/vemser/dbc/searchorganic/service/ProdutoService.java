@@ -45,12 +45,6 @@ public class ProdutoService {
         return null;
     }
 
-
-
-
-
-
-
     public List<ProdutoDTO> list() throws BancoDeDadosException {
 
         List<Produto> produtos = produtoRepository.listar();

@@ -1,4 +1,5 @@
 package com.vemser.dbc.searchorganic.controller;
+import com.vemser.dbc.searchorganic.controller.documentacao.IPedidoController;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
@@ -16,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/pedido")
-public class PedidoController {
+public class PedidoController implements IPedidoController {
     private final PedidoService pedidoService;
 
     @GetMapping("/usuario/{idUsuario}")

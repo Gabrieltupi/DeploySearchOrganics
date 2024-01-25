@@ -32,11 +32,6 @@ import java.util.List;
 public class ProdutoController implements IProdutoController {
     private final ProdutoService produtoService;
     private final ImgurService imgurService;
-//    private PropertiesReader propertiesReader;
-
-
-
-
 
     @PostMapping //post localhost:8080/produto
     public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto ) throws Exception {

@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.controller.documentacao.IUsuarioController;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuario")
-public class UsuarioController {
+public class UsuarioController implements IUsuarioController {
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 

@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.controller.documentacao.ICupomController;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.service.CupomService;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/cupom")
 @RestController
-public class CupomController {
+public class CupomController implements ICupomController {
     private final CupomService cupomService;
     private final ObjectMapper objectMapper;
 
