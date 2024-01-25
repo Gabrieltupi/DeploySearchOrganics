@@ -68,7 +68,10 @@
                 ${mensagem}
             </div>
             <div style="font-size: 12px; color: #333333;">
-                <p>Qualquer dúvida é só contatar o suporte pelo e-mail <a href="mailto:${email}">${email}</a></p>
+                <p>Qualquer dúvida é só contatar o suporte pelo e-mail suportesearchorganic@gmail.com</p>
+                <br>
+                <a href="mailto:${email}">${email}</a>
+
             </div>
             <div>
                 <p style="color: #333333;">Att, Sistema.</p>
