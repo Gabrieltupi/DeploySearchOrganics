@@ -109,7 +109,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
 
 
     @Override
-    public boolean editar(Integer id, Produto produto) throws BancoDeDadosException {
+    public Boolean editar(Integer id, Produto produto) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -230,7 +230,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         }
     }
 
-    public List<Produto> listarProdutosPorCategoria(int categoria) throws BancoDeDadosException {
+    public List<Produto> listarProdutosPorCategoria(Integer categoria) throws BancoDeDadosException {
         List<Produto> produtos = new ArrayList<>();
         Connection con = null;
         try {
@@ -268,7 +268,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         return produtos;
     }
 
-    public List<Produto> listarProdutosLoja(int idLoja) throws BancoDeDadosException {
+    public List<Produto> listarProdutosLoja(Integer idLoja) throws BancoDeDadosException {
         List<Produto> produtos = new ArrayList<>();
         Connection con = null;
         try {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProdutoService {
@@ -26,18 +28,43 @@ public class ProdutoService {
 
     public ProdutoDTO adicionarProduto(ProdutoCreateDTO produto) throws BancoDeDadosException {
 
-        Produto produtoEntity= objectMapper.convertValue(produto, Produto.class);
-        produtoEntity=produtoRepository.adicionar(produtoEntity);
+        Produto produtoEntity = objectMapper.convertValue(produto, Produto.class);
+        produtoEntity = produtoRepository.adicionar(produtoEntity);
         ProdutoDTO produtoDto = objectMapper.convertValue(produtoEntity, ProdutoDTO.class);
 
         return produtoDto;
 
     }
+    public ProdutoDTO atualizarProduto(Integer id, ProdutoCreateDTO produtos) throws BancoDeDadosException {
+        Optional<Integer> optionalId = Optional.ofNullable(id);
+
+        if (optionalId.isPresent()) {
+            Integer idProduto = optionalId.get();
+
+            Produto produtoEntity = objectMapper.convertValue(produtos, Produto.class);
+            boolean editadoComSucesso = produtoRepository.editar(id, produtoEntity);
+
+            if (editadoComSucesso) {
+                Produto produtoAtualizado = produtoRepository.buscarProdutoPorId(id);
+                ProdutoDTO produtoDto = objectMapper.convertValue(produtoAtualizado, ProdutoDTO.class);
+                return produtoDto;
+
+        } else {
+            // Lida com a situação em que o id é nulo
+            throw new IllegalArgumentException("O ID fornecido é nulo");
+        }
+    }
+        return null;
+    }
+
+
+
 
     public List<ProdutoDTO> list() throws BancoDeDadosException {
 
         List<Produto> produtos = produtoRepository.listar();
-        return objectMapper.convertValue(produtos, new TypeReference<List<ProdutoDTO>>() {});
+        return objectMapper.convertValue(produtos, new TypeReference<List<ProdutoDTO>>() {
+        });
     }
 
     public void deleterProduto(Integer idEndereco) throws BancoDeDadosException {
@@ -45,45 +72,36 @@ public class ProdutoService {
     }
 
 
-    public static ProdutoDTO buscarProdutoPorId(Integer id) throws BancoDeDadosException {
+    public Produto buscarProdutoPorId(Integer id) throws BancoDeDadosException {
         Produto produto = produtoRepository.buscarProdutoPorId(id);
         return produto;
     }
 
-    public void atualizarProduto(int id, Produto produtos) {
-        try {
-            produtoRepository.editar(id, produtos);
-            System.out.println("Produto atualizado");
-        } catch (SQLException e) {
-            System.out.println("Erro ao atualizar produto: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public Produto listarProdutosPorCategoria(Integer categoria) throws BancoDeDadosException {
+        List<Produto> produtos = produtoRepository.listarProdutosPorCategoria(categoria);
+        return null;
     }
 
 
-
-
-
-
-
-
-    public void listarProdutosPorCategoria(int categoria) {
-        try {
-            List<Produto> produtos = produtoRepository.listarProdutosPorCategoria(categoria);
-            produtos.forEach(produto -> {
-
-                System.out.println("-----------------");
-            });
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao listar produtos por categoria: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    public List<Produto> listarProdutosLoja(int idLoja) throws BancoDeDadosException {
+    public List<Produto> listarProdutosLoja(Integer idLoja) throws BancoDeDadosException {
         return produtoRepository.listarProdutosLoja(idLoja);
     }
-    public List<Produto> buscarProdutos() {
+
+    public String getMensagemProdutoEmail(ArrayList<ProdutoCarrinho> produtos) {
+        StringBuilder mensagemFinal = new StringBuilder();
+        for(ProdutoCarrinho produtoCarrinho : produtos){
+            String mensagemProduto = String.format("""
+                Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
+                """, produtoCarrinho.getProduto().getNome(),
+                    produtoCarrinho.getQuantidade(),
+                    produtoCarrinho.getProduto().getPreco());
+            mensagemFinal.append(mensagemProduto);
+        }
+        return mensagemFinal.toString();
+    }
+
+
+        public List<Produto> buscarProdutos() {
         try {
             return produtoRepository.listar();
         } catch (BancoDeDadosException e) {
@@ -103,19 +121,7 @@ public class ProdutoService {
         }
     }
 
-
-    public String getMensagemProdutoEmail(ArrayList<ProdutoCarrinho> produtos) {
-        StringBuilder mensagemFinal = new StringBuilder();
-        for(ProdutoCarrinho produtoCarrinho : produtos){
-            String mensagemProduto = String.format("""
-                Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
-                """, produtoCarrinho.getProduto().getNome(),
-                    produtoCarrinho.getQuantidade(),
-                    produtoCarrinho.getProduto().getPreco());
-            mensagemFinal.append(mensagemProduto);
-        }
-        return mensagemFinal.toString();
-    }
 }
+
 
 

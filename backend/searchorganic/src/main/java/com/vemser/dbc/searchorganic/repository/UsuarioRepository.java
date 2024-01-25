@@ -155,7 +155,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
 
 
     @Override
-    public boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {
+    public Boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();

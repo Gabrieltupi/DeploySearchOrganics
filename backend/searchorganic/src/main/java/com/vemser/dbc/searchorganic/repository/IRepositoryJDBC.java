@@ -12,7 +12,7 @@ public interface IRepositoryJDBC<ARGUMENTO, OBJETO> {
 
     Boolean remover(ARGUMENTO id) throws  BancoDeDadosException;
 
-    boolean editar(ARGUMENTO id, OBJETO objeto) throws Exception;
+    Boolean editar(ARGUMENTO id, OBJETO objeto) throws Exception;
 
     List<OBJETO> listar() throws BancoDeDadosException;
 }

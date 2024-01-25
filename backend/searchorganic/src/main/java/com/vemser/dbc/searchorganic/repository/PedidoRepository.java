@@ -145,7 +145,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
 
     @Override
-    public boolean editar(Integer id, Pedido pedido) throws Exception {
+    public Boolean editar(Integer id, Pedido pedido) throws Exception {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
