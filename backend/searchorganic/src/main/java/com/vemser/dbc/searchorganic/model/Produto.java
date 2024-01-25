@@ -23,6 +23,7 @@ public class Produto   {
     private TipoCategoria categoria;
     private double taxa;
     private UnidadeMedida unidadeMedida;
+    private String urlImagem;
 }
 
 

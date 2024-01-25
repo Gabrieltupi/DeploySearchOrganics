@@ -9,7 +9,9 @@ import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,17 +19,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final ObjectMapper objectMapper;
 
-    public ProdutoService(ProdutoRepository produtoRepository, ObjectMapper objectMapper) {
-        this.produtoRepository = produtoRepository;
-        this.objectMapper = objectMapper;
-    }
 
-    public ProdutoDTO adicionarProduto(ProdutoCreateDTO produto) throws BancoDeDadosException {
-
+    public ProdutoDTO adicionarProduto(ProdutoCreateDTO produto) throws Exception {
         Produto produtoEntity = objectMapper.convertValue(produto, Produto.class);
         produtoEntity = produtoRepository.adicionar(produtoEntity);
         ProdutoDTO produtoDto = objectMapper.convertValue(produtoEntity, ProdutoDTO.class);

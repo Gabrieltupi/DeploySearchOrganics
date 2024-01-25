@@ -2,38 +2,49 @@ package com.vemser.dbc.searchorganic.controller;
 
 
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.produto.Imagem;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
+import com.vemser.dbc.searchorganic.service.ImgurService;
 import com.vemser.dbc.searchorganic.service.ProdutoService;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/produto")
+@RequiredArgsConstructor
 public class ProdutoController {
     private final ProdutoService produtoService;
+    private final ImgurService imgurService;
 //    private PropertiesReader propertiesReader;
 
-    public ProdutoController(ProdutoService produtoService) {
-        this.produtoService = produtoService;
-    }
+
 
 
 
     @PostMapping //post localhost:8080/produto
-    public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto) throws Exception {
+    public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto ) throws Exception {
         ProdutoDTO produtoCriado= produtoService.adicionarProduto(produto);
 
         return new ResponseEntity<>( produtoCriado, HttpStatus.OK);
+    }
+
+    @PostMapping("/imagem")
+    public ResponseEntity<Imagem> uploadImagem(@RequestPart("imagem") MultipartFile imagem) throws Exception {
+        Imagem imagemEntity = imgurService.uploadImage(imagem);
+
+        return new ResponseEntity<>( imagemEntity, HttpStatus.OK);
     }
 
 
