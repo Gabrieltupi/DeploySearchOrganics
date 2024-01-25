@@ -102,7 +102,7 @@ public class EmpresaService {
 
 
     // Opção 2.1 e 3.1
-    public List<Produto> listarEImprimirProdutosDaLoja(int idLoja) {
+    public List<Produto> listarEImprimirProdutosDaLoja(int idLoja) throws RegraDeNegocioException {
         try {
             List<Produto> produtos = produtoService.listarProdutosLoja(idLoja);
 

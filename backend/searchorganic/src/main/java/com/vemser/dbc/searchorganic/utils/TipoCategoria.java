@@ -17,7 +17,7 @@ public enum TipoCategoria {
     }
 
     public Integer getValor() {
-        return valor;
+        return valor+1;
     }
 
     public static TipoCategoria fromInt(Integer valor) {
