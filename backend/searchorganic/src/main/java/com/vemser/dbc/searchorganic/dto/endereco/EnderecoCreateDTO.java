@@ -1,19 +1,15 @@
 package com.vemser.dbc.searchorganic.dto.endereco;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class EnderecoCreateDTO {
-    @NotBlank
-    @Pattern(regexp = "^[0-9]+$", message = "deve conter apenas números")
+    @NotNull
     private Integer idUsuario;
 
     @NotBlank
@@ -30,8 +26,7 @@ public class EnderecoCreateDTO {
     private String complemento;
 
     @NotBlank
-    @Size(min = 8, max = 8)
-    @Pattern(regexp = "^[0-9]+$", message = "deve conter apenas números")
+    @Size(min = 9, max = 9)
     private String cep;
 
     @NotBlank
@@ -45,8 +40,4 @@ public class EnderecoCreateDTO {
     @NotBlank
     @Size(min = 1, max = 50)
     private String pais;
-
-    @NotBlank
-    @Size(min = 1, max = 50)
-    private String regiao;
 }

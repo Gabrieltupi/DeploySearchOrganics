@@ -1,14 +1,11 @@
 package com.vemser.dbc.searchorganic.dto.endereco;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class EnderecoDTO {
-    private Integer id;
+    private Integer idEndereco;
     private Integer idUsuario;
     private String logradouro;
     private String numero;

@@ -1,133 +1,132 @@
 package com.vemser.dbc.searchorganic.service;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.repository.EnderecoRepository;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EnderecoService {
-
     private final EnderecoRepository enderecoRepository;
+    private final UsuarioService usuarioService;
+    private final ObjectMapper objectMapper;
 
-    public List<Endereco> getEnderecos() {
+    public EnderecoDTO buscarEndereco(Integer idEndereco) throws Exception {
+        log.info("[Endereço] Buscando");
         try {
-            return enderecoRepository.listar();
+            Endereco endereco = enderecoRepository.buscarPorId(idEndereco);
+            return objectMapper.convertValue(endereco, EnderecoDTO.class);
         } catch (Exception e) {
-            System.out.println("Erro ao obter endereços: " + e.getMessage());
-            System.out.println();
-            return new ArrayList<>();
+            throw new RegraDeNegocioException("Erro ao buscar endereço: " + e.getMessage());
         }
     }
 
-    public Endereco adicionarEndereco(Endereco endereco) {
+    public List<EnderecoDTO> listarEnderecos() throws Exception {
+        log.info("[Endereço] Listando");
         try {
-            if (endereco != null && ValidadorCEP.isCepValido(endereco.getCep()) != null) {
-             return enderecoRepository.adicionar(endereco);
+            List<Endereco> listaEnderecos = enderecoRepository.listar();
+            return objectMapper.convertValue(listaEnderecos, objectMapper.getTypeFactory().constructCollectionType(List.class, EnderecoDTO.class));
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Erro ao listar endereços: " + e.getMessage());
+        }
+    }
+
+    public EnderecoDTO adicionarEndereco(EnderecoCreateDTO enderecoDTO) throws Exception {
+        log.info("[Endereço] Adicionando");
+        try {
+            String regiao = ValidadorCEP.isCepValido(enderecoDTO.getCep());
+            if (regiao != null) {
+                usuarioService.obterUsuarioPorId(enderecoDTO.getIdUsuario());
+
+                Endereco enderecoEntity = objectMapper.convertValue(enderecoDTO, Endereco.class);
+                enderecoEntity.setRegiao(regiao);
+                Endereco enderecoAdicionado = enderecoRepository.adicionar(enderecoEntity);
+                return objectMapper.convertValue(enderecoAdicionado, EnderecoDTO.class);
             }
-          throw new IllegalArgumentException("CEP inválido!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao adicionar endereço: " + e.getMessage());
-        } catch (BancoDeDadosException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RegraDeNegocioException("Erro ao adicionar endereço: CEP Inválido");
+        } catch (RegraDeNegocioException e) {
+            throw new RegraDeNegocioException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro inesperado ao adicionar endereço: " + e.getMessage());
-
+            throw new RegraDeNegocioException("Erro ao adicionar endereço: " + e.getMessage());
         }
-        return endereco;
     }
 
-    public boolean atualizarEndereco(Integer id, Endereco novoEndereco) {
+    public EnderecoDTO editarEndereco(Integer idEndereco, EnderecoUpdateDTO enderecoDTO) throws Exception {
+        log.info("[Endereço] Editando");
         try {
-            boolean enderecoAtualizado = enderecoRepository.editar(id, novoEndereco);
+            String regiao = ValidadorCEP.isCepValido(enderecoDTO.getCep());
+            if (regiao != null) {
+                buscarEndereco(idEndereco);
+                usuarioService.obterUsuarioPorId(enderecoDTO.getIdUsuario());
 
-            if (enderecoAtualizado) {
-                System.out.println("Endereço atualizado com sucesso!");
-                return true;
-            } else {
-                System.out.println("ID não encontrado.");
-                return false;
+                Endereco enderecoEntity = objectMapper.convertValue(enderecoDTO, Endereco.class);
+                enderecoEntity.setRegiao(regiao);
+                boolean sucesso = enderecoRepository.editar(idEndereco, enderecoEntity);
+
+                if (sucesso) {
+                    enderecoEntity.setIdEndereco(idEndereco);
+                    return objectMapper.convertValue(enderecoEntity, EnderecoDTO.class);
+                }
+                throw new RegraDeNegocioException("Erro ao atualizar endereço: falha no registro");
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao atualizar endereço: " + e.getMessage());
-            throw e;
+            throw new RegraDeNegocioException("Erro ao atualizar endereço: CEP Inválido");
+        } catch (RegraDeNegocioException e) {
+            throw new RegraDeNegocioException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro ao atualizar endereço: " + e.getMessage());
-            throw new RuntimeException(e);
+            throw new RegraDeNegocioException("Erro ao atualizar endereço: " + e.getMessage());
         }
     }
 
-
-
-
-    public void imprimirEnderecos() {
+    public void removerEndereco(Integer idEndereco) throws Exception {
+        log.info("[Endereço] Removendo");
         try {
-            List<Endereco> enderecos = enderecoRepository.listar();
-            for (Endereco endereco : enderecos) {
-                System.out.println("Endereço:");
-                System.out.println(endereco);
-                System.out.println("-------------------------------------------------------------");
-            }
+            buscarEndereco(idEndereco);
+            enderecoRepository.remover(idEndereco);
+        } catch (RegraDeNegocioException e) {
+            throw new RegraDeNegocioException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro ao imprimir endereços: " + e.getMessage());
+            throw new RegraDeNegocioException("Erro ao remover endereço: " + e.getMessage());
         }
     }
 
-    public boolean imprimirEndereco(int id) {
+    public List<EnderecoDTO> listarEnderecosPorUsuario(@PathVariable("idUsuario") Integer idUsuario) throws Exception {
+        log.info("[Endereço] Listando por usuário");
         try {
-            Endereco endereco = enderecoRepository.buscarPorId(id);
-            if (endereco != null) {
-                System.out.println("Endereço do ID " + id);
-                System.out.println(endereco);
-                return true;
-            }
-            throw new IllegalArgumentException("ID não encontrado!!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao imprimir endereço: " + e.getMessage());
-            return false;
+            usuarioService.obterUsuarioPorId(idUsuario);
+            List<Endereco> listaEnderecos = enderecoRepository.listarPorUsuario(idUsuario);
+            return objectMapper.convertValue(listaEnderecos, objectMapper.getTypeFactory().constructCollectionType(List.class, EnderecoDTO.class));
+        } catch (RegraDeNegocioException e) {
+            throw new RegraDeNegocioException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro inesperado ao imprimir endereço: " + e.getMessage());
-            return false;
+            throw new RegraDeNegocioException("Erro ao listar endereços: " + e.getMessage());
         }
     }
 
-    public Endereco excluirEndereco(int idUsuario) {
+    public void removerEnderecosPorUsuario(@PathVariable("idUsuario") Integer idUsuario) throws Exception {
+        log.info("[Endereço] Removendo");
         try {
-            Endereco endereco =  enderecoRepository.buscarPorUsuarioId(idUsuario);
-            if (endereco != null) {
-                enderecoRepository.remover(endereco.getId());
-                return endereco;
-            }
-            throw new IllegalArgumentException("ID não encontrado.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao excluir endereço: " + e.getMessage());
-            return null;
+            usuarioService.obterUsuarioPorId(idUsuario);
+            enderecoRepository.removerPorUsuario(idUsuario);
+        } catch (RegraDeNegocioException e) {
+            throw new RegraDeNegocioException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro inesperado ao excluir endereço: " + e.getMessage());
-            return null;
+            throw new RegraDeNegocioException("Erro ao remover endereços: " + e.getMessage());
         }
-    }
-    public boolean verificaSeUsuarioPossuiEndereco (Integer idUsuario) {
-        try {
-            return     enderecoRepository.verificaUsuarioTemEndereco(idUsuario);
-        } catch (BancoDeDadosException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public Endereco getEnderecoUsuario(Integer idUsuario){
-        try {
-            return enderecoRepository.buscarPorUsuarioId(idUsuario);
-        } catch (BancoDeDadosException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-    public Endereco getEndereco(Integer id) throws Exception {
-            return enderecoRepository.buscarPorId(id);
     }
 
     public String getMensagemEnderecoEmail(Endereco endereco) {

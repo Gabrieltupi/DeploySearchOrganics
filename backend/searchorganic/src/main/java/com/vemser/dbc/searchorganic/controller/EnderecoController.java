@@ -1,8 +1,12 @@
 package com.vemser.dbc.searchorganic.controller;
 
-import com.vemser.dbc.searchorganic.model.Endereco;
+import com.vemser.dbc.searchorganic.controller.interfaces.IEnderecoController;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
 import com.vemser.dbc.searchorganic.service.EnderecoService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,41 +17,41 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/endereco")
+@RequiredArgsConstructor
 @Validated
-public class EnderecoController {
-
+public class EnderecoController implements IEnderecoController {
     private final EnderecoService enderecoService;
 
-    public EnderecoController(EnderecoService enderecoService) {
-        this.enderecoService = enderecoService;
+    @GetMapping("/{idEndereco}")
+    public ResponseEntity<EnderecoDTO> buscarEndereco(@Valid @PathVariable("idEndereco") Integer idEndereco) throws Exception {
+        return new ResponseEntity<>(enderecoService.buscarEndereco(idEndereco), HttpStatus.OK);
     }
 
-    @GetMapping // GET /endereco
-    public ResponseEntity<List<Endereco>> listaDeEnderecos() {
-        return new ResponseEntity<>(enderecoService.getEnderecos(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{idUsuario}")
-    public ResponseEntity<Endereco> listarEnderecoPorIdDeUsuario(@Valid @PathVariable("idUsuario") Integer idUsuario) throws Exception {
-        return new ResponseEntity<>(enderecoService.getEnderecoUsuario(idUsuario), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{idUsuario}")
-    public ResponseEntity<Void> excluirEnderecosPorIdUsuario(@PathVariable("idUsuario") Integer idUsuario) {
-        enderecoService.excluirEndereco(idUsuario);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Boolean> atualizarEndereco(@PathVariable("id") Integer id,
-                                                      @Valid @RequestBody Endereco novoEndereco) {
-        return new ResponseEntity<>(enderecoService.atualizarEndereco(id, novoEndereco), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<List<EnderecoDTO>> listarEnderecos() throws Exception {
+        return new ResponseEntity<>(enderecoService.listarEnderecos(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Endereco> adicionarEndereco(@Valid @RequestBody Endereco endereco) {
-        Endereco enderecoAdicionado = enderecoService.adicionarEndereco(endereco);
+    public ResponseEntity<EnderecoDTO> adicionarEndereco(@Valid @RequestBody EnderecoCreateDTO endereco) throws Exception {
+        EnderecoDTO enderecoAdicionado = enderecoService.adicionarEndereco(endereco);
         return new ResponseEntity<>(enderecoAdicionado, HttpStatus.OK);
+    }
+
+    @PutMapping("/{idEndereco}")
+    public ResponseEntity<EnderecoDTO> editarEndereco(@PathVariable("idEndereco") Integer idEndereco, @Valid @RequestBody EnderecoUpdateDTO endereco) throws Exception {
+        return new ResponseEntity<>(enderecoService.editarEndereco(idEndereco, endereco), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{idEndereco}")
+    public ResponseEntity<Void> c(@PathVariable("idEndereco") Integer idEndereco) throws Exception {
+        enderecoService.removerEndereco(idEndereco);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<EnderecoDTO>> listarEnderecosPorUsuario(@PathVariable("idUsuario") Integer idUsuario) throws Exception {
+        return new ResponseEntity<>(enderecoService.listarEnderecosPorUsuario(idUsuario), HttpStatus.OK);
     }
 }
 

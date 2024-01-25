@@ -2,7 +2,6 @@ package com.vemser.dbc.searchorganic.repository;
 
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
-import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
+
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_ENDERECO.NEXTVAL FROM DUAL";
@@ -28,13 +28,84 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
                 return res.getInt(1);
             }
         }
-
         return null;
+    }
+
+    public Endereco buscarPorId(Integer idEndereco) throws Exception {
+        Connection con = null;
+
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            String sql = "SELECT * FROM ENDERECO WHERE id_endereco = ?";
+            try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                pstd.setInt(1, idEndereco);
+
+                try (ResultSet rs = pstd.executeQuery()) {
+                    if (rs.next()) {
+                        Endereco endereco = new Endereco(
+                                rs.getString("logradouro"),
+                                rs.getString("numero"),
+                                rs.getString("complemento"),
+                                rs.getString("cep"),
+                                rs.getString("cidade"),
+                                rs.getString("estado"),
+                                rs.getString("pais"),
+                                rs.getInt("id_usuario")
+                        );
+                        endereco.setIdEndereco(rs.getInt("id_endereco"));
+                        endereco.setRegiao(rs.getString("regiao"));
+                        endereco.setIdUsuario(rs.getInt("id_usuario"));
+                        return endereco;
+                    }
+                }
+            }
+            throw new Exception("ID " + idEndereco + " não encontrado.");
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            conexaoBancoDeDados.closeConnection(con);
+        }
+    }
+
+    @Override
+    public List<Endereco> listar() throws BancoDeDadosException {
+        List<Endereco> enderecos = new ArrayList<>();
+        Connection con = null;
+
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            String sql = "SELECT * FROM ENDERECO";
+            try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                try (ResultSet rs = pstd.executeQuery()) {
+                    while (rs.next()) {
+                        Endereco endereco = new Endereco(
+                                rs.getString("logradouro"),
+                                rs.getString("numero"),
+                                rs.getString("complemento"),
+                                rs.getString("cep"),
+                                rs.getString("cidade"),
+                                rs.getString("estado"),
+                                rs.getString("pais")
+                        );
+                        endereco.setIdEndereco(rs.getInt("id_endereco"));
+                        endereco.setRegiao(rs.getString("regiao"));
+                        endereco.setIdUsuario(rs.getInt("id_usuario"));
+                        enderecos.add(endereco);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            conexaoBancoDeDados.closeConnection(con);
+        }
+        return enderecos;
     }
 
     @Override
     public Endereco adicionar(Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
+
         try {
             con = conexaoBancoDeDados.getConnection();
             Integer proximoId = getProximoId(con);
@@ -54,11 +125,12 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
                 int linhasAfetadas = pstd.executeUpdate();
 
                 if (linhasAfetadas > 0) {
-                    System.out.println("Endereço inserido com sucesso!");
-                    endereco.setId(proximoId);
+                    endereco.setIdEndereco(proximoId);
                 } else {
-                    System.out.println("Falha ao inserir endereço.");
+                    throw new Exception("Endereço não adicionado.");
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
             return endereco;
         } catch (SQLException e) {
@@ -68,37 +140,10 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         }
     }
 
-
     @Override
-    public Boolean remover(Integer id) throws BancoDeDadosException {
+    public Boolean editar(Integer idEndereco, Endereco endereco) throws Exception {
         Connection con = null;
-        try {
-            con = conexaoBancoDeDados.getConnection();
-            String sql = "DELETE FROM ENDERECO WHERE id_endereco = ?";
-            try (PreparedStatement pstd = con.prepareStatement(sql)) {
-                pstd.setInt(1, id);
 
-                int linhasAfetadas = pstd.executeUpdate();
-
-                if (linhasAfetadas > 0) {
-                    System.out.println("Endereço removido com sucesso.");
-                } else {
-                    throw new RegraDeNegocioException("Nenhum endereço removido. Verifique o ID.");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            conexaoBancoDeDados.closeConnection(con);
-            return true;
-        }
-    }
-
-
-    @Override
-    public Boolean editar(Integer id, Endereco endereco) throws BancoDeDadosException {
-        Connection con = null;
-        System.out.println("Endereço atualizado com sucesso!");
         try {
             con = conexaoBancoDeDados.getConnection();
             String sql = "UPDATE ENDERECO SET logradouro = ?, numero = ?, complemento = ?, cep = ?, cidade = ?, estado = ?, pais = ?, regiao = ? WHERE id_endereco = ?";
@@ -111,19 +156,16 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
                 pstd.setString(6, endereco.getEstado());
                 pstd.setString(7, endereco.getPais());
                 pstd.setString(8, endereco.getRegiao());
-                pstd.setInt(9, id);
+                pstd.setInt(9, idEndereco);
 
                 int linhasAfetadas = pstd.executeUpdate();
 
                 if (linhasAfetadas > 0) {
-                    System.out.println("Endereço editado com sucesso!");
                     return true;
-                } else {
-                    System.out.println("Nenhum endereço editado. Verifique o ID.");
-                    return false;
                 }
+                throw new Exception("Nenhum endereço alterado.");
             }
-        } catch (SQLException e) {
+        } catch (BancoDeDadosException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             conexaoBancoDeDados.closeConnection(con);
@@ -131,14 +173,39 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
     }
 
     @Override
-    public List<Endereco> listar() throws BancoDeDadosException {
-        List<Endereco> enderecos = new ArrayList<>();
-
+    public Boolean remover(Integer idEndereco) throws BancoDeDadosException {
         Connection con = null;
+
         try {
             con = conexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM ENDERECO";
+            String sql = "DELETE FROM ENDERECO WHERE id_endereco = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                pstd.setInt(1, idEndereco);
+
+                int linhasAfetadas = pstd.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    return true;
+                }
+                throw new Exception("Nenhum endereço removido.");
+            }
+        } catch (Exception e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            conexaoBancoDeDados.closeConnection(con);
+        }
+    }
+
+    public List<Endereco> listarPorUsuario(Integer idUsuario) throws BancoDeDadosException {
+        List<Endereco> enderecos = new ArrayList<>();
+        Connection con = null;
+
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            String sql = "SELECT * FROM ENDERECO WHERE id_usuario = ?";
+            try (PreparedStatement pstd = con.prepareStatement(sql)) {
+                pstd.setInt(1, idUsuario);
+
                 try (ResultSet rs = pstd.executeQuery()) {
                     while (rs.next()) {
                         Endereco endereco = new Endereco(
@@ -148,13 +215,15 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
                                 rs.getString("cep"),
                                 rs.getString("cidade"),
                                 rs.getString("estado"),
-                                rs.getString("pais")
+                                rs.getString("pais"),
+                                rs.getInt("id_usuario")
                         );
-                        endereco.setId(rs.getInt("id_endereco"));
+                        endereco.setIdEndereco(rs.getInt("id_endereco"));
                         endereco.setRegiao(rs.getString("regiao"));
                         endereco.setIdUsuario(rs.getInt("id_usuario"));
                         enderecos.add(endereco);
                     }
+                    return enderecos;
                 }
             }
         } catch (SQLException e) {
@@ -162,96 +231,26 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
         } finally {
             conexaoBancoDeDados.closeConnection(con);
         }
-
-        return enderecos;
     }
 
-    public Endereco buscarPorId(Integer id) throws BancoDeDadosException {
+    public Boolean removerPorUsuario(Integer idUsuario) throws BancoDeDadosException {
         Connection con = null;
+
         try {
             con = conexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM ENDERECO WHERE id_endereco = ?";
+            String sql = "DELETE FROM ENDERECO WHERE id_usuario = ?";
             try (PreparedStatement pstd = con.prepareStatement(sql)) {
-                pstd.setInt(1, id);
+                pstd.setInt(1, idUsuario);
 
-                try (ResultSet rs = pstd.executeQuery()) {
-                    if (rs.next()) {
-                        Endereco endereco = new Endereco(
-                                rs.getString("logradouro"),
-                                rs.getString("numero"),
-                                rs.getString("complemento"),
-                                rs.getString("cep"),
-                                rs.getString("cidade"),
-                                rs.getString("estado"),
-                                rs.getString("pais"),
-                                rs.getInt("id_usuario")
-                        );
-                        endereco.setId(rs.getInt("id_endereco"));
-                        endereco.setRegiao(rs.getString("regiao"));
-                        endereco.setIdUsuario(rs.getInt("id_usuario"));
-                        return endereco;
-                    }
+                int linhasAfetadas = pstd.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    return true;
                 }
+
+                throw new Exception("Nenhum endereço removido.");
             }
-            throw new IllegalArgumentException("Endereço com ID " + id + " não encontrado.");
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
-        } finally {
-            conexaoBancoDeDados.closeConnection(con);
-        }
-    }
-
-    public Endereco buscarPorUsuarioId(Integer id) throws BancoDeDadosException {
-        Connection con = null;
-        try {
-            con = conexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM ENDERECO WHERE id_usuario = ?";
-            try (PreparedStatement pstd = con.prepareStatement(sql)) {
-                pstd.setInt(1, id);
-
-                try (ResultSet rs = pstd.executeQuery()) {
-                    if (rs.next()) {
-                        Endereco endereco = new Endereco(
-                                rs.getString("logradouro"),
-                                rs.getString("numero"),
-                                rs.getString("complemento"),
-                                rs.getString("cep"),
-                                rs.getString("cidade"),
-                                rs.getString("estado"),
-                                rs.getString("pais"),
-                                rs.getInt("id_usuario")
-                        );
-                        endereco.setId(rs.getInt("id_endereco"));
-                        endereco.setRegiao(rs.getString("regiao"));
-                        endereco.setIdUsuario(rs.getInt("id_usuario"));
-                        return endereco;
-                    }
-                }
-            }
-            throw new IllegalArgumentException("Endereço com ID " + id + " não encontrado.");
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
-        } finally {
-            conexaoBancoDeDados.closeConnection(con);
-        }
-    }
-
-    public Boolean verificaUsuarioTemEndereco(Integer usuarioId) throws BancoDeDadosException {
-        Connection con = null;
-        try {
-            con = conexaoBancoDeDados.getConnection();
-            String sql = "SELECT id_usuario FROM ENDERECO WHERE id_usuario = ?";
-            try (PreparedStatement pstd = con.prepareStatement(sql)) {
-                pstd.setInt(1, usuarioId);
-
-                try (ResultSet rs = pstd.executeQuery()) {
-                    if (rs.next()) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             conexaoBancoDeDados.closeConnection(con);
