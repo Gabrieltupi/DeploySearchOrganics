@@ -82,7 +82,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
             Integer proximoId = this.getProximoId(con);
             usuario.setIdUsuario(proximoId);
 
-            String sql = "INSERT INTO Usuario\n" +
+            String sql = "INSERT INTO USUARIO\n" +
                     "(ID_USUARIO, LOGIN, SENHA, CPF, ATIVO, NOME, SOBRENOME, EMAIL, DATANASCIMENTO)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
 

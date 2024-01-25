@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class PedidoCreateDTO {
     @NotNull
+    @Size
     private Integer idEndereco;
     @NotNull
     private Integer idCupom;
