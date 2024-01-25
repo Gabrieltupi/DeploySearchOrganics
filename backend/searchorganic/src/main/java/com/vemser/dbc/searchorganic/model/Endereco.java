@@ -8,48 +8,20 @@ import lombok.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Getter
-@Setter
-
 public class Endereco implements IImpressao {
-    private Integer id;
+    private Integer idEndereco;
     private Integer idUsuario;
-
-    @NotEmpty(message = "logradouro não pode ser nulo ou vazio")
-    @Size(min = 1, max = 255, message = "O tamanho do logradouro deve estar entre 1 e 255 caracteres")
     private String logradouro;
-
-    @NotEmpty(message = "numero não pode ser nulo ou vazio")
-    @Size(min = 1, max = 10, message = "O tamanho do número deve estar entre 1 e 10 caracteres")
     private String numero;
-
-    @NotEmpty(message = "complemento não pode ser nulo ou vazio")
-    @Size(max = 255, message = "O tamanho do complemento deve estar no máximo 255 caracteres")
     private String complemento;
-
-    @NotEmpty(message = "cep não pode ser nulo ou vazio")
-    @Size(min = 8, max = 8, message = "O CEP deve ter exatamente 8 caracteres")
     private String cep;
-
-    @NotEmpty(message = "cidade não pode ser nula ou vazia")
-    @Size(min = 1, max = 255, message = "O tamanho da cidade deve estar entre 1 e 255 caracteres")
     private String cidade;
-
-    @NotEmpty(message = "estado não pode ser nulo ou vazio")
-    @Size(min = 1, max = 50, message = "O tamanho do estado deve estar entre 1 e 50 caracteres")
     private String estado;
-
-    @NotEmpty(message = "país não pode ser nulo ou vazio")
-    @Size(min = 1, max = 50, message = "O tamanho do país deve estar entre 1 e 50 caracteres")
     private String pais;
-
-    @NotEmpty(message = "região não pode ser nula ou vazia")
-    @Size(min = 1, max = 50, message = "O tamanho da região deve estar entre 1 e 50 caracteres")
     private String regiao;
-
     private ValidadorCEP validadorCEP;
 
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
@@ -83,13 +55,6 @@ public class Endereco implements IImpressao {
         }
     }
 
-    public void setCep(String cep) {
-        this.cep = cep;
-        this.regiao = ValidadorCEP.isCepValido(cep);
-    }
-
-
-
     @Override
     public void imprimir() {
         System.out.printf("Logradouro: %s ", this.getLogradouro());
@@ -101,6 +66,4 @@ public class Endereco implements IImpressao {
         System.out.printf("Estado: %s\n", this.getEstado());
         System.out.printf("País: %s\n", this.getPais());
     }
-
-
 }
