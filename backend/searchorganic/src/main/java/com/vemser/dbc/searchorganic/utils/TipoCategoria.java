@@ -9,18 +9,18 @@ public enum TipoCategoria {
     ARROZ_E_FEIJAO("Arroz e Feijão", 6);
 
     private final String mostrar;
-    private final int valor;
+    private final Integer valor;
 
-    TipoCategoria(String mostrar, int valor) {
+    TipoCategoria(String mostrar, Integer valor) {
         this.mostrar = mostrar;
         this.valor = valor;
     }
 
-    public int getValor() {
+    public Integer getValor() {
         return valor;
     }
 
-    public static TipoCategoria fromInt(int valor) {
+    public static TipoCategoria fromInt(Integer valor) {
         for (TipoCategoria tipo : TipoCategoria.values()) {
             if (tipo.valor == valor) {
                 return tipo;

@@ -96,7 +96,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
 
 
     @Override
-    public boolean editar(Integer id, Endereco endereco) throws BancoDeDadosException {
+    public Boolean editar(Integer id, Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
         System.out.println("Endereço atualizado com sucesso!");
         try {

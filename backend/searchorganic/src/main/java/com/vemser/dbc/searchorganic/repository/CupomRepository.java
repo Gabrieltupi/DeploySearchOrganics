@@ -104,7 +104,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
 
 
     @Override
-    public boolean editar(Integer id, Cupom cupom) throws BancoDeDadosException {
+    public Boolean editar(Integer id, Cupom cupom) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -246,7 +246,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
         List<Cupom> cupoms = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM CUPOM WHERE ID_EMPRESA = ?";
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setInt(1, idEmpresa);

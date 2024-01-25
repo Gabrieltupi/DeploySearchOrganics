@@ -127,7 +127,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
 
 
     @Override
-    public boolean editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {
+    public Boolean editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
