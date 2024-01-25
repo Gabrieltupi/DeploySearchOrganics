@@ -1,17 +1,21 @@
 package com.vemser.dbc.searchorganic.controller;
 
 
+import com.vemser.dbc.searchorganic.controller.documentacao.IProdutoController;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.produto.Imagem;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.service.ImgurService;
 import com.vemser.dbc.searchorganic.service.ProdutoService;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -24,7 +28,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/produto")
 @RequiredArgsConstructor
-public class ProdutoController {
+@Slf4j
+public class ProdutoController implements IProdutoController {
     private final ProdutoService produtoService;
     private final ImgurService imgurService;
 //    private PropertiesReader propertiesReader;
@@ -49,7 +54,7 @@ public class ProdutoController {
 
 
     @PutMapping("{idProduto}") // put localhost:8080/produto/idProduto
-    public ResponseEntity<ProdutoDTO> update (@PathVariable("idProduto") Integer id,@Valid @RequestBody ProdutoCreateDTO produto) throws Exception{
+    public ResponseEntity<ProdutoDTO> update (@PathVariable("idProduto") Integer id, @RequestBody @Valid ProdutoUpdateDTO produto) throws Exception{
         ProdutoDTO produtoDTO=produtoService.atualizarProduto(id,produto);
         return new ResponseEntity<>(produtoDTO,HttpStatus.OK);
     }
@@ -61,8 +66,12 @@ public class ProdutoController {
 
     @DeleteMapping("/{idProduto}") //delete localhost:8080/produto/idproduto
     public ResponseEntity<Void> delete(@PathVariable("idProduto") Integer id) throws Exception {
-        produtoService.deleterProduto(id);
-        return ResponseEntity.ok().build();
+        try {
+            produtoService.deletarProduto(id);
+            return ResponseEntity.ok().build();
+        }catch (RegraDeNegocioException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
@@ -73,11 +82,10 @@ public class ProdutoController {
     }
 
     @GetMapping("/categoria/{numeroCategoria}")
-    public ResponseEntity<Produto> listarProdutosPorCategoria(@PathVariable("numeroCategoria") Integer numeroCategoria) throws Exception {
-        Produto produto = this.produtoService.listarProdutosPorCategoria(numeroCategoria);
-        return new ResponseEntity<>(produto, HttpStatus.OK);
+    public ResponseEntity<List<Produto>> listarProdutosPorCategoria(@PathVariable("numeroCategoria") Integer numeroCategoria) throws Exception {
+        List<Produto> produtos = this.produtoService.listarProdutosPorCategoria(numeroCategoria);
+        return new ResponseEntity<>(produtos, HttpStatus.OK);
     }
-
 
 
     @GetMapping("/loja/{idLoja}") // get localhost:8080/produto/idLoja
