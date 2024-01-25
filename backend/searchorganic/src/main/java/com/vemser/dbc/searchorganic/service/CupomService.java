@@ -14,20 +14,18 @@ import java.util.List;
 public class CupomService {
     private final CupomRepository repository;
 
-    public void adicionarCupom(Integer idEmpresa,Cupom cupom) {
-        try {
+    public void adicionarCupom(Integer idEmpresa,Cupom cupom) throws Exception {
+
             cupom.setIdEmpresa(idEmpresa);
             repository.adicionar(cupom);
-        } catch (Exception e) {
-            System.out.println("Erro ao adicionar cupom: " + e.getMessage());
-        }
+
     }
 
     public List<Cupom> listarCupons() {
         List<Cupom> cupons = new ArrayList<>();
         try {
             for (Cupom cupom : repository.listar()) {
-                cupom.imprimir();
+                cupom.toString();
                 cupons.add(cupom);
             }
         } catch (Exception e) {
@@ -37,18 +35,18 @@ public class CupomService {
     }
 
 
-    public void imprimirCuponsDisponiveis() {
-        try {
-            for (Cupom cupom : repository.listar()) {
-                if (cupom.isAtivo().equals("S")) {
-                    System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
-                            cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao imprimir cupons disponíveis: " + e.getMessage());
-        }
-    }
+//    public void imprimirCuponsDisponiveis() {
+//        try {
+//            for (Cupom cupom : repository.listar()) {
+//                if (cupom.isAtivo().equals("S")) {
+//                    System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
+//                            cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
+//                }
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Erro ao imprimir cupons disponíveis: " + e.getMessage());
+//        }
+//    }
 
     public Cupom buscarCupomPorId(int id) {
         try {
@@ -56,7 +54,7 @@ public class CupomService {
                 System.out.println("Verificando Cupom por Id:" + cupom.getCupomId());
                 if (cupom.getCupomId() == id) {
                     System.out.println("Cupom encontrado:" + cupom.getCupomId());
-                    cupom.imprimir();
+                    cupom.toString();
                     return cupom;
                 }
             }

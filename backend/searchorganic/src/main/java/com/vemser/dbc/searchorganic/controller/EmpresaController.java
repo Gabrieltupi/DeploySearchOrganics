@@ -86,7 +86,7 @@ public class EmpresaController {
 
     @PostMapping("/{idEmpresa}/cupom")
     public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa,
-                                               @RequestBody Cupom cupom) {
+                                               @RequestBody Cupom cupom) throws Exception {
         cupomService.adicionarCupom(idEmpresa, cupom);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
