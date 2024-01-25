@@ -4,12 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
 import com.vemser.dbc.searchorganic.model.Pedido;
+import com.vemser.dbc.searchorganic.model.Produto;
+import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
+import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +23,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
+    private final ProdutoRepository produtoRepository;
     private final ObjectMapper objectMapper;
     private final EnderecoService enderecoService;
     private final CupomService cupomService;
     private final UsuarioService usuarioService;
     private final EmailService emailService;
     private final ProdutoService produtoService;
+    private final List<IValidarPedido> validarPedidoList;
 
     public PedidoDTO adicionar(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
+        for(IValidarPedido validador: validarPedidoList){
+            validador.validar(pedidoCreateDTO, id);
+        }
+
         Usuario usuario = usuarioService.obterUsuarioPorId(id);
         Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
         pedido.setIdUsuario(id);
+
+
+
         pedido = pedidoRepository.adicionar(pedido);
         PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
 

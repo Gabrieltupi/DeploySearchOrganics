@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
+    private final ProdutoRepository produtoRepository;
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_PEDIDO.nextval mysequence from DUAL";
@@ -72,12 +73,32 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
             if(res > 0) {
                 for(ProdutoCarrinho produto : pedido.getProdutos()){ // TODO: implementar logica
                     String query = "INSERT INTO PEDIDOXPRODUTO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
+                    Integer idProduto = produto.getIdProduto();
                     PreparedStatement stt = con.prepareStatement(query);
                     stt.setInt(1, pedido.getIdPedido());
-                    stt.setInt(2, produto.getIdProduto());
+                    stt.setInt(2, idProduto);
                     stt.setInt(3, produto.getQuantidade());
                     stt.execute();
+
+                    query = "SELECT P.QUANTIDADE_DISPONIVEL FROM PRODUTO P WHERE ID_PRODUTO = ?)";
+                    PreparedStatement sts = con.prepareStatement(query);
+                    sts.setInt(1, produto.getIdProduto());
+                    try (ResultSet rst = sts.executeQuery()) {
+                        while (rst.next()) {
+                            BigDecimal quantidadeDisponivel = rst.getBigDecimal("QUANTIDADE_DISPONIVEL");
+
+                            quantidadeDisponivel = quantidadeDisponivel.subtract(BigDecimal.valueOf(produto.getQuantidade()));
+
+                            String novaQuery = "UPDATE PRODUTO SET QUANTIDADE_DISPONIVEL = ? WHERE ID_PRODUTO = ?";
+                            try (PreparedStatement sttq = con.prepareStatement(novaQuery)) {
+                                sttq.setBigDecimal(1, quantidadeDisponivel);
+                                sttq.setInt(2, idProduto);
+                                sttq.executeUpdate();
+                            }
+                        }
+                    }
                 }
+
                 System.out.println("Pedido realizado");
             }
             else {
@@ -106,8 +127,10 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
                 String query = "SELECT P.ID_PRODUTO, PEXP.QUANTIDADE, P.QUANTIDADE_DISPONIVEL FROM PRODUTO P " +
                         "INNER JOIN PEDIDOXPRODUTO PEXP ON PEXP.ID_PRODUTO = P.ID_PRODUTO " +
-                        "INNER JOIN PEDIDO PED ON PED.ID_PEDIDO = PEXP.ID_PEDIDO";
-                try (ResultSet rst = stmt.executeQuery(query)) {
+                        "INNER JOIN PEDIDO PED ON PED.ID_PEDIDO = PEXP.ID_PEDIDO WHERE ID_PEDIDO = ?";
+                 PreparedStatement stt = con.prepareStatement(query);
+                stt.setInt(1, id);
+                try (ResultSet rst = stt.executeQuery()) {
                     while (rst.next()) {
                         int idProduto = rst.getInt("ID_PRODUTO");
                         BigDecimal quantidadeDisponivel = rst.getBigDecimal("QUANTIDADE_DISPONIVEL");
