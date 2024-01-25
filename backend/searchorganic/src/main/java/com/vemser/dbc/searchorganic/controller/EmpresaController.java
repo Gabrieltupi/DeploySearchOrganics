@@ -108,8 +108,8 @@ public class EmpresaController {
     }
 
     @PutMapping("/cupom/{idCupom}")
-    public ResponseEntity<Void> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
-                                               @RequestBody Cupom cupom) {
+    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
+                                               @RequestBody Cupom cupom) throws Exception {
         cupomService.atualizarCupom(idCupom, cupom);
         return new ResponseEntity<>(HttpStatus.OK);
     }

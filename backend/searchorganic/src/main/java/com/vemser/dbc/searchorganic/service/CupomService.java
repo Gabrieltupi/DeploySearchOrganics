@@ -1,13 +1,16 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -35,18 +38,7 @@ public class CupomService {
     }
 
 
-//    public void imprimirCuponsDisponiveis() {
-//        try {
-//            for (Cupom cupom : repository.listar()) {
-//                if (cupom.isAtivo().equals("S")) {
-//                    System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
-//                            cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
-//                }
-//            }
-//        } catch (Exception e) {
-//            System.out.println("Erro ao imprimir cupons disponíveis: " + e.getMessage());
-//        }
-//    }
+
 
     public Cupom buscarCupomPorId(int id) {
         try {
@@ -64,18 +56,15 @@ public class CupomService {
         }
         return null;
     }
-
-    public void atualizarCupom(int id, Cupom cupom) {
+    public Cupom atualizarCupom(int id, Cupom cupom) throws Exception {
         try {
-            if (cupom.getCupomId() == id) {
-                System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
-                repository.editar(id, cupom);
-                System.out.println("Cupom atualizado com sucesso!");
-                return;
+            if (repository.editar(id, cupom)) {
+                cupom.setCupomId(id);
+                return cupom;
             }
-            System.out.println("Cupom não pode ser atualizado");
+            throw new RegraDeNegocioException("Usuário não encontrado");
         } catch (Exception e) {
-            System.out.println("Erro ao atualizar cupom: " + e.getMessage());
+            throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
         }
     }
 
