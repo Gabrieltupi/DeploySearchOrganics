@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.repository;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Cupom;
+import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
-            String sql = "SELECT SEQ_CUPOM.nextval mysequence from DUAL;";
+            String sql = "SELECT SEQ_CUPOM.nextval mysequence from DUAL";
             Statement stmt = connection.createStatement();
             ResultSet res = stmt.executeQuery(sql);
 
@@ -40,22 +41,23 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
 
             String sql = "INSERT INTO CUPOM\n" +
                     "(id_cupom, id_empresa, nome_cupom, ativo, descricao, taxa_desconto)\n" +
-                    "VALUES(?, ?, ?, ?, ?, :)\n";
+                    "VALUES(?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
-
+            System.out.println(cupom.toString());
             stmt.setInt(1, cupom.getCupomId());
             stmt.setInt(2, cupom.getIdEmpresa());
-            stmt.setString(2, cupom.getNomeCupom());
-            stmt.setString(3, cupom.isAtivo());
-            stmt.setString(4, cupom.getDescricao());
-            stmt.setBigDecimal(5, cupom.getTaxaDeDesconto());
+            stmt.setString(3, cupom.getNomeCupom());
+            stmt.setString(4, cupom.getAtivo().toString());
+            stmt.setString(5, cupom.getDescricao());
+            stmt.setBigDecimal(6, cupom.getTaxaDeDesconto());
 
             int res = stmt.executeUpdate();
             System.out.println("adicionarCupom.res=" + res);
             return cupom;
 
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new BancoDeDadosException(e.getCause());
         } finally {
             try {
@@ -184,7 +186,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
                 Cupom cupom = new Cupom();
                 cupom.setCupomId(res.getInt("ID_CUPOM"));
                 cupom.setNomeCupom(res.getString("NOME_CUPOM"));
-                cupom.setAtivo(res.getString("ATIVO"));
+                cupom.setAtivo(TipoAtivo.fromString(res.getString("ATIVO")));
                 cupom.setDescricao(res.getString("DESCRICAO"));
                 cupom.setTaxaDeDesconto(res.getBigDecimal("TAXA_DESCONTO"));
                 cupom.setIdEmpresa(res.getInt("ID_EMPRESA"));
@@ -221,7 +223,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
                 Cupom cupom = new Cupom();
                 cupom.setCupomId(res.getInt("ID_CUPOM"));
                 cupom.setNomeCupom(res.getString("NOME_CUPOM"));
-                cupom.setAtivo(res.getString("ATIVO"));
+                cupom.setAtivo(TipoAtivo.fromString(res.getString("ATIVO")));
                 cupom.setDescricao(res.getString("DESCRICAO"));
                 cupom.setTaxaDeDesconto(res.getBigDecimal("TAXA_DESCONTO"));
                 cupom.setIdEmpresa(res.getInt("ID_EMPRESA"));
@@ -256,7 +258,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
                     Cupom cupom = new Cupom();
                     cupom.setCupomId(res.getInt("ID_CUPOM"));
                     cupom.setNomeCupom(res.getString("NOME_CUPOM"));
-                    cupom.setAtivo(res.getString("ATIVO"));
+                    cupom.setAtivo(TipoAtivo.fromString(res.getString("ATIVO")));
                     cupom.setDescricao(res.getString("DESCRICAO"));
                     cupom.setTaxaDeDesconto(res.getBigDecimal("TAXA_DESCONTO"));
                     cupom.setIdEmpresa(res.getInt("ID_EMPRESA"));
@@ -276,6 +278,42 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
         }
         return cupoms;
     }
+
+    public Cupom getCupomByNameAndEmpresa(String nomeCupom, int idEmpresa) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            String sql = "SELECT * FROM CUPOM WHERE NOME_CUPOM = ? AND ID_EMPRESA = ?";
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setString(1, nomeCupom);
+                stmt.setInt(2, idEmpresa);
+                ResultSet res = stmt.executeQuery();
+
+                if (res.next()) {
+                    Cupom cupom = new Cupom();
+                    cupom.setCupomId(res.getInt("ID_CUPOM"));
+                    cupom.setNomeCupom(res.getString("NOME_CUPOM"));
+                    cupom.setAtivo(TipoAtivo.fromString(res.getString("ATIVO")));
+                    cupom.setDescricao(res.getString("DESCRICAO"));
+                    cupom.setTaxaDeDesconto(res.getBigDecimal("TAXA_DESCONTO"));
+                    cupom.setIdEmpresa(res.getInt("ID_EMPRESA"));
+                    return cupom;
+                }
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 
 
 }
