@@ -44,4 +44,7 @@ public class ProdutoDTO {
     @NotNull(message = "Aquantidade deve ter uma unidade de medida")
     @Schema(description = "unidade de medida para o produto", required = true, example = "KG")
     private UnidadeMedida unidadeMedida;
+
+    @Schema(description = "link da imagem do produto")
+    private String urlImagem;
 }
