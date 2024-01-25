@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
-    private final   EnderecoService enderecoServicos;
+
     @Override
     public Integer getProximoId(Connection con) throws SQLException {
         String sql = "SELECT SEQ_USUARIO.nextval mysequence from DUAL";
@@ -125,7 +125,6 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-            enderecoServicos.excluirEndereco(id);
 
             String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
             try (PreparedStatement stmt = con.prepareStatement(sql)) {

@@ -1,14 +1,12 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
-import com.vemser.dbc.searchorganic.model.Pedido;
-import com.vemser.dbc.searchorganic.model.Produto;
-import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
-import com.vemser.dbc.searchorganic.model.Usuario;
+import com.vemser.dbc.searchorganic.model.*;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -109,12 +107,16 @@ public class PedidoService {
         pedidoDTO.setStatusPedido(pedido.getStatusPedido());
         pedidoDTO.setDataDePedido(pedido.getDataDePedido());
         pedidoDTO.setDataEntrega(pedido.getDataEntrega());
-        pedidoDTO.setEndereco(enderecoService.getEndereco(pedido.getIdEndereco()));
         pedidoDTO.setProdutos(pedido.getProdutos());
         pedidoDTO.setCupom(cupomService.buscarCupomPorId(pedido.getIdCupom()));
         pedidoDTO.setPrecoFrete(pedido.getPrecoFrete());
         pedidoDTO.setPrecoCarrinho(pedido.getPrecoCarrinho());
         pedidoDTO.setProdutos(pedidoRepository.listarProdutosDoPedido(pedido.getIdPedido()));
+
+        EnderecoDTO enderecoDTO = enderecoService.buscarEndereco(pedido.getIdEndereco());
+        Endereco endereco = objectMapper.convertValue(enderecoDTO, Endereco.class);
+        pedidoDTO.setEndereco(endereco);
+
         return pedidoDTO;
     }
 
@@ -129,7 +131,8 @@ public class PedidoService {
 
     public Pedido atualizarPedido(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
         Pedido pedidoEntity = obterPorId(id);
-        enderecoService.getEndereco(pedidoAtualizar.getIdEndereco());
+        enderecoService.buscarEndereco(pedidoAtualizar.getIdEndereco());
+
         pedidoEntity.setIdEndereco(pedidoEntity.getIdEndereco());
         pedidoEntity.setFormaPagamento(pedidoAtualizar.getFormaPagamento());
         pedidoEntity.setDataEntrega(pedidoAtualizar.getDataEntrega());

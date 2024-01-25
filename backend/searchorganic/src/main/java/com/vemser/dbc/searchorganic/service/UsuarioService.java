@@ -1,7 +1,9 @@
 package com.vemser.dbc.searchorganic.service;
+
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -10,15 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
-
-    private UsuarioRepository usuarioRepository;
-    private EmailService emailService;
-
-    public UsuarioService(UsuarioRepository usuarioRepository,EmailService emailService) {
-        this.usuarioRepository = usuarioRepository;
-        this.emailService = emailService;
-    }
+    private final UsuarioRepository usuarioRepository;
+    private final EmailService emailService;
 
     public Usuario criarUsuario(Usuario usuario) throws Exception {
         try {
@@ -38,7 +35,6 @@ public class UsuarioService {
             throw new Exception("Erro ao criar o usuário: " + e.getMessage(), e);
         }
     }
-
 
     public Usuario autenticar(String login, String senha) throws Exception {
             Usuario usuario = usuarioRepository.buscaPorLogin(login);
@@ -95,7 +91,6 @@ public class UsuarioService {
             throw new Exception("Erro ao remover o usuário: " + e.getMessage(), e);
         }
     }
-
 }
 
 
