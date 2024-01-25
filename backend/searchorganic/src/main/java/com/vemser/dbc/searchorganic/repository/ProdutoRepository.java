@@ -305,4 +305,8 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         }
         return produtos;
     }
+
+    public void atualizarEstoque(Integer idProduto, Integer quantidade) {
+
+    }
 }
