@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.controller.documentacao;
 
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
@@ -101,7 +102,7 @@ public interface IEmpresaController {
     )
     @PostMapping("/{idEmpresa}/cupom")
     public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa,
-                                               @RequestBody Cupom cupom);
+                                               @RequestBody Cupom cupom) throws Exception;
 
 
 
@@ -140,8 +141,8 @@ public interface IEmpresaController {
             }
     )
     @PutMapping("/cupom/{idCupom}")
-    public ResponseEntity<Void> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
-                                               @RequestBody Cupom cupom);
+    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
+                                                   @RequestBody Cupom cupom) throws Exception;
 
 
     @Operation(summary = "Listar todos cupons", description = "Lista todas os cupons ")

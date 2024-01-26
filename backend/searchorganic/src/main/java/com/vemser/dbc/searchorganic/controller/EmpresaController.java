@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.controller.documentacao.IEmpresaController;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/empresa")
-public class EmpresaController {
+public class EmpresaController implements IEmpresaController {
     private final EmpresaService empresaService;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;

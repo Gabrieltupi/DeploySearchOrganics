@@ -35,7 +35,7 @@ public class ProdutoDTO {
     private BigDecimal quantidade;
 
     @NotNull(message = "Informe a categoria do produto")
-    @Schema(description = "Categoria do produto", required = true, example = "fruta")
+    @Schema(description = "Categoria do produto", required = true, example = "3")
     private TipoCategoria categoria;
 
     @Schema(description = "taxa aplicada no produto", required = true, example = "3.3")
