@@ -121,7 +121,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
                     " quantidade_disponivel = ?," +
                     " tipo_categoria = ?," +
                     " taxa = ?, " +
-                    " unidade_medida = ? " +
+                    " unidade_medida = ?, " +
                     " url_imagem = ? " +
                     " WHERE id_produto = ? ";
 

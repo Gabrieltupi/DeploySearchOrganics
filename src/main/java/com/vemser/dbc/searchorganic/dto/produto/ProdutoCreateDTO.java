@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProdutoCreateDTO {
-    private Integer idProduto;
 
     @NotNull(message = "Produto deve pertencer a um fornecedor")
     @Schema(description = "id da empresa", required = true, example = "0")
@@ -38,7 +37,7 @@ public class ProdutoCreateDTO {
     private BigDecimal quantidade;
 
     @NotNull(message = "Informe a categoria do produto")
-    @Schema(description = "Categoria do produto", required = true, example = "fruta")
+    @Schema(description = "Categoria do produto", required = true, example = "3")
     private TipoCategoria categoria;
 
     @Schema(description = "taxa aplicada no produto", required = true, example = "3.3")

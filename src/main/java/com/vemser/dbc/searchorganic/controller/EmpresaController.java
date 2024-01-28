@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.controller.documentacao.IEmpresaController;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/empresa")
-public class EmpresaController {
+public class EmpresaController implements IEmpresaController {
     private final EmpresaService empresaService;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
@@ -86,7 +87,7 @@ public class EmpresaController {
 
     @PostMapping("/{idEmpresa}/cupom")
     public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa,
-                                               @RequestBody Cupom cupom) {
+                                               @RequestBody Cupom cupom) throws Exception {
         cupomService.adicionarCupom(idEmpresa, cupom);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -108,8 +109,8 @@ public class EmpresaController {
     }
 
     @PutMapping("/cupom/{idCupom}")
-    public ResponseEntity<Void> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
-                                               @RequestBody Cupom cupom) {
+    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
+                                               @RequestBody Cupom cupom) throws Exception {
         cupomService.atualizarCupom(idCupom, cupom);
         return new ResponseEntity<>(HttpStatus.OK);
     }
