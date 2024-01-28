@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UsuarioCreateDTO {
-    private Integer idUsuario;
+
     @NotBlank
     @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
     private String nome;
@@ -33,10 +33,10 @@ public class UsuarioCreateDTO {
     private LocalDate dataNascimento;
 
 
-        private Endereco endereco;
+//        private Endereco endereco;
 
         @CPF
-        @Schema(description = "CPF", required = true, example = "464.732.190-80")
+        @Schema(description = "CPF", required = true, example = "46473219080")
         private String cpf;
 
         @NotNull
@@ -45,7 +45,7 @@ public class UsuarioCreateDTO {
 
         @NotNull
         @NotBlank
-        @Schema(description = "Login",required = true,example = "Deyvid_Uzumaki321")
+        @Schema(description = "Login",required = true,example = "Tupi_Uzumaki321")
         private String login;
 
         @NotNull

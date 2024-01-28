@@ -84,9 +84,8 @@ public class UsuarioService {
 
                 emailService.sendEmail(dadosEmail, "Usuário Removido", usuarioRemovido.getEmail());
 
-                return;
+
             }
-            throw new RegraDeNegocioException("Usuário não encontrado");
         } catch (Exception e) {
             throw new Exception("Erro ao remover o usuário: " + e.getMessage(), e);
         }
