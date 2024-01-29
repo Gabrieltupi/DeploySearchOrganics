@@ -54,11 +54,9 @@ public class CupomService {
         return null;
     }
 
-    public Cupom atualizarCupom(int id, Cupom cupom) throws Exception {
+    public Cupom atualizarCupom(Integer idEmpresa,Integer id, Cupom cupom) throws Exception {
         try {
-            buscarCupomPorId(id);
-
-            Cupom cupomEditado = repository.editar(id, cupom);
+            Cupom cupomEditado = repository.editar(idEmpresa,id, cupom);
 
             cupomEditado.setCupomId(id);
             return cupomEditado;
@@ -66,6 +64,20 @@ public class CupomService {
             throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
         }
     }
+
+
+//    public Cupom atualizarCupom(int id, Cupom cupom) throws Exception {
+//        try {
+//            buscarCupomPorId(id);
+//
+//            Cupom cupomEditado = repository.editar(id, cupom);
+//
+//            cupomEditado.setCupomId(id);
+//            return cupomEditado;
+//        } catch (Exception e) {
+//            throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
+//        }
+//    }
 
     public void removerCupom(int id) {
         try {

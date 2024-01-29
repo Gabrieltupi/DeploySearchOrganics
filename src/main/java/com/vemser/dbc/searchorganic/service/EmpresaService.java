@@ -26,8 +26,9 @@ public class EmpresaService {
         this.produtoRepository = produtoRepository;
     }
 
-    public Empresa adicionarEmpresa(Empresa empresa) throws BancoDeDadosException {
-        return empresaRepository.adicionar(empresa);
+
+    public Empresa adicionarEmpresa(Integer idUsuario,Empresa empresa) throws BancoDeDadosException {
+        return empresaRepository.adicionar(empresa,idUsuario);
     }
 
     public Empresa buscarEmpresa(int id) {
@@ -42,9 +43,24 @@ public class EmpresaService {
         }
     }
 
-    public Empresa atualizarEmpresa(Integer idEmpresa, Empresa novaEmpresa) throws Exception {
-        empresaRepository.buscaPorId(idEmpresa);
-        return empresaRepository.editar(idEmpresa, novaEmpresa);
+//    public Empresa atualizarEmpresa(Integer idEmpresa, Empresa novaEmpresa) throws Exception {
+//        empresaRepository.buscaPorId(idEmpresa);
+//        return empresaRepository.editar(idEmpresa, novaEmpresa);
+//    }
+
+
+
+    public Empresa atualizarEmpresa(Integer idEmpresa, UpdateEmpresaDTO novaEmpresa) {
+        Empresa empresa = buscarEmpresa(idEmpresa);
+        empresa.setIdEmpresa(novaEmpresa.getIdEmpresa());
+        empresa.setIdUsuario(novaEmpresa.getIdUsuario());
+        empresa.setProdutos(novaEmpresa.getProdutos());
+        empresa.setNomeFantasia(novaEmpresa.getNomeFantasia());
+        empresa.setInscricaoEstadual(novaEmpresa.getInscricaoEstadual());
+        empresa.setCnpj(novaEmpresa.getCnpj());
+        empresa.setSetor(novaEmpresa.getSetor());
+        empresa.setRazaoSocial(novaEmpresa.getRazaoSocial());
+        return empresa;
     }
 
     public void excluirEmpresa(int id) {

@@ -20,10 +20,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class CreateEmpresaDTO {
 
-    @Schema(description = "Id da empresa",required = true, example = "1")
     private Integer idEmpresa;
-
-    @Schema(description = "Id do Usuario",required = true, example = "15")
     private Integer idUsuario;
 
     @NotBlank
@@ -47,5 +44,3 @@ public class CreateEmpresaDTO {
     private String setor;
 
 }
-
-
