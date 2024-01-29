@@ -23,6 +23,7 @@ import java.util.List;
 public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     private final ProdutoRepository produtoRepository;
+
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_PEDIDO.nextval mysequence from DUAL";
@@ -38,79 +39,80 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     }
 
     @Override
-    public Pedido adicionar(Pedido pedido) throws BancoDeDadosException {
+    public Pedido adicionar(Pedido pedido) throws SQLException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
+            con.setAutoCommit(false);
+
             Integer proximoId = this.getProximoId(con);
 
             pedido.setIdPedido(proximoId);
             pedido.setStatusPedido(StatusPedido.AGUARDANDO_PAGAMENTO);
-            String sql = "INSERT INTO PEDIDO (ID_PEDIDO, ID_USUARIO, ID_ENDERECO, ID_CUPOM, FORMA_PAGAMENTO, STATUS_PEDIDO, " +
-                    "DATA_DE_PEDIDO, DATA_ENTREGA, PRECO_CARRINHO, PRECO_FRETE) " +
-                    "VALUES\n" +
-                    "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            PreparedStatement stmt = con.prepareStatement(sql);
-
-            stmt.setInt(1, pedido.getIdPedido());
-            stmt.setInt(2, pedido.getIdUsuario());
-            stmt.setInt(3, pedido.getIdEndereco());
-            if(pedido.getIdCupom() != null ){
-                stmt.setInt(4, pedido.getIdCupom());
+            String queryPedido = "INSERT INTO PEDIDO (ID_PEDIDO, ID_USUARIO, ID_ENDERECO, ID_CUPOM, FORMA_PAGAMENTO, STATUS_PEDIDO, DATA_DE_PEDIDO, DATA_ENTREGA, PRECO_CARRINHO, PRECO_FRETE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmtPedido = con.prepareStatement(queryPedido)) {
+                stmtPedido.setInt(1, pedido.getIdPedido());
+                stmtPedido.setInt(2, pedido.getIdUsuario());
+                stmtPedido.setInt(3, pedido.getIdEndereco());
+                if (pedido.getIdCupom() != null) {
+                    stmtPedido.setInt(4, pedido.getIdCupom());
+                } else {
+                    stmtPedido.setNull(4, Types.INTEGER);
+                }
+                stmtPedido.setString(5, pedido.getFormaPagamento().toString());
+                stmtPedido.setString(6, pedido.getStatusPedido().toString());
+                stmtPedido.setDate(7, Date.valueOf(pedido.getDataDePedido()));
+                stmtPedido.setDate(8, Date.valueOf(pedido.getDataEntrega()));
+                stmtPedido.setBigDecimal(9, pedido.getPrecoCarrinho());
+                stmtPedido.setBigDecimal(10, pedido.getPrecoFrete());
+                stmtPedido.executeUpdate();
             }
-            else {
-                stmt.setNull(4, Types.INTEGER);
-            }
-            stmt.setString(5, pedido.getFormaPagamento().toString());
-            stmt.setString(6,pedido.getStatusPedido().toString());
-            stmt.setDate(7, Date.valueOf(pedido.getDataDePedido()));
-            stmt.setDate(8, Date.valueOf(pedido.getDataEntrega()));
-            stmt.setBigDecimal(9, pedido.getPrecoCarrinho());
-            stmt.setBigDecimal(10, pedido.getPrecoFrete());
 
-            int res = stmt.executeUpdate();
-            if(res > 0) {
-                for(ProdutoCarrinho produto : pedido.getProdutos()){ // TODO: implementar logica
-                    String query = "INSERT INTO PEDIDOXPRODUTO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
+            String queryPedidoProduto = "INSERT INTO PEDIDOXPRODUTO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
+            try (PreparedStatement stmtPedidoProduto = con.prepareStatement(queryPedidoProduto)) {
+                List<ProdutoCarrinho> produtos = pedido.getProdutos();
+
+                for (ProdutoCarrinho produto : produtos) {
                     Integer idProduto = produto.getIdProduto();
-                    PreparedStatement stt = con.prepareStatement(query);
-                    stt.setInt(1, pedido.getIdPedido());
-                    stt.setInt(2, idProduto);
-                    stt.setInt(3, produto.getQuantidade());
-                    stt.execute();
 
-                    query = "SELECT P.QUANTIDADE_DISPONIVEL FROM PRODUTO P WHERE ID_PRODUTO = ?)";
-                    PreparedStatement sts = con.prepareStatement(query);
-                    sts.setInt(1, produto.getIdProduto());
-                    try (ResultSet rst = sts.executeQuery()) {
-                        while (rst.next()) {
-                            BigDecimal quantidadeDisponivel = rst.getBigDecimal("QUANTIDADE_DISPONIVEL");
+                    stmtPedidoProduto.setInt(1, pedido.getIdPedido());
+                    stmtPedidoProduto.setInt(2, idProduto);
+                    stmtPedidoProduto.setInt(3, produto.getQuantidade());
+                    stmtPedidoProduto.executeUpdate();
 
-                            quantidadeDisponivel = quantidadeDisponivel.subtract(BigDecimal.valueOf(produto.getQuantidade()));
+                    String queryQuantidade = "SELECT QUANTIDADE_DISPONIVEL FROM PRODUTO WHERE ID_PRODUTO = ?";
+                    try (PreparedStatement stmtQuantidade = con.prepareStatement(queryQuantidade)) {
+                        stmtQuantidade.setInt(1, idProduto);
 
-                            String novaQuery = "UPDATE PRODUTO SET QUANTIDADE_DISPONIVEL = ? WHERE ID_PRODUTO = ?";
-                            try (PreparedStatement sttq = con.prepareStatement(novaQuery)) {
-                                sttq.setBigDecimal(1, quantidadeDisponivel);
-                                sttq.setInt(2, idProduto);
-                                sttq.executeUpdate();
+                        try (ResultSet rsQuantidade = stmtQuantidade.executeQuery()) {
+                            if (rsQuantidade.next()) {
+                                BigDecimal quantidadeDisponivel = rsQuantidade.getBigDecimal("QUANTIDADE_DISPONIVEL");
+                                quantidadeDisponivel = quantidadeDisponivel.subtract(BigDecimal.valueOf(produto.getQuantidade()));
+
+                                String queryAtualizarProduto = "UPDATE PRODUTO SET QUANTIDADE_DISPONIVEL = ? WHERE ID_PRODUTO = ?";
+                                try (PreparedStatement stmtAtualizarProduto = con.prepareStatement(queryAtualizarProduto)) {
+                                    stmtAtualizarProduto.setBigDecimal(1, quantidadeDisponivel);
+                                    stmtAtualizarProduto.setInt(2, idProduto);
+                                    stmtAtualizarProduto.executeUpdate();
+                                }
                             }
                         }
                     }
                 }
+            }
 
-                System.out.println("Pedido realizado");
-            }
-            else {
-                System.out.println("Ocorreu um erro ao criar o pedido");
-            }
+            con.commit();
+
             return pedido;
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            con.rollback(); // rollback em caso de exceção
             throw new BancoDeDadosException(e.getCause());
         } finally {
             conexaoBancoDeDados.closeConnection(con);
         }
     }
+
 
     @Override
     public Boolean remover(Integer id) throws BancoDeDadosException {
@@ -128,7 +130,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
                 String query = "SELECT P.ID_PRODUTO, PEXP.QUANTIDADE, P.QUANTIDADE_DISPONIVEL FROM PRODUTO P " +
                         "INNER JOIN PEDIDOXPRODUTO PEXP ON PEXP.ID_PRODUTO = P.ID_PRODUTO " +
                         "INNER JOIN PEDIDO PED ON PED.ID_PEDIDO = PEXP.ID_PEDIDO WHERE ID_PEDIDO = ?";
-                 PreparedStatement stt = con.prepareStatement(query);
+                PreparedStatement stt = con.prepareStatement(query);
                 stt.setInt(1, id);
                 try (ResultSet rst = stt.executeQuery()) {
                     while (rst.next()) {
@@ -168,7 +170,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
 
     @Override
-    public Boolean editar(Integer id, Pedido pedido) throws Exception {
+    public Pedido editar(Integer id, Pedido pedido) throws Exception {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -199,14 +201,13 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
 
             int res = stmt.executeUpdate();
-          if(res > 0){
-              return true;
-          }
-          throw new RegraDeNegocioException("Pedido não encontrado");
+            if (res > 0) {
+                return pedido;
+            }
+            throw new RegraDeNegocioException("Pedido não encontrado");
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-        }
-        finally {
+        } finally {
             conexaoBancoDeDados.closeConnection(con);
         }
     }

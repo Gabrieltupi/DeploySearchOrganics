@@ -1,6 +1,5 @@
 package com.vemser.dbc.searchorganic.service;
 
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -76,7 +74,7 @@ public class EmailService {
     }
 
     // Método para enviar email com base em um template FreeMarker
-   
+
 
     @Async
     public void sendEmail(Map<String, Object> dados, String assunto, String destinatario) throws Exception {
@@ -116,7 +114,6 @@ public class EmailService {
             throw new Exception(e.getMessage());
         }
     }
-
 
 
 }

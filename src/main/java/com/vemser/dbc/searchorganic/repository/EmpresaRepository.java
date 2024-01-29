@@ -5,15 +5,16 @@ import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
+public class EmpresaRepository {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
-    @Override
+
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_EMPRESA.nextval mysequence from DUAL";
 
@@ -27,72 +28,54 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
         return null;
     }
 
-    @Override
-    public Empresa adicionar(Empresa empresa) throws BancoDeDadosException {
-        Connection con = null;
-        try {
-            con = conexaoBancoDeDados.getConnection();
-
+    public Empresa adicionar(Empresa empresa, Integer idUsuario) throws BancoDeDadosException {
+        try (Connection con = conexaoBancoDeDados.getConnection()) {
             String sqlVerificarUsuario = "SELECT ATIVO FROM USUARIO WHERE ID_USUARIO = ?";
-            PreparedStatement pstd = con.prepareStatement(sqlVerificarUsuario);
-            pstd.setInt(1, empresa.getIdUsuario());
-            ResultSet resp = pstd.executeQuery();
-            int resultados = 0;
-
-            System.out.println(empresa.getIdUsuario());
-            if (resp.next()) {
-                System.out.println("passou sera");
-                String ativo = resp.getString("ATIVO");
-                if (ativo.equalsIgnoreCase("N")) {
-                    System.err.println("Usuario desativado");
-                    return empresa;
+            try (PreparedStatement pstd = con.prepareStatement(sqlVerificarUsuario)) {
+                pstd.setInt(1, idUsuario);
+                try (ResultSet resp = pstd.executeQuery()) {
+                    if (resp.next()) {
+                        String ativo = resp.getString("ATIVO");
+                        if (ativo.equalsIgnoreCase("N")) {
+                            System.err.println("Usuário desativado");
+                            return empresa;
+                        }
+                    } else {
+                        System.err.println("Usuário não cadastrado");
+                        return empresa;
+                    }
                 }
-                resultados = 1;
             }
 
-            if (resultados == 0) {
-                System.err.println("Usuario nÃo cadastrado");
-                return empresa;
-            }
-
-            Integer proximoId = this.getProximoId(con);
+            Integer proximoId = getProximoId(con);
             empresa.setIdEmpresa(proximoId);
 
             String sql = "INSERT INTO EMPRESA (ID_EMPRESA, ID_USUARIO, NOMEFANTASIA, CNPJ, RAZAOSOCIAL, INSCRICAOESTADUAL, SETOR)\n" +
-                    "VALUES\n" +
-                    "(?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setInt(1, empresa.getIdEmpresa());
+                stmt.setInt(2, idUsuario);
+                stmt.setString(3, empresa.getNomeFantasia());
+                stmt.setString(4, empresa.getCnpj());
+                stmt.setString(5, empresa.getRazaoSocial());
+                stmt.setString(6, empresa.getInscricaoEstadual());
+                stmt.setString(7, empresa.getSetor());
 
-            PreparedStatement stmt = con.prepareStatement(sql);
-
-            stmt.setInt(1, empresa.getIdEmpresa());
-            stmt.setInt(2, empresa.getIdUsuario());
-            stmt.setString(3, empresa.getNomeFantasia());
-            stmt.setString(4, empresa.getCnpj());
-            stmt.setString(5, empresa.getRazaoSocial());
-            stmt.setString(6, empresa.getInscricaoEstadual());
-            stmt.setString(7, empresa.getSetor());
-
-            int res = stmt.executeUpdate();
-            if (res > 0) {
-                System.out.println("Empresa adicionada");
-            } else {
-                System.out.println("Ocorreu um erro ao adicionar");
+                int res = stmt.executeUpdate();
+                if (res > 0) {
+                    System.out.println("Empresa adicionada");
+                } else {
+                    System.out.println("Ocorreu um erro ao adicionar");
+                }
             }
+
             return empresa;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
-    @Override
+
     public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
@@ -126,8 +109,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
     }
 
 
-    @Override
-    public Boolean editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {
+    public Empresa editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -152,12 +134,13 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
             int res = stmt.executeUpdate();
             if (res > 0) {
                 System.out.println("Empresa atualizada com sucesso");
-                return true;
+                return empresaAtualizada;
             }
-            System.out.println("Ocorreu um erro ao atualizar");
-            return false;
+            throw new Exception("Empresa não atualizada.");
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             try {
                 if (con != null) {
@@ -169,7 +152,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
         }
     }
 
-    @Override
+
     public List<Empresa> listar() throws BancoDeDadosException {
         List<Empresa> empresas = new ArrayList<>();
         Connection con = null;

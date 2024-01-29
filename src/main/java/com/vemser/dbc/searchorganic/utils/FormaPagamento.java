@@ -4,6 +4,7 @@ public enum FormaPagamento {
     PIX,
     CREDITO,
     DEBITO;
+
     public static FormaPagamento fromString(String valor) {
         switch (valor.toUpperCase()) {
             case "PIX":

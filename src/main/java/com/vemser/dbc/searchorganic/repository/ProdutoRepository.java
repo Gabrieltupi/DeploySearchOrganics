@@ -1,7 +1,4 @@
 package com.vemser.dbc.searchorganic.repository;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Produto;
@@ -10,11 +7,16 @@ import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Repository
 @RequiredArgsConstructor
 public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
+
     @Override
     public Integer getProximoId(Connection con) throws SQLException {
         String sql = "SELECT SEQ_PRODUTO.nextval mysequence from DUAL";
@@ -53,6 +55,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
             stmt.setDouble(8, produto.getTaxa());
             stmt.setString(9, produto.getUnidadeMedida().toString());
             stmt.setString(10, produto.getUrlImagem());
+
             int res = stmt.executeUpdate();
             if (res > 0) {
                 System.out.println("produto adicionada");
@@ -80,7 +83,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-            String sql = "DELETE FROM PRODUTO WHERE id_produto = ?";
+            String sql = "UPDATE PRODUTO SET ATIVO='N' WHERE id_produto = ?";
 
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setInt(1, id);
@@ -109,7 +112,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
 
 
     @Override
-    public Boolean editar(Integer id, Produto produto) throws BancoDeDadosException {
+    public Produto editar(Integer id, Produto produto) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -121,7 +124,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
                     " quantidade_disponivel = ?," +
                     " tipo_categoria = ?," +
                     " taxa = ?, " +
-                    " unidade_medida = ? " +
+                    " unidade_medida = ?, " +
                     " url_imagem = ? " +
                     " WHERE id_produto = ? ";
 
@@ -136,12 +139,16 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
             stmt.setString(7, produto.getUnidadeMedida().toString());
             stmt.setString(8, produto.getUrlImagem());
             stmt.setInt(9, produto.getIdProduto());
-            int res = stmt.executeUpdate();
 
+            int res = stmt.executeUpdate();
             if (res > 0) {
-                return true;
+                System.out.println("produto adicionada");
+            } else {
+                System.out.println("Ocorreu um erro ao adicionar");
             }
-            System.out.println("Ocorreu um erro ao atualizar");
+
+            System.out.println("aqui");
+            return produto;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -153,7 +160,6 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
                 e.printStackTrace();
             }
         }
-        return false;
     }
 
     @Override

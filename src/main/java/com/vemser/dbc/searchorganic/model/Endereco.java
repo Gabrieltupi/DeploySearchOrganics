@@ -3,14 +3,15 @@ package com.vemser.dbc.searchorganic.model;
 
 import com.vemser.dbc.searchorganic.interfaces.IImpressao;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
-import lombok.*;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(hidden = true)
 public class Endereco implements IImpressao {
     private Integer idEndereco;
     private Integer idUsuario;
@@ -26,7 +27,7 @@ public class Endereco implements IImpressao {
 
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
                     String estado, String pais) {
-        if(ValidadorCEP.isCepValido(cep) != null) {
+        if (ValidadorCEP.isCepValido(cep) != null) {
             this.logradouro = logradouro;
             this.numero = numero;
             this.complemento = complemento;
@@ -40,7 +41,7 @@ public class Endereco implements IImpressao {
 
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
                     String estado, String pais, int idUsuario) {
-        if(ValidadorCEP.isCepValido(cep) != null) {
+        if (ValidadorCEP.isCepValido(cep) != null) {
             this.idUsuario = idUsuario;
             this.logradouro = logradouro;
             this.numero = numero;
@@ -50,7 +51,7 @@ public class Endereco implements IImpressao {
             this.estado = estado;
             this.pais = pais;
             this.regiao = ValidadorCEP.isCepValido(cep);
-        } else{
+        } else {
             System.out.println("Ainda não atendemos neste estado");
         }
     }

@@ -14,20 +14,18 @@ import java.util.List;
 public class CupomService {
     private final CupomRepository repository;
 
-    public void adicionarCupom(Integer idEmpresa,Cupom cupom) {
-        try {
-            cupom.setIdEmpresa(idEmpresa);
-            repository.adicionar(cupom);
-        } catch (Exception e) {
-            System.out.println("Erro ao adicionar cupom: " + e.getMessage());
-        }
+    public void adicionarCupom(Integer idEmpresa, Cupom cupom) throws Exception {
+
+        cupom.setIdEmpresa(idEmpresa);
+        repository.adicionar(cupom);
+
     }
 
     public List<Cupom> listarCupons() {
         List<Cupom> cupons = new ArrayList<>();
         try {
             for (Cupom cupom : repository.listar()) {
-                cupom.imprimir();
+                cupom.toString();
                 cupons.add(cupom);
             }
         } catch (Exception e) {
@@ -36,27 +34,13 @@ public class CupomService {
         return cupons;
     }
 
-
-    public void imprimirCuponsDisponiveis() {
-        try {
-            for (Cupom cupom : repository.listar()) {
-                if (cupom.isAtivo().equals("S")) {
-                    System.out.println("Nome: " + cupom.getNomeCupom() + " Valor do cupom: " +
-                            cupom.getTaxaDeDesconto() + " Status: " + cupom.isAtivo());
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao imprimir cupons disponíveis: " + e.getMessage());
-        }
-    }
-
     public Cupom buscarCupomPorId(int id) {
         try {
             for (Cupom cupom : repository.listar()) {
                 System.out.println("Verificando Cupom por Id:" + cupom.getCupomId());
                 if (cupom.getCupomId() == id) {
                     System.out.println("Cupom encontrado:" + cupom.getCupomId());
-                    cupom.imprimir();
+                    cupom.toString();
                     return cupom;
                 }
             }
@@ -67,19 +51,30 @@ public class CupomService {
         return null;
     }
 
-    public void atualizarCupom(int id, Cupom cupom) {
+    public Cupom atualizarCupom(Integer idEmpresa, Integer id, Cupom cupom) throws Exception {
         try {
-            if (cupom.getCupomId() == id) {
-                System.out.println("Cupom encontrado, atualize as informações: " + cupom.getCupomId());
-                repository.editar(id, cupom);
-                System.out.println("Cupom atualizado com sucesso!");
-                return;
-            }
-            System.out.println("Cupom não pode ser atualizado");
+            Cupom cupomEditado = repository.editar(idEmpresa, id, cupom);
+
+            cupomEditado.setCupomId(id);
+            return cupomEditado;
         } catch (Exception e) {
-            System.out.println("Erro ao atualizar cupom: " + e.getMessage());
+            throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
         }
     }
+
+
+//    public Cupom atualizarCupom(int id, Cupom cupom) throws Exception {
+//        try {
+//            buscarCupomPorId(id);
+//
+//            Cupom cupomEditado = repository.editar(id, cupom);
+//
+//            cupomEditado.setCupomId(id);
+//            return cupomEditado;
+//        } catch (Exception e) {
+//            throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
+//        }
+//    }
 
     public void removerCupom(int id) {
         try {
@@ -90,13 +85,24 @@ public class CupomService {
             e.printStackTrace();
         }
     }
+
     public List<Cupom> listarCupomPorEmpresa(int idEmpresa) throws BancoDeDadosException {
         return repository.listarCupomPorEmpresa(idEmpresa);
     }
 
-
-
-
-
-
+    public Cupom getCupomByNameAndEmpresa(String nomeCupom, int idEmpresa) {
+        try {
+            return repository.getCupomByNameAndEmpresa(nomeCupom, idEmpresa);
+        } catch (BancoDeDadosException e) {
+            System.out.println("Erro ao buscar cupom por nome e empresa: " + e.getMessage());
+            return null;
+        }
+    }
 }
+
+
+
+
+
+
+
