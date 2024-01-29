@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,7 +22,6 @@ public class Usuario{
     @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
     private String nome;
 
-
     @NotBlank
     @Schema(description = "Sobrenome do usuario", required = true, example = "Nunes de Souza")
     private String sobrenome;
@@ -31,8 +31,7 @@ public class Usuario{
     @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
-
-    private Endereco endereco;
+    private List<Endereco> enderecos;
 
     @CPF
     @Schema(description = "CPF", required = true, example = "464.732.190-80")

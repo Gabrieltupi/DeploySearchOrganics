@@ -17,11 +17,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UsuarioCreateDTO {
-
     @NotBlank
     @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
     private String nome;
-
 
     @NotBlank
     @Schema(description = "Sobrenome do usuario", required = true, example = "Nunes de Souza")
@@ -32,28 +30,24 @@ public class UsuarioCreateDTO {
     @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
+    @CPF
+    @Schema(description = "CPF", required = true, example = "46473219080")
+    private String cpf;
 
-//        private Endereco endereco;
+    @NotNull
+    @Schema(description = "Email", required = true, example = "gabriel.nunes@dbccompany.com.br")
+    private String email;
 
-        @CPF
-        @Schema(description = "CPF", required = true, example = "46473219080")
-        private String cpf;
+    @NotNull
+    @NotBlank
+    @Schema(description = "Login",required = true,example = "gabnunes")
+    private String login;
 
-        @NotNull
-        @Schema(description = "Email", required = true, example = "Gabriel.nunes@dbccompany.com.br")
-        private String email;
+    @NotNull
+    @NotBlank
+    @Schema(description = "Senha", required = true, example = "*********")
+    private String senha;
 
-        @NotNull
-        @NotBlank
-        @Schema(description = "Login",required = true,example = "Tupi_Uzumaki321")
-        private String login;
-
-        @NotNull
-        @NotBlank
-        @Schema(description = "Senha", required = true, example = "*********")
-        private String senha;
-
-        @Schema(description = "Atividade do usuario", required = true, example = "S")
-        private TipoAtivo tipoAtivo = TipoAtivo.S;
-
+    @Schema(description = "Atividade do usuario", required = true, example = "S")
+    private TipoAtivo tipoAtivo = TipoAtivo.S;
 }

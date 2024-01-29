@@ -40,7 +40,7 @@ public interface IEmpresaController {
     @PostMapping("/{idUsuario}")
     public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception ;
 
-    @Operation(summary = "Editar o empresa em um usuario", description = "Editar o empresa de um usuario")
+    @Operation(summary = "Editar o empresa pelo id", description = "Editar o empresa pelo id")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna positivo para edição"),
@@ -48,10 +48,10 @@ public interface IEmpresaController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception;
+    @PutMapping("/{idEmpresa}")
+    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @Valid @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception;
 
-    @Operation(summary = "deletar a empresa por ID", description = "Deletar a empresa")
+    @Operation(summary = "Deletar a empresa por ID", description = "Deletar a empresa")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna positivo para deleção"),
@@ -83,7 +83,7 @@ public interface IEmpresaController {
     @GetMapping("/{idEmpresa}/cupom")
     public ResponseEntity<List<Cupom>> listarCupomDaLoja(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 
-    @Operation(summary = "adicionar um cupom para a loja", description = "adicionar cupom")
+    @Operation(summary = "Adicionar um cupom para a loja", description = "Adicionar cupom")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna positivo para adição de cupom"),

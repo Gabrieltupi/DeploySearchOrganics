@@ -106,7 +106,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
 
 
     @Override
-    public Boolean editar(Integer id, Cupom cupom) throws BancoDeDadosException {
+    public Cupom editar(Integer id, Cupom cupom) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -154,11 +154,14 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
             stmt.setInt(6, id);
 
             int res = stmt.executeUpdate();
-            System.out.println("editarCupom.res=" + res);
-
-            return res > 0;
+            if (res > 0) {
+                return cupom;
+            }
+            throw new Exception("Cupom não atualizado.");
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             try {
                 if (con != null) {

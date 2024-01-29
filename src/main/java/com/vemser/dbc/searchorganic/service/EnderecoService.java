@@ -76,13 +76,11 @@ public class EnderecoService {
 
                 Endereco enderecoEntity = objectMapper.convertValue(enderecoDTO, Endereco.class);
                 enderecoEntity.setRegiao(regiao);
-                boolean sucesso = enderecoRepository.editar(idEndereco, enderecoEntity);
 
-                if (sucesso) {
-                    enderecoEntity.setIdEndereco(idEndereco);
-                    return objectMapper.convertValue(enderecoEntity, EnderecoDTO.class);
-                }
-                throw new RegraDeNegocioException("Erro ao atualizar endereço: falha no registro");
+                Endereco enderecoEditado = enderecoRepository.editar(idEndereco, enderecoEntity);
+
+                enderecoEditado.setIdEndereco(idEndereco);
+                return objectMapper.convertValue(enderecoEditado, EnderecoDTO.class);
             }
             throw new RegraDeNegocioException("Erro ao atualizar endereço: CEP Inválido");
         } catch (RegraDeNegocioException e) {

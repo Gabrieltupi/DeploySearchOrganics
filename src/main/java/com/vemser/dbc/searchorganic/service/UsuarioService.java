@@ -52,21 +52,22 @@ public class UsuarioService {
         return this.usuarioRepository.buscaPorId(id);
     }
 
-    public Usuario editarUsuario(int usuarioId, Usuario usuarioEditado) throws Exception {
+    public Usuario editarUsuario(int usuarioId, Usuario usuario) throws Exception {
         try {
-            if (usuarioRepository.editar(usuarioId, usuarioEditado)) {
-                usuarioEditado.setIdUsuario(usuarioId);
+            obterUsuarioPorId(usuarioId);
 
-                Map<String, Object> dadosEmail = new HashMap<>();
-                dadosEmail.put("nomeUsuario", usuarioEditado.getNome());
-                dadosEmail.put("mensagem", "Suas informações foram atualizadas com sucesso");
-                dadosEmail.put("email", usuarioEditado.getEmail());
+            Usuario usuarioEditado = usuarioRepository.editar(usuarioId, usuario);
 
-                emailService.sendEmail(dadosEmail, "Informações Atualizadas", usuarioEditado.getEmail());
+            usuarioEditado.setIdUsuario(usuarioId);
 
-                return usuarioEditado;
-            }
-            throw new RegraDeNegocioException("Usuário não encontrado");
+            Map<String, Object> dadosEmail = new HashMap<>();
+            dadosEmail.put("nomeUsuario", usuarioEditado.getNome());
+            dadosEmail.put("mensagem", "Suas informações foram atualizadas com sucesso");
+            dadosEmail.put("email", usuarioEditado.getEmail());
+
+            emailService.sendEmail(dadosEmail, "Informações Atualizadas", usuarioEditado.getEmail());
+
+            return usuarioEditado;
         } catch (Exception e) {
             throw new Exception("Erro ao editar o usuário: " + e.getMessage(), e);
         }

@@ -168,7 +168,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
 
     @Override
-    public Boolean editar(Integer id, Pedido pedido) throws Exception {
+    public Pedido editar(Integer id, Pedido pedido) throws Exception {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -199,9 +199,9 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
 
             int res = stmt.executeUpdate();
-          if(res > 0){
-              return true;
-          }
+            if(res > 0){
+                return pedido;
+            }
           throw new RegraDeNegocioException("Pedido não encontrado");
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());

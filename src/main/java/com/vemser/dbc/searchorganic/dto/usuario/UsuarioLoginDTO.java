@@ -17,6 +17,7 @@ public class UsuarioLoginDTO {
     @NotBlank
     @Schema(description = "Login",required = true,example = "Tupi_Uzumaki321")
     private String login;
+
     @NotNull
     @NotBlank
     @Schema(description = "Senha", required = true, example = "*********")

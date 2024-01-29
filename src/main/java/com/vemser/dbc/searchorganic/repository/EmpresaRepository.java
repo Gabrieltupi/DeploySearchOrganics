@@ -127,7 +127,7 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
 
 
     @Override
-    public Boolean editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {
+    public Empresa editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -152,12 +152,13 @@ public class EmpresaRepository implements IRepositoryJDBC<Integer, Empresa> {
             int res = stmt.executeUpdate();
             if (res > 0) {
                 System.out.println("Empresa atualizada com sucesso");
-                return true;
+                return empresaAtualizada;
             }
-            System.out.println("Ocorreu um erro ao atualizar");
-            return false;
+            throw new Exception("Empresa não atualizada.");
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             try {
                 if (con != null) {

@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UpdateEmpresaDTO {
     @Schema(description = "Id da empresa",required = true, example = "1")
     private Integer idEmpresa;
@@ -43,5 +41,4 @@ public class UpdateEmpresaDTO {
 
     @Schema(description = "Produtos",required = true, example = "Produtos")
     private ArrayList<Produto> produtos = new ArrayList<>();
-
 }

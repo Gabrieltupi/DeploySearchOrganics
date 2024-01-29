@@ -37,9 +37,6 @@ public class CupomService {
         return cupons;
     }
 
-
-
-
     public Cupom buscarCupomPorId(int id) {
         try {
             for (Cupom cupom : repository.listar()) {
@@ -56,13 +53,15 @@ public class CupomService {
         }
         return null;
     }
+
     public Cupom atualizarCupom(int id, Cupom cupom) throws Exception {
         try {
-            if (repository.editar(id, cupom)) {
-                cupom.setCupomId(id);
-                return cupom;
-            }
-            throw new RegraDeNegocioException("Usuário não encontrado");
+            buscarCupomPorId(id);
+
+            Cupom cupomEditado = repository.editar(id, cupom);
+
+            cupomEditado.setCupomId(id);
+            return cupomEditado;
         } catch (Exception e) {
             throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
         }
@@ -77,6 +76,7 @@ public class CupomService {
             e.printStackTrace();
         }
     }
+
     public List<Cupom> listarCupomPorEmpresa(int idEmpresa) throws BancoDeDadosException {
         return repository.listarCupomPorEmpresa(idEmpresa);
     }
@@ -89,8 +89,6 @@ public class CupomService {
             return null;
         }
     }
-
-
 }
 
 

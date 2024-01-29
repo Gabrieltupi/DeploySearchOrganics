@@ -63,11 +63,13 @@ public class EmpresaController implements IEmpresaController {
     }
 
     @Override
-    @PutMapping("/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception{
-    Empresa empresa = this.empresaService.atualizarEmpresa(idEmpresa,empresaAtualizada);
-    EmpresaDTO empresaDTO = this.empresaService.preencherInformacoes(empresa);
-    return new ResponseEntity<>(empresaDTO,HttpStatus.OK);
+    @PutMapping("/{idEmpresa}")
+    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @Valid @RequestBody UpdateEmpresaDTO novaEmpresa) throws Exception {
+        Empresa empresaEntity = objectMapper.convertValue(novaEmpresa, Empresa.class);
+        Empresa empresaAtualizada = empresaService.atualizarEmpresa(idEmpresa, empresaEntity);
+        EmpresaDTO empresaDTO = objectMapper.convertValue(empresaAtualizada, EmpresaDTO.class);
+
+        return new ResponseEntity<>(empresaDTO, HttpStatus.OK);
     }
 
     @Override

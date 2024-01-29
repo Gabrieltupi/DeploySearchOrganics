@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.dto.usuario;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,17 +13,16 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioDTO {
-
         private Integer idUsuario;
         @NotBlank
         @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
         private String nome;
-
 
         @NotBlank
         @Schema(description = "Sobrenome do usuario", required = true, example = "Nunes de Souza")
@@ -33,8 +33,7 @@ public class UsuarioDTO {
         @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
         private LocalDate dataNascimento;
 
-
-        private Endereco endereco;
+        private List<EnderecoDTO> enderecos;
 
         @CPF
         @Schema(description = "CPF", required = true, example = "46473219080")

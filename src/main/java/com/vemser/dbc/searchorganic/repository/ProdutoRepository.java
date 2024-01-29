@@ -53,6 +53,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
             stmt.setDouble(8, produto.getTaxa());
             stmt.setString(9, produto.getUnidadeMedida().toString());
             stmt.setString(10, produto.getUrlImagem());
+
             int res = stmt.executeUpdate();
             if (res > 0) {
                 System.out.println("produto adicionada");
@@ -109,7 +110,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
 
 
     @Override
-    public Boolean editar(Integer id, Produto produto) throws BancoDeDadosException {
+    public Produto editar(Integer id, Produto produto) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -136,12 +137,16 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
             stmt.setString(7, produto.getUnidadeMedida().toString());
             stmt.setString(8, produto.getUrlImagem());
             stmt.setInt(9, produto.getIdProduto());
-            int res = stmt.executeUpdate();
 
+            int res = stmt.executeUpdate();
             if (res > 0) {
-                return true;
+                System.out.println("produto adicionada");
+            } else {
+                System.out.println("Ocorreu um erro ao adicionar");
             }
-            System.out.println("Ocorreu um erro ao atualizar");
+
+            System.out.println("aqui");
+            return produto;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -153,7 +158,6 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
                 e.printStackTrace();
             }
         }
-        return false;
     }
 
     @Override
