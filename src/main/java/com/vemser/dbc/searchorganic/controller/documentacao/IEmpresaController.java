@@ -9,14 +9,15 @@ import com.vemser.dbc.searchorganic.model.Produto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Empresa", description = "Endpoints de Empresa")
 public interface IEmpresaController {
-
     @Operation(summary = "Listar empresas", description = "Lista todas as empresas do banco")
     @ApiResponses(
             value = {
@@ -28,7 +29,6 @@ public interface IEmpresaController {
     @GetMapping("/{idEmpresa}")
     public ResponseEntity<EmpresaDTO> exibirEmpresa(@PathVariable ("idEmpresa") Integer idEmpresa) throws Exception;
 
-
     @Operation(summary = "Postar a empresa em um usuario", description = "Postar empresa à um usuario")
     @ApiResponses(
             value = {
@@ -38,9 +38,7 @@ public interface IEmpresaController {
             }
     )
     @PostMapping("/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario,
-                                                   @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception ;
-
+    public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception ;
 
     @Operation(summary = "Editar o empresa em um usuario", description = "Editar o empresa de um usuario")
     @ApiResponses(
@@ -53,8 +51,6 @@ public interface IEmpresaController {
     @PutMapping("/{idUsuario}")
     public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception;
 
-
-
     @Operation(summary = "deletar a empresa por ID", description = "Deletar a empresa")
     @ApiResponses(
             value = {
@@ -66,8 +62,6 @@ public interface IEmpresaController {
     @DeleteMapping("/{idEmpresa}")
     public ResponseEntity<Void> deletarEmpresa(@PathVariable("idEmpresa") Integer idEmpresa)throws Exception;
 
-
-
     @Operation(summary = "Listar produtos de uma empresa", description = "Lista todas os produtos da empresa")
     @ApiResponses(
             value = {
@@ -77,8 +71,6 @@ public interface IEmpresaController {
             }
     )
     public ResponseEntity<List<Produto>> listarProdutosDaLoja(Integer idLoja) throws Exception;
-
-
 
     @Operation(summary = "Listar cupons de uma loja", description = "Lista todas os cupons da loja")
     @ApiResponses(
@@ -91,7 +83,6 @@ public interface IEmpresaController {
     @GetMapping("/{idEmpresa}/cupom")
     public ResponseEntity<List<Cupom>> listarCupomDaLoja(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 
-
     @Operation(summary = "adicionar um cupom para a loja", description = "adicionar cupom")
     @ApiResponses(
             value = {
@@ -101,10 +92,7 @@ public interface IEmpresaController {
             }
     )
     @PostMapping("/{idEmpresa}/cupom")
-    public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa,
-                                               @RequestBody Cupom cupom) throws Exception;
-
-
+    public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody Cupom cupom) throws Exception;
 
     @Operation(summary = "Listar cupons de uma empresa", description = "Lista todas os cupons da empresa")
     @ApiResponses(
@@ -117,8 +105,6 @@ public interface IEmpresaController {
     @GetMapping("/{idEmpresa}/cupons")
     public ResponseEntity<List<Cupom>> listarCuponsDaEmpresa(@PathVariable("idEmpresa") Integer idEmpresa);
 
-
-
     @Operation(summary = "remover cupons", description = "Deletar um cupom")
     @ApiResponses(
             value = {
@@ -130,8 +116,6 @@ public interface IEmpresaController {
     @DeleteMapping("/cupom/{idCupom}")
     public ResponseEntity<Void> removerCupom(@PathVariable("idCupom") Integer idCupom);
 
-
-
     @Operation(summary = "Altera um cupons de uma empresa", description = "Altera todas os cupons da empresa")
     @ApiResponses(
             value = {
@@ -141,9 +125,7 @@ public interface IEmpresaController {
             }
     )
     @PutMapping("/cupom/{idCupom}")
-    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
-                                                   @RequestBody Cupom cupom) throws Exception;
-
+    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom, @RequestBody Cupom cupom) throws Exception;
 
     @Operation(summary = "Listar todos cupons", description = "Lista todas os cupons ")
     @ApiResponses(
@@ -155,7 +137,6 @@ public interface IEmpresaController {
     )
     @GetMapping("/cupom")
     public ResponseEntity<List<Cupom>> listarCupom() throws Exception;
-
 }
 
 

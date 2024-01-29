@@ -4,12 +4,13 @@ import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+@Tag(name = "Cupom", description = "Endpoints de Cupom")
 public interface ICupomController {
-
     @Operation(summary = "Mostrar cupons", description = "Mostrar cupom")
     @ApiResponses(
             value = {
@@ -19,7 +20,7 @@ public interface ICupomController {
             }
     )
     @GetMapping("/{nomeCupom}/{idEmpresa}")
-    public ResponseEntity<CupomDto> buscarPorNomeEEmpresa(
+    ResponseEntity<CupomDto> buscarPorNomeEEmpresa(
             @PathVariable("nomeCupom") String nomeCupom,
             @PathVariable("idEmpresa") int idEmpresa
     );
