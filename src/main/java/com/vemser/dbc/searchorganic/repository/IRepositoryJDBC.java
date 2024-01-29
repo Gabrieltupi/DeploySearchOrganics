@@ -8,7 +8,7 @@ import java.util.List;
 public interface IRepositoryJDBC<ARGUMENTO, OBJETO> {
     Integer getProximoId(Connection connection) throws SQLException;
 
-    OBJETO adicionar(OBJETO object) throws  BancoDeDadosException;
+    OBJETO adicionar(OBJETO object) throws SQLException;
 
     Boolean remover(ARGUMENTO id) throws  BancoDeDadosException;
 

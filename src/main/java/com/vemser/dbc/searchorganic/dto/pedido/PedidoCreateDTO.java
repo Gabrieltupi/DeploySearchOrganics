@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.pedido;
 
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class PedidoCreateDTO {
     @NotNull
-    @Size
     private Integer idEndereco;
 
     @Schema(description = "id cupom", required = true, example = "id cupom")
@@ -45,7 +45,6 @@ public class PedidoCreateDTO {
     private BigDecimal precoCarrinho;
 
     @NotNull
-    @Schema(description = "produtos carrinho", required = true, example = "~produtos~")
+    @Schema(description = "Produtos carrinho", required = true, example = "~produtos~")
     private ArrayList<ProdutoCarrinho> produtos;
-
 }

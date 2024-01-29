@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.cupom.CreateCupomDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
@@ -37,9 +38,9 @@ public class PedidoService {
 
         Usuario usuario = usuarioService.obterUsuarioPorId(id);
         Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
+
         pedido.setIdUsuario(id);
-
-
+        pedido.setIdCupom(pedidoCreateDTO.getIdCupom());
 
         pedido = pedidoRepository.adicionar(pedido);
         PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
