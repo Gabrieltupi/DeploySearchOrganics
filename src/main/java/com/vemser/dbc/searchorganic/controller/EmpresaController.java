@@ -1,7 +1,9 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.controller.documentacao.IEmpresaController;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
+import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
@@ -22,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/empresa")
-public class EmpresaController {
+public class EmpresaController implements IEmpresaController {
     private final EmpresaService empresaService;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
@@ -46,12 +48,11 @@ public class EmpresaController {
     }
 
     @PostMapping("/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario,
-                                                   @Valid @RequestBody Empresa empresa) throws Exception {
+    public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception {
         usuarioService.obterUsuarioPorId(idUsuario);
         Empresa empresaEntity = objectMapper.convertValue(empresa, Empresa.class);
         empresaEntity.setIdEmpresa(idUsuario);
-        Empresa empresaAdicionada = this.empresaService.adicionarEmpresa(idUsuario, empresa);
+        Empresa empresaAdicionada = this.empresaService.adicionarEmpresa(idUsuario, empresaEntity);
         EmpresaDTO empresaDTO = objectMapper.convertValue(empresaAdicionada, EmpresaDTO.class);
         return new ResponseEntity<>(empresaDTO, HttpStatus.CREATED);
     }
