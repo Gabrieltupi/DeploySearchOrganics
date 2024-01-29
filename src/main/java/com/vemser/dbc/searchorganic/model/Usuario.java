@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -17,7 +20,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(hidden = true)
+@Entity(name = "USUARIO")
 public class Usuario {
+    @Id
     private Integer idUsuario;
     @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
     private String nome;
@@ -31,6 +36,7 @@ public class Usuario {
     @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
+    @OneToMany(mappedBy = "idUsuario")
     private List<Endereco> enderecos;
 
     @CPF

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -90,7 +89,7 @@ public class ProdutoService {
         return produtoRepository.listarProdutosLoja(idLoja);
     }
 
-    public String getMensagemProdutoEmail(ArrayList<ProdutoCarrinho> produtos) {
+    public String getMensagemProdutoEmail(List<ProdutoCarrinho> produtos) {
         StringBuilder mensagemFinal = new StringBuilder();
         for (ProdutoCarrinho produtoCarrinho : produtos) {
             String mensagemProduto = String.format("""

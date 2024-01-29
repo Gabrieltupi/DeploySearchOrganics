@@ -8,12 +8,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(hidden = true)
+@Entity
 public class Endereco implements IImpressao {
+    @Id
+    @Column(name = "ID_ENDERECO")
     private Integer idEndereco;
+    @Column(name = "ID_USUARIO")
     private Integer idUsuario;
     private String logradouro;
     private String numero;
@@ -23,7 +29,7 @@ public class Endereco implements IImpressao {
     private String estado;
     private String pais;
     private String regiao;
-    private ValidadorCEP validadorCEP;
+
 
     public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
                     String estado, String pais) {

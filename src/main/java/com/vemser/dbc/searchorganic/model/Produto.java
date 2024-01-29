@@ -8,13 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(hidden = true)
+@Entity
 public class Produto {
+    @Id
     private Integer idProduto;
     private Integer idEmpresa;
     private String nome;

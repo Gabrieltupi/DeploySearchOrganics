@@ -32,6 +32,9 @@ public class EnderecoService {
             throw new RegraDeNegocioException("Erro ao buscar endereço: " + e.getMessage());
         }
     }
+    public Endereco obterEndereco(Integer idEndereco) throws Exception {
+       return enderecoRepository.buscarPorId(idEndereco);
+    }
 
     public List<EnderecoDTO> listarEnderecos() throws Exception {
         log.info("[Endereço] Listando");

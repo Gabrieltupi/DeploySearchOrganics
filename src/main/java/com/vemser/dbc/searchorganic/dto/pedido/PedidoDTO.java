@@ -1,7 +1,9 @@
 package com.vemser.dbc.searchorganic.dto.pedido;
 
-import com.vemser.dbc.searchorganic.model.Cupom;
-import com.vemser.dbc.searchorganic.model.Endereco;
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
+import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
+import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
@@ -11,14 +13,14 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PedidoDTO {
     private Integer idPedido;
-    private Integer idUsuario;
+    private UsuarioDTO usuario;
     private StatusPedido statusPedido;
     private BigDecimal precoFrete;
     private BigDecimal precoCarrinho;
@@ -26,7 +28,7 @@ public class PedidoDTO {
     private FormaPagamento formaPagamento;
     private LocalDate dataDePedido;
     private LocalDate dataEntrega;
-    private Endereco endereco;
-    private ArrayList<ProdutoCarrinho> produtos;
-    private Cupom cupom;
+    private EnderecoDTO endereco;
+    private List<ProdutoCarrinho> produtos;
+    private CupomDto cupom;
 }
