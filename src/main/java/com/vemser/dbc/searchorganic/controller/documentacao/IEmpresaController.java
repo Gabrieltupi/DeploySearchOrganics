@@ -49,7 +49,7 @@ public interface IEmpresaController {
             }
     )
     @PutMapping("/{idEmpresa}")
-    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @Valid @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception;
+    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception;
 
     @Operation(summary = "Deletar a empresa por ID", description = "Deletar a empresa")
     @ApiResponses(
@@ -105,7 +105,7 @@ public interface IEmpresaController {
     @GetMapping("/{idEmpresa}/cupons")
     public ResponseEntity<List<Cupom>> listarCuponsDaEmpresa(@PathVariable("idEmpresa") Integer idEmpresa);
 
-    @Operation(summary = "remover cupons", description = "Deletar um cupom")
+    @Operation(summary = "Remover cupons", description = "Deletar um cupom")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna positivo para a exclusão de um cupons"),
@@ -125,7 +125,8 @@ public interface IEmpresaController {
             }
     )
     @PutMapping("/cupom/{idCupom}")
-    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom, @RequestBody Cupom cupom) throws Exception;
+    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom, @PathVariable("idEmpresa") Integer idEmpresa,
+                                                   @RequestBody Cupom cupom) throws Exception;
 
     @Operation(summary = "Listar todos cupons", description = "Lista todas os cupons ")
     @ApiResponses(

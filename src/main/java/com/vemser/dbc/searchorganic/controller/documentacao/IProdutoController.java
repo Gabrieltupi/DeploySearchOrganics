@@ -29,10 +29,10 @@ public interface IProdutoController {
     @PostMapping //post localhost:8080/produto
     public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto) throws Exception;
 
-    @Operation(summary = "imagem", description = "imagem")
+    @Operation(summary = "Adicionar imagem", description = "Adiciona imagem")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Adiciona produtos"),
+                    @ApiResponse(responseCode = "200", description = "Adiciona imagem"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -40,7 +40,7 @@ public interface IProdutoController {
     @PostMapping("/imagem")
     public ResponseEntity<Imagem> uploadImagem(@RequestPart("imagem") MultipartFile imagem) throws Exception;
 
-    @Operation(summary = "altera o produto pelo id", description = "alterando produto")
+    @Operation(summary = "Altera o produto pelo id", description = "Alterando produto")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "alterando produtos"),
@@ -73,7 +73,7 @@ public interface IProdutoController {
     @DeleteMapping("/{idProduto}") //delete localhost:8080/produto/idproduto
     public ResponseEntity<Void> delete(@PathVariable("idProduto") Integer id) throws Exception;
 
-    @Operation(summary = "mostrar produto pelo id", description = "Mostrando produto")
+    @Operation(summary = "Mostrar produto pelo id", description = "Mostrando produto")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Mostra produtos"),
