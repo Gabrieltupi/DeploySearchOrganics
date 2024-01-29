@@ -3,6 +3,7 @@ package com.vemser.dbc.searchorganic.model;
 import com.vemser.dbc.searchorganic.interfaces.ICupomServicos;
 import com.vemser.dbc.searchorganic.interfaces.IImpressao;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.*;
@@ -12,7 +13,8 @@ import java.math.BigDecimal;
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-public class Cupom {
+    @Schema(hidden = true)
+    public class Cupom {
 
     private Integer cupomId;
     @NotEmpty(message = "O nome nao pode ser vazio")

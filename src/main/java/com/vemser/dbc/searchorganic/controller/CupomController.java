@@ -22,6 +22,7 @@ public class CupomController implements ICupomController {
         this.objectMapper = objectMapper;
     }
 
+    @Override
     @GetMapping("/{nomeCupom}/{idEmpresa}")
     public ResponseEntity<CupomDto> buscarPorNomeEEmpresa(
             @PathVariable("nomeCupom") String nomeCupom,

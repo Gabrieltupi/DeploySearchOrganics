@@ -3,6 +3,7 @@ package com.vemser.dbc.searchorganic.model;
 
 import com.vemser.dbc.searchorganic.interfaces.IImpressao;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(hidden = true)
 public class Endereco implements IImpressao {
     private Integer idEndereco;
     private Integer idUsuario;

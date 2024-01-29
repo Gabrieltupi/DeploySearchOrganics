@@ -56,5 +56,4 @@ public class UsuarioCreateDTO {
         @Schema(description = "Atividade do usuario", required = true, example = "S")
         private TipoAtivo tipoAtivo = TipoAtivo.S;
 
-
 }

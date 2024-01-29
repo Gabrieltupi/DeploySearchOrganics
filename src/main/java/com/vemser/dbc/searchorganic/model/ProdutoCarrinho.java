@@ -1,10 +1,13 @@
 package com.vemser.dbc.searchorganic.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Schema(hidden = true)
+
 public class ProdutoCarrinho{
     private Integer idProduto;
     private Integer quantidade;

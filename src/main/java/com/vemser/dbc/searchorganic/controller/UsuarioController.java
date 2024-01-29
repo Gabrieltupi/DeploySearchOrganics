@@ -26,11 +26,14 @@ public class UsuarioController implements IUsuarioController {
         this.objectMapper = objectMapper;
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> list() throws Exception {
         List<UsuarioDTO> usuarios = objectMapper.convertValue(this.usuarioService.exibirTodos(), new TypeReference<List<UsuarioDTO>>() {});;
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
+
+    @Override
     @GetMapping("/{idUsuario}")
     public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
         Usuario usuarioEntity  = this.usuarioService.obterUsuarioPorId(id);
@@ -39,6 +42,7 @@ public class UsuarioController implements IUsuarioController {
         return new  ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception {
 
@@ -50,6 +54,7 @@ public class UsuarioController implements IUsuarioController {
 
     }
 
+    @Override
     @PostMapping("/login")
     public ResponseEntity<UsuarioDTO> login(@Valid @RequestBody UsuarioLoginDTO usuarioLoginDTO) throws Exception {
         Usuario usuarioEntity = this.usuarioService.autenticar(usuarioLoginDTO.getLogin(), usuarioLoginDTO.getSenha());
@@ -57,6 +62,8 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
+
+    @Override
     @PutMapping("/{idUsuario}")
     public  ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id, @Valid @RequestBody UsuarioUpdateDTO usuarioAtualizar) throws Exception {
         Usuario usuarioEntity  = objectMapper.convertValue(usuarioAtualizar, Usuario.class);
@@ -66,6 +73,7 @@ public class UsuarioController implements IUsuarioController {
         return new  ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
+    @Override
     @DeleteMapping("/{idUsuario}")
     public ResponseEntity<Void> excluirUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
         this.usuarioService.removerUsuario(id);

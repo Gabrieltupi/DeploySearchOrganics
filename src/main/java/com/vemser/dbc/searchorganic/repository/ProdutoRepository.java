@@ -80,7 +80,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-            String sql = "DELETE FROM PRODUTO WHERE id_produto = ?";
+            String sql = "UPDATE PRODUTO SET ATIVO='N' WHERE id_produto = ?";
 
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setInt(1, id);

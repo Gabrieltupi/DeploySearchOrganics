@@ -126,7 +126,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
         try {
             con = conexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
+            String sql = "UPDATE Usuario SET ATIVO='N' WHERE id_usuario = ?";
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setInt(1, id);
 

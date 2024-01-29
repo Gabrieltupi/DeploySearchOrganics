@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +15,9 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(hidden = true)
 public class Usuario{
     private Integer idUsuario;
-    @NotBlank
     @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
     private String nome;
 
