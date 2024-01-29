@@ -21,6 +21,8 @@ import java.util.List;
 @Entity(name = "PEDIDO")
 public class Pedido {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PEDIDO_SEQ")
+    @SequenceGenerator(name = "PEDIDO_SEQ", sequenceName = "SEQ_PEDIDO", allocationSize = 1)
     @Column(name = "ID_PEDIDO")
     private Integer idPedido;
 
