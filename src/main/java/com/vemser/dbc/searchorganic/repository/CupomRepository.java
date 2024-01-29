@@ -11,9 +11,9 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
+public class CupomRepository {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
-    @Override
+
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
             String sql = "SELECT SEQ_CUPOM.nextval mysequence from DUAL";
@@ -30,7 +30,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
         }
     }
 
-    @Override
+
     public Cupom adicionar(Cupom cupom) throws BancoDeDadosException {
         Connection con = null;
         try {
@@ -70,7 +70,7 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
         }
     }
 
-    @Override
+
     public Boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
@@ -105,14 +105,81 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
     }
 
 
-    @Override
-    public Cupom editar(Integer id, Cupom cupom) throws BancoDeDadosException {
+//    public Cupom editar(Integer id, Cupom cupom) throws BancoDeDadosException {
+//        Connection con = null;
+//        try {
+//            con = conexaoBancoDeDados.getConnection();
+//
+//            StringBuilder sql = new StringBuilder();
+//            sql.append("UPDATE CUPOM SET \n");
+//
+//            if (cupom.getNomeCupom() != null) {
+//                sql.append(" nome_cupom = ?,");
+//            }
+//            if (cupom.getAtivo() != null) {
+//                sql.append(" ativo = ?,");
+//            }
+//            if (cupom.getDescricao() != null) {
+//                sql.append(" descricao = ?,");
+//            }
+//            if (cupom.getTaxaDeDesconto() != null) {
+//                sql.append(" taxa_desconto = ?, ");
+//            }
+//            if (cupom.getIdEmpresa() != null) {
+//                sql.append(" id_empresa = ? ");
+//            }
+//
+//            sql.deleteCharAt(sql.length() - 1);
+//            sql.append(" WHERE id_cupom = ? ");
+//
+//            PreparedStatement stmt = con.prepareStatement(sql.toString());
+//
+//            if (cupom.getNomeCupom() != null) {
+//                stmt.setString(1, cupom.getNomeCupom());
+//            }
+//            if (cupom.getAtivo() != null) {
+//                stmt.setString(2, cupom.getAtivo().getStatus());
+//            }
+//            if (cupom.getDescricao() != null) {
+//                stmt.setString(3, cupom.getDescricao());
+//            }
+//            if (cupom.getTaxaDeDesconto() != null) {
+//                stmt.setBigDecimal(4, cupom.getTaxaDeDesconto());
+//            }
+//            if (cupom.getIdEmpresa() != null) {
+//                stmt.setInt(5, cupom.getIdEmpresa());
+//            }
+//
+//            stmt.setInt(6, id);
+//
+//            int res = stmt.executeUpdate();
+//            if (res > 0) {
+//                return cupom;
+//            }
+//            throw new Exception("Cupom não atualizado.");
+//        } catch (SQLException e) {
+//            throw new BancoDeDadosException(e.getCause());
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            try {
+//                if (con != null) {
+//                    con.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+
+    public Cupom editar(Integer idEmpresa, Integer id, Cupom cupom) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE CUPOM SET \n");
+            sql.append("UPDATE CUPOM SET ");
 
             if (cupom.getNomeCupom() != null) {
                 sql.append(" nome_cupom = ?,");
@@ -124,34 +191,31 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
                 sql.append(" descricao = ?,");
             }
             if (cupom.getTaxaDeDesconto() != null) {
-                sql.append(" taxa_desconto = ?, ");
-            }
-            if (cupom.getIdEmpresa() != null) {
-                sql.append(" id_empresa = ? ");
+                sql.append(" taxa_desconto = ?,");
             }
 
             sql.deleteCharAt(sql.length() - 1);
-            sql.append(" WHERE id_cupom = ? ");
+            sql.append(" WHERE id_empresa = ? AND id_cupom = ?");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
+            int parameterIndex = 1;
+
             if (cupom.getNomeCupom() != null) {
-                stmt.setString(1, cupom.getNomeCupom());
+                stmt.setString(parameterIndex++, cupom.getNomeCupom());
             }
             if (cupom.getAtivo() != null) {
-                stmt.setString(2, cupom.getAtivo().getStatus());
+                stmt.setString(parameterIndex++, cupom.getAtivo().getStatus());
             }
             if (cupom.getDescricao() != null) {
-                stmt.setString(3, cupom.getDescricao());
+                stmt.setString(parameterIndex++, cupom.getDescricao());
             }
             if (cupom.getTaxaDeDesconto() != null) {
-                stmt.setBigDecimal(4, cupom.getTaxaDeDesconto());
-            }
-            if (cupom.getIdEmpresa() != null) {
-                stmt.setInt(5, cupom.getIdEmpresa());
+                stmt.setBigDecimal(parameterIndex++, cupom.getTaxaDeDesconto());
             }
 
-            stmt.setInt(6, id);
+            stmt.setInt(parameterIndex++, idEmpresa);
+            stmt.setInt(parameterIndex, id);
 
             int res = stmt.executeUpdate();
             if (res > 0) {
@@ -173,7 +237,6 @@ public class CupomRepository implements IRepositoryJDBC<Integer, Cupom> {
         }
     }
 
-    @Override
     public List<Cupom> listar() throws BancoDeDadosException {
         List<Cupom> cupoms = new ArrayList<>();
         Connection con = null;

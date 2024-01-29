@@ -18,7 +18,6 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class PedidoCreateDTO {
     @NotNull
-    @Size
     private Integer idEndereco;
 
     @Schema(description = "id cupom", required = true, example = "id cupom")
@@ -45,7 +44,7 @@ public class PedidoCreateDTO {
     private BigDecimal precoCarrinho;
 
     @NotNull
-    @Schema(description = "produtos carrinho", required = true, example = "~produtos~")
+    @Schema(description = "produtos carrinho",  example = "~produtos~")
     private ArrayList<ProdutoCarrinho> produtos;
 
 }

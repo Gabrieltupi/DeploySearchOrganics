@@ -60,8 +60,8 @@ public class EmpresaController  {
         return new ResponseEntity<>(empresaDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception{
+    @PutMapping("/{idEmpresa}")
+    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception{
         Empresa empresa = this.empresaService.atualizarEmpresa(idEmpresa,empresaAtualizada);
         EmpresaDTO empresaDTO = this.empresaService.preencherInformacoes(empresa);
         return new ResponseEntity<>(empresaDTO,HttpStatus.OK);
@@ -108,10 +108,10 @@ public class EmpresaController  {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/cupom/{idCupom}")
-    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
+    @PutMapping("/cupom/{idCupom}/{idEmpresa}")
+    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom,@PathVariable("idEmpresa") Integer idEmpresa,
                                                    @RequestBody Cupom cupom) throws Exception {
-        cupomService.atualizarCupom(idCupom, cupom);
+        cupomService.atualizarCupom(idEmpresa,idCupom, cupom);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
