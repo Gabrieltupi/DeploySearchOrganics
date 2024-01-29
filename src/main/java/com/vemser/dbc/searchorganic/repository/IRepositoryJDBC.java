@@ -1,4 +1,5 @@
 package com.vemser.dbc.searchorganic.repository;
+
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 
 import java.sql.Connection;
@@ -10,7 +11,7 @@ public interface IRepositoryJDBC<ARGUMENTO, OBJETO> {
 
     OBJETO adicionar(OBJETO object) throws SQLException;
 
-    Boolean remover(ARGUMENTO id) throws  BancoDeDadosException;
+    Boolean remover(ARGUMENTO id) throws BancoDeDadosException;
 
     OBJETO editar(ARGUMENTO id, OBJETO objeto) throws Exception;
 

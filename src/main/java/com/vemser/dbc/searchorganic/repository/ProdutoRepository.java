@@ -1,7 +1,4 @@
 package com.vemser.dbc.searchorganic.repository;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Produto;
@@ -10,11 +7,16 @@ import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Repository
 @RequiredArgsConstructor
 public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
+
     @Override
     public Integer getProximoId(Connection con) throws SQLException {
         String sql = "SELECT SEQ_PRODUTO.nextval mysequence from DUAL";

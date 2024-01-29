@@ -57,7 +57,7 @@ public interface IPedidoController {
             }
     )
     @PutMapping("/{idPedido}")
-    public  ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id, @Valid @RequestBody PedidoUpdateDTO pedidoAtualizar) throws Exception;
+    public ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id, @Valid @RequestBody PedidoUpdateDTO pedidoAtualizar) throws Exception;
 
     @Operation(summary = "Deleta um pedido através do id do pedido", description = "deleta um pedido")
     @ApiResponses(

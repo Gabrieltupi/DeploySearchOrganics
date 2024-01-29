@@ -12,16 +12,17 @@ import java.math.BigDecimal;
 
 @Component
 @RequiredArgsConstructor
-public class ValidarQuantidadeProdutos implements  IValidarPedido{
+public class ValidarQuantidadeProdutos implements IValidarPedido {
     private final ProdutoRepository produtoRepository;
+
     @Override
     public void validar(PedidoCreateDTO pedidoCreateDTO, Integer idUsuario) throws Exception {
-        for(ProdutoCarrinho produtoCarrinho : pedidoCreateDTO.getProdutos()){
+        for (ProdutoCarrinho produtoCarrinho : pedidoCreateDTO.getProdutos()) {
             Produto produto = produtoRepository.buscarProdutoPorId(produtoCarrinho.getIdProduto());
-            BigDecimal estoque  = produto.getQuantidade();
+            BigDecimal estoque = produto.getQuantidade();
             Integer quantidadePedida = produtoCarrinho.getQuantidade();
 
-            if(estoque.compareTo(new BigDecimal(quantidadePedida)) < 0){
+            if (estoque.compareTo(new BigDecimal(quantidadePedida)) < 0) {
                 throw new ValidacaoException("Estoque insuficiente para o produto: " + produto.getNome() + ", de id: " + produto.getIdProduto());
             }
 

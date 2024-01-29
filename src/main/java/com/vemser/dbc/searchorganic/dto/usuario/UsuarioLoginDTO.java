@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -15,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class UsuarioLoginDTO {
     @NotNull
     @NotBlank
-    @Schema(description = "Login",required = true,example = "Tupi_Uzumaki321")
+    @Schema(description = "Login", required = true, example = "Tupi_Uzumaki321")
     private String login;
 
     @NotNull

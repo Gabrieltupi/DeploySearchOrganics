@@ -70,7 +70,7 @@ public interface IUsuarioController {
             }
     )
     @PutMapping("/{idUsuario}")
-    public  ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id, @Valid @RequestBody UsuarioUpdateDTO usuarioAtualizar) throws Exception;
+    public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id, @Valid @RequestBody UsuarioUpdateDTO usuarioAtualizar) throws Exception;
 
     @Operation(summary = "Deleta um Usuario", description = "Deleta um usuario")
     @ApiResponses(

@@ -5,7 +5,6 @@ import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.model.Usuario;
-import com.vemser.dbc.searchorganic.service.EnderecoService;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

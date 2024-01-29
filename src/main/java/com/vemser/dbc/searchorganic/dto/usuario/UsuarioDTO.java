@@ -2,7 +2,6 @@ package com.vemser.dbc.searchorganic.dto.usuario;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
-import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -19,40 +18,40 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioDTO {
-        private Integer idUsuario;
-        @NotBlank
-        @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
-        private String nome;
+    private Integer idUsuario;
+    @NotBlank
+    @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
+    private String nome;
 
-        @NotBlank
-        @Schema(description = "Sobrenome do usuario", required = true, example = "Nunes de Souza")
-        private String sobrenome;
+    @NotBlank
+    @Schema(description = "Sobrenome do usuario", required = true, example = "Nunes de Souza")
+    private String sobrenome;
 
-        @NotNull
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
-        private LocalDate dataNascimento;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
+    private LocalDate dataNascimento;
 
-        private List<EnderecoDTO> enderecos;
+    private List<EnderecoDTO> enderecos;
 
-        @CPF
-        @Schema(description = "CPF", required = true, example = "46473219080")
-        private String cpf;
+    @CPF
+    @Schema(description = "CPF", required = true, example = "46473219080")
+    private String cpf;
 
-        @NotNull
-        @Schema(description = "Email", required = true, example = "Gabriel.nunes@dbccompany.com.br")
-        private String email;
+    @NotNull
+    @Schema(description = "Email", required = true, example = "Gabriel.nunes@dbccompany.com.br")
+    private String email;
 
-        @NotNull
-        @NotBlank
-        @Schema(description = "Login",required = true,example = "Tupi_Uzumaki321")
-        private String login;
+    @NotNull
+    @NotBlank
+    @Schema(description = "Login", required = true, example = "Tupi_Uzumaki321")
+    private String login;
 
-        @NotNull
-        @NotBlank
-        @Schema(description = "Senha", required = true, example = "*********")
-        private String senha;
+    @NotNull
+    @NotBlank
+    @Schema(description = "Senha", required = true, example = "*********")
+    private String senha;
 
-        @Schema(description = "Atividade do usuario", required = true, example = "S")
-        private TipoAtivo tipoAtivo = TipoAtivo.S;
+    @Schema(description = "Atividade do usuario", required = true, example = "S")
+    private TipoAtivo tipoAtivo = TipoAtivo.S;
 }

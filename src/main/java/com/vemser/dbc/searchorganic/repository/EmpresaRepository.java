@@ -5,14 +5,16 @@ import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class EmpresaRepository{
+public class EmpresaRepository {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
+
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_EMPRESA.nextval mysequence from DUAL";
 
@@ -105,7 +107,6 @@ public class EmpresaRepository{
             }
         }
     }
-
 
 
     public Empresa editar(Integer id, Empresa empresaAtualizada) throws BancoDeDadosException {

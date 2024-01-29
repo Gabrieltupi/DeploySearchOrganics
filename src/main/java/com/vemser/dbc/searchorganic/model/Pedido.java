@@ -1,10 +1,8 @@
 package com.vemser.dbc.searchorganic.model;
 
-import com.vemser.dbc.searchorganic.interfaces.IImpressao;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import com.vemser.dbc.searchorganic.utils.validadores.TipoEntrega;
-import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +16,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(hidden = true)
-public class Pedido  {
+public class Pedido {
     private Integer idPedido;
     private Integer idUsuario;
     private Integer idEndereco;

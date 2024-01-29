@@ -3,7 +3,6 @@ package com.vemser.dbc.searchorganic.repository;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
-import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.model.Pedido;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
@@ -24,6 +23,7 @@ import java.util.List;
 public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     private final ProdutoRepository produtoRepository;
+
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT SEQ_PEDIDO.nextval mysequence from DUAL";
@@ -130,7 +130,7 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
                 String query = "SELECT P.ID_PRODUTO, PEXP.QUANTIDADE, P.QUANTIDADE_DISPONIVEL FROM PRODUTO P " +
                         "INNER JOIN PEDIDOXPRODUTO PEXP ON PEXP.ID_PRODUTO = P.ID_PRODUTO " +
                         "INNER JOIN PEDIDO PED ON PED.ID_PEDIDO = PEXP.ID_PEDIDO WHERE ID_PEDIDO = ?";
-                 PreparedStatement stt = con.prepareStatement(query);
+                PreparedStatement stt = con.prepareStatement(query);
                 stt.setInt(1, id);
                 try (ResultSet rst = stt.executeQuery()) {
                     while (rst.next()) {
@@ -201,14 +201,13 @@ public class PedidoRepository implements IRepositoryJDBC<Integer, Pedido> {
 
 
             int res = stmt.executeUpdate();
-            if(res > 0){
+            if (res > 0) {
                 return pedido;
             }
-          throw new RegraDeNegocioException("Pedido não encontrado");
+            throw new RegraDeNegocioException("Pedido não encontrado");
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-        }
-        finally {
+        } finally {
             conexaoBancoDeDados.closeConnection(con);
         }
     }

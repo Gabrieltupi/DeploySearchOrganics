@@ -17,7 +17,7 @@ public enum TipoCategoria {
     }
 
     public Integer getValor() {
-        return valor+1;
+        return valor + 1;
     }
 
     public static TipoCategoria fromInt(Integer valor) {
@@ -28,8 +28,9 @@ public enum TipoCategoria {
         }
         throw new IllegalArgumentException("TipoCategoria inválido: " + valor);
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return mostrar;
     }
 

@@ -27,7 +27,7 @@ public interface IProdutoController {
             }
     )
     @PostMapping //post localhost:8080/produto
-    public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto ) throws Exception;
+    public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto) throws Exception;
 
     @Operation(summary = "imagem", description = "imagem")
     @ApiResponses(
@@ -49,7 +49,7 @@ public interface IProdutoController {
             }
     )
     @PutMapping("{idProduto}") // put localhost:8080/produto/idProduto
-    public ResponseEntity<ProdutoDTO> update (@PathVariable("idProduto") Integer id, @RequestBody @Valid ProdutoUpdateDTO produto) throws Exception;
+    public ResponseEntity<ProdutoDTO> update(@PathVariable("idProduto") Integer id, @RequestBody @Valid ProdutoUpdateDTO produto) throws Exception;
 
     @Operation(summary = "Listar todos os produtos", description = "lista de produtos")
     @ApiResponses(
@@ -82,7 +82,7 @@ public interface IProdutoController {
             }
     )
     @GetMapping("/{idproduto}") // get localhost:8080/produto/idproduto
-    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable ("idproduto")Integer idEmpresa) throws Exception;
+    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable("idproduto") Integer idEmpresa) throws Exception;
 
     @Operation(summary = "Listando produtos por categoria", description = "Listando produtos por categoria")
     @ApiResponses(

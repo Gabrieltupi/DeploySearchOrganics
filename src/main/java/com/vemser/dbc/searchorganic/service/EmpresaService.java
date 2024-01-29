@@ -1,4 +1,6 @@
 package com.vemser.dbc.searchorganic.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
@@ -7,40 +9,30 @@ import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.repository.EmpresaRepository;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
-import com.vemser.dbc.searchorganic.utils.TipoCategoria;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EmpresaService {
     private final EmpresaRepository empresaRepository;
     private final ProdutoRepository produtoRepository;
+    private final ObjectMapper objectMapper;
 
-   private final ProdutoService produtoService;
-    public EmpresaService(EmpresaRepository empresaRepository, ProdutoService produtoService,ProdutoRepository produtoRepository){
-        this.empresaRepository = empresaRepository;
-        this.produtoService = produtoService;
-        this.produtoRepository = produtoRepository;
+    private final ProdutoService produtoService;
+
+
+    public Empresa adicionarEmpresa(Integer idUsuario, Empresa empresa) throws BancoDeDadosException {
+        return empresaRepository.adicionar(empresa, idUsuario);
     }
 
+    public Empresa buscarEmpresa(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
 
-    public Empresa adicionarEmpresa(Integer idUsuario,Empresa empresa) throws BancoDeDadosException {
-        return empresaRepository.adicionar(empresa,idUsuario);
-    }
+        return empresaRepository.buscaPorId(id);
 
-    public Empresa buscarEmpresa(int id) {
-        try {
-            Empresa empresa = empresaRepository.buscaPorId(id);
-            return empresa;
-        } catch (BancoDeDadosException bancoDeDadosException) {
-            throw new RuntimeException(bancoDeDadosException.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro ao exibir empresa: " + e.getMessage());
-            return null;
-        }
+
     }
 
 //    public Empresa atualizarEmpresa(Integer idEmpresa, Empresa novaEmpresa) throws Exception {
@@ -49,18 +41,15 @@ public class EmpresaService {
 //    }
 
 
-
-    public Empresa atualizarEmpresa(Integer idEmpresa, UpdateEmpresaDTO novaEmpresa) {
+    public Empresa atualizarEmpresa(Integer idEmpresa, UpdateEmpresaDTO novaEmpresa) throws Exception {
         Empresa empresa = buscarEmpresa(idEmpresa);
-        empresa.setIdEmpresa(novaEmpresa.getIdEmpresa());
-        empresa.setIdUsuario(novaEmpresa.getIdUsuario());
-        empresa.setProdutos(novaEmpresa.getProdutos());
         empresa.setNomeFantasia(novaEmpresa.getNomeFantasia());
         empresa.setInscricaoEstadual(novaEmpresa.getInscricaoEstadual());
         empresa.setCnpj(novaEmpresa.getCnpj());
         empresa.setSetor(novaEmpresa.getSetor());
         empresa.setRazaoSocial(novaEmpresa.getRazaoSocial());
-        return empresa;
+
+        return empresaRepository.editar(idEmpresa, empresa);
     }
 
     public void excluirEmpresa(int id) {
@@ -74,10 +63,10 @@ public class EmpresaService {
         }
     }
 
-    public EmpresaDTO preencherInformacoes(Empresa empresa) throws Exception{
+    public EmpresaDTO preencherInformacoes(Empresa empresa) throws Exception {
         EmpresaDTO empresaDTO = new EmpresaDTO();
         empresaDTO.setIdEmpresa(empresa.getIdEmpresa());
-        empresaDTO.setIdUsuario(empresa .getIdUsuario());
+        empresaDTO.setIdUsuario(empresa.getIdUsuario());
         empresaDTO.setProdutos(empresa.getProdutos());
         empresaDTO.setNomeFantasia(empresa.getNomeFantasia());
         empresaDTO.setInscricaoEstadual(empresa.getInscricaoEstadual());

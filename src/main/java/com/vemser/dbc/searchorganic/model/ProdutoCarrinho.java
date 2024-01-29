@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(hidden = true)
 
-public class ProdutoCarrinho{
+public class ProdutoCarrinho {
     private Integer idProduto;
     private Integer quantidade;
     private Integer idEmpresa;

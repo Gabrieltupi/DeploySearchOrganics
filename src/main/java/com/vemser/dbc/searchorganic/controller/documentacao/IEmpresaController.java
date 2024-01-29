@@ -27,7 +27,7 @@ public interface IEmpresaController {
             }
     )
     @GetMapping("/{idEmpresa}")
-    public ResponseEntity<EmpresaDTO> exibirEmpresa(@PathVariable ("idEmpresa") Integer idEmpresa) throws Exception;
+    public ResponseEntity<EmpresaDTO> exibirEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 
     @Operation(summary = "Postar a empresa em um usuario", description = "Postar empresa à um usuario")
     @ApiResponses(
@@ -38,7 +38,7 @@ public interface IEmpresaController {
             }
     )
     @PostMapping("/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception ;
+    public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception;
 
     @Operation(summary = "Editar o empresa pelo id", description = "Editar o empresa pelo id")
     @ApiResponses(
@@ -60,7 +60,7 @@ public interface IEmpresaController {
             }
     )
     @DeleteMapping("/{idEmpresa}")
-    public ResponseEntity<Void> deletarEmpresa(@PathVariable("idEmpresa") Integer idEmpresa)throws Exception;
+    public ResponseEntity<Void> deletarEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 
     @Operation(summary = "Listar produtos de uma empresa", description = "Lista todas os produtos da empresa")
     @ApiResponses(

@@ -1,4 +1,5 @@
 package com.vemser.dbc.searchorganic.controller;
+
 import com.vemser.dbc.searchorganic.controller.documentacao.IPedidoController;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
@@ -24,7 +25,7 @@ public class PedidoController implements IPedidoController {
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<List<PedidoDTO>> obterPedidos(@PathVariable("idUsuario") Integer id) throws Exception {
         List<Pedido> pedidos = this.pedidoService.obterPedidoPorIdUsuario(id);
-        ArrayList<PedidoDTO>  pedidosDTO= this.pedidoService.preencherInformacoesArray(pedidos);
+        ArrayList<PedidoDTO> pedidosDTO = this.pedidoService.preencherInformacoesArray(pedidos);
         return new ResponseEntity<>(pedidosDTO, HttpStatus.OK);
     }
 
@@ -45,16 +46,16 @@ public class PedidoController implements IPedidoController {
 
     @Override
     @PutMapping("/{idPedido}")
-    public  ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id, @Valid @RequestBody PedidoUpdateDTO pedidoAtualizar) throws Exception {
+    public ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id, @Valid @RequestBody PedidoUpdateDTO pedidoAtualizar) throws Exception {
         Pedido pedidoEntity = this.pedidoService.atualizarPedido(id, pedidoAtualizar);
         PedidoDTO pedidoDTO = this.pedidoService.preencherInformacoes(pedidoEntity);
-        return new  ResponseEntity<>(pedidoDTO, HttpStatus.OK);
+        return new ResponseEntity<>(pedidoDTO, HttpStatus.OK);
     }
 
     @Override
     @DeleteMapping("/{idPedido}")
     public ResponseEntity<Void> cancelarPedido(@PathVariable("idPedido") Integer id) throws Exception {
         this.pedidoService.excluir(id);
-        return new  ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

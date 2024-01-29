@@ -1,8 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.usuario;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -11,6 +9,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -40,7 +39,7 @@ public class UsuarioCreateDTO {
 
     @NotNull
     @NotBlank
-    @Schema(description = "Login",required = true,example = "gabnunes")
+    @Schema(description = "Login", required = true, example = "gabnunes")
     private String login;
 
     @NotNull

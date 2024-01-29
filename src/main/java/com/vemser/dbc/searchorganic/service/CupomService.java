@@ -1,26 +1,23 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
-import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class CupomService {
     private final CupomRepository repository;
 
-    public void adicionarCupom(Integer idEmpresa,Cupom cupom) throws Exception {
+    public void adicionarCupom(Integer idEmpresa, Cupom cupom) throws Exception {
 
-            cupom.setIdEmpresa(idEmpresa);
-            repository.adicionar(cupom);
+        cupom.setIdEmpresa(idEmpresa);
+        repository.adicionar(cupom);
 
     }
 
@@ -54,9 +51,9 @@ public class CupomService {
         return null;
     }
 
-    public Cupom atualizarCupom(Integer idEmpresa,Integer id, Cupom cupom) throws Exception {
+    public Cupom atualizarCupom(Integer idEmpresa, Integer id, Cupom cupom) throws Exception {
         try {
-            Cupom cupomEditado = repository.editar(idEmpresa,id, cupom);
+            Cupom cupomEditado = repository.editar(idEmpresa, id, cupom);
 
             cupomEditado.setCupomId(id);
             return cupomEditado;

@@ -1,4 +1,5 @@
 package com.vemser.dbc.searchorganic.repository;
+
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
@@ -379,7 +380,6 @@ public class CupomRepository {
         }
         return null;
     }
-
 
 
 }

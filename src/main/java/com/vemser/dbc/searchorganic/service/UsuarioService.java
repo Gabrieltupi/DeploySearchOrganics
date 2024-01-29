@@ -37,15 +37,15 @@ public class UsuarioService {
     }
 
     public Usuario autenticar(String login, String senha) throws Exception {
-            Usuario usuario = usuarioRepository.buscaPorLogin(login);
-            if(!(usuario.getSenha().equals(senha))){
-                throw new RegraDeNegocioException("Senha incorreta");
-            }
-            return usuario;
+        Usuario usuario = usuarioRepository.buscaPorLogin(login);
+        if (!(usuario.getSenha().equals(senha))) {
+            throw new RegraDeNegocioException("Senha incorreta");
+        }
+        return usuario;
     }
 
     public List<Usuario> exibirTodos() throws Exception {
-         return usuarioRepository.listar();
+        return usuarioRepository.listar();
     }
 
     public Usuario obterUsuarioPorId(Integer id) throws Exception {
