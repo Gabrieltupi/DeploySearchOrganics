@@ -122,6 +122,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
                 pstd.setString(8, endereco.getPais());
                 pstd.setString(9, endereco.getRegiao());
                 pstd.setInt(10, endereco.getIdUsuario());
+
                 int linhasAfetadas = pstd.executeUpdate();
 
                 if (linhasAfetadas > 0) {
@@ -141,7 +142,7 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
     }
 
     @Override
-    public Boolean editar(Integer idEndereco, Endereco endereco) throws Exception {
+    public Endereco editar(Integer idEndereco, Endereco endereco) throws Exception {
         Connection con = null;
 
         try {
@@ -161,9 +162,10 @@ public class EnderecoRepository implements IRepositoryJDBC<Integer, Endereco> {
                 int linhasAfetadas = pstd.executeUpdate();
 
                 if (linhasAfetadas > 0) {
-                    return true;
+                    return endereco;
+                } else {
+                    throw new Exception("Endereço não adicionado.");
                 }
-                throw new Exception("Nenhum endereço alterado.");
             }
         } catch (BancoDeDadosException e) {
             throw new BancoDeDadosException(e.getCause());

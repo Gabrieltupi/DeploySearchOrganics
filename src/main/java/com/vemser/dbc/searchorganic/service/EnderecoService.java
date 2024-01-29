@@ -1,21 +1,18 @@
 package com.vemser.dbc.searchorganic.service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
-import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.repository.EnderecoRepository;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -76,13 +73,11 @@ public class EnderecoService {
 
                 Endereco enderecoEntity = objectMapper.convertValue(enderecoDTO, Endereco.class);
                 enderecoEntity.setRegiao(regiao);
-                boolean sucesso = enderecoRepository.editar(idEndereco, enderecoEntity);
 
-                if (sucesso) {
-                    enderecoEntity.setIdEndereco(idEndereco);
-                    return objectMapper.convertValue(enderecoEntity, EnderecoDTO.class);
-                }
-                throw new RegraDeNegocioException("Erro ao atualizar endereço: falha no registro");
+                Endereco enderecoEditado = enderecoRepository.editar(idEndereco, enderecoEntity);
+
+                enderecoEditado.setIdEndereco(idEndereco);
+                return objectMapper.convertValue(enderecoEditado, EnderecoDTO.class);
             }
             throw new RegraDeNegocioException("Erro ao atualizar endereço: CEP Inválido");
         } catch (RegraDeNegocioException e) {

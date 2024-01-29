@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Base64;
-
 @Service
 @RequiredArgsConstructor
 public class ImgurService {
@@ -24,7 +21,7 @@ public class ImgurService {
 
     public Imagem uploadImage(MultipartFile image) throws Exception {
         byte[] imageBytes = image.getBytes();
-        String authorization = "Client-ID "+ clientId;
+        String authorization = "Client-ID " + clientId;
 
         String response = imgurClient.uploadImage(authorization, imageBytes);
 

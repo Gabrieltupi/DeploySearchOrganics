@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +35,13 @@ public class ProdutoService {
         return produtoDto;
 
     }
-    public ProdutoDTO atualizarProduto(Integer id, @Valid ProdutoUpdateDTO produtos) throws Exception {
-            log.debug("testando id nulo");
-            Produto produtoEntity = objectMapper.convertValue(produtos, Produto.class);
-            produtoEntity.setIdProduto(id);
 
-            produtoRepository.editar(id, produtoEntity);
+    public ProdutoDTO atualizarProduto(Integer id, @Valid ProdutoUpdateDTO produtos) throws Exception {
+        log.debug("testando id nulo");
+        Produto produtoEntity = objectMapper.convertValue(produtos, Produto.class);
+        produtoEntity.setIdProduto(id);
+
+        produtoRepository.editar(id, produtoEntity);
         return null;
     }
 
@@ -53,11 +53,11 @@ public class ProdutoService {
     }
 
     public void deletarProduto(Integer idProduto) throws Exception {
-        try{
-            if(produtoRepository.remover(idProduto)){
+        try {
+            if (produtoRepository.remover(idProduto)) {
                 return;
             }
-                throw new RegraDeNegocioException("Produto não encontrado");
+            throw new RegraDeNegocioException("Produto não encontrado");
         } catch (Exception e) {
             throw new Exception("Erro ao remover o usuário: " + e.getMessage(), e);
         }
@@ -86,16 +86,16 @@ public class ProdutoService {
     }
 
 
-    public List<Produto> listarProdutosLoja(Integer idLoja) throws BancoDeDadosException, RegraDeNegocioException{
+    public List<Produto> listarProdutosLoja(Integer idLoja) throws BancoDeDadosException, RegraDeNegocioException {
         return produtoRepository.listarProdutosLoja(idLoja);
     }
 
     public String getMensagemProdutoEmail(ArrayList<ProdutoCarrinho> produtos) {
         StringBuilder mensagemFinal = new StringBuilder();
-        for(ProdutoCarrinho produtoCarrinho : produtos){
+        for (ProdutoCarrinho produtoCarrinho : produtos) {
             String mensagemProduto = String.format("""
-                Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
-                """, produtoCarrinho.getProduto().getNome(),
+                            Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
+                            """, produtoCarrinho.getProduto().getNome(),
                     produtoCarrinho.getQuantidade(),
                     produtoCarrinho.getProduto().getPreco());
             mensagemFinal.append(mensagemProduto);
@@ -104,7 +104,7 @@ public class ProdutoService {
     }
 
 
-        public List<Produto> buscarProdutos() {
+    public List<Produto> buscarProdutos() {
         try {
             return produtoRepository.listar();
         } catch (BancoDeDadosException e) {

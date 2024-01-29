@@ -7,15 +7,15 @@ import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Usuário", description = "Endpoints de Usuário")
 public interface IUsuarioController {
-
-
     @Operation(summary = "Listar Usuarios", description = "Lista todos os usuarios do banco")
     @ApiResponses(
             value = {
@@ -27,9 +27,6 @@ public interface IUsuarioController {
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> list() throws Exception;
 
-
-
-
     @Operation(summary = "Listar Usuario pelo id", description = "Lista o usuario pelo id")
     @ApiResponses(
             value = {
@@ -40,8 +37,6 @@ public interface IUsuarioController {
     )
     @GetMapping("/{idUsuario}")
     public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception;
-
-
 
     @Operation(summary = "Cria um Usuario", description = "Cria um usuario")
     @ApiResponses(
@@ -55,9 +50,6 @@ public interface IUsuarioController {
     @PostMapping
     public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception;
 
-
-
-
     @Operation(summary = "Cria um login", description = "Cria um login")
     @ApiResponses(
             value = {
@@ -69,9 +61,6 @@ public interface IUsuarioController {
     @PostMapping("/login")
     public ResponseEntity<UsuarioDTO> login(@Valid @RequestBody UsuarioLoginDTO usuarioLoginDTO) throws Exception;
 
-
-
-
     @Operation(summary = "Altera um Usuario", description = "Altera um usuario")
     @ApiResponses(
             value = {
@@ -81,10 +70,7 @@ public interface IUsuarioController {
             }
     )
     @PutMapping("/{idUsuario}")
-    public  ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id, @Valid @RequestBody UsuarioUpdateDTO usuarioAtualizar) throws Exception;
-
-
-
+    public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id, @Valid @RequestBody UsuarioUpdateDTO usuarioAtualizar) throws Exception;
 
     @Operation(summary = "Deleta um Usuario", description = "Deleta um usuario")
     @ApiResponses(
@@ -96,6 +82,4 @@ public interface IUsuarioController {
     )
     @DeleteMapping("/{idUsuario}")
     public ResponseEntity<Void> excluirUsuario(@PathVariable("idUsuario") Integer id) throws Exception;
-
-
-    }
+}

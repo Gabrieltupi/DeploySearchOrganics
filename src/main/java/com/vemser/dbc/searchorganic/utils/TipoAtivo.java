@@ -9,6 +9,7 @@ public enum TipoAtivo {
     TipoAtivo(String status) {
         this.status = status;
     }
+
     public String getStatus() {
         return status;
     }

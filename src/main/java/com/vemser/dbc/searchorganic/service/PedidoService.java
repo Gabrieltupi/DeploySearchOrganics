@@ -6,13 +6,14 @@ import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
-import com.vemser.dbc.searchorganic.model.*;
+import com.vemser.dbc.searchorganic.model.Endereco;
+import com.vemser.dbc.searchorganic.model.Pedido;
+import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +32,17 @@ public class PedidoService {
     private final List<IValidarPedido> validarPedidoList;
 
     public PedidoDTO adicionar(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
-        for(IValidarPedido validador: validarPedidoList){
+        for (IValidarPedido validador : validarPedidoList) {
             validador.validar(pedidoCreateDTO, id);
         }
 
         Usuario usuario = usuarioService.obterUsuarioPorId(id);
         Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
+
         pedido.setIdUsuario(id);
-
-
+        if (pedido.getIdCupom() != null) {
+            pedido.setIdCupom(pedidoCreateDTO.getIdCupom());
+        }
 
         pedido = pedidoRepository.adicionar(pedido);
         PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
@@ -56,20 +59,20 @@ public class PedidoService {
         String endereco = enderecoService.getMensagemEnderecoEmail(pedidoDTO.getEndereco());
         String produtos = produtoService.getMensagemProdutoEmail(pedidoDTO.getProdutos());
         String mensagem = String.format("""
-                <span style="display: block; font-size: 16px; font-weight: bold;">Pedido Realizado</span>
-                <section style="color: #ffffff;">
-                    <p style="color: #ffffff;">Olá %s, seu pedido foi realizado com sucesso,</p>
-                    <p style="color: #ffffff;">O Status atual do seu pedido é %s,</p>
-                    <p style="color: #ffffff;">Abaixo seguem detalhes do seu pedido:</p>
-                    <p style="color: #ffffff;">Pedido N°: %d,</p>
-                    <p style="color: #ffffff;">Total: %s,</p>
-                    <p style="color: #ffffff;">Forma de pagamento: %s,</p>
-                    <p style="color: #ffffff;">Data do pedido: %s,</p>
-                    <p style="color: #ffffff;">Data da entrega: %s,</p>
-                    <p style="color: #ffffff;">Produtos: <br> %s </p>
-                    <p style="color: #ffffff;">Endereço: <br> %s </p>
-                </section>
-                """,
+                        <span style="display: block; font-size: 16px; font-weight: bold;">Pedido Realizado</span>
+                        <section style="color: #ffffff;">
+                            <p style="color: #ffffff;">Olá %s, seu pedido foi realizado com sucesso,</p>
+                            <p style="color: #ffffff;">O Status atual do seu pedido é %s,</p>
+                            <p style="color: #ffffff;">Abaixo seguem detalhes do seu pedido:</p>
+                            <p style="color: #ffffff;">Pedido N°: %d,</p>
+                            <p style="color: #ffffff;">Total: %s,</p>
+                            <p style="color: #ffffff;">Forma de pagamento: %s,</p>
+                            <p style="color: #ffffff;">Data do pedido: %s,</p>
+                            <p style="color: #ffffff;">Data da entrega: %s,</p>
+                            <p style="color: #ffffff;">Produtos: <br> %s </p>
+                            <p style="color: #ffffff;">Endereço: <br> %s </p>
+                        </section>
+                        """,
                 usuario.getNome(),
                 pedidoDTO.getStatusPedido().toString(),
                 pedidoDTO.getIdPedido(),

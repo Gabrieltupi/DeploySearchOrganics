@@ -9,8 +9,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 public class SearchorganicApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SearchorganicApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SearchorganicApplication.class, args);
+    }
 
 }

@@ -1,8 +1,5 @@
 package com.vemser.dbc.searchorganic.dto.pedido;
 
-import com.vemser.dbc.searchorganic.model.Cupom;
-import com.vemser.dbc.searchorganic.model.Endereco;
-import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import com.vemser.dbc.searchorganic.utils.validadores.TipoEntrega;
@@ -12,11 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 @Data
 @AllArgsConstructor
@@ -30,7 +25,7 @@ public class PedidoUpdateDTO {
     private FormaPagamento formaPagamento;
 
     @NotNull
-    @Schema(description = "Status do pedido", required = true,example = "AGUARDANDO_PAGAMENTO")
+    @Schema(description = "Status do pedido", required = true, example = "AGUARDANDO_PAGAMENTO")
     private StatusPedido statusPedido;
 
     @NotNull
@@ -39,7 +34,7 @@ public class PedidoUpdateDTO {
     private LocalDate dataEntrega;
 
     @NotNull
-    @Schema(description = "Tipo da entrega ao cliente",required = true, example = "RETIRAR_NO_LOCAL")
+    @Schema(description = "Tipo da entrega ao cliente", required = true, example = "RETIRAR_NO_LOCAL")
     private TipoEntrega tipoEntrega;
 
     @NotNull

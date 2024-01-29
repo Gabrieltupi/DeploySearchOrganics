@@ -8,6 +8,7 @@ import com.vemser.dbc.searchorganic.model.Produto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Produto", description = "Endpoints de Produto")
 public interface IProdutoController {
-
     @Operation(summary = "Adicionar produto", description = "Adicionando produtos")
     @ApiResponses(
             value = {
@@ -26,9 +27,7 @@ public interface IProdutoController {
             }
     )
     @PostMapping //post localhost:8080/produto
-    public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto ) throws Exception;
-
-
+    public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto) throws Exception;
 
     @Operation(summary = "imagem", description = "imagem")
     @ApiResponses(
@@ -41,7 +40,6 @@ public interface IProdutoController {
     @PostMapping("/imagem")
     public ResponseEntity<Imagem> uploadImagem(@RequestPart("imagem") MultipartFile imagem) throws Exception;
 
-
     @Operation(summary = "altera o produto pelo id", description = "alterando produto")
     @ApiResponses(
             value = {
@@ -51,9 +49,7 @@ public interface IProdutoController {
             }
     )
     @PutMapping("{idProduto}") // put localhost:8080/produto/idProduto
-    public ResponseEntity<ProdutoDTO> update (@PathVariable("idProduto") Integer id, @RequestBody @Valid ProdutoUpdateDTO produto) throws Exception;
-
-
+    public ResponseEntity<ProdutoDTO> update(@PathVariable("idProduto") Integer id, @RequestBody @Valid ProdutoUpdateDTO produto) throws Exception;
 
     @Operation(summary = "Listar todos os produtos", description = "lista de produtos")
     @ApiResponses(
@@ -66,7 +62,6 @@ public interface IProdutoController {
     @GetMapping //get localhost:8080/produto
     public List<ProdutoDTO> getAllProdutos() throws Exception;
 
-
     @Operation(summary = "Deletar um produto", description = "Deletando produtos")
     @ApiResponses(
             value = {
@@ -78,8 +73,6 @@ public interface IProdutoController {
     @DeleteMapping("/{idProduto}") //delete localhost:8080/produto/idproduto
     public ResponseEntity<Void> delete(@PathVariable("idProduto") Integer id) throws Exception;
 
-
-
     @Operation(summary = "mostrar produto pelo id", description = "Mostrando produto")
     @ApiResponses(
             value = {
@@ -89,8 +82,7 @@ public interface IProdutoController {
             }
     )
     @GetMapping("/{idproduto}") // get localhost:8080/produto/idproduto
-    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable ("idproduto")Integer idEmpresa) throws Exception;
-
+    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable("idproduto") Integer idEmpresa) throws Exception;
 
     @Operation(summary = "Listando produtos por categoria", description = "Listando produtos por categoria")
     @ApiResponses(
@@ -103,8 +95,6 @@ public interface IProdutoController {
     @GetMapping("/categoria/{numeroCategoria}")
     public ResponseEntity<List<Produto>> listarProdutosPorCategoria(@PathVariable("numeroCategoria") Integer numeroCategoria) throws Exception;
 
-
-
     @Operation(summary = "Listando produtos por loja", description = "Listando produtos por loja")
     @ApiResponses(
             value = {
@@ -115,6 +105,4 @@ public interface IProdutoController {
     )
     @GetMapping("/loja/{idLoja}") // get localhost:8080/produto/idLoja
     public ResponseEntity<List<Produto>> listarProdutoPorLoja(@PathVariable("idLoja") Integer idLoja) throws Exception;
-
-
 }

@@ -9,13 +9,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ValidarEnderecoPedido implements IValidarPedido{
+public class ValidarEnderecoPedido implements IValidarPedido {
     private final EnderecoRepository enderecoRepository;
+
     @Override
     public void validar(PedidoCreateDTO pedidoCreateDTO, Integer idUsuario) throws Exception {
         Endereco endereco = enderecoRepository.buscarPorId(pedidoCreateDTO.getIdEndereco());
-        if( !(endereco.getIdUsuario() == idUsuario.longValue())){
-            throw  new ValidacaoException("O endereço enviado não pertence ao usuário que solicitou o pedido");
+        if (!(endereco.getIdUsuario() == idUsuario.longValue())) {
+            throw new ValidacaoException("O endereço enviado não pertence ao usuário que solicitou o pedido");
         }
     }
 }

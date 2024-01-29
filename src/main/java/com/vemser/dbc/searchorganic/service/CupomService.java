@@ -1,26 +1,23 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
-import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class CupomService {
     private final CupomRepository repository;
 
-    public void adicionarCupom(Integer idEmpresa,Cupom cupom) throws Exception {
+    public void adicionarCupom(Integer idEmpresa, Cupom cupom) throws Exception {
 
-            cupom.setIdEmpresa(idEmpresa);
-            repository.adicionar(cupom);
+        cupom.setIdEmpresa(idEmpresa);
+        repository.adicionar(cupom);
 
     }
 
@@ -36,9 +33,6 @@ public class CupomService {
         }
         return cupons;
     }
-
-
-
 
     public Cupom buscarCupomPorId(int id) {
         try {
@@ -56,17 +50,31 @@ public class CupomService {
         }
         return null;
     }
-    public Cupom atualizarCupom(int id, Cupom cupom) throws Exception {
+
+    public Cupom atualizarCupom(Integer idEmpresa, Integer id, Cupom cupom) throws Exception {
         try {
-            if (repository.editar(id, cupom)) {
-                cupom.setCupomId(id);
-                return cupom;
-            }
-            throw new RegraDeNegocioException("Usuário não encontrado");
+            Cupom cupomEditado = repository.editar(idEmpresa, id, cupom);
+
+            cupomEditado.setCupomId(id);
+            return cupomEditado;
         } catch (Exception e) {
             throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
         }
     }
+
+
+//    public Cupom atualizarCupom(int id, Cupom cupom) throws Exception {
+//        try {
+//            buscarCupomPorId(id);
+//
+//            Cupom cupomEditado = repository.editar(id, cupom);
+//
+//            cupomEditado.setCupomId(id);
+//            return cupomEditado;
+//        } catch (Exception e) {
+//            throw new Exception("Erro ao editar o Cupom: " + e.getMessage(), e);
+//        }
+//    }
 
     public void removerCupom(int id) {
         try {
@@ -77,6 +85,7 @@ public class CupomService {
             e.printStackTrace();
         }
     }
+
     public List<Cupom> listarCupomPorEmpresa(int idEmpresa) throws BancoDeDadosException {
         return repository.listarCupomPorEmpresa(idEmpresa);
     }
@@ -89,8 +98,6 @@ public class CupomService {
             return null;
         }
     }
-
-
 }
 
 

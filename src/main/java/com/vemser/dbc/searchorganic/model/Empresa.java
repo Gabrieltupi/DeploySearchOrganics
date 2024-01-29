@@ -1,14 +1,17 @@
 package com.vemser.dbc.searchorganic.model;
 
 import com.vemser.dbc.searchorganic.interfaces.IImpressao;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.ArrayList;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
+@Schema(hidden = true)
 public class Empresa implements IImpressao {
     private Integer idEmpresa;
     private Integer idUsuario;

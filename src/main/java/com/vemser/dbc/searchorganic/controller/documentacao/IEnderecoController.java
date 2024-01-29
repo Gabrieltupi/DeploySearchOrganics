@@ -3,18 +3,18 @@ package com.vemser.dbc.searchorganic.controller.documentacao;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
-import com.vemser.dbc.searchorganic.model.Endereco;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Endereço", description = "Endpoints de Endereço")
 public interface IEnderecoController {
-
     @Operation(summary = "Listar endereço", description = "Lista todas os endereços do banco")
     @ApiResponses(
             value = {
@@ -25,7 +25,6 @@ public interface IEnderecoController {
     )
     @GetMapping
     public ResponseEntity<List<EnderecoDTO>> listarEnderecos() throws Exception;
-
 
     @Operation(summary = "Retorna os endereço de um usuario", description = "endereços de um usuario")
     @ApiResponses(
@@ -38,7 +37,6 @@ public interface IEnderecoController {
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<List<EnderecoDTO>> listarEnderecosPorUsuario(@PathVariable("idUsuario") Integer idUsuario) throws Exception;
 
-
     @Operation(summary = "exclui os endereço de um usuario", description = "exclui endereços de um usuario")
     @ApiResponses(
             value = {
@@ -49,8 +47,6 @@ public interface IEnderecoController {
     )
     @DeleteMapping("/{idEndereco}")
     public ResponseEntity<Void> c(@PathVariable("idEndereco") Integer idEndereco) throws Exception;
-
-
 
     @Operation(summary = "Atualiza o endereço ", description = "atualiza o endereços pelo id")
     @ApiResponses(
@@ -63,7 +59,6 @@ public interface IEnderecoController {
     @PutMapping("/{idEndereco}")
     public ResponseEntity<EnderecoDTO> editarEndereco(@PathVariable("idEndereco") Integer idEndereco, @Valid @RequestBody EnderecoUpdateDTO endereco) throws Exception;
 
-
     @Operation(summary = "Adicionar endereços", description = "adicionar endereços")
     @ApiResponses(
             value = {
@@ -75,7 +70,6 @@ public interface IEnderecoController {
     @PostMapping
     public ResponseEntity<EnderecoDTO> adicionarEndereco(@Valid @RequestBody EnderecoCreateDTO endereco) throws Exception;
 
-
     @Operation(summary = "Retorna os endereço pelo id", description = "endereços pelo id")
     @ApiResponses(
             value = {
@@ -86,9 +80,4 @@ public interface IEnderecoController {
     )
     @GetMapping("/{idEndereco}")
     public ResponseEntity<EnderecoDTO> buscarEndereco(@Valid @PathVariable("idEndereco") Integer idEndereco) throws Exception;
-
-
-
-
-
 }

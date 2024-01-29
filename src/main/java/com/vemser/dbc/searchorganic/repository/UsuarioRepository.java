@@ -3,8 +3,8 @@ package com.vemser.dbc.searchorganic.repository;
 
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
+import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.model.Usuario;
-import com.vemser.dbc.searchorganic.service.EnderecoService;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
+    private final EnderecoRepository enderecoRepository;
 
     @Override
     public Integer getProximoId(Connection con) throws SQLException {
@@ -54,6 +55,9 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
                 usuario.setSobrenome(res.getString("SOBRENOME"));
                 usuario.setEmail(res.getString("EMAIL"));
                 usuario.setDataNascimento(res.getDate("DATANASCIMENTO").toLocalDate());
+
+                List<Endereco> enderecos = enderecoRepository.listarPorUsuario(usuario.getIdUsuario());
+                usuario.setEnderecos(enderecos);
 
                 return usuario;
             }
@@ -105,6 +109,9 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
                 System.out.println("Ocorreu um erro ao adicionar");
             }
 
+            List<Endereco> enderecos = enderecoRepository.listarPorUsuario(usuario.getIdUsuario());
+            usuario.setEnderecos(enderecos);
+
             return usuario;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -126,7 +133,7 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
         try {
             con = conexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
+            String sql = "UPDATE Usuario SET ATIVO='N' WHERE id_usuario = ?";
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setInt(1, id);
 
@@ -152,23 +159,13 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
         }
     }
 
-
     @Override
-    public Boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {
+    public Usuario editar(Integer id, Usuario usuario) throws Exception {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
 
-            String sql = "UPDATE Usuario SET " +
-                    "LOGIN = ?, " +
-                    "SENHA = ?, " +
-                    "CPF = ?, " +
-                    "ATIVO = ?, " +
-                    "NOME = ?, " +
-                    "SOBRENOME = ?, " +
-                    "EMAIL = ?, " +
-                    "DATANASCIMENTO = ? " +
-                    "WHERE ID_USUARIO = ?";
+            String sql = "UPDATE Usuario SET LOGIN = ?, SENHA = ?, CPF = ?, ATIVO = ?, NOME = ?, SOBRENOME = ?, EMAIL = ?, DATANASCIMENTO = ? WHERE ID_USUARIO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -183,14 +180,16 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
             stmt.setInt(9, id);
 
             int res = stmt.executeUpdate();
-
             if (res > 0) {
-                System.out.println("Usuário atualizado com sucesso!");
-                return true;
+                List<Endereco> enderecos = enderecoRepository.listarPorUsuario(id);
+                usuario.setIdUsuario(id);
+                usuario.setEnderecos(enderecos);
+
+                return usuario;
             }
-            System.out.println("Ocorreu um erro ao atualizar o usuário");
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
+            throw new Exception("Usuário não atualizado.");
+        } catch (Exception e) {
+            throw new Exception("Usuário não atualizado: " + e.getMessage());
         } finally {
             try {
                 if (con != null) {
@@ -200,7 +199,6 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
                 e.printStackTrace();
             }
         }
-        return false;
     }
 
     @Override
@@ -226,6 +224,9 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
                 usuario.setSobrenome(res.getString("SOBRENOME"));
                 usuario.setEmail(res.getString("EMAIL"));
                 usuario.setDataNascimento(res.getDate("DATANASCIMENTO").toLocalDate());
+
+                List<Endereco> enderecos = enderecoRepository.listarPorUsuario(usuario.getIdUsuario());
+                usuario.setEnderecos(enderecos);
 
                 usuarios.add(usuario);
             }
@@ -266,6 +267,9 @@ public class UsuarioRepository implements IRepositoryJDBC<Integer, Usuario> {
                 usuario.setSobrenome(res.getString("SOBRENOME"));
                 usuario.setEmail(res.getString("EMAIL"));
                 usuario.setDataNascimento(res.getDate("DATANASCIMENTO").toLocalDate());
+
+                List<Endereco> enderecos = enderecoRepository.listarPorUsuario(usuario.getIdUsuario());
+                usuario.setEnderecos(enderecos);
 
                 return usuario;
             }
