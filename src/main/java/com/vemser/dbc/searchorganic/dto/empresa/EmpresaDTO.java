@@ -1,3 +1,4 @@
+
 package com.vemser.dbc.searchorganic.dto.empresa;
 
 import com.vemser.dbc.searchorganic.model.Produto;
@@ -15,10 +16,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpresaDTO {
-    @Schema(description = "Id da empresa",required = true, example = "1")
     private Integer idEmpresa;
-
-    @Schema(description = "Id do Usuario",required = true, example = "15")
     private Integer idUsuario;
 
     @NotBlank

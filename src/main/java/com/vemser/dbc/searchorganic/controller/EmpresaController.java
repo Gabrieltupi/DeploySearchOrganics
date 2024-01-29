@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/empresa")
-public class EmpresaController implements IEmpresaController {
+public class EmpresaController  {
     private final EmpresaService empresaService;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
@@ -41,7 +41,6 @@ public class EmpresaController implements IEmpresaController {
         this.produtoService = produtoService;
     }
 
-    @Override
     @GetMapping("/{idEmpresa}")
     public ResponseEntity<EmpresaDTO> exibirEmpresa(@PathVariable ("idEmpresa") Integer idEmpresa) throws Exception{
         Empresa EmpresaEntity = this.empresaService.buscarEmpresa(idEmpresa);
@@ -50,42 +49,35 @@ public class EmpresaController implements IEmpresaController {
 
     }
 
-    @Override
     @PostMapping("/{idUsuario}")
     public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario,
-                                                   @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception {
+                                                   @Valid @RequestBody Empresa empresa) throws Exception {
         usuarioService.obterUsuarioPorId(idUsuario);
         Empresa empresaEntity = objectMapper.convertValue(empresa, Empresa.class);
         empresaEntity.setIdEmpresa(idUsuario);
-        Empresa empresaAdicionada = this.empresaService.adicionarEmpresa(empresaEntity);
+        Empresa empresaAdicionada = this.empresaService.adicionarEmpresa(idUsuario,empresa);
         EmpresaDTO empresaDTO = objectMapper.convertValue(empresaAdicionada, EmpresaDTO.class);
         return new ResponseEntity<>(empresaDTO, HttpStatus.CREATED);
     }
 
-    @Override
-    @PutMapping("/{idEmpresa}")
-    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @Valid @RequestBody UpdateEmpresaDTO novaEmpresa) throws Exception {
-        Empresa empresaEntity = objectMapper.convertValue(novaEmpresa, Empresa.class);
-        Empresa empresaAtualizada = empresaService.atualizarEmpresa(idEmpresa, empresaEntity);
-        EmpresaDTO empresaDTO = objectMapper.convertValue(empresaAtualizada, EmpresaDTO.class);
-
-        return new ResponseEntity<>(empresaDTO, HttpStatus.OK);
+    @PutMapping("/{idUsuario}")
+    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception{
+        Empresa empresa = this.empresaService.atualizarEmpresa(idEmpresa,empresaAtualizada);
+        EmpresaDTO empresaDTO = this.empresaService.preencherInformacoes(empresa);
+        return new ResponseEntity<>(empresaDTO,HttpStatus.OK);
     }
 
-    @Override
     @DeleteMapping("/{idEmpresa}")
     public ResponseEntity<Void> deletarEmpresa(@PathVariable("idEmpresa") Integer idEmpresa)throws Exception{
         this.empresaService.excluirEmpresa(idEmpresa);
         return new  ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
     public ResponseEntity<List<Produto>> listarProdutosDaLoja(Integer idLoja) throws Exception {
-            List<Produto> produtos = empresaService.listarProdutosDaLoja(idLoja);
-            return new ResponseEntity<>(produtos, HttpStatus.OK);
+        List<Produto> produtos = empresaService.listarProdutosDaLoja(idLoja);
+        return new ResponseEntity<>(produtos, HttpStatus.OK);
     }
 
-    @Override
     @GetMapping("/{idEmpresa}/cupom")
     public ResponseEntity<List<Cupom>> listarCupomDaLoja(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
         List<Cupom> cupoms = cupomService.listarCupomPorEmpresa(idEmpresa);
@@ -93,7 +85,6 @@ public class EmpresaController implements IEmpresaController {
     }
 
 
-    @Override
     @PostMapping("/{idEmpresa}/cupom")
     public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa,
                                                @RequestBody Cupom cupom) throws Exception {
@@ -101,7 +92,6 @@ public class EmpresaController implements IEmpresaController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Override
     @GetMapping("/{idEmpresa}/cupons")
     public ResponseEntity<List<Cupom>> listarCuponsDaEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) {
         try {
@@ -112,22 +102,19 @@ public class EmpresaController implements IEmpresaController {
         }
     }
 
-    @Override
     @DeleteMapping("/cupom/{idCupom}")
     public ResponseEntity<Void> removerCupom(@PathVariable("idCupom") Integer idCupom) {
         cupomService.removerCupom(idCupom);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
     @PutMapping("/cupom/{idCupom}")
     public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom,
-                                               @RequestBody Cupom cupom) throws Exception {
+                                                   @RequestBody Cupom cupom) throws Exception {
         cupomService.atualizarCupom(idCupom, cupom);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
     @GetMapping("/cupom")
     public ResponseEntity<List<Cupom>> listarCupom() throws Exception {
         List<Cupom> cupoms = cupomService.listarCupons();
