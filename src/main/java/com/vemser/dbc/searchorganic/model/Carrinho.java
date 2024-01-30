@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.model;
 
+import com.vemser.dbc.searchorganic.dto.pedido.ProdutoCarrinhoCreate;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 @Schema(hidden = true)
 public class Carrinho {
     private int idEmpresa;
-    private ArrayList<ProdutoCarrinho> produtos = new ArrayList<ProdutoCarrinho>();
+    private ArrayList<ProdutoCarrinhoCreate> produtos = new ArrayList<ProdutoCarrinhoCreate>();
     private BigDecimal valorTotal = new BigDecimal(0);
     private Usuario usuario;
     private Pedido pedido;
@@ -26,11 +27,11 @@ public class Carrinho {
         this.idEmpresa = idEmpresa;
     }
 
-    public ArrayList<ProdutoCarrinho> getProdutos() {
+    public ArrayList<ProdutoCarrinhoCreate> getProdutos() {
         return produtos;
     }
 
-    public void setProdutos(ArrayList<ProdutoCarrinho> produtos) {
+    public void setProdutos(ArrayList<ProdutoCarrinhoCreate> produtos) {
         this.produtos = produtos;
     }
 

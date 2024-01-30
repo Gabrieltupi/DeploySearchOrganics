@@ -1,7 +1,7 @@
 package com.vemser.dbc.searchorganic.dto.pedido.validacoes;
 
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.exceptions.ValidacaoException;
+import com.vemser.dbc.searchorganic.model.Pedido;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
@@ -16,9 +16,9 @@ public class ValidarQuantidadeProdutos implements IValidarPedido {
     private final ProdutoRepository produtoRepository;
 
     @Override
-    public void validar(PedidoCreateDTO pedidoCreateDTO, Integer idUsuario) throws Exception {
-        for (ProdutoCarrinho produtoCarrinho : pedidoCreateDTO.getProdutos()) {
-            Produto produto = produtoRepository.buscarProdutoPorId(produtoCarrinho.getIdProduto());
+    public void validar(Pedido pedido, Integer idUsuario) throws Exception {
+        for (ProdutoCarrinho produtoCarrinho : pedido.getProdutos()) {
+            Produto produto = produtoCarrinho.getProduto();
             BigDecimal estoque = produto.getQuantidade();
             Integer quantidadePedida = produtoCarrinho.getQuantidade();
 

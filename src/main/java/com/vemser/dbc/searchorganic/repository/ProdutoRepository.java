@@ -321,4 +321,7 @@ public class ProdutoRepository implements IRepositoryJDBC<Integer, Produto> {
     public void atualizarEstoque(Integer idProduto, Integer quantidade) {
 
     }
+
+    public void save(Produto produto) {
+    }
 }
