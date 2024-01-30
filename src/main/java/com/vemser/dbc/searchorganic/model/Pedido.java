@@ -2,17 +2,17 @@ package com.vemser.dbc.searchorganic.model;
 
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
-import com.vemser.dbc.searchorganic.utils.validadores.TipoEntrega;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -42,6 +42,7 @@ public class Pedido {
     private FormaPagamento formaPagamento;
 
     @Column(name = "STATUS_PEDIDO")
+    @Enumerated(EnumType.STRING)
     private StatusPedido statusPedido;
 
     @Column(name = "DATA_DE_PEDIDO")
@@ -59,4 +60,5 @@ public class Pedido {
     @Column(name = "PRECO_CARRINHO")
     private BigDecimal precoCarrinho;
 
+   
 }
