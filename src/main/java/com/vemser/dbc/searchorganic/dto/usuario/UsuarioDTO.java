@@ -2,6 +2,7 @@ package com.vemser.dbc.searchorganic.dto.usuario;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
+import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,6 @@ public class UsuarioDTO {
     @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
-    private List<EnderecoDTO> enderecos;
 
     @CPF
     @Schema(description = "CPF", required = true, example = "46473219080")
@@ -54,4 +54,16 @@ public class UsuarioDTO {
 
     @Schema(description = "Atividade do usuario", required = true, example = "S")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
+
+    public UsuarioDTO(Usuario usuario) {
+        this.idUsuario = usuario.getIdUsuario();
+        this.nome = usuario.getNome();
+        this.sobrenome = usuario.getSobrenome();
+        this.dataNascimento = usuario.getDataNascimento();
+        this.cpf = usuario.getCpf();
+        this.email = usuario.getEmail();
+        this.login = usuario.getLogin();
+        this.senha = usuario.getSenha();
+        this.tipoAtivo = usuario.getTipoAtivo();
+    }
 }
