@@ -8,9 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -23,40 +21,29 @@ import java.util.List;
 @Entity(name = "USUARIO")
 public class Usuario {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PEDIDO_SEQ")
+    @SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "SEQ_USUARIO", allocationSize = 1)
+    @Column(name = "ID_USUARIO")
     private Integer idUsuario;
-    @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
+
+    @Column(name = "NOME")
     private String nome;
-
-    @NotBlank
-    @Schema(description = "Sobrenome do usuario", required = true, example = "Nunes de Souza")
+    @Column(name = "SOBRENOME")
     private String sobrenome;
-
-    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
+    @Column(name = "DATANASCIMENTO")
     private LocalDate dataNascimento;
-
-    @OneToMany(mappedBy = "idUsuario")
+    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.LAZY)
     private List<Endereco> enderecos;
-
-    @CPF
-    @Schema(description = "CPF", required = true, example = "464.732.190-80")
+    @Column(name = "CPF")
     private String cpf;
-
-    @NotNull
-    @Schema(description = "Email", required = true, example = "Gabriel.nunes@dbccompany.com.br")
+    @Column(name = "EMAIL")
     private String email;
-
-    @NotNull
-    @NotBlank
-    @Schema(description = "Login", required = true, example = "Deyvid_Uzumaki321")
+    @Column(name = "LOGIN")
     private String login;
-
-    @NotNull
-    @NotBlank
-    @Schema(description = "Senha", required = true, example = "*********")
+    @Column(name = "SENHA")
     private String senha;
-
-    @Schema(description = "Atividade do usuario", required = true, example = "S")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ATIVO")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
 }
