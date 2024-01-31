@@ -34,7 +34,6 @@ public class UsuarioDTO {
 
     private List<EnderecoDTO> enderecos;
 
-    @CPF
     @Schema(description = "CPF", required = true, example = "46473219080")
     private String cpf;
 
