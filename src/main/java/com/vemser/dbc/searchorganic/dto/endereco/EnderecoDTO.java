@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.dto.endereco;
 
 
+import com.vemser.dbc.searchorganic.model.Endereco;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -51,4 +52,16 @@ public class EnderecoDTO {
     @Schema(description = "Pais", required = true, example = "Brasil")
     private String pais;
     private String regiao;
+    public EnderecoDTO(Endereco endereco) {
+        this.idEndereco = endereco.getIdEndereco();
+        this.idUsuario = endereco.getIdUsuario();
+        this.logradouro = endereco.getLogradouro();
+        this.numero = endereco.getNumero();
+        this.complemento = endereco.getComplemento();
+        this.cep = endereco.getCep();
+        this.cidade = endereco.getCidade();
+        this.estado = endereco.getEstado();
+        this.pais = endereco.getPais();
+        this.regiao = endereco.getRegiao();
+    }
 }

@@ -6,13 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -26,24 +23,25 @@ public class Pedido {
     @Column(name = "ID_PEDIDO")
     private Integer idPedido;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_USUARIO")
     private Usuario usuario;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_ENDERECO")
     private Endereco endereco;
 
-    @ManyToOne
-     @JoinColumn(name = "ID_CUPOM", nullable = true)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_CUPOM", nullable = true)
     private Cupom cupom;
 
     @Column(name = "FORMA_PAGAMENTO")
+    @Enumerated(EnumType.STRING)
     private FormaPagamento formaPagamento;
 
     @Column(name = "STATUS_PEDIDO")
     @Enumerated(EnumType.STRING)
-    private StatusPedido statusPedido;
+    private StatusPedido statusPedido = StatusPedido.AGUARDANDO_PAGAMENTO;
 
     @Column(name = "DATA_DE_PEDIDO")
     private LocalDate dataDePedido;
@@ -51,14 +49,19 @@ public class Pedido {
     @Column(name = "DATA_ENTREGA")
     private LocalDate dataEntrega;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.PERSIST)
-    private List<ProdutoCarrinho> produtos;
-
     @Column(name = "PRECO_FRETE")
     private BigDecimal precoFrete;
 
     @Column(name = "PRECO_CARRINHO")
     private BigDecimal precoCarrinho;
 
-   
+
+
+//    @PostPersist
+//    public void onPostPersist() {
+//        for (PedidoXProduto produto : produtos) {
+//            produto.setPedido(this);
+//        }
+//    }
+
 }

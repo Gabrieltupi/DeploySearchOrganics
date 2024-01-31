@@ -8,7 +8,7 @@ import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Produto;
-import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
+import com.vemser.dbc.searchorganic.model.PedidoXProduto;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,14 +89,14 @@ public class ProdutoService {
         return produtoRepository.listarProdutosLoja(idLoja);
     }
 
-    public String getMensagemProdutoEmail(List<ProdutoCarrinho> produtos) {
+    public String getMensagemProdutoEmail(List<PedidoXProduto> produtos) {
         StringBuilder mensagemFinal = new StringBuilder();
-        for (ProdutoCarrinho produtoCarrinho : produtos) {
+        for (PedidoXProduto pedidoXProduto : produtos) {
             String mensagemProduto = String.format("""
                             Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
-                            """, produtoCarrinho.getProduto().getNome(),
-                    produtoCarrinho.getQuantidade(),
-                    produtoCarrinho.getProduto().getPreco());
+                            """, pedidoXProduto.getProduto().getNome(),
+                    pedidoXProduto.getQuantidade(),
+                    pedidoXProduto.getProduto().getPreco());
             mensagemFinal.append(mensagemProduto);
         }
         return mensagemFinal.toString();

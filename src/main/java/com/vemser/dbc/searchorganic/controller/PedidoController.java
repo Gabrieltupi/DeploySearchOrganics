@@ -32,8 +32,8 @@ public class PedidoController implements IPedidoController {
     @Override
     @GetMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> obterPedido(@PathVariable("idPedido") Integer id) throws Exception {
-        Pedido pedidoEntity = this.pedidoService.obterPorId(id);
-        PedidoDTO pedidoDTO = this.pedidoService.preencherInformacoes(pedidoEntity);
+
+        PedidoDTO pedidoDTO = this.pedidoService.buscaPorId(id);
         return new ResponseEntity<>(pedidoDTO, HttpStatus.OK);
     }
 
@@ -47,8 +47,7 @@ public class PedidoController implements IPedidoController {
     @Override
     @PutMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id, @Valid @RequestBody PedidoUpdateDTO pedidoAtualizar) throws Exception {
-        Pedido pedidoEntity = this.pedidoService.atualizarPedido(id, pedidoAtualizar);
-        PedidoDTO pedidoDTO = this.pedidoService.preencherInformacoes(pedidoEntity);
+        PedidoDTO pedidoDTO = this.pedidoService.atualizarPedido(id, pedidoAtualizar);
         return new ResponseEntity<>(pedidoDTO, HttpStatus.OK);
     }
 
