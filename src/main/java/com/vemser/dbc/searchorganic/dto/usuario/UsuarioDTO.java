@@ -33,7 +33,6 @@ public class UsuarioDTO {
     private LocalDate dataNascimento;
 
     private List<EnderecoDTO> enderecos;
-
     @Schema(description = "CPF", required = true, example = "46473219080")
     private String cpf;
 
