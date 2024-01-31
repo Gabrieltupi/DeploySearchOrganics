@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
@@ -15,7 +13,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(hidden = true)
@@ -35,8 +34,6 @@ public class Usuario {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "DATANASCIMENTO")
     private LocalDate dataNascimento;
-    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.LAZY)
-    private List<Endereco> enderecos;
     @Column(name = "CPF")
     private String cpf;
     @Column(name = "EMAIL")
@@ -48,4 +45,5 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     @Column(name = "ATIVO")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
+
 }
