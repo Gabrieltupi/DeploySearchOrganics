@@ -3,8 +3,8 @@ package com.vemser.dbc.searchorganic.dto.pedido;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
-import com.vemser.dbc.searchorganic.model.Produto;
-import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
+import com.vemser.dbc.searchorganic.model.Pedido;
+import com.vemser.dbc.searchorganic.model.PedidoXProduto;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.AllArgsConstructor;
@@ -29,6 +29,21 @@ public class PedidoDTO {
     private LocalDate dataDePedido;
     private LocalDate dataEntrega;
     private EnderecoDTO endereco;
-    private List<ProdutoCarrinho> produtos;
+    private List<PedidoXProduto> produtos;
     private CupomDto cupom;
+
+    public PedidoDTO(Pedido pedido, UsuarioDTO usuarioDTO, EnderecoDTO enderecoDTO, CupomDto cupomDto, List<PedidoXProduto> produtos) {
+        this.idPedido = pedido.getIdPedido();
+        this.usuario = usuarioDTO;
+        this.statusPedido = pedido.getStatusPedido();
+        this.precoFrete = pedido.getPrecoFrete();
+        this.precoCarrinho = pedido.getPrecoCarrinho();
+        this.total = pedido.getPrecoCarrinho().add(pedido.getPrecoFrete());
+        this.formaPagamento = pedido.getFormaPagamento();
+        this.dataDePedido = pedido.getDataDePedido();
+        this.dataEntrega = pedido.getDataEntrega();
+        this.endereco = enderecoDTO;
+         this.produtos = produtos;
+         this.cupom = cupomDto;
+    }
 }
