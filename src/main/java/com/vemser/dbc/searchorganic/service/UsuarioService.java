@@ -54,7 +54,7 @@ public class UsuarioService {
     }
 
     public Usuario obterUsuarioPorId(Integer id) throws Exception {
-        return this.usuarioRepository.getById(id);
+        return usuarioRepository.getById(id);
     }
 
     public Usuario editarUsuario(int usuarioId, Usuario usuario) throws Exception {
@@ -90,6 +90,7 @@ public class UsuarioService {
 
     public void removerUsuario(int usuarioId) throws Exception {
         try {
+
                 usuarioRepository.deleteById(usuarioId);
                 Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
 
