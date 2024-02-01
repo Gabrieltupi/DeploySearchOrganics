@@ -83,8 +83,8 @@ public class ProdutoService {
 
 
     public List<ProdutoDTO> listarProdutosPorCategoria(Integer categoria) {
-        TipoCategoria  cate= TipoCategoria.fromInt(categoria);
-        List<Produto> produto= produtoRepository.porCategoria(cate);
+//        TipoCategoria  cate= TipoCategoria.fromInt(categoria);
+        List<Produto> produto= produtoRepository.porCategoria(TipoCategoria.fromInt(categoria));
 
         List<ProdutoDTO> produtoDTOs = produto.stream()
                 .map(this::retornarDto)
