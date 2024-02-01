@@ -1,12 +1,9 @@
 package com.vemser.dbc.searchorganic.dto.empresa;
 
-import com.vemser.dbc.searchorganic.model.Produto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
 
 @Data
 @NoArgsConstructor
@@ -37,7 +34,6 @@ public class EmpresaDTO {
     @Schema(description = "setor da empresa", required = true, example = "Legumes")
     private String setor;
 
-    @Schema(description = "Produtos", required = true, example = "Produtos")
-    private ArrayList<Produto> produtos = new ArrayList<>();
-
+//    @Schema(description = "Produtos", required = true, example = "Produtos")
+//    private ArrayList<Produto> produtos = new ArrayList<>();
 }
