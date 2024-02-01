@@ -39,14 +39,14 @@ public class UsuarioController implements IUsuarioController {
 
     @Override
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<?> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
+    public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
         Usuario usuarioEntity = this.usuarioService.obterUsuarioPorId(id);
 
         if (usuarioEntity != null) {
             UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
             return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Usuário não encontrado", HttpStatus.NOT_FOUND);
+            throw  new RegraDeNegocioException("Usuario não encontrado.");
         }
     }
 

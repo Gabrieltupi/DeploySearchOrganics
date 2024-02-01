@@ -18,7 +18,7 @@ public class ValidarEnderecoPedido implements IValidarPedido {
     @Override
     public void validar(Pedido pedido, Integer idUsuario, List<PedidoXProduto> produtos) throws Exception {
         Endereco endereco = pedido.getEndereco();
-        if (!(endereco.getIdUsuario() == idUsuario.longValue())) {
+        if (!(endereco.getUsuario().getIdUsuario() == idUsuario.longValue())) {
             throw new ValidacaoException("O endereço enviado não pertence ao usuário que solicitou o pedido");
         }
     }
