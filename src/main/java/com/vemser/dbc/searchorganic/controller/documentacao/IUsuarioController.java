@@ -4,10 +4,12 @@ import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,4 +84,28 @@ public interface IUsuarioController {
     )
     @DeleteMapping("/{idUsuario}")
     public ResponseEntity<Void> excluirUsuario(@PathVariable("idUsuario") Integer id) throws Exception;
+
+
+    @Operation(summary = "Lista um usuario por email!", description = "lista um usuario por emaill")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna o usurio por emaill"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException ;
+
+
+
+    @Operation(summary = "Lista um usuario por cpf!", description = "Deleta um usuario por cpf")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna o usuario por cpf"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )@GetMapping("/cpf/{cpf}")
+    public ResponseEntity<UsuarioDTO> findByCpf(@PathVariable String cpf) throws RegraDeNegocioException;
 }

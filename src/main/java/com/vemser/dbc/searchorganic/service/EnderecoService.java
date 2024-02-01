@@ -11,6 +11,8 @@ import com.vemser.dbc.searchorganic.repository.EnderecoRepository;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -165,4 +167,13 @@ public class EnderecoService {
         return mensagem;
     }
 
+    public Page<EnderecoDTO> listarEnderecosPaginados(Pageable pageable) {
+        Page<Endereco> enderecos = enderecoRepository.findAll(pageable);
+        return enderecos.map(endereco -> {
+            EnderecoDTO enderecoDTO = objectMapper.convertValue(endereco, EnderecoDTO.class);
+            enderecoDTO.setIdUsuario(endereco.getUsuario().getIdUsuario());
+            return enderecoDTO;
+        });
+
+    }
 }

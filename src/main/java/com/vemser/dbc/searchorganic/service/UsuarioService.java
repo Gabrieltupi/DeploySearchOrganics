@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.service;
 
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.model.Usuario;
@@ -110,7 +111,19 @@ public class UsuarioService {
 
     public Usuario obterPorId(Integer id) throws Exception {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
+                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + id));
+    }
+
+    public UsuarioDTO findByEmail(String email) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + email));
+        return new UsuarioDTO(usuario);
+    }
+
+    public UsuarioDTO findByCpf(String cpf) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findByCpf(cpf)
+            .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + cpf));
+        return new UsuarioDTO(usuario);
     }
 }
 
