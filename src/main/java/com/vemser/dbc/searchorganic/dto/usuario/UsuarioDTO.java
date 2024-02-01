@@ -33,8 +33,6 @@ public class UsuarioDTO {
     @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
-
-    @CPF
     @Schema(description = "CPF", required = true, example = "46473219080")
     private String cpf;
 

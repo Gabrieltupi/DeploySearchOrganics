@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 
 @Data
 public class EnderecoCreateDTO {
+
+
     @NotNull
     private Integer idUsuario;
 
@@ -43,6 +45,11 @@ public class EnderecoCreateDTO {
     @Size(min = 1, max = 20)
     @Schema(description = "Estado", required = true, example = "Rio Grande do Sul")
     private String estado;
+
+    @NotBlank
+    @Size(min = 1, max = 20)
+    @Schema(description = "Regiao", required = true, example = "Coloque regiao")
+    private String regiao;
 
     @NotBlank
     @Size(min = 1, max = 50)

@@ -7,6 +7,7 @@ import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -38,11 +39,15 @@ public class UsuarioController implements IUsuarioController {
 
     @Override
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
+    public ResponseEntity<?> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
         Usuario usuarioEntity = this.usuarioService.obterUsuarioPorId(id);
 
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+        if (usuarioEntity != null) {
+            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+            return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Usuário não encontrado", HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override

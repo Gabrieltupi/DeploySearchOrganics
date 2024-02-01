@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
+import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class UsuarioService {
 
     public Usuario criarUsuario(Usuario usuario) throws Exception {
         try {
-            Usuario novoUsuario = usuarioRepository.adicionar(usuario);
+            Usuario novoUsuario = usuarioRepository.save(usuario);
 
             Map<String, Object> dadosEmail = new HashMap<>();
             dadosEmail.put("nomeUsuario", novoUsuario.getNome());
@@ -36,38 +37,52 @@ public class UsuarioService {
         }
     }
 
-    public Usuario autenticar(String login, String senha) throws Exception {
-        Usuario usuario = usuarioRepository.buscaPorLogin(login);
-        if (!(usuario.getSenha().equals(senha))) {
+    public Usuario autenticar(String login, String senha) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findByLogin(login);
+        if(usuario == null){
+            throw new RegraDeNegocioException("Usuario nao encontrado!");
+        }
+
+        if (!usuario.getSenha().equals(senha)) {
             throw new RegraDeNegocioException("Senha incorreta");
         }
         return usuario;
     }
 
     public List<Usuario> exibirTodos() throws Exception {
-        return usuarioRepository.listar();
+        return usuarioRepository.findAll();
     }
 
     public Usuario obterUsuarioPorId(Integer id) throws Exception {
-        return this.usuarioRepository.buscaPorId(id);
+        return usuarioRepository.getById(id);
     }
 
     public Usuario editarUsuario(int usuarioId, Usuario usuario) throws Exception {
         try {
-            obterUsuarioPorId(usuarioId);
+            Usuario usuarioEntity = obterPorId(usuarioId);
 
-            Usuario usuarioEditado = usuarioRepository.editar(usuarioId, usuario);
+            usuarioEntity.setLogin(usuario.getLogin());
+            usuarioEntity.setEmail(usuario.getEmail());
+            usuarioEntity.setCpf(usuario.getCpf());
+            usuarioEntity.setSenha(usuario.getSenha());
+            usuarioEntity.setDataNascimento(usuario.getDataNascimento());
+            usuarioEntity.setNome(usuario.getNome());
+            usuarioEntity.setSobrenome(usuario.getSobrenome());
 
-            usuarioEditado.setIdUsuario(usuarioId);
+
+
+            usuarioRepository.save(usuarioEntity);
+
+            usuario.setIdUsuario(usuarioId);
 
             Map<String, Object> dadosEmail = new HashMap<>();
-            dadosEmail.put("nomeUsuario", usuarioEditado.getNome());
+            dadosEmail.put("nomeUsuario", usuarioEntity.getNome());
             dadosEmail.put("mensagem", "Suas informações foram atualizadas com sucesso");
-            dadosEmail.put("email", usuarioEditado.getEmail());
+            dadosEmail.put("email", usuarioEntity.getEmail());
 
-            emailService.sendEmail(dadosEmail, "Informações Atualizadas", usuarioEditado.getEmail());
+            emailService.sendEmail(dadosEmail, "Informações Atualizadas", usuarioEntity.getEmail());
 
-            return usuarioEditado;
+            return usuarioEntity;
         } catch (Exception e) {
             throw new Exception("Erro ao editar o usuário: " + e.getMessage(), e);
         }
@@ -75,8 +90,9 @@ public class UsuarioService {
 
     public void removerUsuario(int usuarioId) throws Exception {
         try {
-            if (usuarioRepository.remover(usuarioId)) {
-                Usuario usuarioRemovido = usuarioRepository.buscaPorId(usuarioId);
+
+                usuarioRepository.deleteById(usuarioId);
+                Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
 
                 Map<String, Object> dadosEmail = new HashMap<>();
                 dadosEmail.put("nomeUsuario", usuarioRemovido.getNome());
@@ -86,10 +102,15 @@ public class UsuarioService {
                 emailService.sendEmail(dadosEmail, "Usuário Removido", usuarioRemovido.getEmail());
 
 
-            }
+
         } catch (Exception e) {
             throw new Exception("Erro ao remover o usuário: " + e.getMessage(), e);
         }
+    }
+
+    public Usuario obterPorId(Integer id) throws Exception {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
     }
 }
 
