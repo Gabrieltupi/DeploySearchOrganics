@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
@@ -87,5 +88,16 @@ public class UsuarioController implements IUsuarioController {
         this.usuarioService.removerUsuario(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @Override
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException {
+        UsuarioDTO usuarioDTO = usuarioService.findByEmail(email);
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+    }
+    @Override
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<UsuarioDTO> findByCpf(@PathVariable String cpf) throws RegraDeNegocioException {
+        UsuarioDTO usuarioDTO = usuarioService.findByCpf(cpf);
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+    }
 }

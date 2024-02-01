@@ -7,6 +7,9 @@ import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.service.EnderecoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,8 +33,12 @@ public class EnderecoController implements IEnderecoController {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<EnderecoDTO>> listarEnderecos() throws Exception {
-        return new ResponseEntity<>(enderecoService.listarEnderecos(), HttpStatus.OK);
+    public ResponseEntity<Page<EnderecoDTO>> listarEnderecos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EnderecoDTO> enderecoPage = enderecoService.listarEnderecosPaginados(pageable);
+        return new ResponseEntity<>(enderecoPage, HttpStatus.OK);
     }
 
     @Override
