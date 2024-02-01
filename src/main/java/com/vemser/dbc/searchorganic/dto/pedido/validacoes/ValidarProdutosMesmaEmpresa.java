@@ -15,10 +15,10 @@ public class ValidarProdutosMesmaEmpresa implements IValidarPedido {
 
     @Override
     public void validar(Pedido pedido, Integer idUsuario, List<PedidoXProduto> produtos) throws Exception {
-        Integer idEmpresa = produtos.get(0).getProduto().getIdEmpresa();
+        Integer idEmpresa = produtos.get(0).getProduto().getEmpresa().getIdEmpresa();
         for (PedidoXProduto pedidoXProduto : produtos) {
             Produto produto = pedidoXProduto.getProduto();
-            if (!(produto.getIdEmpresa() == idEmpresa.longValue())) {
+            if (!(produto.getEmpresa().getIdEmpresa() == idEmpresa.longValue())) {
                 throw new ValidacaoException("Produtos não pertencem a mesma empresa");
             }
 

@@ -83,7 +83,7 @@ public class PedidoService {
     private List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
                 List<PedidoXProduto> produtos = new ArrayList<>();
             for (ProdutoCarrinhoCreate produtoCarrinhoCreate : produtosCarrinhoCreate) {
-                Produto produto = produtoService.buscarProdutoPorId(produtoCarrinhoCreate.getIdProduto());
+                Produto produto = produtoService.findById(produtoCarrinhoCreate.getIdProduto());
                 produtosBanco.add(produto);
                 PedidoXProduto pedidoXProduto = new PedidoXProduto();
                 pedidoXProduto.setProduto(produto);

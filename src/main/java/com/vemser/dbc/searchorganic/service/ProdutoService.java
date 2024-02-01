@@ -10,6 +10,7 @@ import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.PedidoXProduto;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
+import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,69 +26,77 @@ import java.util.List;
 public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final ObjectMapper objectMapper;
+    private final String NOT_FOUND_MESSAGE = "ID não encontrado";
 
 
     public ProdutoDTO adicionarProduto(ProdutoCreateDTO produto) throws Exception {
-        Produto produtoEntity = objectMapper.convertValue(produto, Produto.class);
-        produtoEntity = produtoRepository.adicionar(produtoEntity);
-        ProdutoDTO produtoDto = objectMapper.convertValue(produtoEntity, ProdutoDTO.class);
-
-        return produtoDto;
+        Produto produtoEntity = convertDto(produto);
+        return retornarDto(produtoRepository.save(produtoEntity));
 
     }
 
-    public ProdutoDTO atualizarProduto(Integer id, @Valid ProdutoUpdateDTO produtos) throws Exception {
-        log.debug("testando id nulo");
-        Produto produtoEntity = objectMapper.convertValue(produtos, Produto.class);
-        produtoEntity.setIdProduto(id);
+    public ProdutoDTO atualizarProduto(Integer id, ProdutoUpdateDTO produtoDto) throws RegraDeNegocioException{
+        Produto produtoRec = findById(id);
 
-        produtoRepository.editar(id, produtoEntity);
-        return null;
+            produtoRec.setNome(produtoDto.getNome());
+            produtoRec.setDescricao(produtoDto.getDescricao());
+            produtoRec.setPreco(produtoDto.getPreco());
+            produtoRec.setQuantidade(produtoDto.getQuantidade());
+            produtoRec.setCategoria(produtoDto.getCategoria());
+            produtoRec.setTaxa(produtoDto.getTaxa());
+            produtoRec.setUnidadeMedida(produtoDto.getUnidadeMedida());
+            produtoRec.setUrlImagem(produtoDto.getUrlImagem());
+
+        return retornarDto(produtoRepository.save(produtoRec));
     }
 
-    public List<ProdutoDTO> list() throws BancoDeDadosException {
+    public ProdutoDTO getById(Integer id) throws RegraDeNegocioException {
+        Produto entity = findById(id);
+        ProdutoDTO dto = retornarDto(entity);
+        return dto;
+    }
 
-        List<Produto> produtos = produtoRepository.listar();
-        return objectMapper.convertValue(produtos, new TypeReference<List<ProdutoDTO>>() {
-        });
+    public Produto findById(Integer id) throws RegraDeNegocioException {
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException(NOT_FOUND_MESSAGE));
+    }
+
+    public Produto convertDto(ProdutoCreateDTO dto) {
+        return objectMapper.convertValue(dto, Produto.class);
+    }
+
+    public ProdutoDTO retornarDto(Produto entity) {
+        return objectMapper.convertValue(entity, ProdutoDTO.class);
+    }
+
+
+    public List<ProdutoDTO> list() {
+        return produtoRepository.findAll().stream()
+                .map(this::retornarDto)
+                .collect(Collectors.toList());
     }
 
     public void deletarProduto(Integer idProduto) throws Exception {
-        try {
-            if (produtoRepository.remover(idProduto)) {
-                return;
-            }
-            throw new RegraDeNegocioException("Produto não encontrado");
-        } catch (Exception e) {
-            throw new Exception("Erro ao remover o usuário: " + e.getMessage(), e);
-        }
+            Produto entity= findById(idProduto);
+            produtoRepository.delete(entity);
     }
 
 
-    public Produto buscarProdutoPorId(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
-        Produto produto = produtoRepository.buscarProdutoPorId(id);
-        if (produto == null) {
-            throw new RegraDeNegocioException("O produto com o ID " + id + " não foi encontrado.");
-        }
-        return produto;
+    public List<ProdutoDTO> listarProdutosPorCategoria(Integer categoria) {
+        TipoCategoria  cate= TipoCategoria.fromInt(categoria);
+        List<Produto> produto= produtoRepository.porCategoria(cate);
+
+        List<ProdutoDTO> produtoDTOs = produto.stream()
+                .map(this::retornarDto)
+                .collect(Collectors.toList());
+        return produtoDTOs;
     }
 
-    public List<Produto> listarProdutosPorCategoria(Integer categoria) throws BancoDeDadosException, RegraDeNegocioException {
-
-        if (categoria == null) {
-            throw new RegraDeNegocioException("A categoria com o ID não foi encontrado.");
-        }
-        List<Produto> produtos = produtoRepository.listarProdutosPorCategoria(categoria);
-
-        if (produtos.isEmpty()) {
-            throw new RegraDeNegocioException("Não há produtos disponíveis para a categoria fornecida.");
-        }
-        return produtos;
-    }
-
-
-    public List<Produto> listarProdutosLoja(Integer idLoja) throws BancoDeDadosException, RegraDeNegocioException {
-        return produtoRepository.listarProdutosLoja(idLoja);
+    public List<ProdutoDTO> listarProdutosLoja(Integer idLoja) throws Exception {
+        List<Produto> produtos = produtoRepository.porEmpresa(idLoja); // Implemente conforme sua necessidade
+        return produtos.stream()
+                .map(this::retornarDto)
+                .collect(Collectors.toList());
     }
 
     public String getMensagemProdutoEmail(List<PedidoXProduto> produtos) {
@@ -102,26 +112,6 @@ public class ProdutoService {
         return mensagemFinal.toString();
     }
 
-
-    public List<Produto> buscarProdutos() {
-        try {
-            return produtoRepository.listar();
-        } catch (BancoDeDadosException e) {
-            System.out.println("Erro ao buscar produtos: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void atualizarSilenciosamente(Produto produto) {
-        try {
-            produtoRepository.editar(produto.getIdProduto(), produto);
-
-        } catch (SQLException e) {
-            System.out.println("Erro " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
 }
 
