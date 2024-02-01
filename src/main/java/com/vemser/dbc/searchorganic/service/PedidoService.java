@@ -45,7 +45,7 @@ public class PedidoService {
         List<PedidoXProduto> produtos = obterProdutos(pedidoCreateDTO.getProdutosCarrinho(), produtosBanco);
 
         Usuario usuario = usuarioService.obterUsuarioPorId(id);
-        Endereco endereco = enderecoService.obterEndereco(pedidoCreateDTO.getIdEndereco());
+        Endereco endereco = enderecoService.getById(pedidoCreateDTO.getIdEndereco());
 
         pedido.setEndereco(endereco);
         pedido.setUsuario(usuario);
@@ -137,7 +137,7 @@ public class PedidoService {
 
     public PedidoDTO atualizarPedido(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
         Pedido pedidoEntity = obterPorId(id);
-        Endereco endereco = enderecoService.obterEndereco(pedidoAtualizar.getIdEndereco());
+        Endereco endereco = enderecoService.getById(pedidoAtualizar.getIdEndereco());
 
         pedidoEntity.setEndereco(endereco);
 

@@ -26,14 +26,11 @@ public class EnderecoService {
     private final ObjectMapper objectMapper;
 
     public EnderecoDTO buscarEndereco(Integer idEndereco) throws Exception {
-        Optional<Endereco> enderecoOptional = enderecoRepository.findById(idEndereco);
-
-        if (enderecoOptional.isPresent()) {
-            return mapEnderecoToDTO(enderecoOptional.get());
-        } else {
-            throw new Exception("Endereço não encontrado");
-        }
+        Endereco endereco= this.getById(idEndereco);
+            return mapEnderecoToDTO(endereco);
     }
+
+
 
 
     public List<EnderecoDTO> listarEnderecos() {
@@ -45,9 +42,8 @@ public class EnderecoService {
             return enderecoDTO;
         }).toList();
 
-
-
     }
+
 
     public EnderecoDTO adicionarEndereco(EnderecoCreateDTO enderecoDTO) throws Exception {
         try {
@@ -69,6 +65,8 @@ public class EnderecoService {
             throw new RegraDeNegocioException("Erro ao adicionar endereço: " + e.getMessage());
         }
     }
+
+
 
 
 
@@ -137,5 +135,34 @@ public class EnderecoService {
         endereco.setPais(enderecoUpdateDTO.getPais());
     }
 
+    public Endereco getById (Integer id) throws Exception{
+        Optional<Endereco> enderecoOptional = enderecoRepository.findById(id);
+
+        if (enderecoOptional.isEmpty()) {
+            throw new RegraDeNegocioException("Endereço não encontrado");
+        }
+        return enderecoOptional.get();
+    }
+
+    public String getMensagemEnderecoEmail(Endereco endereco) {
+        String mensagem = String.format("""
+                        Logradouro: %s  <br>
+                        Número: %s       <br>
+                        Complemento: %s   <br>
+                        CEP: %s           <br>
+                        Cidade: %s        <br>
+                        Estado: %s        <br>
+                        País: %s           <br>
+                        """,
+                endereco.getLogradouro(),
+                endereco.getNumero(),
+                endereco.getComplemento(),
+                endereco.getCep(),
+                endereco.getCidade(),
+                endereco.getEstado(),
+                endereco.getPais()
+        );
+        return mensagem;
+    }
 
 }
