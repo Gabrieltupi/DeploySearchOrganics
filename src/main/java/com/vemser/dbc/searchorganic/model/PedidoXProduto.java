@@ -21,6 +21,7 @@
         @EmbeddedId
         private ProdutoXPedidoPK produtoXPedidoPK;
 
+        @JsonIgnore
         @ManyToOne
         @JoinColumn(name = "ID_PRODUTO", insertable = false, updatable = false)
         private Produto produto;

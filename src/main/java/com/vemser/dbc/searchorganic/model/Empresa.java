@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -38,7 +39,8 @@ public class Empresa {
     @Column(name = "cnpj")
     private String cnpj;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private ArrayList<Produto> produtos = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name="id_empresa")
+    private Set<Produto> produtos;
 }

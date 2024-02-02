@@ -24,11 +24,10 @@ import java.util.List;
 @RequestMapping("/produto")
 @RequiredArgsConstructor
 @Slf4j
-public class ProdutoController implements IProdutoController {
+public class ProdutoController {
     private final ProdutoService produtoService;
     private final ImgurService imgurService;
 
-    @Override
     @PostMapping //post localhost:8080/produto
     public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoCreateDTO produto) throws Exception {
         ProdutoDTO produtoCriado = produtoService.adicionarProduto(produto);
@@ -36,7 +35,6 @@ public class ProdutoController implements IProdutoController {
         return new ResponseEntity<>(produtoCriado, HttpStatus.OK);
     }
 
-    @Override
     @PostMapping("/imagem")
     public ResponseEntity<Imagem> uploadImagem(@RequestPart("imagem") MultipartFile imagem) throws Exception {
         Imagem imagemEntity = imgurService.uploadImage(imagem);
@@ -44,20 +42,17 @@ public class ProdutoController implements IProdutoController {
         return new ResponseEntity<>(imagemEntity, HttpStatus.OK);
     }
 
-    @Override
     @PutMapping("{idProduto}") // put localhost:8080/produto/idProduto
     public ResponseEntity<ProdutoDTO> update(@PathVariable("idProduto") Integer id, @RequestBody @Valid ProdutoUpdateDTO produto) throws Exception {
         ProdutoDTO produtoDTO = produtoService.atualizarProduto(id, produto);
         return new ResponseEntity<>(produtoDTO, HttpStatus.OK);
     }
 
-    @Override
     @GetMapping //get localhost:8080/produto
     public List<ProdutoDTO> getAllProdutos() throws Exception {
         return produtoService.list();
     }
 
-    @Override
     @DeleteMapping("/{idProduto}") //delete localhost:8080/produto/idproduto
     public ResponseEntity<Void> delete(@PathVariable("idProduto") Integer id) throws Exception {
         try {
@@ -68,27 +63,24 @@ public class ProdutoController implements IProdutoController {
         }
     }
 
-    @Override
     @GetMapping("/{idproduto}") // get localhost:8080/produto/idproduto
-    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable("idproduto") Integer idEmpresa) throws Exception {
-        Produto produto = this.produtoService.buscarProdutoPorId(idEmpresa);
-        return new ResponseEntity<>(produto, HttpStatus.OK);
+    public ResponseEntity<ProdutoDTO> buscarProdutoPorId(@PathVariable @RequestParam("idproduto") Integer idEmpresa) throws Exception {
+        ProdutoDTO produto = this.produtoService.getById(idEmpresa);
+        return ResponseEntity.ok(produto);
     }
 
-    @Override
     @GetMapping("/categoria/{numeroCategoria}")
-    public ResponseEntity<List<Produto>> listarProdutosPorCategoria(@PathVariable("numeroCategoria") Integer numeroCategoria) throws Exception {
-        List<Produto> produtos = this.produtoService.listarProdutosPorCategoria(numeroCategoria);
+    public ResponseEntity<List<ProdutoDTO>> listarProdutosPorCategoria(@PathVariable("numeroCategoria") Integer numeroCategoria) throws Exception {
+        List<ProdutoDTO> produtos = this.produtoService.listarProdutosPorCategoria(numeroCategoria);
         return new ResponseEntity<>(produtos, HttpStatus.OK);
     }
 
 
-    @Override
+
     @GetMapping("/loja/{idLoja}") // get localhost:8080/produto/idLoja
-    public ResponseEntity<List<Produto>> listarProdutoPorLoja(@PathVariable("idLoja") Integer idLoja) throws Exception {
-        List<Produto> produtos = this.produtoService.listarProdutosLoja(idLoja);
+    public ResponseEntity<List<ProdutoDTO>> listarProdutoPorLoja(@PathVariable("idLoja") Integer idLoja) throws Exception{
+        List<ProdutoDTO> produtos = this.produtoService.listarProdutosLoja(idLoja);
         return new ResponseEntity<>(produtos, HttpStatus.OK);
     }
-
 
 }
