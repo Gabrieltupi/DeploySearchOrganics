@@ -24,7 +24,7 @@ public class CupomService {
     }
 
     public CupomDTO findById(Integer idCupom) throws Exception {
-        Cupom cupom = cupomRepository.findById(idCupom).orElseThrow(() -> new RegraDeNegocioException("Não encontrado"));
+        Cupom cupom = getById(idCupom);
         return retornarDTO(cupom);
     }
 
@@ -48,6 +48,10 @@ public class CupomService {
 
     private CupomDTO retornarDTO(Cupom entity) {
         return objectMapper.convertValue(entity, CupomDTO.class);
+    }
+
+    public Cupom getById(Integer idCupom) throws Exception {
+        return cupomRepository.findById(idCupom).orElseThrow(() -> new RegraDeNegocioException("Não encontrado"));
     }
 }
 

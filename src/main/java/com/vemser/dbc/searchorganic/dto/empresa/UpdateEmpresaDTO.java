@@ -13,6 +13,10 @@ public class UpdateEmpresaDTO {
     @Schema(description = "Nome da empresa", required = true, example = "Fazendo do Wlad")
     private String nomeFantasia;
 
+    @NotBlank
+    @Schema(description = "Id do usuário", required = true, example = "1")
+    private Integer idUsuario;
+
     @CNPJ
     @Schema(description = "Cnpj da empresa", required = true, example = "50.271.776/0001-14")
     private String cnpj;
@@ -28,5 +32,4 @@ public class UpdateEmpresaDTO {
     @NotBlank
     @Schema(description = "setor da empresa", required = true, example = "Legumes")
     private String setor;
-
 }

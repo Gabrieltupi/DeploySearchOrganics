@@ -1,7 +1,7 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
@@ -56,7 +56,7 @@ public class PedidoService {
 
 
         if (pedidoCreateDTO.getIdCupom() != null) {
-            Cupom cupom = cupomService.buscarCupomPorId(pedidoCreateDTO.getIdCupom());
+            Cupom cupom = cupomService.getById(pedidoCreateDTO.getIdCupom());
             pedido.setCupom(cupom);
         }
 
@@ -128,7 +128,7 @@ public class PedidoService {
     public PedidoDTO retornarDTO(Pedido pedido) throws Exception {
         UsuarioDTO usuarioDTO = new UsuarioDTO(pedido.getUsuario());
         EnderecoDTO enderecoDTO = new EnderecoDTO(pedido.getEndereco());
-        CupomDto cupomDto = new CupomDto(pedido.getCupom());
+        CupomDTO cupomDto = new CupomDTO(pedido.getCupom());
         List<PedidoXProduto> produtos = pedidoXProdutoRepository.findByPedidoId(pedido.getIdPedido());
         PedidoDTO pedidoDTO = new PedidoDTO(pedido, usuarioDTO, enderecoDTO, cupomDto, produtos);
         return  pedidoDTO;

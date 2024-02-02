@@ -19,9 +19,8 @@ public class EmpresaService {
     private final ObjectMapper objectMapper;
 
     public List<EmpresaDTO> findAll() throws Exception {
-        List<Empresa> pessoasEntity =  empresaRepository.findAll();
-
-        return objectMapper.convertValue(pessoasEntity, objectMapper.getTypeFactory().constructCollectionType(List.class, EmpresaDTO.class));
+        List<Empresa> empresas =  empresaRepository.findAll();
+        return objectMapper.convertValue(empresas, objectMapper.getTypeFactory().constructCollectionType(List.class, EmpresaDTO.class));
     }
 
     public EmpresaDTO findById(Integer idEmpresa) throws Exception {
@@ -45,28 +44,6 @@ public class EmpresaService {
     public void delete(Integer idEmpresa) {
         empresaRepository.deleteById(idEmpresa);
     }
-
-//    public EmpresaDTO preencherInformacoes(Empresa empresa) throws Exception {
-//        EmpresaDTO empresaDTO = new EmpresaDTO();
-//        empresaDTO.setIdEmpresa(empresa.getIdEmpresa());
-//        empresaDTO.setIdUsuario(empresa.getIdUsuario());
-//        empresaDTO.setProdutos(empresa.getProdutos());
-//        empresaDTO.setNomeFantasia(empresa.getNomeFantasia());
-//        empresaDTO.setInscricaoEstadual(empresa.getInscricaoEstadual());
-//        empresaDTO.setCnpj(empresa.getCnpj());
-//        empresaDTO.setSetor(empresa.getSetor());
-//        empresaDTO.setRazaoSocial(empresa.getRazaoSocial());
-//        return empresaDTO;
-//    }
-//
-//    public List<Produto> listarProdutosDaLoja(Integer idEmpresa) throws BancoDeDadosException, RegraDeNegocioException {
-//        Empresa empresa = empresaRepository.buscaPorId(idEmpresa);
-//
-//        if (empresa != null) {
-//            return produtoRepository.listarProdutosLoja(idEmpresa);
-//        }
-//        return List.of();
-//    }
 
     private EmpresaDTO retornarDTO(Empresa entity) {
         return objectMapper.convertValue(entity, EmpresaDTO.class);

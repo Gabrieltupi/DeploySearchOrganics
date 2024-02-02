@@ -1,11 +1,8 @@
 package com.vemser.dbc.searchorganic.controller.documentacao;
 
-import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
 import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
-import com.vemser.dbc.searchorganic.model.Cupom;
-import com.vemser.dbc.searchorganic.model.Produto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,126 +15,60 @@ import java.util.List;
 
 @Tag(name = "Empresa", description = "Endpoints de Empresa")
 public interface IEmpresaController {
-    @Operation(summary = "Listar empresas", description = "Lista todas as empresas do banco")
+    @Operation(summary = "Listar empresas", description = "Listar todas as empresas")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de empresas"),
+                    @ApiResponse(responseCode = "200", description = "Retorna todas as empresas"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping
+    public ResponseEntity<List<EmpresaDTO>> findAll() throws Exception;
+
+    @Operation(summary = "Obter empresa", description = "Obter empresa por id")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna empresa por id"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @GetMapping("/{idEmpresa}")
-    public ResponseEntity<EmpresaDTO> exibirEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
+    public ResponseEntity<EmpresaDTO> findById(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 
-    @Operation(summary = "Postar a empresa em um usuario", description = "Postar empresa à um usuario")
+    @Operation(summary = "Criar empresa", description = "Criar empresa por usuário")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para criação"),
+                    @ApiResponse(responseCode = "200", description = "Retorna empresa criada"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping("/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> criarEmpresa(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresa) throws Exception;
+    @PostMapping("/usuario/{idUsuario}")
+    public ResponseEntity<EmpresaDTO> save(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresaDto) throws Exception;
 
-    @Operation(summary = "Editar o empresa pelo id", description = "Editar o empresa pelo id")
+    @Operation(summary = "Editar empresa", description = "Editar empresa por id")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para edição"),
+                    @ApiResponse(responseCode = "200", description = "Retorna empresa editada"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @PutMapping("/{idEmpresa}")
-    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody UpdateEmpresaDTO empresaAtualizada) throws Exception;
+    public ResponseEntity<EmpresaDTO> update(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody UpdateEmpresaDTO empresaDto) throws Exception;
 
-    @Operation(summary = "Deletar a empresa por ID", description = "Deletar a empresa")
+    @Operation(summary = "Remover empresa", description = "Remover empresa por id")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para deleção"),
+                    @ApiResponse(responseCode = "200", description = ""),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping("/{idEmpresa}")
-    public ResponseEntity<Void> deletarEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
-
-    @Operation(summary = "Listar produtos de uma empresa", description = "Lista todas os produtos da empresa")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de produtos"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    public ResponseEntity<List<Produto>> listarProdutosDaLoja(Integer idLoja) throws Exception;
-
-    @Operation(summary = "Listar cupons de uma loja", description = "Lista todas os cupons da loja")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de cupons"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/{idEmpresa}/cupom")
-    public ResponseEntity<List<Cupom>> listarCupomDaLoja(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
-
-    @Operation(summary = "Adicionar um cupom para a loja", description = "Adicionar cupom")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para adição de cupom"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PostMapping("/{idEmpresa}/cupom")
-    public ResponseEntity<Void> adicionarCupom(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody Cupom cupom) throws Exception;
-
-    @Operation(summary = "Listar cupons de uma empresa", description = "Lista todas os cupons da empresa")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de cupons"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/{idEmpresa}/cupons")
-    public ResponseEntity<List<Cupom>> listarCuponsDaEmpresa(@PathVariable("idEmpresa") Integer idEmpresa);
-
-    @Operation(summary = "Remover cupons", description = "Deletar um cupom")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a exclusão de um cupons"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @DeleteMapping("/cupom/{idCupom}")
-    public ResponseEntity<Void> removerCupom(@PathVariable("idCupom") Integer idCupom);
-
-    @Operation(summary = "Altera um cupons de uma empresa", description = "Altera todas os cupons da empresa")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo à um cupom editado"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PutMapping("/cupom/{idCupom}")
-    public ResponseEntity<CupomDto> atualizarCupom(@PathVariable("idCupom") Integer idCupom, @PathVariable("idEmpresa") Integer idEmpresa,
-                                                   @RequestBody Cupom cupom) throws Exception;
-
-    @Operation(summary = "Listar todos cupons", description = "Lista todas os cupons ")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de cupons"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/cupom")
-    public ResponseEntity<List<Cupom>> listarCupom() throws Exception;
+    public ResponseEntity<Void> delete(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 }
 
 

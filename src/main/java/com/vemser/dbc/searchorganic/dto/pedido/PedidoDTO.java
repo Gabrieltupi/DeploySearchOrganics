@@ -1,6 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.pedido;
 
-import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.model.Pedido;
@@ -30,9 +30,9 @@ public class PedidoDTO {
     private LocalDate dataEntrega;
     private EnderecoDTO endereco;
     private List<PedidoXProduto> produtos;
-    private CupomDto cupom;
+    private CupomDTO cupom;
 
-    public PedidoDTO(Pedido pedido, UsuarioDTO usuarioDTO, EnderecoDTO enderecoDTO, CupomDto cupomDto, List<PedidoXProduto> produtos) {
+    public PedidoDTO(Pedido pedido, UsuarioDTO usuarioDTO, EnderecoDTO enderecoDTO, CupomDTO cupomDto, List<PedidoXProduto> produtos) {
         this.idPedido = pedido.getIdPedido();
         this.usuario = usuarioDTO;
         this.statusPedido = pedido.getStatusPedido();

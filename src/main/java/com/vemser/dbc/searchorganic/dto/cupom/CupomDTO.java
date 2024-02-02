@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.cupom;
 
+import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -30,4 +31,13 @@ public class CupomDTO {
     @NotBlank
     @Schema(description = "Id daa empresa a ser aplicado o cupom", required = true, example = "Fazendo do Wlad")
     private Integer idEmpresa;
+
+    public CupomDTO(Cupom cupom) {
+        this.idCupom = cupom.getIdCupom();
+        this.nomeCupom = cupom.getNomeCupom();
+        this.ativo = cupom.getAtivo();
+        this.descricao = cupom.getDescricao();
+        this.taxaDesconto = cupom.getTaxaDesconto();
+        this.idEmpresa = cupom.getIdEmpresa();
+    }
 }
