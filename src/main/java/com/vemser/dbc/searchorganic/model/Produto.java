@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
@@ -16,7 +17,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(hidden = true)
-@Entity (name = "PRODUTO")
+@Entity
+        @Table(name = "PRODUTO")
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUTO_SEQ")
@@ -37,7 +39,7 @@ public class Produto {
     @Column
     private BigDecimal preco;
 
-    @Column(name = "quantidade_disponivel")
+    @Column(name = "quantidade")
     private BigDecimal quantidade;
 
     @Column(name= "tipo_categoria")
@@ -54,6 +56,10 @@ public class Produto {
 
     @Column(name = "ativo")
     private TipoAtivo tipoAtivo;
+
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<PedidoXProduto> pedidoXProduto;
+
 }
 
 

@@ -42,5 +42,5 @@ public class Empresa {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Column(name="id_empresa")
-    private Set<Produto> pets;
+    private Set<Produto> produtos;
 }
