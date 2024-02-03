@@ -7,12 +7,14 @@ import com.vemser.dbc.searchorganic.dto.empresa.EmpresaProdutosDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.service.EmpresaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/empresa")
@@ -21,8 +23,9 @@ public class EmpresaController implements IEmpresaController {
     private final EmpresaService empresaService;
 
     @GetMapping
-    public ResponseEntity<List<EmpresaDTO>> findAll() throws Exception {
-        return new ResponseEntity<>(empresaService.findAll(), HttpStatus.OK);
+    public ResponseEntity<Page<EmpresaDTO>> findAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(empresaService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{idEmpresa}")
@@ -47,8 +50,9 @@ public class EmpresaController implements IEmpresaController {
     }
 
     @GetMapping("/produtos")
-    public ResponseEntity<List<EmpresaProdutosDTO>> findAllWithProdutos() throws Exception {
-        return new ResponseEntity<>(empresaService.findAllWithProdutos(), HttpStatus.OK);
+    public ResponseEntity<Page<EmpresaProdutosDTO>> findAllWithProdutos(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(empresaService.findAllWithProdutos(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{idEmpresa}/produtos")
