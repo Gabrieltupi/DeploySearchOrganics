@@ -9,6 +9,9 @@ import com.vemser.dbc.searchorganic.service.ImgurService;
 import com.vemser.dbc.searchorganic.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +29,9 @@ public class ProdutoController implements IProdutoController {
     private final ImgurService imgurService;
 
     @GetMapping
-    public ResponseEntity<List<ProdutoDTO>> findAll() throws Exception {
-        return new ResponseEntity<>(produtoService.findAll(), HttpStatus.OK);
+    public ResponseEntity<Page<ProdutoDTO>> findAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(produtoService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{idProduto}")
@@ -52,13 +56,15 @@ public class ProdutoController implements IProdutoController {
     }
 
     @GetMapping("/empresa/{idEmpresa}")
-    public ResponseEntity<List<ProdutoDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
-        return new ResponseEntity<>(produtoService.findAllByIdEmpresa(idEmpresa), HttpStatus.OK);
+    public ResponseEntity<Page<ProdutoDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(produtoService.findAllByIdEmpresa(idEmpresa, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/categoria/{idCategoria}")
-    public ResponseEntity<List<ProdutoDTO>> findAllByIdCategoria(@PathVariable("idCategoria") Integer idCategoria) throws Exception {
-        return new ResponseEntity<>(produtoService.findAllByIdCategoria(idCategoria), HttpStatus.OK);
+    public ResponseEntity<Page<ProdutoDTO>> findAllByIdCategoria(@PathVariable("idCategoria") Integer idCategoria, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(produtoService.findAllByIdCategoria(idCategoria, pageable), HttpStatus.OK);
     }
 
     @PostMapping("/imagem")

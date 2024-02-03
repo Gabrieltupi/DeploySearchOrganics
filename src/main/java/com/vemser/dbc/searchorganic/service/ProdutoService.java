@@ -11,10 +11,11 @@ import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IProdutoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +25,9 @@ public class ProdutoService implements IProdutoService {
     private final EmpresaService empresaService;
     private final ObjectMapper objectMapper;
 
-    public List<ProdutoDTO> findAll() throws Exception {
-        return produtoRepository.findAll().stream()
-                .map(this::retornarDto)
-                .collect(Collectors.toList());
+    public Page<ProdutoDTO> findAll(Pageable pageable) throws Exception {
+        Page<Produto> produtos =  produtoRepository.findAll(pageable);
+        return produtos.map(this::retornarDto);
     }
 
     public ProdutoDTO findById(Integer id) throws Exception {
@@ -58,20 +58,16 @@ public class ProdutoService implements IProdutoService {
         produtoRepository.deleteById(idProduto);
     }
 
-    public List<ProdutoDTO> findAllByIdEmpresa(Integer idEmpresa) throws Exception {
+    public Page<ProdutoDTO> findAllByIdEmpresa(Integer idEmpresa, Pageable pageable) throws Exception {
         empresaService.findById(idEmpresa);
 
-        List<Produto> produtos = produtoRepository.findAllByIdEmpresa(idEmpresa);
-        return produtos.stream()
-                .map(this::retornarDto)
-                .collect(Collectors.toList());
+        Page<Produto> produtos = produtoRepository.findAllByIdEmpresa(idEmpresa, pageable);
+        return produtos.map(this::retornarDto);
     }
 
-    public List<ProdutoDTO> findAllByIdCategoria(Integer idCategoria) throws Exception {
-        List<Produto> produtos = produtoRepository.findAllByIdCategoria(idCategoria);
-        return produtos.stream()
-                .map(this::retornarDto)
-                .collect(Collectors.toList());
+    public Page<ProdutoDTO> findAllByIdCategoria(Integer idCategoria, Pageable pageable) throws Exception {
+        Page<Produto> produtos = produtoRepository.findAllByIdCategoria(idCategoria, pageable);
+        return produtos.map(this::retornarDto);
     }
 
     public String getMensagemProdutoEmail(List<PedidoXProduto> produtos) {
