@@ -5,9 +5,7 @@ import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,16 +13,16 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Set;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class ProdutoDTO extends ProdutoCreateDTO {
     private Integer idProduto;
 
     @NotNull(message = "Produto deve pertencer a um fornecedor")
     @Schema(description = "id da empresa", required = true, example = "0")
     private Integer idEmpresa;
-
 
     @NotBlank(message = "O nome nao deve ser vazio")
     @Schema(description = "nome do produto", required = true, example = "Maçã")
@@ -57,5 +55,5 @@ public class ProdutoDTO extends ProdutoCreateDTO {
     private String urlImagem;
 
     @Schema(description = "Atividade do produto", required = true, example = "S")
-    private TipoAtivo tipoAtivo = TipoAtivo.S;
+    private TipoAtivo tipoAtivo;
 }

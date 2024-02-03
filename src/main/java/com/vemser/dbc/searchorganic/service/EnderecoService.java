@@ -138,12 +138,7 @@ public class EnderecoService {
     }
 
     public Endereco getById (Integer id) throws Exception{
-        Optional<Endereco> enderecoOptional = enderecoRepository.findById(id);
-
-        if (enderecoOptional.isEmpty()) {
-            throw new RegraDeNegocioException("Endereço não encontrado");
-        }
-        return enderecoOptional.get();
+        return enderecoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Endereço não encontrado"));
     }
 
     public String getMensagemEnderecoEmail(Endereco endereco) {

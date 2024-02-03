@@ -2,7 +2,6 @@ package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
-import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;

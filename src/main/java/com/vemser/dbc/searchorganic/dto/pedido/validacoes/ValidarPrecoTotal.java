@@ -23,7 +23,7 @@ public class ValidarPrecoTotal implements IValidarPedido {
         }
 
         if (pedido.getCupom() != null) {
-            BigDecimal taxaDeDesconto = pedido.getCupom().getTaxaDeDesconto();
+            BigDecimal taxaDeDesconto = pedido.getCupom().getTaxaDesconto();
 
             BigDecimal desconto = precoCarrinhoTotal.multiply(taxaDeDesconto.divide(new BigDecimal(100)));
 

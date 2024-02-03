@@ -1,50 +1,46 @@
 package com.vemser.dbc.searchorganic.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vemser.dbc.searchorganic.controller.documentacao.ICupomController;
-import com.vemser.dbc.searchorganic.dto.cupom.CupomDto;
-import com.vemser.dbc.searchorganic.model.Cupom;
+import com.vemser.dbc.searchorganic.controller.interfaces.ICupomController;
+import com.vemser.dbc.searchorganic.dto.cupom.CreateCupomDTO;
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
+import com.vemser.dbc.searchorganic.dto.cupom.UpdateCupomDTO;
 import com.vemser.dbc.searchorganic.service.CupomService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/cupom")
+import javax.validation.Valid;
+import java.util.List;
+
 @RestController
+@RequestMapping("/cupom")
+@RequiredArgsConstructor
 public class CupomController implements ICupomController {
     private final CupomService cupomService;
-    private final ObjectMapper objectMapper;
 
-
-    public CupomController(CupomService cupomService, ObjectMapper objectMapper) {
-        this.cupomService = cupomService;
-        this.objectMapper = objectMapper;
+    @GetMapping
+    public ResponseEntity<List<CupomDTO>> findAll() throws Exception {
+        return new ResponseEntity<>(cupomService.findAll(), HttpStatus.OK);
     }
 
-    @Override
-    @GetMapping("/{nomeCupom}/{idEmpresa}")
-    public ResponseEntity<CupomDto> buscarPorNomeEEmpresa(
-            @PathVariable("nomeCupom") String nomeCupom,
-            @PathVariable("idEmpresa") int idEmpresa
-    ) {
-        Cupom cupom = cupomService.getCupomByNameAndEmpresa(nomeCupom, idEmpresa);
-
-        if (cupom != null) {
-            CupomDto cupomDto = new CupomDto();
-            cupomDto.setNomeCupom(cupom.getNomeCupom());
-            cupomDto.setAtivo(cupom.getAtivo());
-            cupomDto.setDescricao(cupom.getDescricao());
-            cupomDto.setTaxaDeDesconto(cupom.getTaxaDeDesconto());
-            cupomDto.setIdEmpresa(cupom.getIdEmpresa());
-
-            return new ResponseEntity<>(cupomDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/{idCupom}")
+    public ResponseEntity<CupomDTO> findById(@PathVariable("idCupom") Integer idCupom) throws Exception {
+        return new ResponseEntity<>(cupomService.findById(idCupom), HttpStatus.OK);
     }
 
+    @PostMapping("/empresa/{idEmpresa}")
+    public ResponseEntity<CupomDTO> save(@PathVariable("idEmpresa") Integer idEmpresa, @Valid @RequestBody CreateCupomDTO cupomDto) throws Exception {
+        return new ResponseEntity<>(cupomService.save(idEmpresa, cupomDto), HttpStatus.CREATED);
+    }
 
+    @PutMapping("/{idCupom}")
+    public ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer idCupom, @RequestBody UpdateCupomDTO cupomDto) throws Exception {
+        return new ResponseEntity<>(cupomService.update(idCupom, cupomDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/empresa/{idEmpresa}")
+    public ResponseEntity<List<CupomDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
+        return new ResponseEntity<>(cupomService.findAllByIdEmpresa(idEmpresa), HttpStatus.CREATED);
+    }
 }

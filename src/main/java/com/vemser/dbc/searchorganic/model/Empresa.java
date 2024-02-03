@@ -1,10 +1,9 @@
 package com.vemser.dbc.searchorganic.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,32 +14,27 @@ public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EMPRESA_SEQ")
     @SequenceGenerator(name = "EMPRESA_SEQ", sequenceName = "seq_empresa", allocationSize = 1)
-    @Column(name = "id_empresa")
+    @Column(name = "ID_EMPRESA")
     private Integer idEmpresa;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
-    @Column(name = "id_usuario")
+    @Column(name = "ID_USUARIO")
     private Integer idUsuario;
 
-    @Column(name = "nomefantasia")
+    @Column(name = "NOMEFANTASIA")
     private String nomeFantasia;
 
-    @Column(name = "razaosocial")
+    @Column(name = "RAZAOSOCIAL")
     private String razaoSocial;
 
-    @Column(name = "inscricaoestadual")
+    @Column(name = "INSCRICAOESTADUAL")
     private String inscricaoEstadual;
 
-    @Column(name = "setor")
+    @Column(name = "SETOR")
     private String setor;
 
-    @Column(name = "cnpj")
+    @Column(name = "CNPJ")
     private String cnpj;
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Column(name="id_empresa")
-    private Set<Produto> produtos;
+    @OneToMany(mappedBy = "idEmpresa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Produto> produtos;
 }

@@ -3,15 +3,14 @@ package com.vemser.dbc.searchorganic.model;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(hidden = true)
@@ -54,14 +53,4 @@ public class Pedido {
 
     @Column(name = "PRECO_CARRINHO")
     private BigDecimal precoCarrinho;
-
-
-
-//    @PostPersist
-//    public void onPostPersist() {
-//        for (PedidoXProduto produto : produtos) {
-//            produto.setPedido(this);
-//        }
-//    }
-
 }

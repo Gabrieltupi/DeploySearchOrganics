@@ -2,7 +2,7 @@ package com.vemser.dbc.searchorganic.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vemser.dbc.searchorganic.controller.documentacao.IUsuarioController;
+import com.vemser.dbc.searchorganic.controller.interfaces.IUsuarioController;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
