@@ -18,42 +18,42 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUTO_SEQ")
     @SequenceGenerator(name = "PRODUTO_SEQ", sequenceName = "seq_produto",allocationSize = 1)
-    @Column(name="id_produto")
+    @Column(name="ID_PRODUTO")
     private Integer idProduto;
 
-    @Column(name="id_empresa")
+    @Column(name="ID_EMPRESA")
     private Integer idEmpresa;
 
-    @Column
+    @Column(name="NOME")
     private String nome;
 
-    @Column
+    @Column(name="DESCRICAO")
     private String descricao;
 
-    @Column
+    @Column(name="PRECO")
     private BigDecimal preco;
 
-    @Column(name = "quantidade")
+    @Column(name="QUANTIDADE")
     private BigDecimal quantidade;
 
-    @Column
+    @Column(name="TAXA")
     private double taxa;
 
-    @Column(name = "url_imagem")
+    @Column(name = "URL_IMAGEM")
     private String urlImagem;
 
     @OneToMany(mappedBy = "produto", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<PedidoXProduto> pedidoXProduto;
 
-    @Column(name = "tipo_categoria")
+    @Column(name = "TIPO_CATEGORIA")
     @Enumerated(EnumType.ORDINAL)
     private TipoCategoria categoria;
 
-    @Column(name = "unidade_medida")
+    @Column(name = "UNIDADE_MEDIDA")
     @Enumerated(EnumType.STRING)
     private UnidadeMedida unidadeMedida;
 
-    @Column(name = "ativo")
+    @Column(name = "ATIVO")
     @Enumerated(EnumType.STRING)
     private TipoAtivo tipoAtivo;
 }

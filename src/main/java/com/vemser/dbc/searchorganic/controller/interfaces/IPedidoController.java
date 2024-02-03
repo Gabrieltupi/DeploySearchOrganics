@@ -15,58 +15,69 @@ import java.util.List;
 
 @Tag(name = "Pedido", description = "Endpoints de Pedido")
 public interface IPedidoController {
-    @Operation(summary = "Listar pedidos", description = "Lista todas os pedidos")
+    @Operation(summary = "Obter pedido", description = "Obter pedido por id")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de pedidos"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<PedidoDTO>> obterPedidos(@PathVariable("idUsuario") Integer id) throws Exception;
-
-    @Operation(summary = "Retorna o pedido", description = "retorna o pedido")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna o pedidos"),
+                    @ApiResponse(responseCode = "200", description = "Retorna pedido por id"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @GetMapping("/{idPedido}")
-    public ResponseEntity<PedidoDTO> obterPedido(@PathVariable("idPedido") Integer id) throws Exception;
+    ResponseEntity<PedidoDTO> findById(@PathVariable("idPedido") Integer idPedido) throws Exception;
 
-    @Operation(summary = "Cria um pedido através do id do usuario", description = "cria um pedido")
+    @Operation(summary = "Listar pedidos", description = "Listar todas os pedidos")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a criação de um pedido"),
+                    @ApiResponse(responseCode = "200", description = "Retorna todas as pedidos"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping
+    ResponseEntity<List<PedidoDTO>> findAll() throws Exception;
+
+    @Operation(summary = "Criar pedido", description = "Criar pedido por usuário")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna pedido criado"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @PostMapping("/{idUsuario}")
-    public ResponseEntity<PedidoDTO> criarPedido(@PathVariable("idUsuario") Integer id, @Valid @RequestBody PedidoCreateDTO pedidoCreateDTO) throws Exception;
+    ResponseEntity<PedidoDTO> save(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody PedidoCreateDTO pedidoDto) throws Exception;
 
-    @Operation(summary = "Altera um pedido através do id do pedido", description = "altera um pedido")
+    @Operation(summary = "Editar pedido", description = "Editar pedido por id")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a alteração de um pedido"),
+                    @ApiResponse(responseCode = "200", description = "Retorna pedido editado"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @PutMapping("/{idPedido}")
-    public ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id, @Valid @RequestBody PedidoUpdateDTO pedidoAtualizar) throws Exception;
+    ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer idPedido, @Valid @RequestBody PedidoUpdateDTO pedidoDto) throws Exception;
 
-    @Operation(summary = "Deleta um pedido através do id do pedido", description = "deleta um pedido")
+    @Operation(summary = "Cancelar pedido", description = "Cancelar pedido por id")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a exclusão de um pedido"),
+                    @ApiResponse(responseCode = "200", description = ""),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping("/{idPedido}")
-    public ResponseEntity<Void> cancelarPedido(@PathVariable("idPedido") Integer id) throws Exception;
+    ResponseEntity<Void> cancelarPedido(@PathVariable("idPedido") Integer idPedido) throws Exception;
+
+    @Operation(summary = "Listar pedidos por usuário", description = "Listar pedidos por usuário")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna pedidos por usuário"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/usuario/{idUsuario}")
+    ResponseEntity<List<PedidoDTO>> findAllByIdUsuario(@PathVariable("idUsuario") Integer idUsuario) throws Exception;
 }

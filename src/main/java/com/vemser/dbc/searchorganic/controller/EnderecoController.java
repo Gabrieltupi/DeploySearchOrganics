@@ -1,10 +1,9 @@
 package com.vemser.dbc.searchorganic.controller;
 
-import com.vemser.dbc.searchorganic.controller.documentacao.IEnderecoController;
+import com.vemser.dbc.searchorganic.controller.interfaces.IEnderecoController;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
-import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.service.EnderecoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,7 +46,6 @@ public class EnderecoController implements IEnderecoController {
         EnderecoDTO enderecoAdicionado = enderecoService.adicionarEndereco(endereco);
         return new ResponseEntity<>(enderecoAdicionado, HttpStatus.OK);
     }
-
 
     @Override
     @PutMapping("/{idEndereco}")

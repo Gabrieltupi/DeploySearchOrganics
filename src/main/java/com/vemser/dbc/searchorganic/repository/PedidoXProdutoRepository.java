@@ -11,14 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface PedidoXProdutoRepository extends JpaRepository<com.vemser.dbc.searchorganic.model.PedidoXProduto, ProdutoXPedidoPK> {
-    @Query("SELECT pxp FROM PEDIDOXPRODUTO pxp WHERE pxp.produtoXPedidoPK.idPedido = :idPedido")
-    List<PedidoXProduto> findByPedidoId(@Param("idPedido") Integer idPedido);
+public interface PedidoXProdutoRepository extends JpaRepository<PedidoXProduto, ProdutoXPedidoPK> {
+    @Query(value = "SELECT * FROM PEDIDOXPRODUTO pxp WHERE pxp.id_pedido = :idPedido", nativeQuery = true)
+    List<PedidoXProduto> findAllByIdPedido(@Param("idPedido") Integer idPedido);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Produto p " +
-            "SET p.quantidade = :quantidade " +
-            "WHERE p.idProduto = :idProduto")
-    void atualizarQuantidadeDoProduto(@Param("idProduto") Integer idProduto, @Param("quantidade") BigDecimal quantidade);
+    @Query(value = "UPDATE PRODUTO SET quantidade = :quantidade WHERE id_produto = :idProduto", nativeQuery = true)
+    void updateQuantidadeProduto(@Param("idProduto") Integer idProduto, @Param("quantidade") BigDecimal quantidade);
 }

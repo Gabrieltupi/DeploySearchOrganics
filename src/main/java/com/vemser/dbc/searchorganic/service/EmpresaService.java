@@ -27,14 +27,14 @@ public class EmpresaService implements IEmpresaService {
     }
 
     public EmpresaDTO findById(Integer idEmpresa) throws Exception {
-        return retornarDTO(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa: Não encontrado")));
+        return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
     }
 
     public EmpresaDTO save(Integer idUsuario, CreateEmpresaDTO empresaDto) throws Exception {
         Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
         empresa.setIdUsuario(idUsuario);
 
-        return retornarDTO(empresaRepository.save(empresa));
+        return retornarDto(empresaRepository.save(empresa));
     }
 
     public EmpresaDTO update(Integer idEmpresa, UpdateEmpresaDTO empresaDto) throws Exception {
@@ -43,7 +43,7 @@ public class EmpresaService implements IEmpresaService {
         Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
         empresa.setIdEmpresa(idEmpresa);
 
-        return retornarDTO(empresaRepository.save(empresa));
+        return retornarDto(empresaRepository.save(empresa));
     }
 
     public void delete(Integer idEmpresa) throws Exception {
@@ -62,7 +62,7 @@ public class EmpresaService implements IEmpresaService {
         return objectMapper.convertValue(empresa, EmpresaProdutosDTO.class);
     }
 
-    private EmpresaDTO retornarDTO(Empresa entity) {
+    private EmpresaDTO retornarDto(Empresa entity) {
         return objectMapper.convertValue(entity, EmpresaDTO.class);
     }
 }

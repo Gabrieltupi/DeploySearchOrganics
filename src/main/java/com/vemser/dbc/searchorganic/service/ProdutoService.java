@@ -32,7 +32,7 @@ public class ProdutoService implements IProdutoService {
 
     public ProdutoDTO findById(Integer id) throws Exception {
         return retornarDto(produtoRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Produto: Não encontrado")));
+                .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado")));
     }
 
     public ProdutoDTO save(Integer idEmpresa, ProdutoCreateDTO produtoDto) throws Exception {
