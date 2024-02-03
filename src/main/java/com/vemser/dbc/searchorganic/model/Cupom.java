@@ -1,6 +1,5 @@
 package com.vemser.dbc.searchorganic.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import lombok.*;
 
@@ -16,26 +15,23 @@ public class Cupom {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CUPOM_SEQ")
     @SequenceGenerator(name = "CUPOM_SEQ", sequenceName = "seq_cupom", allocationSize = 1)
-    @Column(name = "id_cupom")
+    @Column(name = "ID_CUPOM")
     private Integer idCupom;
 
-    @Column(name = "nome_cupom")
+    @Column(name = "NOME_CUPOM")
     private String nomeCupom;
 
-    @Column(name = "ativo")
+    @Column(name = "ATIVO")
     @Enumerated(EnumType.STRING)
     private TipoAtivo ativo;
 
-    @Column(name = "descricao")
+    @Column(name = "DESCRICAO")
     private String descricao;
 
-    @Column(name = "taxa_desconto")
+    @Column(name = "TAXA_DESCONTO")
     private BigDecimal taxaDesconto;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_empresa")
-    @Column(name = "id_empresa")
+    @Column(name = "ID_EMPRESA")
     private Integer idEmpresa;
 }
 

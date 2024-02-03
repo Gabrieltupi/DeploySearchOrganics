@@ -7,6 +7,7 @@ import com.vemser.dbc.searchorganic.dto.cupom.UpdateCupomDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
+import com.vemser.dbc.searchorganic.service.interfaces.ICupomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CupomService {
+public class CupomService implements ICupomService {
     private final CupomRepository cupomRepository;
     private final ObjectMapper objectMapper;
 
@@ -42,8 +43,9 @@ public class CupomService {
         return retornarDTO(cupomRepository.save(cupom));
     }
 
-    public void delete(Integer idCupom) {
-        cupomRepository.deleteById(idCupom);
+    public List<CupomDTO> findAllByIdEmpresa(Integer idEmpresa) throws Exception {
+        List<Cupom> cupons = cupomRepository.findAllByIdEmpresa(idEmpresa);
+        return objectMapper.convertValue(cupons, objectMapper.getTypeFactory().constructCollectionType(List.class, CupomDTO.class));
     }
 
     private CupomDTO retornarDTO(Cupom entity) {

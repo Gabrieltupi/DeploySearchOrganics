@@ -1,4 +1,4 @@
-package com.vemser.dbc.searchorganic.controller.documentacao;
+package com.vemser.dbc.searchorganic.controller.interfaces;
 
 import com.vemser.dbc.searchorganic.dto.cupom.CreateCupomDTO;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,14 +60,14 @@ public interface ICupomController {
     @PutMapping("/{idCupom}")
     public ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer idCupom, @RequestBody UpdateCupomDTO cupomDto) throws Exception;
 
-    @Operation(summary = "Remover cupom", description = "Remover cupom por id")
+    @Operation(summary = "Listar cupons por empresa", description = "Listar todos os cupons por empresa")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = ""),
+                    @ApiResponse(responseCode = "200", description = "Retorna todos os cupons por empresa"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idCupom}")
-    public ResponseEntity<Void> delete(@PathVariable("idCupom") Integer idCupom) throws Exception;
+    @GetMapping("/empresa/{idEmpresa}")
+    public ResponseEntity<List<CupomDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 }

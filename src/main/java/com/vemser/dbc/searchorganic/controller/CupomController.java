@@ -1,6 +1,6 @@
 package com.vemser.dbc.searchorganic.controller;
 
-import com.vemser.dbc.searchorganic.controller.documentacao.ICupomController;
+import com.vemser.dbc.searchorganic.controller.interfaces.ICupomController;
 import com.vemser.dbc.searchorganic.dto.cupom.CreateCupomDTO;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.cupom.UpdateCupomDTO;
@@ -39,9 +39,8 @@ public class CupomController implements ICupomController {
         return new ResponseEntity<>(cupomService.update(idCupom, cupomDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idCupom}")
-    public ResponseEntity<Void> delete(@PathVariable("idCupom") Integer idCupom) throws Exception {
-        cupomService.delete(idCupom);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("/empresa/{idEmpresa}")
+    public ResponseEntity<List<CupomDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
+        return new ResponseEntity<>(cupomService.findAllByIdEmpresa(idEmpresa), HttpStatus.CREATED);
     }
 }
