@@ -1,10 +1,9 @@
 package com.vemser.dbc.searchorganic.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,9 +17,6 @@ public class Empresa {
     @Column(name = "id_empresa")
     private Integer idEmpresa;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @Column(name = "id_usuario")
     private Integer idUsuario;
 
@@ -39,8 +35,6 @@ public class Empresa {
     @Column(name = "cnpj")
     private String cnpj;
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Column(name="id_empresa")
-    private Set<Produto> produtos;
+    @OneToMany(mappedBy = "idEmpresa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Produto> produtos;
 }

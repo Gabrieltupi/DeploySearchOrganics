@@ -1,8 +1,9 @@
 package com.vemser.dbc.searchorganic.controller;
 
-import com.vemser.dbc.searchorganic.controller.documentacao.IEmpresaController;
+import com.vemser.dbc.searchorganic.controller.interfaces.IEmpresaController;
 import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.empresa.EmpresaProdutosDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.service.EmpresaService;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,15 @@ public class EmpresaController implements IEmpresaController {
     public ResponseEntity<Void> delete(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
         empresaService.delete(idEmpresa);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/produtos")
+    public ResponseEntity<List<EmpresaProdutosDTO>> findAllWithProdutos() throws Exception {
+        return new ResponseEntity<>(empresaService.findAllWithProdutos(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{idEmpresa}/produtos")
+    public ResponseEntity<EmpresaProdutosDTO> findByIdWithProdutos(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
+        return new ResponseEntity<>(empresaService.findByIdWithProdutos(idEmpresa), HttpStatus.OK);
     }
 }
