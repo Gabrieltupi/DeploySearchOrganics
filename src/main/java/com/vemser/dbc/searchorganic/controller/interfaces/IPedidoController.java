@@ -1,4 +1,4 @@
-package com.vemser.dbc.searchorganic.controller.documentacao;
+package com.vemser.dbc.searchorganic.controller.interfaces;
 
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;

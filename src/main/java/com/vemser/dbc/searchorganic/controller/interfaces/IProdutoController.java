@@ -1,4 +1,4 @@
-package com.vemser.dbc.searchorganic.controller.documentacao;
+package com.vemser.dbc.searchorganic.controller.interfaces;
 
 import com.vemser.dbc.searchorganic.dto.produto.Imagem;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;

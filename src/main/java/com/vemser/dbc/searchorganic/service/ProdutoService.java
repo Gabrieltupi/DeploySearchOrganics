@@ -1,99 +1,74 @@
 package com.vemser.dbc.searchorganic.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
-import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.PedidoXProduto;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
-import com.vemser.dbc.searchorganic.utils.TipoCategoria;
+import com.vemser.dbc.searchorganic.service.interfaces.IProdutoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ProdutoService {
+public class ProdutoService implements IProdutoService {
     private final ProdutoRepository produtoRepository;
+    private final EmpresaService empresaService;
     private final ObjectMapper objectMapper;
-    private final String NOT_FOUND_MESSAGE = "ID não encontrado";
 
-
-    public ProdutoDTO adicionarProduto(ProdutoCreateDTO produto) throws Exception {
-        Produto produtoEntity = convertDto(produto);
-        return retornarDto(produtoRepository.save(produtoEntity));
-
-    }
-
-    public ProdutoDTO atualizarProduto(Integer id, ProdutoUpdateDTO produtoDto) throws RegraDeNegocioException{
-        Produto produtoRec = findById(id);
-
-            produtoRec.setNome(produtoDto.getNome());
-            produtoRec.setDescricao(produtoDto.getDescricao());
-            produtoRec.setPreco(produtoDto.getPreco());
-            produtoRec.setQuantidade(produtoDto.getQuantidade());
-            produtoRec.setCategoria(produtoDto.getCategoria());
-            produtoRec.setTaxa(produtoDto.getTaxa());
-            produtoRec.setUnidadeMedida(produtoDto.getUnidadeMedida());
-            produtoRec.setUrlImagem(produtoDto.getUrlImagem());
-
-        return retornarDto(produtoRepository.save(produtoRec));
-    }
-
-    public ProdutoDTO getById(Integer id) throws RegraDeNegocioException {
-        Produto entity = findById(id);
-        ProdutoDTO dto = retornarDto(entity);
-        return dto;
-    }
-
-    public Produto findById(Integer id) throws RegraDeNegocioException {
-        return produtoRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException(NOT_FOUND_MESSAGE));
-    }
-
-    public Produto convertDto(ProdutoCreateDTO dto) {
-        return objectMapper.convertValue(dto, Produto.class);
-    }
-
-    public ProdutoDTO retornarDto(Produto entity) {
-        return objectMapper.convertValue(entity, ProdutoDTO.class);
-    }
-
-
-    public List<ProdutoDTO> list() {
+    public List<ProdutoDTO> findAll() throws Exception {
         return produtoRepository.findAll().stream()
                 .map(this::retornarDto)
                 .collect(Collectors.toList());
     }
 
-    public void deletarProduto(Integer idProduto) throws Exception {
-            Produto entity= findById(idProduto);
-            produtoRepository.delete(entity);
+    public ProdutoDTO findById(Integer id) throws Exception {
+        return retornarDto(produtoRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Produto: Não encontrado")));
     }
 
+    public ProdutoDTO save(Integer idEmpresa, ProdutoCreateDTO produtoDto) throws Exception {
+        empresaService.findById(idEmpresa);
 
-    public List<ProdutoDTO> listarProdutosPorCategoria(Integer categoria) {
-//        TipoCategoria  cate= TipoCategoria.fromInt(categoria);
-        List<Produto> produto= produtoRepository.porCategoria(categoria);
+        Produto produto = convertDto(produtoDto);
+        produto.setIdEmpresa(idEmpresa);
 
-        List<ProdutoDTO> produtoDTOs = produto.stream()
+        return retornarDto(produtoRepository.save(produto));
+    }
+
+    public ProdutoDTO update(Integer idProduto, ProdutoUpdateDTO produtoDto) throws Exception {
+        findById(idProduto);
+
+        Produto produto = objectMapper.convertValue(produtoDto, Produto.class);
+        produto.setIdProduto(idProduto);
+
+        return retornarDto(produtoRepository.save(produto));
+    }
+
+    public void delete(Integer idProduto) throws Exception {
+        findById(idProduto);
+        produtoRepository.deleteById(idProduto);
+    }
+
+    public List<ProdutoDTO> findAllByIdEmpresa(Integer idEmpresa) throws Exception {
+        empresaService.findById(idEmpresa);
+
+        List<Produto> produtos = produtoRepository.findAllByIdEmpresa(idEmpresa);
+        return produtos.stream()
                 .map(this::retornarDto)
                 .collect(Collectors.toList());
-        return produtoDTOs;
     }
 
-    public List<ProdutoDTO> listarProdutosLoja(Integer idLoja) throws Exception {
-        List<Produto> produtos = produtoRepository.porEmpresa(idLoja); // Implemente conforme sua necessidade
+    public List<ProdutoDTO> findAllByIdCategoria(Integer idCategoria) throws Exception {
+        List<Produto> produtos = produtoRepository.findAllByIdCategoria(idCategoria);
         return produtos.stream()
                 .map(this::retornarDto)
                 .collect(Collectors.toList());
@@ -112,8 +87,18 @@ public class ProdutoService {
         return mensagemFinal.toString();
     }
 
+    public Produto getById(Integer idProduto) throws Exception {
+        ProdutoDTO produto = findById(idProduto);
+        return convertDto(produto);
+    }
 
+    public Produto convertDto(ProdutoCreateDTO dto) {
+        return objectMapper.convertValue(dto, Produto.class);
+    }
 
+    public ProdutoDTO retornarDto(Produto entity) {
+        return objectMapper.convertValue(entity, ProdutoDTO.class);
+    }
 }
 
 
