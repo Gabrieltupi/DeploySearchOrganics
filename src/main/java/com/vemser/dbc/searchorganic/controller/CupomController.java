@@ -6,12 +6,14 @@ import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.cupom.UpdateCupomDTO;
 import com.vemser.dbc.searchorganic.service.CupomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/cupom")
@@ -20,8 +22,9 @@ public class CupomController implements ICupomController {
     private final CupomService cupomService;
 
     @GetMapping
-    public ResponseEntity<List<CupomDTO>> findAll() throws Exception {
-        return new ResponseEntity<>(cupomService.findAll(), HttpStatus.OK);
+    public ResponseEntity<Page<CupomDTO>> findAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(cupomService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{idCupom}")
@@ -40,7 +43,8 @@ public class CupomController implements ICupomController {
     }
 
     @GetMapping("/empresa/{idEmpresa}")
-    public ResponseEntity<List<CupomDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception {
-        return new ResponseEntity<>(cupomService.findAllByIdEmpresa(idEmpresa), HttpStatus.CREATED);
+    public ResponseEntity<Page<CupomDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(cupomService.findAllByIdEmpresa(idEmpresa, pageable), HttpStatus.CREATED);
     }
 }

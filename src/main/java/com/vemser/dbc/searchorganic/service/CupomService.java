@@ -9,9 +9,9 @@ import com.vemser.dbc.searchorganic.model.Cupom;
 import com.vemser.dbc.searchorganic.repository.CupomRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.ICupomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -19,36 +19,36 @@ public class CupomService implements ICupomService {
     private final CupomRepository cupomRepository;
     private final ObjectMapper objectMapper;
 
-    public List<CupomDTO> findAll() throws Exception {
-        List<Cupom> cupons = cupomRepository.findAll();
-        return objectMapper.convertValue(cupons, objectMapper.getTypeFactory().constructCollectionType(List.class, CupomDTO.class));
+    public Page<CupomDTO> findAll(Pageable pageable) throws Exception {
+        Page<Cupom> cupons = cupomRepository.findAll(pageable);
+        return cupons.map(this::retornarDto);
     }
 
     public CupomDTO findById(Integer idCupom) throws Exception {
         Cupom cupom = getById(idCupom);
-        return retornarDTO(cupom);
+        return retornarDto(cupom);
     }
 
     public CupomDTO save(Integer idEmpresa, CreateCupomDTO cupomDto) {
         Cupom cupom = objectMapper.convertValue(cupomDto, Cupom.class);
         cupom.setIdEmpresa(idEmpresa);
 
-        return retornarDTO(cupomRepository.save(cupom));
+        return retornarDto(cupomRepository.save(cupom));
     }
 
     public CupomDTO update(Integer idCupom, UpdateCupomDTO cupomDto) throws Exception {
         Cupom cupom = objectMapper.convertValue(cupomDto, Cupom.class);
         cupom.setIdCupom(idCupom);
 
-        return retornarDTO(cupomRepository.save(cupom));
+        return retornarDto(cupomRepository.save(cupom));
     }
 
-    public List<CupomDTO> findAllByIdEmpresa(Integer idEmpresa) throws Exception {
-        List<Cupom> cupons = cupomRepository.findAllByIdEmpresa(idEmpresa);
-        return objectMapper.convertValue(cupons, objectMapper.getTypeFactory().constructCollectionType(List.class, CupomDTO.class));
+    public Page<CupomDTO> findAllByIdEmpresa(Integer idEmpresa, Pageable pageable) throws Exception {
+        Page<Cupom> cupons = cupomRepository.findAllByIdEmpresa(idEmpresa, pageable);
+        return cupons.map(this::retornarDto);
     }
 
-    private CupomDTO retornarDTO(Cupom entity) {
+    private CupomDTO retornarDto(Cupom entity) {
         return objectMapper.convertValue(entity, CupomDTO.class);
     }
 
