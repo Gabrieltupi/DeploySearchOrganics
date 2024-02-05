@@ -19,9 +19,10 @@ public class ValidarPrecoTotal implements IValidarPedido {
 
         for (PedidoXProduto pedidoXProduto : produtos) {
             Produto produto = pedidoXProduto.getProduto();
-            precoCarrinhoTotal = precoCarrinhoTotal.add(produto.getPreco());
-        }
+            BigDecimal quantidade = new BigDecimal(pedidoXProduto.getQuantidade());
 
+            precoCarrinhoTotal = precoCarrinhoTotal.add(produto.getPreco().multiply(quantidade));
+        }
         if (pedido.getCupom() != null) {
             BigDecimal taxaDeDesconto = pedido.getCupom().getTaxaDesconto();
 
@@ -30,7 +31,7 @@ public class ValidarPrecoTotal implements IValidarPedido {
             precoCarrinhoTotal = precoCarrinhoTotal.subtract(desconto);
 
         }
-
+        System.out.println(precoCarrinhoTotal);
         pedido.setPrecoCarrinho(precoCarrinhoTotal);
 
     }
