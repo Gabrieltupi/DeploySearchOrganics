@@ -1,48 +1,40 @@
 package com.vemser.dbc.searchorganic.model;
 
-import com.vemser.dbc.searchorganic.interfaces.IImpressao;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import java.util.ArrayList;
+import javax.persistence.*;
+import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@ToString
-@Schema(hidden = true)
-public class Empresa implements IImpressao {
+@AllArgsConstructor
+@Entity(name = "EMPRESA")
+@NoArgsConstructor
+public class Empresa {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EMPRESA_SEQ")
+    @SequenceGenerator(name = "EMPRESA_SEQ", sequenceName = "seq_empresa", allocationSize = 1)
+    @Column(name = "ID_EMPRESA")
     private Integer idEmpresa;
+
+    @Column(name = "ID_USUARIO")
     private Integer idUsuario;
+
+    @Column(name = "NOMEFANTASIA")
     private String nomeFantasia;
-    private String cnpj;
+
+    @Column(name = "RAZAOSOCIAL")
     private String razaoSocial;
+
+    @Column(name = "INSCRICAOESTADUAL")
     private String inscricaoEstadual;
+
+    @Column(name = "SETOR")
     private String setor;
-    private ArrayList<Produto> produtos = new ArrayList<>();
 
-    public Empresa(String nomeFantasia, String cnpj, String razaoSocial, String inscricaoEstadual, String setor, Integer idUsuario) {
-    }
+    @Column(name = "CNPJ")
+    private String cnpj;
 
-
-    @Override
-    public void imprimir() {
-        System.out.println("ID do da Empresa: " + getIdEmpresa());
-        System.out.println("\nDados da Empresa: \n");
-        System.out.println("Nome da empresa: " + getNomeFantasia());
-        System.out.println("CNPJ da empresa: " + getCnpj());
-        System.out.println("Razao Social da empresa: " + getRazaoSocial());
-        System.out.println("Incriçao Social da empresa: " + getInscricaoEstadual());
-        System.out.println("Setor da empresa: \n" + getSetor());
-
-        if (produtos.isEmpty()) {
-            System.out.println("A empresa não possui produtos.");
-        } else {
-            System.out.println("Lista de Produtos:");
-            for (Produto produto : produtos) {
-                System.out.println(produto);
-            }
-        }
-    }
+    @OneToMany(mappedBy = "idEmpresa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Produto> produtos;
 }

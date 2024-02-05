@@ -2,11 +2,12 @@ package com.vemser.dbc.searchorganic.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vemser.dbc.searchorganic.controller.documentacao.IUsuarioController;
+import com.vemser.dbc.searchorganic.controller.interfaces.IUsuarioController;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -41,13 +42,17 @@ public class UsuarioController implements IUsuarioController {
     public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
         Usuario usuarioEntity = this.usuarioService.obterUsuarioPorId(id);
 
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+        if (usuarioEntity != null) {
+            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+            return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+        } else {
+            throw  new RegraDeNegocioException("Usuario não encontrado.");
+        }
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception {
+    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception {
 
         Usuario usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, Usuario.class);
         usuarioEntity = this.usuarioService.criarUsuario(usuarioEntity);
@@ -82,5 +87,16 @@ public class UsuarioController implements IUsuarioController {
         this.usuarioService.removerUsuario(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @Override
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException {
+        UsuarioDTO usuarioDTO = usuarioService.findByEmail(email);
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+    }
+    @Override
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<UsuarioDTO> findByCpf(@PathVariable String cpf) throws RegraDeNegocioException {
+        UsuarioDTO usuarioDTO = usuarioService.findByCpf(cpf);
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+    }
 }

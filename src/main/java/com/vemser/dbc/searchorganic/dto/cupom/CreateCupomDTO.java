@@ -22,19 +22,17 @@ public class CreateCupomDTO {
     private String nomeCupom;
 
     @NotNull
-    @NotBlank
-    @Schema(description = "atividade do cupom", required = true, example = "cupom inativo")
+    @Schema(description = "atividade do cupom", required = true, example = "1")
     private TipoAtivo ativo;
 
     @NotBlank
     @NotNull
-    @Schema(description = "Descrição do cupom", required = true, example = "cupom de 10% de desconto para uso em uma nova loja")
+    @Schema(description = "Descrição do cupom", required = true, example = "Cupom de 10% de desconto para uso em uma nova loja")
     @Size(min = 1, max = 255)
     private String descricao;
 
-    @NotBlank
     @NotNull
     @Schema(description = "Taxa de desconto do cupom", required = true, example = "10")
-    private BigDecimal taxaDeDesconto = new BigDecimal(0);
+    private BigDecimal taxaDesconto = new BigDecimal(0);
 
 }

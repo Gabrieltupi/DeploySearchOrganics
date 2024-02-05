@@ -1,88 +1,70 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.empresa.EmpresaProdutosDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
-import com.vemser.dbc.searchorganic.exceptions.BancoDeDadosException;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
-import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.repository.EmpresaRepository;
-import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
+import com.vemser.dbc.searchorganic.service.interfaces.IEmpresaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EmpresaService {
+public class EmpresaService implements IEmpresaService {
     private final EmpresaRepository empresaRepository;
-    private final ProdutoRepository produtoRepository;
     private final ObjectMapper objectMapper;
 
-    private final ProdutoService produtoService;
-
-
-    public Empresa adicionarEmpresa(Integer idUsuario, Empresa empresa) throws BancoDeDadosException {
-        return empresaRepository.adicionar(empresa, idUsuario);
+    public Page<EmpresaDTO> findAll(Pageable pageable) throws Exception {
+        Page<Empresa> empresas =  empresaRepository.findAll(pageable);
+        return empresas.map(this::retornarDto);
     }
 
-    public Empresa buscarEmpresa(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
-
-        return empresaRepository.buscaPorId(id);
-
-
+    public EmpresaDTO findById(Integer idEmpresa) throws Exception {
+        return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
     }
 
-//    public Empresa atualizarEmpresa(Integer idEmpresa, Empresa novaEmpresa) throws Exception {
-//        empresaRepository.buscaPorId(idEmpresa);
-//        return empresaRepository.editar(idEmpresa, novaEmpresa);
-//    }
+    public EmpresaDTO save(Integer idUsuario, CreateEmpresaDTO empresaDto) throws Exception {
+        Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
+        empresa.setIdUsuario(idUsuario);
 
-
-    public Empresa atualizarEmpresa(Integer idEmpresa, UpdateEmpresaDTO novaEmpresa) throws Exception {
-        Empresa empresa = buscarEmpresa(idEmpresa);
-        empresa.setNomeFantasia(novaEmpresa.getNomeFantasia());
-        empresa.setInscricaoEstadual(novaEmpresa.getInscricaoEstadual());
-        empresa.setCnpj(novaEmpresa.getCnpj());
-        empresa.setSetor(novaEmpresa.getSetor());
-        empresa.setRazaoSocial(novaEmpresa.getRazaoSocial());
-
-        return empresaRepository.editar(idEmpresa, empresa);
+        return retornarDto(empresaRepository.save(empresa));
     }
 
-    public void excluirEmpresa(int id) {
-        try {
-            empresaRepository.remover(id);
-            System.out.println("Empresa com o ID " + id + " excluída com sucesso.");
-        } catch (BancoDeDadosException bdEx) {
-            throw new RuntimeException(bdEx.getMessage());
-        } catch (Exception e) {
-            System.err.println("Erro ao excluir empresa: " + e.getMessage());
-        }
+    public EmpresaDTO update(Integer idEmpresa, UpdateEmpresaDTO empresaDto) throws Exception {
+        findById(idEmpresa);
+
+        Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
+        empresa.setIdEmpresa(idEmpresa);
+
+        return retornarDto(empresaRepository.save(empresa));
     }
 
-    public EmpresaDTO preencherInformacoes(Empresa empresa) throws Exception {
-        EmpresaDTO empresaDTO = new EmpresaDTO();
-        empresaDTO.setIdEmpresa(empresa.getIdEmpresa());
-        empresaDTO.setIdUsuario(empresa.getIdUsuario());
-        empresaDTO.setProdutos(empresa.getProdutos());
-        empresaDTO.setNomeFantasia(empresa.getNomeFantasia());
-        empresaDTO.setInscricaoEstadual(empresa.getInscricaoEstadual());
-        empresaDTO.setCnpj(empresa.getCnpj());
-        empresaDTO.setSetor(empresa.getSetor());
-        empresaDTO.setRazaoSocial(empresa.getRazaoSocial());
-        return empresaDTO;
+    public void delete(Integer idEmpresa) throws Exception {
+        findById(idEmpresa);
+        empresaRepository.deleteById(idEmpresa);
     }
 
-    public List<Produto> listarProdutosDaLoja(Integer idEmpresa) throws BancoDeDadosException, RegraDeNegocioException {
-        Empresa empresa = empresaRepository.buscaPorId(idEmpresa);
+    public Page<EmpresaProdutosDTO> findAllWithProdutos(Pageable pageable) throws Exception {
+        Page<Empresa> empresas = empresaRepository.findAllWithProdutos(pageable);
+        return empresas.map(empresa -> objectMapper.convertValue(empresa, EmpresaProdutosDTO.class));
+    }
 
-        if (empresa != null) {
-            return produtoRepository.listarProdutosLoja(idEmpresa);
-        }
-        return List.of();
+    public EmpresaProdutosDTO findByIdWithProdutos(Integer idEmpresa) throws Exception {
+        findById(idEmpresa);
+        Optional<Empresa> empresa = empresaRepository.findByIdWithProdutos(idEmpresa);
+        return objectMapper.convertValue(empresa, EmpresaProdutosDTO.class);
+    }
+
+    private EmpresaDTO retornarDto(Empresa entity) {
+        return objectMapper.convertValue(entity, EmpresaDTO.class);
     }
 }
 

@@ -1,6 +1,5 @@
 package com.vemser.dbc.searchorganic.dto.pedido;
 
-import com.vemser.dbc.searchorganic.model.ProdutoCarrinho;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -44,7 +43,7 @@ public class PedidoCreateDTO {
     private BigDecimal precoCarrinho;
 
     @NotNull
-    @Schema(description = "produtos carrinho", required = true, example = "~produtos~")
-    private ArrayList<ProdutoCarrinho> produtos;
+    @Schema(description = "produtos carrinho", required = true, example = "[]")
+    private ArrayList<ProdutoCarrinhoCreate> produtosCarrinho;
 
 }
