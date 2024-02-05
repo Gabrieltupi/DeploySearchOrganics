@@ -1,28 +1,37 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.ProdutoCarrinhoCreate;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
-import com.vemser.dbc.searchorganic.model.Endereco;
-import com.vemser.dbc.searchorganic.model.Pedido;
-import com.vemser.dbc.searchorganic.model.Usuario;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
+import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
+import com.vemser.dbc.searchorganic.model.*;
+import com.vemser.dbc.searchorganic.model.pk.ProdutoXPedidoPK;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
+import com.vemser.dbc.searchorganic.repository.PedidoXProdutoRepository;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final ProdutoRepository produtoRepository;
+    private final PedidoXProdutoRepository pedidoXProdutoRepository;
     private final ObjectMapper objectMapper;
     private final EnderecoService enderecoService;
     private final CupomService cupomService;
@@ -31,32 +40,117 @@ public class PedidoService {
     private final ProdutoService produtoService;
     private final List<IValidarPedido> validarPedidoList;
 
-    public PedidoDTO adicionar(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
-        for (IValidarPedido validador : validarPedidoList) {
-            validador.validar(pedidoCreateDTO, id);
-        }
+    public Pedido findById(Integer id) throws Exception {
+        return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
+    }
+
+    public List<PedidoDTO> findAll() throws Exception {
+        return pedidoRepository.findAll().stream()
+                .map(this::retornarDto)
+                .collect(Collectors.toList());
+    }
+
+    public PedidoDTO save(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
+        Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
+        List<Produto> produtosBanco = new ArrayList<>();
+        List<PedidoXProduto> produtos = obterProdutos(pedidoCreateDTO.getProdutosCarrinho(), produtosBanco);
 
         Usuario usuario = usuarioService.obterUsuarioPorId(id);
-        Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
+        Endereco endereco = enderecoService.getById(pedidoCreateDTO.getIdEndereco());
 
-        pedido.setIdUsuario(id);
-        if (pedido.getIdCupom() != null) {
-            pedido.setIdCupom(pedidoCreateDTO.getIdCupom());
+        pedido.setEndereco(endereco);
+        pedido.setUsuario(usuario);
+
+        for (IValidarPedido validador : validarPedidoList) {
+            validador.validar(pedido, id, produtos);
         }
 
-        pedido = pedidoRepository.adicionar(pedido);
-        PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
+        if (pedidoCreateDTO.getIdCupom() != null) {
+            Cupom cupom = cupomService.getById(pedidoCreateDTO.getIdCupom());
+            pedido.setCupom(cupom);
+        }
+
+        pedido = pedidoRepository.save(pedido);
+
+        for (PedidoXProduto pedidoXProduto : produtos) {
+            pedidoXProduto.setPedido(pedido);
+            Produto produto = pedidoXProduto.getProduto();
+            pedidoXProduto.setProdutoXPedidoPK(new ProdutoXPedidoPK(produto.getIdProduto(), pedido.getIdPedido()));
+            pedidoXProdutoRepository.save(pedidoXProduto);
+            BigDecimal quantidadeAtualizada = produto.getQuantidade().subtract(BigDecimal.valueOf(pedidoXProduto.getQuantidade()));
+            pedidoXProdutoRepository.updateQuantidadeProduto(produto.getIdProduto(), quantidadeAtualizada);
+        }
+
+        PedidoDTO pedidoDTO = this.retornarDto(pedido);
 
         this.emailPedidoCriado(pedidoDTO, usuario);
 
         return pedidoDTO;
     }
 
+    public PedidoDTO update(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
+        Pedido pedidoEntity = findById(id);
+        Endereco endereco = enderecoService.getById(pedidoAtualizar.getIdEndereco());
+
+        pedidoEntity.setEndereco(endereco);
+
+        pedidoEntity.setFormaPagamento(pedidoAtualizar.getFormaPagamento());
+        pedidoEntity.setDataEntrega(pedidoAtualizar.getDataEntrega());
+        pedidoEntity.setStatusPedido(pedidoAtualizar.getStatusPedido());
+        pedidoEntity.setPrecoFrete(pedidoAtualizar.getPrecoFrete());
+
+        pedidoRepository.save(pedidoEntity);
+
+        return retornarDto(pedidoEntity);
+    }
+
+    public void cancelarPedido(Integer idPedido) throws Exception {
+        Pedido pedido = findById(idPedido);
+        List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
+        for (PedidoXProduto pedidoXProduto : produtos) {
+            Produto produto = pedidoXProduto.getProduto();
+
+            produto.setQuantidade(produto.getQuantidade().add(BigDecimal.valueOf(pedidoXProduto.getQuantidade())));
+
+            produtoRepository.save(produto);
+        }
+
+        pedidoRepository.cancelarPedido(idPedido);
+    }
+
+    public List<PedidoDTO> findAllByIdUsuario(Integer idUsuario) throws Exception {
+        List<Pedido> pedidos = pedidoRepository.findAllByUsuario_IdUsuario(idUsuario);
+
+        ArrayList<PedidoDTO> pedidoDtos = new ArrayList<>();
+
+        for(Pedido pedido: pedidos){
+            PedidoDTO pedidoDTO = retornarDto(pedido);
+            pedidoDtos.add(pedidoDTO);
+        }
+
+        return pedidoDtos;
+    }
+
+    private List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
+        List<PedidoXProduto> produtos = new ArrayList<>();
+        for (ProdutoCarrinhoCreate produtoCarrinhoCreate : produtosCarrinhoCreate) {
+            Produto produto = produtoService.getById(produtoCarrinhoCreate.getIdProduto());
+            produtosBanco.add(produto);
+            PedidoXProduto pedidoXProduto = new PedidoXProduto();
+            pedidoXProduto.setProduto(produto);
+            pedidoXProduto.setQuantidade(produtoCarrinhoCreate.getQuantidade());
+            produtos.add(pedidoXProduto);
+
+        }
+        return produtos;
+
+    }
+
     private void emailPedidoCriado(PedidoDTO pedidoDTO, Usuario usuario) throws Exception {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataEntrega = formato.format(pedidoDTO.getDataEntrega());
         String dataPedido = formato.format(pedidoDTO.getDataDePedido());
-        String endereco = enderecoService.getMensagemEnderecoEmail(pedidoDTO.getEndereco());
+        String endereco = enderecoService.getMensagemEnderecoEmail(objectMapper.convertValue(pedidoDTO.getEndereco(), Endereco.class));
         String produtos = produtoService.getMensagemProdutoEmail(pedidoDTO.getProdutos());
         String mensagem = String.format("""
                         <span style="display: block; font-size: 16px; font-weight: bold;">Pedido Realizado</span>
@@ -88,61 +182,16 @@ public class PedidoService {
         this.emailService.sendEmail(mensagem, assunto, destinatario);
     }
 
-
-    public List<Pedido> obterPedidoPorIdUsuario(Integer idUsuario) throws Exception {
-        return this.pedidoRepository.obterPedidoPorIdUsuario(idUsuario);
+    public PedidoDTO getById(Integer idPedido) throws Exception {
+        return retornarDto(findById(idPedido));
     }
 
-    public Pedido obterPorId(Integer id) throws Exception {
-        return pedidoRepository.buscaPorId(id);
-    }
-
-    public void excluir(int idPedido) throws Exception {
-        pedidoRepository.remover(idPedido);
-    }
-
-    public PedidoDTO preencherInformacoes(Pedido pedido) throws Exception {
-        PedidoDTO pedidoDTO = new PedidoDTO();
-        pedidoDTO.setIdPedido(pedido.getIdPedido());
-        pedidoDTO.setIdUsuario(pedido.getIdUsuario());
-        pedidoDTO.setFormaPagamento(pedido.getFormaPagamento());
-        pedidoDTO.setTotal(pedido.getPrecoCarrinho().add(pedido.getPrecoFrete()));
-        pedidoDTO.setStatusPedido(pedido.getStatusPedido());
-        pedidoDTO.setDataDePedido(pedido.getDataDePedido());
-        pedidoDTO.setDataEntrega(pedido.getDataEntrega());
-        pedidoDTO.setProdutos(pedido.getProdutos());
-        pedidoDTO.setCupom(cupomService.buscarCupomPorId(pedido.getIdCupom()));
-        pedidoDTO.setPrecoFrete(pedido.getPrecoFrete());
-        pedidoDTO.setPrecoCarrinho(pedido.getPrecoCarrinho());
-        pedidoDTO.setProdutos(pedidoRepository.listarProdutosDoPedido(pedido.getIdPedido()));
-
-        EnderecoDTO enderecoDTO = enderecoService.buscarEndereco(pedido.getIdEndereco());
-        Endereco endereco = objectMapper.convertValue(enderecoDTO, Endereco.class);
-        pedidoDTO.setEndereco(endereco);
-
-        return pedidoDTO;
-    }
-
-    public ArrayList<PedidoDTO> preencherInformacoesArray(List<Pedido> pedidos) throws Exception {
-        ArrayList<PedidoDTO> pedidosDTO = new ArrayList<>();
-        for (Pedido pedido : pedidos) {
-            PedidoDTO pedidoDTO = this.preencherInformacoes(pedido);
-            pedidosDTO.add(pedidoDTO);
-        }
-        return pedidosDTO;
-    }
-
-    public Pedido atualizarPedido(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
-        Pedido pedidoEntity = obterPorId(id);
-        enderecoService.buscarEndereco(pedidoAtualizar.getIdEndereco());
-
-        pedidoEntity.setIdEndereco(pedidoEntity.getIdEndereco());
-        pedidoEntity.setFormaPagamento(pedidoAtualizar.getFormaPagamento());
-        pedidoEntity.setDataEntrega(pedidoAtualizar.getDataEntrega());
-        pedidoEntity.setStatusPedido(pedidoAtualizar.getStatusPedido());
-        pedidoEntity.setPrecoFrete(pedidoAtualizar.getPrecoFrete());
-        pedidoEntity.setTipoEntrega(pedidoAtualizar.getTipoEntrega());
-        pedidoRepository.editar(pedidoEntity.getIdPedido(), pedidoEntity);
-        return pedidoEntity;
+    public PedidoDTO retornarDto(Pedido pedido) {
+        UsuarioDTO usuarioDTO = new UsuarioDTO(pedido.getUsuario());
+        EnderecoDTO enderecoDTO = new EnderecoDTO(pedido.getEndereco());
+        CupomDTO cupomDto = new CupomDTO(pedido.getCupom());
+        List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
+        PedidoDTO pedidoDTO = new PedidoDTO(pedido, usuarioDTO, enderecoDTO, cupomDto, produtos);
+        return  pedidoDTO;
     }
 }

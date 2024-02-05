@@ -1,70 +1,48 @@
 package com.vemser.dbc.searchorganic.model;
 
-
-import com.vemser.dbc.searchorganic.interfaces.IImpressao;
-import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+import javax.persistence.*;
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(hidden = true)
-public class Endereco implements IImpressao {
+@Entity(name = "ENDERECO")
+public class Endereco{
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ENDERECO")
+    @SequenceGenerator(name = "SEQ_ENDERECO", sequenceName = "SEQ_ENDERECO", allocationSize = 1)
+    @Column(name = "ID_ENDERECO")
     private Integer idEndereco;
-    private Integer idUsuario;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_USUARIO", nullable = false)
+    private Usuario usuario;
+
+    @Column(name = "LOGRADOURO")
     private String logradouro;
+
+    @Column(name = "NUMERO")
     private String numero;
+
+    @Column(name = "COMPLEMENTO")
     private String complemento;
+
+    @Column(name = "CEP")
     private String cep;
+
+    @Column(name = "CIDADE")
     private String cidade;
+
+    @Column(name = "ESTADO")
     private String estado;
+
+    @Column(name = "PAIS")
     private String pais;
+
+    @Column(name = "REGIAO")
     private String regiao;
-    private ValidadorCEP validadorCEP;
-
-    public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
-                    String estado, String pais) {
-        if (ValidadorCEP.isCepValido(cep) != null) {
-            this.logradouro = logradouro;
-            this.numero = numero;
-            this.complemento = complemento;
-            this.cep = cep;
-            this.cidade = cidade;
-            this.estado = estado;
-            this.pais = pais;
-            this.regiao = ValidadorCEP.isCepValido(cep);
-        }
-    }
-
-    public Endereco(String logradouro, String numero, String complemento, String cep, String cidade,
-                    String estado, String pais, int idUsuario) {
-        if (ValidadorCEP.isCepValido(cep) != null) {
-            this.idUsuario = idUsuario;
-            this.logradouro = logradouro;
-            this.numero = numero;
-            this.complemento = complemento;
-            this.cep = cep;
-            this.cidade = cidade;
-            this.estado = estado;
-            this.pais = pais;
-            this.regiao = ValidadorCEP.isCepValido(cep);
-        } else {
-            System.out.println("Ainda não atendemos neste estado");
-        }
-    }
-
-    @Override
-    public void imprimir() {
-        System.out.printf("Logradouro: %s ", this.getLogradouro());
-        System.out.printf("Número: %s ", this.getNumero());
-        System.out.printf("Complemento: %s\n", this.getComplemento());
-        System.out.printf("CEP: %s\n", this.getCep());
-        System.out.printf("Regiao: %s ", this.getRegiao());
-        System.out.printf("Cidade: %s ", this.getCidade());
-        System.out.printf("Estado: %s\n", this.getEstado());
-        System.out.printf("País: %s\n", this.getPais());
-    }
 }

@@ -16,6 +16,9 @@ import java.math.BigDecimal;
 @Data
 public class UpdateCupomDTO {
     @NotNull
+    private Integer idEmpresa;
+
+    @NotNull
     @NotBlank
     @Size(min = 1, max = 50)
     @Schema(description = "Nome do cupom", required = true, example = "cupom 10%")
@@ -33,7 +36,6 @@ public class UpdateCupomDTO {
     private String descricao;
 
     @NotNull
-    @NotBlank
     @Schema(description = "Taxa de desconto do cupom", required = true, example = "10")
-    private BigDecimal taxaDeDesconto = new BigDecimal(0);
+    private BigDecimal taxaDesconto = new BigDecimal(0);
 }

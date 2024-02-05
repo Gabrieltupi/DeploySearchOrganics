@@ -1,4 +1,4 @@
-package com.vemser.dbc.searchorganic.controller.documentacao;
+package com.vemser.dbc.searchorganic.controller.interfaces;
 
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,9 @@ public interface IEnderecoController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<EnderecoDTO>> listarEnderecos() throws Exception;
+    public ResponseEntity<Page<EnderecoDTO>> listarEnderecos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) throws Exception ;
 
     @Operation(summary = "Retorna os endereço de um usuario", description = "endereços de um usuario")
     @ApiResponses(
@@ -46,7 +49,7 @@ public interface IEnderecoController {
             }
     )
     @DeleteMapping("/{idEndereco}")
-    public ResponseEntity<Void> c(@PathVariable("idEndereco") Integer idEndereco) throws Exception;
+    public ResponseEntity<Void> removerEndereco(@PathVariable("idEndereco") Integer idEndereco) throws Exception;
 
     @Operation(summary = "Atualiza o endereço ", description = "atualiza o endereços pelo id")
     @ApiResponses(

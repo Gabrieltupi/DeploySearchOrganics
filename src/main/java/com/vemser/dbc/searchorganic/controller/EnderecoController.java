@@ -1,11 +1,14 @@
 package com.vemser.dbc.searchorganic.controller;
 
-import com.vemser.dbc.searchorganic.controller.documentacao.IEnderecoController;
+import com.vemser.dbc.searchorganic.controller.interfaces.IEnderecoController;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
 import com.vemser.dbc.searchorganic.service.EnderecoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,8 +32,12 @@ public class EnderecoController implements IEnderecoController {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<EnderecoDTO>> listarEnderecos() throws Exception {
-        return new ResponseEntity<>(enderecoService.listarEnderecos(), HttpStatus.OK);
+    public ResponseEntity<Page<EnderecoDTO>> listarEnderecos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EnderecoDTO> enderecoPage = enderecoService.listarEnderecosPaginados(pageable);
+        return new ResponseEntity<>(enderecoPage, HttpStatus.OK);
     }
 
     @Override
@@ -48,7 +55,7 @@ public class EnderecoController implements IEnderecoController {
 
     @Override
     @DeleteMapping("/{idEndereco}")
-    public ResponseEntity<Void> c(@PathVariable("idEndereco") Integer idEndereco) throws Exception {
+    public ResponseEntity<Void> removerEndereco(@PathVariable("idEndereco") Integer idEndereco) throws Exception {
         enderecoService.removerEndereco(idEndereco);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -59,4 +66,5 @@ public class EnderecoController implements IEnderecoController {
         return new ResponseEntity<>(enderecoService.listarEnderecosPorUsuario(idUsuario), HttpStatus.OK);
     }
 }
+
 
