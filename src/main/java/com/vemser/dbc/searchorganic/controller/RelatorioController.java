@@ -25,6 +25,7 @@ public class RelatorioController implements IRelatorioController {
         return new ResponseEntity<>(relatorioService.findAllProdutosByPreco(pageable), HttpStatus.OK);
     }
 
+
     @GetMapping("/produto/quantidade")
     public ResponseEntity<Page<RelatorioProdutoQuantidadeDTO>> findAllProdutosByQuantidade(@PageableDefault(page = 0, size = 10, sort = "quantidade", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
         return new ResponseEntity<>(relatorioService.findAllProdutosByQuantidade(pageable), HttpStatus.OK);
