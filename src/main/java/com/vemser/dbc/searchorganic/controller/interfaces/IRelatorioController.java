@@ -26,7 +26,7 @@ public interface IRelatorioController {
             }
     )
     @GetMapping("/produto/preco")
-    ResponseEntity<Page<RelatorioProdutoPrecoDTO>> findAllProdutosByPreco(@PageableDefault(page = 0, size = 10, sort = "pedidos", direction = Sort.Direction.DESC) Pageable pageable) throws Exception;
+    ResponseEntity<Page<RelatorioProdutoPrecoDTO>> findAllProdutosByPreco(@PageableDefault(page = 0, size = 10, sort = "preco", direction = Sort.Direction.DESC) Pageable pageable) throws Exception;
 
     @Operation(summary = "Listar produtos por quantidade", description = "Listar produtos por quantidade")
     @ApiResponses(
@@ -37,7 +37,7 @@ public interface IRelatorioController {
             }
     )
     @GetMapping("/produto/quantidade")
-    ResponseEntity<Page<RelatorioProdutoQuantidadeDTO>> findAllProdutosByQuantidade(@PageableDefault(page = 0, size = 10, sort = "pedidos", direction = Sort.Direction.DESC) Pageable pageable) throws Exception;
+    ResponseEntity<Page<RelatorioProdutoQuantidadeDTO>> findAllProdutosByQuantidade(@PageableDefault(page = 0, size = 10, sort = "quantidade", direction = Sort.Direction.DESC) Pageable pageable) throws Exception;
 
     @Operation(summary = "Listar produtos por pedidos", description = "Listar produtos por pedidos")
     @ApiResponses(
