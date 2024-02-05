@@ -43,7 +43,7 @@ public class PedidoCreateDTO {
     private BigDecimal precoCarrinho;
 
     @NotNull
-    @Schema(description = "produtos carrinho", required = true, example = "~produtos~")
+    @Schema(description = "produtos carrinho", required = true, example = "[]")
     private ArrayList<ProdutoCarrinhoCreate> produtosCarrinho;
 
 }
