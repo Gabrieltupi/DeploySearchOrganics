@@ -18,7 +18,7 @@ public class Endereco{
     @Column(name = "ID_ENDERECO")
     private Integer idEndereco;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_USUARIO", nullable = false)
     private Usuario usuario;
 

@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(hidden = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity(name = "USUARIO")
 public class Usuario {
     @Id
