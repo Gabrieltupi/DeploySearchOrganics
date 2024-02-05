@@ -29,16 +29,16 @@ public class UsuarioCreateDTO {
     @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
-    @Schema(description = "CPF", required = true, example = "46473219080")
+    @Schema(description = "CPF", required = true, example = "84033577025")
     private String cpf;
 
     @NotNull
-    @Schema(description = "Email", required = true, example = "gabriel.nunes@dbccompany.com.br")
+    @Schema(description = "Email", required = true, example = "umdiferente@dbccompany.com.br")
     private String email;
 
     @NotNull
     @NotBlank
-    @Schema(description = "Login", required = true, example = "gabnunes")
+    @Schema(description = "Login", required = true, example = "um.diferen.te")
     private String login;
 
     @NotNull

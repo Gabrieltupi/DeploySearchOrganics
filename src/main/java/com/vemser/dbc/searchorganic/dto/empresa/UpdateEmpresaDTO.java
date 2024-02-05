@@ -18,7 +18,7 @@ public class UpdateEmpresaDTO {
     private Integer idUsuario;
 
     @CNPJ
-    @Schema(description = "Cnpj da empresa", required = true, example = "50.271.776/0001-14")
+    @Schema(description = "Cnpj da empresa", required = true, example = "50271776000114")
     private String cnpj;
 
     @NotNull
@@ -26,7 +26,7 @@ public class UpdateEmpresaDTO {
     private String razaoSocial;
 
     @NotNull
-    @Schema(description = "Inscrição Social", required = true, example = "inscriçao social")
+    @Schema(description = "Inscrição Social", required = true, example = "654987321")
     private String inscricaoEstadual;
 
     @NotBlank
