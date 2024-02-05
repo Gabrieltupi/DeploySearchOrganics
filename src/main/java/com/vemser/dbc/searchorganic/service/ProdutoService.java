@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.pedido.ProdutoPedidoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
@@ -70,14 +71,14 @@ public class ProdutoService implements IProdutoService {
         return produtos.map(this::retornarDto);
     }
 
-    public String getMensagemProdutoEmail(List<PedidoXProduto> produtos) {
+    public String getMensagemProdutoEmail(List<ProdutoPedidoDTO> produtos) {
         StringBuilder mensagemFinal = new StringBuilder();
-        for (PedidoXProduto pedidoXProduto : produtos) {
+        for (ProdutoPedidoDTO produtoPedidoDTO : produtos) {
             String mensagemProduto = String.format("""
                             Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
-                            """, pedidoXProduto.getProduto().getNome(),
-                    pedidoXProduto.getQuantidade(),
-                    pedidoXProduto.getProduto().getPreco());
+                            """, produtoPedidoDTO.getProduto().getNome(),
+                    produtoPedidoDTO.getQuantidade(),
+                    produtoPedidoDTO.getProduto().getPreco());
             mensagemFinal.append(mensagemProduto);
         }
         return mensagemFinal.toString();

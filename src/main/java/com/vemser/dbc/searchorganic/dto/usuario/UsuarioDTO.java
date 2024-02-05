@@ -45,10 +45,6 @@ public class UsuarioDTO {
     @Schema(description = "Login", required = true, example = "Tupi_Uzumaki321")
     private String login;
 
-    @NotNull
-    @NotBlank
-    @Schema(description = "Senha", required = true, example = "*********")
-    private String senha;
 
     @Schema(description = "Atividade do usuario", required = true, example = "S")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
@@ -61,7 +57,6 @@ public class UsuarioDTO {
         this.cpf = usuario.getCpf();
         this.email = usuario.getEmail();
         this.login = usuario.getLogin();
-        this.senha = usuario.getSenha();
         this.tipoAtivo = usuario.getTipoAtivo();
     }
 }

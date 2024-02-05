@@ -3,11 +3,10 @@ package com.vemser.dbc.searchorganic.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.ProdutoCarrinhoCreate;
+import com.vemser.dbc.searchorganic.dto.pedido.*;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoResponsePedidoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.*;
@@ -61,19 +60,21 @@ public class PedidoService {
         pedido.setEndereco(endereco);
         pedido.setUsuario(usuario);
 
-        for (IValidarPedido validador : validarPedidoList) {
-            validador.validar(pedido, id, produtos);
-        }
-
         if (pedidoCreateDTO.getIdCupom() != null) {
             Cupom cupom = cupomService.getById(pedidoCreateDTO.getIdCupom());
             pedido.setCupom(cupom);
         }
 
+        for (IValidarPedido validador : validarPedidoList) {
+            validador.validar(pedido, id, produtos);
+        }
+
+
         pedido = pedidoRepository.save(pedido);
 
         for (PedidoXProduto pedidoXProduto : produtos) {
             pedidoXProduto.setPedido(pedido);
+            System.out.println(pedidoXProduto);
             Produto produto = pedidoXProduto.getProduto();
             pedidoXProduto.setProdutoXPedidoPK(new ProdutoXPedidoPK(produto.getIdProduto(), pedido.getIdPedido()));
             pedidoXProdutoRepository.save(pedidoXProduto);
@@ -190,7 +191,18 @@ public class PedidoService {
         UsuarioDTO usuarioDTO = new UsuarioDTO(pedido.getUsuario());
         EnderecoDTO enderecoDTO = new EnderecoDTO(pedido.getEndereco());
         CupomDTO cupomDto = new CupomDTO(pedido.getCupom());
-        List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
+
+        List<PedidoXProduto> pedidoProdutos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
+        List<ProdutoPedidoDTO> produtos = new ArrayList<>();
+
+        for(PedidoXProduto pedidoXProduto : pedidoProdutos){
+            ProdutoResponsePedidoDTO produtoDTO = objectMapper.convertValue(pedidoXProduto.getProduto(), ProdutoResponsePedidoDTO.class);
+
+            ProdutoPedidoDTO produtoPedidoDTO = new ProdutoPedidoDTO(produtoDTO, pedidoXProduto.getQuantidade());
+
+            produtos.add(produtoPedidoDTO);
+        }
+
         PedidoDTO pedidoDTO = new PedidoDTO(pedido, usuarioDTO, enderecoDTO, cupomDto, produtos);
         return  pedidoDTO;
     }

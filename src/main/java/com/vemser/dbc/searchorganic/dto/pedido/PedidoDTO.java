@@ -29,10 +29,10 @@ public class PedidoDTO {
     private LocalDate dataDePedido;
     private LocalDate dataEntrega;
     private EnderecoDTO endereco;
-    private List<PedidoXProduto> produtos;
+    private List<ProdutoPedidoDTO> produtos;
     private CupomDTO cupom;
 
-    public PedidoDTO(Pedido pedido, UsuarioDTO usuarioDTO, EnderecoDTO enderecoDTO, CupomDTO cupomDto, List<PedidoXProduto> produtos) {
+    public PedidoDTO(Pedido pedido, UsuarioDTO usuarioDTO, EnderecoDTO enderecoDTO, CupomDTO cupomDto, List<ProdutoPedidoDTO> produtos) {
         this.idPedido = pedido.getIdPedido();
         this.usuario = usuarioDTO;
         this.statusPedido = pedido.getStatusPedido();
