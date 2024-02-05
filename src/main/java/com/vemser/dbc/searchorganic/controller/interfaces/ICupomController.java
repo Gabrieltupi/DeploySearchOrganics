@@ -7,12 +7,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "Cupom", description = "Endpoints de Cupom")
 public interface ICupomController {
@@ -25,7 +24,7 @@ public interface ICupomController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<CupomDTO>> findAll() throws Exception;
+    ResponseEntity<Page<CupomDTO>> findAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception;
 
     @Operation(summary = "Obter cupom", description = "Obter cupom por id")
     @ApiResponses(
@@ -36,7 +35,7 @@ public interface ICupomController {
             }
     )
     @GetMapping("/{idCupom}")
-    public ResponseEntity<CupomDTO> findById(@PathVariable("idCupom") Integer idCupom) throws Exception;
+    ResponseEntity<CupomDTO> findById(@PathVariable("idCupom") Integer idCupom) throws Exception;
 
     @Operation(summary = "Criar cupom", description = "Criar cupom por empresa")
     @ApiResponses(
@@ -47,7 +46,7 @@ public interface ICupomController {
             }
     )
     @PostMapping("/empresa/{idEmpresa}")
-    public ResponseEntity<CupomDTO> save(@PathVariable("idEmpresa") Integer idEmpresa, @Valid @RequestBody CreateCupomDTO cupomDto) throws Exception;
+    ResponseEntity<CupomDTO> save(@PathVariable("idEmpresa") Integer idEmpresa, @Valid @RequestBody CreateCupomDTO cupomDto) throws Exception;
 
     @Operation(summary = "Editar cupom", description = "Editar cupom por id")
     @ApiResponses(
@@ -58,7 +57,7 @@ public interface ICupomController {
             }
     )
     @PutMapping("/{idCupom}")
-    public ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer idCupom, @RequestBody UpdateCupomDTO cupomDto) throws Exception;
+    ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer idCupom, @RequestBody UpdateCupomDTO cupomDto) throws Exception;
 
     @Operation(summary = "Listar cupons por empresa", description = "Listar todos os cupons por empresa")
     @ApiResponses(
@@ -69,5 +68,5 @@ public interface ICupomController {
             }
     )
     @GetMapping("/empresa/{idEmpresa}")
-    public ResponseEntity<List<CupomDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
+    ResponseEntity<Page<CupomDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception;
 }

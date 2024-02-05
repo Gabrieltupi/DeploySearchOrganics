@@ -8,13 +8,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "Produto", description = "Endpoints de Produto")
 public interface IProdutoController {
@@ -26,7 +25,7 @@ public interface IProdutoController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<List<ProdutoDTO>> findAll() throws Exception;
+    ResponseEntity<Page<ProdutoDTO>> findAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception;
 
     @Operation(summary = "Obter produto", description = "Obter produto por id")
     @ApiResponses(
@@ -80,7 +79,7 @@ public interface IProdutoController {
             }
     )
     @GetMapping("/empresa/{idEmpresa}")
-    ResponseEntity<List<ProdutoDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
+    ResponseEntity<Page<ProdutoDTO>> findAllByIdEmpresa(@PathVariable("idEmpresa") Integer idEmpresa, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception;
 
     @Operation(summary = "Listar produtos pela categoria", description = "Listar produtos pelo id da categoria")
     @ApiResponses(
@@ -91,7 +90,7 @@ public interface IProdutoController {
             }
     )
     @GetMapping("/categoria/{idCategoria}")
-    ResponseEntity<List<ProdutoDTO>> findAllByIdCategoria(@PathVariable("idCategoria") Integer idCategoria) throws Exception;
+    ResponseEntity<Page<ProdutoDTO>> findAllByIdCategoria(@PathVariable("idCategoria") Integer idCategoria, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception;
 
     @Operation(summary = "Upload de imagem", description = "Upload de imagem do produto")
     @ApiResponses(
@@ -102,5 +101,5 @@ public interface IProdutoController {
             }
     )
     @PostMapping("/imagem")
-    public ResponseEntity<Imagem> uploadImagem(@RequestPart("imagem") MultipartFile imagem) throws Exception;
+    ResponseEntity<Imagem> uploadImagem(@RequestPart("imagem") MultipartFile imagem) throws Exception;
 }

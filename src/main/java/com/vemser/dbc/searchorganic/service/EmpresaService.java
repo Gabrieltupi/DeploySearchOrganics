@@ -10,9 +10,10 @@ import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.repository.EmpresaRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IEmpresaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,9 +22,9 @@ public class EmpresaService implements IEmpresaService {
     private final EmpresaRepository empresaRepository;
     private final ObjectMapper objectMapper;
 
-    public List<EmpresaDTO> findAll() throws Exception {
-        List<Empresa> empresas =  empresaRepository.findAll();
-        return objectMapper.convertValue(empresas, objectMapper.getTypeFactory().constructCollectionType(List.class, EmpresaDTO.class));
+    public Page<EmpresaDTO> findAll(Pageable pageable) throws Exception {
+        Page<Empresa> empresas =  empresaRepository.findAll(pageable);
+        return empresas.map(this::retornarDto);
     }
 
     public EmpresaDTO findById(Integer idEmpresa) throws Exception {
@@ -51,9 +52,9 @@ public class EmpresaService implements IEmpresaService {
         empresaRepository.deleteById(idEmpresa);
     }
 
-    public List<EmpresaProdutosDTO> findAllWithProdutos() throws Exception {
-        List<Empresa> empresas = empresaRepository.findAllWithProdutos();
-        return objectMapper.convertValue(empresas, objectMapper.getTypeFactory().constructCollectionType(List.class, EmpresaProdutosDTO.class));
+    public Page<EmpresaProdutosDTO> findAllWithProdutos(Pageable pageable) throws Exception {
+        Page<Empresa> empresas = empresaRepository.findAllWithProdutos(pageable);
+        return empresas.map(empresa -> objectMapper.convertValue(empresa, EmpresaProdutosDTO.class));
     }
 
     public EmpresaProdutosDTO findByIdWithProdutos(Integer idEmpresa) throws Exception {

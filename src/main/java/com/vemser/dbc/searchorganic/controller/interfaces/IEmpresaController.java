@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public interface IEmpresaController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<EmpresaDTO>> findAll() throws Exception;
+    ResponseEntity<Page<EmpresaDTO>> findAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception;
 
     @Operation(summary = "Obter empresa", description = "Obter empresa por id")
     @ApiResponses(
@@ -36,7 +37,7 @@ public interface IEmpresaController {
             }
     )
     @GetMapping("/{idEmpresa}")
-    public ResponseEntity<EmpresaDTO> findById(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
+    ResponseEntity<EmpresaDTO> findById(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 
     @Operation(summary = "Criar empresa", description = "Criar empresa por usuário")
     @ApiResponses(
@@ -47,7 +48,7 @@ public interface IEmpresaController {
             }
     )
     @PostMapping("/usuario/{idUsuario}")
-    public ResponseEntity<EmpresaDTO> save(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresaDto) throws Exception;
+    ResponseEntity<EmpresaDTO> save(@PathVariable("idUsuario") Integer idUsuario, @Valid @RequestBody CreateEmpresaDTO empresaDto) throws Exception;
 
     @Operation(summary = "Editar empresa", description = "Editar empresa por id")
     @ApiResponses(
@@ -58,7 +59,7 @@ public interface IEmpresaController {
             }
     )
     @PutMapping("/{idEmpresa}")
-    public ResponseEntity<EmpresaDTO> update(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody UpdateEmpresaDTO empresaDto) throws Exception;
+    ResponseEntity<EmpresaDTO> update(@PathVariable("idEmpresa") Integer idEmpresa, @RequestBody UpdateEmpresaDTO empresaDto) throws Exception;
 
     @Operation(summary = "Remover empresa", description = "Remover empresa por id")
     @ApiResponses(
@@ -69,7 +70,7 @@ public interface IEmpresaController {
             }
     )
     @DeleteMapping("/{idEmpresa}")
-    public ResponseEntity<Void> delete(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
+    ResponseEntity<Void> delete(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 
     @Operation(summary = "Listar empresas com produtos", description = "Listar todas as empresas com produtos")
     @ApiResponses(
@@ -80,7 +81,7 @@ public interface IEmpresaController {
             }
     )
     @GetMapping("/produtos")
-    public ResponseEntity<List<EmpresaProdutosDTO>> findAllWithProdutos() throws Exception;
+    ResponseEntity<Page<EmpresaProdutosDTO>> findAllWithProdutos(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) throws Exception;
 
     @Operation(summary = "Obter empresa com produtos", description = "Obter empresa por id com produtos")
     @ApiResponses(
@@ -91,7 +92,7 @@ public interface IEmpresaController {
             }
     )
     @GetMapping("/{idEmpresa}/produtos")
-    public ResponseEntity<EmpresaProdutosDTO> findByIdWithProdutos(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
+    ResponseEntity<EmpresaProdutosDTO> findByIdWithProdutos(@PathVariable("idEmpresa") Integer idEmpresa) throws Exception;
 }
 
 

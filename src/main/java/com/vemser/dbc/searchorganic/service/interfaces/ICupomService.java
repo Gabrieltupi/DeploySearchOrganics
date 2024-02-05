@@ -3,11 +3,11 @@ package com.vemser.dbc.searchorganic.service.interfaces;
 import com.vemser.dbc.searchorganic.dto.cupom.CreateCupomDTO;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.cupom.UpdateCupomDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ICupomService {
-    List<CupomDTO> findAll() throws Exception;
+    Page<CupomDTO> findAll(Pageable pageable) throws Exception;
 
     CupomDTO findById(Integer idCupom) throws Exception;
 
@@ -15,5 +15,5 @@ public interface ICupomService {
 
     CupomDTO update(Integer idCupom, UpdateCupomDTO cupomDto) throws Exception;
 
-    List<CupomDTO> findAllByIdEmpresa(Integer idEmpresa) throws Exception;
+    Page<CupomDTO> findAllByIdEmpresa(Integer idEmpresa, Pageable pageable) throws Exception;
 }
