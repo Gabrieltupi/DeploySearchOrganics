@@ -29,7 +29,7 @@ public class RelatorioController implements IRelatorioController {
     @GetMapping("/produto/quantidade")
     public ResponseEntity<Page<RelatorioProdutoQuantidadeDTO>> findAllProdutosByQuantidade(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "desc") String sort) throws Exception {
         Sort.Direction direction = sort.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "preco"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "quantidade"));
         return new ResponseEntity<>(relatorioService.findAllProdutosByQuantidade(pageable), HttpStatus.OK);
     }
 }
