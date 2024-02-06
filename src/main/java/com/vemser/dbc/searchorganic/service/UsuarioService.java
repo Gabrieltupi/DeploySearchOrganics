@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,17 +38,7 @@ public class UsuarioService {
         }
     }
 
-    public Usuario autenticar(String login, String senha) throws RegraDeNegocioException {
-        Usuario usuario = usuarioRepository.findByLogin(login);
-        if(usuario == null){
-            throw new RegraDeNegocioException("Usuario nao encontrado!");
-        }
 
-        if (!usuario.getSenha().equals(senha)) {
-            throw new RegraDeNegocioException("Senha incorreta");
-        }
-        return usuario;
-    }
 
     public List<Usuario> exibirTodos() throws Exception {
         return usuarioRepository.findAll();
@@ -123,6 +114,10 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByCpf(cpf)
             .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + cpf));
         return new UsuarioDTO(usuario);
+    }
+
+    public Optional<Usuario> findByLoginAndSenha(String login, String senha) {
+        return usuarioRepository.findByLoginAndSenha(login, senha);
     }
 }
 
