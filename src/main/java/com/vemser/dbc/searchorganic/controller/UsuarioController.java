@@ -62,13 +62,6 @@ public class UsuarioController implements IUsuarioController {
 
     }
 
-    @Override
-    @PostMapping("/login")
-    public ResponseEntity<UsuarioDTO> login(@Valid @RequestBody UsuarioLoginDTO usuarioLoginDTO) throws Exception {
-        Usuario usuarioEntity = this.usuarioService.autenticar(usuarioLoginDTO.getLogin(), usuarioLoginDTO.getSenha());
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
-    }
 
 
     @Override

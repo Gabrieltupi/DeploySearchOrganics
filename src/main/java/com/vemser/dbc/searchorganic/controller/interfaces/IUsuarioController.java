@@ -51,16 +51,6 @@ public interface IUsuarioController {
     @PostMapping
     public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception;
 
-    @Operation(summary = "Cria um login", description = "Cria um login")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a  criação do login"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PostMapping("/login")
-    public ResponseEntity<UsuarioDTO> login(@Valid @RequestBody UsuarioLoginDTO usuarioLoginDTO) throws Exception;
 
     @Operation(summary = "Altera um Usuario", description = "Altera um usuario")
     @ApiResponses(
