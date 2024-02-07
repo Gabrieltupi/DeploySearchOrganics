@@ -2,6 +2,8 @@ package com.vemser.dbc.searchorganic.controller;
 
 
 
+import com.vemser.dbc.searchorganic.dto.autenticacao.AuthToken;
+import com.vemser.dbc.searchorganic.dto.autenticacao.UsuarioTokenDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
@@ -34,8 +36,8 @@ public class AuthController {
     private final UsuarioService usuarioService;
     public final AuthenticationManager authenticationManager;
 
-    @PostMapping
-    public String auth(@RequestBody @Valid UsuarioLoginDTO loginDTO) throws RegraDeNegocioException {
+    @PostMapping("/login")
+    public ResponseEntity<AuthToken> auth(@RequestBody @Valid UsuarioLoginDTO loginDTO) throws RegraDeNegocioException {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getLogin(),
@@ -48,11 +50,14 @@ public class AuthController {
 
         Usuario usuarioValidado = (Usuario) authentication.getPrincipal();
 
-        return tokenService.generateToken(usuarioValidado);
+        String token = tokenService.generateToken(usuarioValidado);
+        AuthToken authToken = new AuthToken(token);
+
+        return ResponseEntity.ok(authToken);
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarUsuario(@RequestBody UsuarioCreateDTO usuarioDTO) throws Exception {
+    public ResponseEntity<UsuarioTokenDTO> cadastrarUsuario(@RequestBody @Valid UsuarioCreateDTO usuarioDTO) throws Exception {
         String senhaCriptografada = passwordEncoder.encode(usuarioDTO.getSenha());
 
         Usuario usuario = new Usuario();
@@ -65,9 +70,13 @@ public class AuthController {
         usuario.setSenha(senhaCriptografada);
         usuario.setTipoAtivo(usuarioDTO.getTipoAtivo());
 
-        usuarioService.criarUsuario(usuario);
+        Usuario novoUsuario = usuarioService.criarUsuario(usuario);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        UsuarioTokenDTO usuarioTokenDTO = new UsuarioTokenDTO();
+        usuarioTokenDTO.setId(novoUsuario.getIdUsuario());
+        usuarioTokenDTO.setLogin(novoUsuario.getLogin());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioTokenDTO);
     }
 
 }

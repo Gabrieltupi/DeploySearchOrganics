@@ -1,7 +1,7 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTOConverter;
+
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
@@ -117,20 +117,7 @@ public class UsuarioService {
         return new UsuarioDTO(usuario);
     }
 
-//    public Optional<Usuario> findByLoginAndSenha(String login, String senha) {
-//        return usuarioRepository.findByLoginAndSenha(login, senha);
-//    }
-//
-//
-//
-//    public Optional<UsuarioDTO> findById(Integer idUsuario) throws RegraDeNegocioException {
-//        Usuario usuario = usuarioRepository.findById(idUsuario)
-//                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado com o ID: " + idUsuario));
-//
-//        UsuarioDTO usuarioDTO = UsuarioDTOConverter.convertUsuarioToDTO(usuario);
-//
-//        return Optional.of(usuarioDTO);
-//    }
+
 
     public Optional<Usuario> findByLoginAndSenha(String login, String senha) {
         return usuarioRepository.findByLoginAndSenha(login, senha);
