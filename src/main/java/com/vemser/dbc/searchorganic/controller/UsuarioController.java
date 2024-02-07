@@ -50,17 +50,7 @@ public class UsuarioController implements IUsuarioController {
         }
     }
 
-    @Override
-    @PostMapping
-    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception {
 
-        Usuario usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, Usuario.class);
-        usuarioEntity = this.usuarioService.criarUsuario(usuarioEntity);
-
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        return new ResponseEntity<>(usuarioDTO, HttpStatus.CREATED);
-
-    }
 
 
 

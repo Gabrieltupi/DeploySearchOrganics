@@ -39,18 +39,6 @@ public interface IUsuarioController {
     @GetMapping("/{idUsuario}")
     public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception;
 
-    @Operation(summary = "Cria um Usuario", description = "Cria um usuario")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a  criação do usuarios"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/{idUsuario}")
-    @PostMapping
-    public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception;
-
 
     @Operation(summary = "Altera um Usuario", description = "Altera um usuario")
     @ApiResponses(
