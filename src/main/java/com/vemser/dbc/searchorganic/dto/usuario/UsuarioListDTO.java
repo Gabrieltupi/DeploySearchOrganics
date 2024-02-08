@@ -48,6 +48,7 @@ public class UsuarioListDTO {
     @Schema(description = "Usuário ativo ou desativado", required = true, example = "S")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
     private Set<CargoDTO> cargos = new HashSet<>();
+
     public UsuarioListDTO(Usuario usuario) {
         this.idUsuario = usuario.getIdUsuario();
         this.nome = usuario.getNome();
@@ -57,7 +58,7 @@ public class UsuarioListDTO {
         this.email = usuario.getEmail();
         this.login = usuario.getLogin();
         this.tipoAtivo = usuario.getTipoAtivo();
-        for(Cargo cargo : usuario.getCargos()){
+        for (Cargo cargo : usuario.getCargos()) {
             this.cargos.add(new CargoDTO(cargo));
         }
     }

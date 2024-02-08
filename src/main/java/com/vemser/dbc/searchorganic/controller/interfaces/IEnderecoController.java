@@ -27,7 +27,7 @@ public interface IEnderecoController {
     @GetMapping
     public ResponseEntity<Page<EnderecoDTO>> listarEnderecos(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) throws Exception ;
+            @RequestParam(defaultValue = "10") int size) throws Exception;
 
     @Operation(summary = "Retorna os endereço de um usuario", description = "endereços de um usuario")
     @ApiResponses(

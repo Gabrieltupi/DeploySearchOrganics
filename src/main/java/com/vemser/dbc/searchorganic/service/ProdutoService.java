@@ -7,7 +7,6 @@ import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Produto;
-import com.vemser.dbc.searchorganic.model.PedidoXProduto;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IProdutoService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class ProdutoService implements IProdutoService {
     private final ObjectMapper objectMapper;
 
     public Page<ProdutoDTO> findAll(Pageable pageable) throws Exception {
-        Page<Produto> produtos =  produtoRepository.findAll(pageable);
+        Page<Produto> produtos = produtoRepository.findAll(pageable);
         return produtos.map(this::retornarDto);
     }
 

@@ -1,9 +1,10 @@
 package com.vemser.dbc.searchorganic.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.controller.interfaces.IUsuarioController;
-import com.vemser.dbc.searchorganic.dto.usuario.*;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioListDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.UsuarioService;
@@ -41,12 +42,9 @@ public class UsuarioController implements IUsuarioController {
             UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioEntity);
             return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
         } else {
-            throw  new RegraDeNegocioException("Usuario não encontrado.");
+            throw new RegraDeNegocioException("Usuario não encontrado.");
         }
     }
-
-
-
 
 
     @Override
@@ -65,12 +63,14 @@ public class UsuarioController implements IUsuarioController {
         this.usuarioService.removerUsuario(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @Override
     @GetMapping("/email/{email}")
     public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException {
         UsuarioDTO usuarioDTO = usuarioService.findByEmail(email);
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
+
     @Override
     @GetMapping("/cpf/{cpf}")
     public ResponseEntity<UsuarioDTO> findByCpf(@PathVariable String cpf) throws RegraDeNegocioException {

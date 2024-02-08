@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.empresa;
 
+import com.vemser.dbc.searchorganic.model.Empresa;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,4 +30,14 @@ public class EmpresaDTO {
 
     @Schema(description = "setor da empresa", required = true, example = "Legumes")
     private String setor;
+
+    public EmpresaDTO(Empresa empresa) {
+        this.idEmpresa = empresa.getIdEmpresa();
+        this.idUsuario = empresa.getIdUsuario();
+        this.nomeFantasia = empresa.getNomeFantasia();
+        this.cnpj = empresa.getCnpj();
+        this.razaoSocial = empresa.getRazaoSocial();
+        this.inscricaoEstadual = empresa.getInscricaoEstadual();
+        this.setor = empresa.getSetor();
+    }
 }

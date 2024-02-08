@@ -2,7 +2,6 @@ package com.vemser.dbc.searchorganic.security;
 
 import com.vemser.dbc.searchorganic.model.Cargo;
 import com.vemser.dbc.searchorganic.model.Usuario;
-import com.vemser.dbc.searchorganic.service.UsuarioService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,7 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,6 @@ public class TokenService {
 
     @Value("${jwt.secret}")
     private String secret;
-
 
 
     // Novo

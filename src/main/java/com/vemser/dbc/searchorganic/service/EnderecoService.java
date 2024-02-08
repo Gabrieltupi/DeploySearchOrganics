@@ -28,18 +28,16 @@ public class EnderecoService {
     private final ObjectMapper objectMapper;
 
     public EnderecoDTO buscarEndereco(Integer idEndereco) throws Exception {
-        Endereco endereco= this.getById(idEndereco);
-            return mapEnderecoToDTO(endereco);
+        Endereco endereco = this.getById(idEndereco);
+        return mapEnderecoToDTO(endereco);
     }
-
-
 
 
     public List<EnderecoDTO> listarEnderecos() {
 
         List<Endereco> enderecos = enderecoRepository.findAll();
         return enderecos.stream().map(endereco -> {
-            EnderecoDTO enderecoDTO = objectMapper.convertValue(endereco,EnderecoDTO.class);
+            EnderecoDTO enderecoDTO = objectMapper.convertValue(endereco, EnderecoDTO.class);
             enderecoDTO.setIdUsuario(endereco.getUsuario().getIdUsuario());
             return enderecoDTO;
         }).toList();
@@ -51,7 +49,7 @@ public class EnderecoService {
         try {
             String regiao = ValidadorCEP.isCepValido(enderecoDTO.getCep());
             if (regiao != null) {
-                Usuario usuario =  usuarioService.obterUsuarioPorId(enderecoDTO.getIdUsuario());
+                Usuario usuario = usuarioService.obterUsuarioPorId(enderecoDTO.getIdUsuario());
                 Endereco enderecoEntity = objectMapper.convertValue(enderecoDTO, Endereco.class);
                 enderecoEntity.setRegiao(regiao);
                 enderecoEntity.setUsuario(usuario);
@@ -67,9 +65,6 @@ public class EnderecoService {
             throw new RegraDeNegocioException("Erro ao adicionar endereço: " + e.getMessage());
         }
     }
-
-
-
 
 
     public EnderecoDTO editarEndereco(Integer idEndereco, EnderecoUpdateDTO enderecoUpdateDTO) throws Exception {
@@ -101,15 +96,11 @@ public class EnderecoService {
     }
 
 
-
-
-
     private Endereco mapCreateDTOToEntity(EnderecoCreateDTO enderecoCreateDTO) {
         Endereco endereco = new Endereco();
         endereco.setUsuario(usuarioRepository.findById(enderecoCreateDTO.getIdUsuario()).orElse(null));
         return endereco;
     }
-
 
 
     private EnderecoDTO mapEnderecoToDTO(Endereco endereco) {
@@ -137,7 +128,7 @@ public class EnderecoService {
         endereco.setPais(enderecoUpdateDTO.getPais());
     }
 
-    public Endereco getById (Integer id) throws Exception{
+    public Endereco getById(Integer id) throws Exception {
         return enderecoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Endereço não encontrado"));
     }
 

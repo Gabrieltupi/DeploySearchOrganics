@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 
 @Getter
@@ -15,7 +14,7 @@ public class CarteiraDTO {
     @Schema(description = "ID da carteira", example = "1")
     private Integer idCarteira;
 
-    @Schema(description = "Saldo da carteira",example = "100")
+    @Schema(description = "Saldo da carteira", example = "100")
     private BigDecimal saldo;
 
     public CarteiraDTO(Carteira carteira) {

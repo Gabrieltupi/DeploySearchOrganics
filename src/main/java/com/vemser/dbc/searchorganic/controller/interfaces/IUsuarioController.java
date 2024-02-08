@@ -1,6 +1,8 @@
 package com.vemser.dbc.searchorganic.controller.interfaces;
 
-import com.vemser.dbc.searchorganic.dto.usuario.*;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioListDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -69,8 +71,7 @@ public interface IUsuarioController {
             }
     )
     @GetMapping("/email/{email}")
-    public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException ;
-
+    public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException;
 
 
     @Operation(summary = "Lista um usuario por cpf!", description = "Deleta um usuario por cpf")
@@ -80,6 +81,7 @@ public interface IUsuarioController {
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
-    )@GetMapping("/cpf/{cpf}")
+    )
+    @GetMapping("/cpf/{cpf}")
     public ResponseEntity<UsuarioDTO> findByCpf(@PathVariable String cpf) throws RegraDeNegocioException;
 }

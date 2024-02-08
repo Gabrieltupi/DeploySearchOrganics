@@ -41,5 +41,7 @@ public class PedidoCreateDTO {
     @NotNull
     @Schema(description = "produtos carrinho", required = true, example = "[]")
     private ArrayList<ProdutoCarrinhoCreate> produtosCarrinho;
+    @NotNull
+    private Integer idEmpresa;
 
 }

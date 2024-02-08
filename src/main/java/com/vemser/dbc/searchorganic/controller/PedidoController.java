@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.vemser.dbc.searchorganic.controller.interfaces.IPedidoController;
+import com.vemser.dbc.searchorganic.dto.pedido.PagamentoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
@@ -54,5 +55,15 @@ public class PedidoController implements IPedidoController {
     public ResponseEntity<Void> cancelarPedido(@PathVariable("idPedido") Integer idPedido) throws Exception {
         this.pedidoService.cancelarPedido(idPedido);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/pagar/{idPedido}")
+    public ResponseEntity<PedidoDTO> pagar(@PathVariable("idPedido") Integer idPedido, @Valid @RequestBody PagamentoDTO pagamentoDTO) throws Exception {
+        return new ResponseEntity<>(pedidoService.pagamento(idPedido, pagamentoDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/entregue/{idPedido}")
+    public ResponseEntity<PedidoDTO> entregue(@PathVariable("idPedido") Integer idPedido) throws Exception {
+        return new ResponseEntity<>(pedidoService.entregue(idPedido), HttpStatus.CREATED);
     }
 }
