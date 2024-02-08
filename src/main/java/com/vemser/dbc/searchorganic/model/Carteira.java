@@ -33,7 +33,7 @@ public class Carteira {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    public Carteira(Usuario usuario){
+    public Carteira(Usuario usuario) {
         this.saldo = new BigDecimal(0);
         this.usuario = usuario;
     }

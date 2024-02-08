@@ -2,8 +2,6 @@ package com.vemser.dbc.searchorganic.dto.usuario;
 
 import com.vemser.dbc.searchorganic.model.Usuario;
 
-import java.time.LocalDate;
-
 public class UsuarioDTOConverter {
     public static UsuarioDTO convertUsuarioToDTO(Usuario usuario) {
         UsuarioDTO usuarioDTO = new UsuarioDTO();

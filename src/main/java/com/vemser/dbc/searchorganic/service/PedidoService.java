@@ -2,10 +2,10 @@ package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
+import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.*;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
-import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoResponsePedidoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
@@ -14,6 +14,9 @@ import com.vemser.dbc.searchorganic.model.pk.ProdutoXPedidoPK;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
 import com.vemser.dbc.searchorganic.repository.PedidoXProdutoRepository;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
+import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
+import com.vemser.dbc.searchorganic.utils.FormaPagamento;
+import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,9 @@ public class PedidoService {
     private final EmailService emailService;
     private final ProdutoService produtoService;
     private final List<IValidarPedido> validarPedidoList;
+    private final UsuarioRepository usuarioRepository;
+    private final EmpresaService empresaService;
+    private final BigDecimal TAXA_SERVICO = new BigDecimal(5);
 
     public Pedido findById(Integer id) throws Exception {
         return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
@@ -56,9 +62,11 @@ public class PedidoService {
 
         Usuario usuario = usuarioService.obterUsuarioPorId(id);
         Endereco endereco = enderecoService.getById(pedidoCreateDTO.getIdEndereco());
+        Empresa empresa = empresaService.getById(pedidoCreateDTO.getIdEmpresa());
 
         pedido.setEndereco(endereco);
         pedido.setUsuario(usuario);
+        pedido.setEmpresa(empresa);
 
         if (pedidoCreateDTO.getIdCupom() != null) {
             Cupom cupom = cupomService.getById(pedidoCreateDTO.getIdCupom());
@@ -74,7 +82,6 @@ public class PedidoService {
 
         for (PedidoXProduto pedidoXProduto : produtos) {
             pedidoXProduto.setPedido(pedido);
-            System.out.println(pedidoXProduto);
             Produto produto = pedidoXProduto.getProduto();
             pedidoXProduto.setProdutoXPedidoPK(new ProdutoXPedidoPK(produto.getIdProduto(), pedido.getIdPedido()));
             pedidoXProdutoRepository.save(pedidoXProduto);
@@ -124,7 +131,7 @@ public class PedidoService {
 
         ArrayList<PedidoDTO> pedidoDtos = new ArrayList<>();
 
-        for(Pedido pedido: pedidos){
+        for (Pedido pedido : pedidos) {
             PedidoDTO pedidoDTO = retornarDto(pedido);
             pedidoDtos.add(pedidoDTO);
         }
@@ -145,6 +152,115 @@ public class PedidoService {
         }
         return produtos;
 
+    }
+
+
+    public PedidoDTO pagamento(Integer idPedido, PagamentoDTO pagamentoDTO) throws Exception {
+        Pedido pedido = findById(idPedido);
+
+        if (pedido.getStatusPedido() != StatusPedido.AGUARDANDO_PAGAMENTO) {
+            throw new RegraDeNegocioException("Este pedido não está aguardando pagamento");
+        }
+
+        Usuario admin = obterAdmin();
+
+        Usuario usuario = pedido.getUsuario();
+
+        BigDecimal total = pedido.getPrecoCarrinho().add(pedido.getPrecoFrete());
+
+
+        Carteira carteiraAdmin = admin.getCarteira();
+        Carteira carteiraUsuario = usuario.getCarteira();
+
+        if (pagamentoDTO.getFormaPagamento() == FormaPagamento.CREDITO || pagamentoDTO.getFormaPagamento() == FormaPagamento.DEBITO) {
+            //Simulando pagamento com cartão, adicionando saldo na conta
+            if(pagamentoDTO.getNumeroCartao() == null || pagamentoDTO.getCvv() == null || pagamentoDTO.getDataValidade() == null){
+                throw new RegraDeNegocioException("Cartão inválido");
+            }
+            usuario.getCarteira().setSaldo(carteiraUsuario.getSaldo().add(total));
+        }
+
+        efetuarTransferencia(carteiraUsuario, carteiraAdmin, total);
+
+        pedido.setStatusPedido(StatusPedido.PAGO);
+        pedido.setFormaPagamento(pagamentoDTO.getFormaPagamento());
+
+        usuarioRepository.save(usuario);
+        usuarioRepository.save(admin);
+        pedidoRepository.save(pedido);
+
+        return retornarDto(pedido);
+    }
+
+    public PedidoDTO entregue(Integer idPedido) throws Exception {
+        Pedido pedido = findById(idPedido);
+
+        if (pedido.getStatusPedido() != StatusPedido.A_CAMINHO) {
+            throw new RegraDeNegocioException("Pedido não enviado ou cancelado");
+        }
+
+        Integer idUsuarioEmpresa = pedido.getEmpresa().getIdUsuario();
+
+        Usuario empresa = usuarioService.obterPorId(idUsuarioEmpresa);
+        Usuario admin = obterAdmin();
+
+        BigDecimal total = pedido.getPrecoCarrinho().add(pedido.getPrecoFrete());
+
+        BigDecimal porcentagemTaxaServico = total.multiply(TAXA_SERVICO).divide(new BigDecimal("100"));
+
+        BigDecimal valorFinal = total.subtract(porcentagemTaxaServico);
+
+
+        efetuarTransferencia(admin.getCarteira(), empresa.getCarteira(), valorFinal);
+
+        pedido.setStatusPedido(StatusPedido.ENTREGUE);
+        return retornarDto(pedido);
+    }
+
+    private void efetuarTransferencia(Carteira carteiraOrigem, Carteira carteiraDestino, BigDecimal total) throws RegraDeNegocioException {
+        BigDecimal valorPendente = carteiraOrigem.getSaldo().subtract(total);
+        if (valorPendente.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RegraDeNegocioException("SALDO INSUFICIENTE");
+        }
+        carteiraOrigem.setSaldo(carteiraOrigem.getSaldo().subtract(total));
+        carteiraDestino.setSaldo(carteiraDestino.getSaldo().add(total));
+    }
+
+    public Usuario obterAdmin() throws Exception {
+        Usuario admin = usuarioService.findByLogin("admin")
+                .orElseThrow(() -> new RegraDeNegocioException("Ocorreu um erro ao processar o pagamento"));
+        boolean isAdmin = admin.getCargos().stream()
+                .anyMatch(cargo -> "ROLE_ADMIN".equalsIgnoreCase(cargo.getNome()));
+        if (!isAdmin) {
+            throw new RegraDeNegocioException("Ocorreu um erro interno");
+        }
+
+        return admin;
+    }
+
+    public PedidoDTO getById(Integer idPedido) throws Exception {
+        return retornarDto(findById(idPedido));
+    }
+
+    public PedidoDTO retornarDto(Pedido pedido) {
+        UsuarioDTO usuarioDTO = new UsuarioDTO(pedido.getUsuario());
+        EnderecoDTO enderecoDTO = new EnderecoDTO(pedido.getEndereco());
+        CupomDTO cupomDto = new CupomDTO(pedido.getCupom());
+        EmpresaDTO empresa = new EmpresaDTO(pedido.getEmpresa());
+
+        List<PedidoXProduto> pedidoProdutos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
+        List<ProdutoPedidoDTO> produtos = new ArrayList<>();
+
+        for (PedidoXProduto pedidoXProduto : pedidoProdutos) {
+            ProdutoResponsePedidoDTO produtoDTO = objectMapper.convertValue(pedidoXProduto.getProduto(), ProdutoResponsePedidoDTO.class);
+
+            ProdutoPedidoDTO produtoPedidoDTO = new ProdutoPedidoDTO(produtoDTO, pedidoXProduto.getQuantidade());
+
+            produtos.add(produtoPedidoDTO);
+        }
+
+        PedidoDTO pedidoDTO = new PedidoDTO(pedido, usuarioDTO, enderecoDTO, cupomDto, produtos, empresa);
+        return pedidoDTO;
     }
 
     private void emailPedidoCriado(PedidoDTO pedidoDTO, Usuario usuario) throws Exception {
@@ -183,27 +299,4 @@ public class PedidoService {
         this.emailService.sendEmail(mensagem, assunto, destinatario);
     }
 
-    public PedidoDTO getById(Integer idPedido) throws Exception {
-        return retornarDto(findById(idPedido));
-    }
-
-    public PedidoDTO retornarDto(Pedido pedido) {
-        UsuarioDTO usuarioDTO = new UsuarioDTO(pedido.getUsuario());
-        EnderecoDTO enderecoDTO = new EnderecoDTO(pedido.getEndereco());
-        CupomDTO cupomDto = new CupomDTO(pedido.getCupom());
-
-        List<PedidoXProduto> pedidoProdutos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
-        List<ProdutoPedidoDTO> produtos = new ArrayList<>();
-
-        for(PedidoXProduto pedidoXProduto : pedidoProdutos){
-            ProdutoResponsePedidoDTO produtoDTO = objectMapper.convertValue(pedidoXProduto.getProduto(), ProdutoResponsePedidoDTO.class);
-
-            ProdutoPedidoDTO produtoPedidoDTO = new ProdutoPedidoDTO(produtoDTO, pedidoXProduto.getQuantidade());
-
-            produtos.add(produtoPedidoDTO);
-        }
-
-        PedidoDTO pedidoDTO = new PedidoDTO(pedido, usuarioDTO, enderecoDTO, cupomDto, produtos);
-        return  pedidoDTO;
-    }
 }

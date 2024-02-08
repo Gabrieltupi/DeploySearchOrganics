@@ -1,8 +1,8 @@
 package com.vemser.dbc.searchorganic.dto.pedido.validacoes;
 
 import com.vemser.dbc.searchorganic.model.Pedido;
-import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.model.PedidoXProduto;
+import com.vemser.dbc.searchorganic.model.Produto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,6 @@ public class ValidarPrecoTotal implements IValidarPedido {
             precoCarrinhoTotal = precoCarrinhoTotal.subtract(desconto);
 
         }
-        System.out.println(precoCarrinhoTotal);
         pedido.setPrecoCarrinho(precoCarrinhoTotal);
 
     }

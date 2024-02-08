@@ -56,6 +56,7 @@ public class EnderecoDTO {
     @Schema(description = "Pais", required = true, example = "Brasil")
     private String pais;
     private String regiao;
+
     public EnderecoDTO(Endereco endereco) {
         this.idEndereco = endereco.getIdEndereco();
         this.idUsuario = endereco.getUsuario().getIdUsuario();

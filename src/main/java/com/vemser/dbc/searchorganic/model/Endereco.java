@@ -1,7 +1,10 @@
 package com.vemser.dbc.searchorganic.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -11,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Schema(hidden = true)
 @Entity(name = "ENDERECO")
-public class Endereco{
+public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ENDERECO")
     @SequenceGenerator(name = "SEQ_ENDERECO", sequenceName = "SEQ_ENDERECO", allocationSize = 1)

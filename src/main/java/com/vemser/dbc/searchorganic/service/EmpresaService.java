@@ -28,12 +28,16 @@ public class EmpresaService implements IEmpresaService {
     private final CargoRepository cargoRepository;
 
     public Page<EmpresaDTO> findAll(Pageable pageable) throws Exception {
-        Page<Empresa> empresas =  empresaRepository.findAll(pageable);
+        Page<Empresa> empresas = empresaRepository.findAll(pageable);
         return empresas.map(this::retornarDto);
     }
 
     public EmpresaDTO findById(Integer idEmpresa) throws Exception {
         return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
+    }
+
+    public Empresa getById(Integer idEmpresa) throws Exception {
+        return empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada"));
     }
 
     public EmpresaDTO save(Integer idUsuario, CreateEmpresaDTO empresaDto) throws Exception {

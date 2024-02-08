@@ -1,11 +1,8 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vemser.dbc.searchorganic.dto.autenticacao.UsuarioTokenDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.CargoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
-
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Cargo;
 import com.vemser.dbc.searchorganic.model.Carteira;
@@ -27,6 +24,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
     private final CargoRepository cargoRepository;
+
     public Usuario criarUsuario(Usuario usuario) throws Exception {
         try {
             Usuario novoUsuario = usuarioRepository.save(usuario);
@@ -45,7 +43,6 @@ public class UsuarioService {
             throw new Exception("Erro ao criar o usuário: " + e.getMessage(), e);
         }
     }
-
 
 
     public List<Usuario> exibirTodos() throws Exception {
@@ -69,7 +66,6 @@ public class UsuarioService {
             usuarioEntity.setSobrenome(usuario.getSobrenome());
 
 
-
             usuarioRepository.save(usuarioEntity);
 
             usuario.setIdUsuario(usuarioId);
@@ -90,16 +86,15 @@ public class UsuarioService {
     public void removerUsuario(int usuarioId) throws Exception {
         try {
 
-                usuarioRepository.deleteById(usuarioId);
-                Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
+            usuarioRepository.deleteById(usuarioId);
+            Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
 
-                Map<String, Object> dadosEmail = new HashMap<>();
-                dadosEmail.put("nomeUsuario", usuarioRemovido.getNome());
-                dadosEmail.put("mensagem", "Atencao! Seu usuário foi removido do nosso serviço");
-                dadosEmail.put("email", usuarioRemovido.getEmail());
+            Map<String, Object> dadosEmail = new HashMap<>();
+            dadosEmail.put("nomeUsuario", usuarioRemovido.getNome());
+            dadosEmail.put("mensagem", "Atencao! Seu usuário foi removido do nosso serviço");
+            dadosEmail.put("email", usuarioRemovido.getEmail());
 
-                emailService.sendEmail(dadosEmail, "Usuário Removido", usuarioRemovido.getEmail());
-
+            emailService.sendEmail(dadosEmail, "Usuário Removido", usuarioRemovido.getEmail());
 
 
         } catch (Exception e) {
@@ -120,10 +115,9 @@ public class UsuarioService {
 
     public UsuarioDTO findByCpf(String cpf) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findByCpf(cpf)
-            .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + cpf));
+                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + cpf));
         return new UsuarioDTO(usuario);
     }
-
 
 
     public Optional<Usuario> findByLoginAndSenha(String login, String senha) {
@@ -134,7 +128,7 @@ public class UsuarioService {
         return usuarioRepository.findById(idUsuario);
     }
 
-    public Optional<Usuario> findByLogin(String login){
+    public Optional<Usuario> findByLogin(String login) {
         return usuarioRepository.findByLogin(login);
     }
 
@@ -154,10 +148,10 @@ public class UsuarioService {
         usuario.setCarteira(carteira);
         usuario.setCargos(cargos);
 
-        usuario  = criarUsuario(usuario);
+        usuario = criarUsuario(usuario);
 
-      UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
-      return usuarioDTO;
+        UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
+        return usuarioDTO;
     }
 
     public void salvarUsuario(Usuario usuario) {

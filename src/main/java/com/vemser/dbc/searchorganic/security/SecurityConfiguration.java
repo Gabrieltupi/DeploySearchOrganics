@@ -1,6 +1,5 @@
 package com.vemser.dbc.searchorganic.security;
 
-import com.vemser.dbc.searchorganic.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
