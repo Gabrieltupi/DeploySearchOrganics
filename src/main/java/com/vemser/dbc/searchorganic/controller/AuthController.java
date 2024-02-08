@@ -5,6 +5,7 @@ package com.vemser.dbc.searchorganic.controller;
 import com.vemser.dbc.searchorganic.dto.autenticacao.AuthToken;
 import com.vemser.dbc.searchorganic.dto.autenticacao.UsuarioTokenDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
@@ -32,7 +33,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthController {
     private final TokenService tokenService;
-    private final PasswordEncoder passwordEncoder;
     private final UsuarioService usuarioService;
     public final AuthenticationManager authenticationManager;
 
@@ -57,26 +57,8 @@ public class AuthController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<UsuarioTokenDTO> cadastrarUsuario(@RequestBody @Valid UsuarioCreateDTO usuarioDTO) throws Exception {
-        String senhaCriptografada = passwordEncoder.encode(usuarioDTO.getSenha());
-
-        Usuario usuario = new Usuario();
-        usuario.setNome(usuarioDTO.getNome());
-        usuario.setSobrenome(usuarioDTO.getSobrenome());
-        usuario.setDataNascimento(usuarioDTO.getDataNascimento());
-        usuario.setCpf(usuarioDTO.getCpf());
-        usuario.setEmail(usuarioDTO.getEmail());
-        usuario.setLogin(usuarioDTO.getLogin());
-        usuario.setSenha(senhaCriptografada);
-        usuario.setTipoAtivo(usuarioDTO.getTipoAtivo());
-
-        Usuario novoUsuario = usuarioService.criarUsuario(usuario);
-
-        UsuarioTokenDTO usuarioTokenDTO = new UsuarioTokenDTO();
-        usuarioTokenDTO.setId(novoUsuario.getIdUsuario());
-        usuarioTokenDTO.setLogin(novoUsuario.getLogin());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioTokenDTO);
+    public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestBody @Valid UsuarioCreateDTO usuarioDTO) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.criarUsuario(usuarioDTO));
     }
 
 }

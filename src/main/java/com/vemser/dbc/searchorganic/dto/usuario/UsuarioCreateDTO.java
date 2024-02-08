@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,4 +49,5 @@ public class UsuarioCreateDTO {
 
     @Schema(description = "Atividade do usuario", required = true, example = "S")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
+
 }

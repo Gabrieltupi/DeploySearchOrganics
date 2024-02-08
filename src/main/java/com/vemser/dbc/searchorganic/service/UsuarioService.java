@@ -1,25 +1,32 @@
 package com.vemser.dbc.searchorganic.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.autenticacao.UsuarioTokenDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.CargoDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
+import com.vemser.dbc.searchorganic.model.Cargo;
+import com.vemser.dbc.searchorganic.model.Carteira;
 import com.vemser.dbc.searchorganic.model.Usuario;
+import com.vemser.dbc.searchorganic.repository.CargoRepository;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
-
+    private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper;
+    private final CargoRepository cargoRepository;
     public Usuario criarUsuario(Usuario usuario) throws Exception {
         try {
             Usuario novoUsuario = usuarioRepository.save(usuario);
@@ -132,8 +139,30 @@ public class UsuarioService {
     }
 
 
+    public UsuarioDTO criarUsuario(UsuarioCreateDTO usuarioCreateDTO) throws Exception {
+        String senhaCriptografada = passwordEncoder.encode(usuarioCreateDTO.getSenha());
+        Set<Cargo> cargos = new HashSet<>();
+        Cargo cargoEntity = cargoRepository.findByNome("ROLE_USUARIO");
+        cargos.add(cargoEntity);
 
+        Usuario usuario = objectMapper.convertValue(usuarioCreateDTO, Usuario.class);
 
+        usuario.setSenha(senhaCriptografada);
+
+        Carteira carteira = new Carteira(usuario);
+
+        usuario.setCarteira(carteira);
+        usuario.setCargos(cargos);
+
+        usuario  = criarUsuario(usuario);
+
+      UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
+      return usuarioDTO;
+    }
+
+    public void salvarUsuario(Usuario usuario) {
+        this.usuarioRepository.save(usuario);
+    }
 }
 
 

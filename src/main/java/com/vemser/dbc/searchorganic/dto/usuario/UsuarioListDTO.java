@@ -1,28 +1,24 @@
 package com.vemser.dbc.searchorganic.dto.usuario;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.model.Cargo;
-import com.vemser.dbc.searchorganic.model.Carteira;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioDTO {
+public class UsuarioListDTO {
     private Integer idUsuario;
     @NotBlank
     @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
@@ -52,9 +48,7 @@ public class UsuarioDTO {
     @Schema(description = "Usuário ativo ou desativado", required = true, example = "S")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
     private Set<CargoDTO> cargos = new HashSet<>();
-    @Schema(description = "Carteira do usuario", required = true, example = "S")
-    private CarteiraDTO carteira;
-    public UsuarioDTO(Usuario usuario) {
+    public UsuarioListDTO(Usuario usuario) {
         this.idUsuario = usuario.getIdUsuario();
         this.nome = usuario.getNome();
         this.sobrenome = usuario.getSobrenome();
@@ -63,7 +57,6 @@ public class UsuarioDTO {
         this.email = usuario.getEmail();
         this.login = usuario.getLogin();
         this.tipoAtivo = usuario.getTipoAtivo();
-        this.carteira = new CarteiraDTO(usuario.getCarteira());
         for(Cargo cargo : usuario.getCargos()){
             this.cargos.add(new CargoDTO(cargo));
         }

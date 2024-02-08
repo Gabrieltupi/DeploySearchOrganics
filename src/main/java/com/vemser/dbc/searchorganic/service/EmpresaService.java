@@ -6,7 +6,10 @@ import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaProdutosDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
+import com.vemser.dbc.searchorganic.model.Cargo;
 import com.vemser.dbc.searchorganic.model.Empresa;
+import com.vemser.dbc.searchorganic.model.Usuario;
+import com.vemser.dbc.searchorganic.repository.CargoRepository;
 import com.vemser.dbc.searchorganic.repository.EmpresaRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IEmpresaService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import java.util.Optional;
 public class EmpresaService implements IEmpresaService {
     private final EmpresaRepository empresaRepository;
     private final ObjectMapper objectMapper;
+    private final UsuarioService usuarioService;
+    private final CargoRepository cargoRepository;
 
     public Page<EmpresaDTO> findAll(Pageable pageable) throws Exception {
         Page<Empresa> empresas =  empresaRepository.findAll(pageable);
@@ -33,6 +38,10 @@ public class EmpresaService implements IEmpresaService {
 
     public EmpresaDTO save(Integer idUsuario, CreateEmpresaDTO empresaDto) throws Exception {
         Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
+        Usuario usuario = usuarioService.obterUsuarioPorId(idUsuario);
+        Cargo cargoEntity = cargoRepository.findByNome("ROLE_EMPRESA");
+        usuario.getCargos().add(cargoEntity);
+        usuarioService.salvarUsuario(usuario);
         empresa.setIdUsuario(idUsuario);
 
         return retornarDto(empresaRepository.save(empresa));
