@@ -1,6 +1,5 @@
 package com.vemser.dbc.searchorganic.controller;
 
-
 import com.vemser.dbc.searchorganic.dto.autenticacao.AuthToken;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
@@ -33,28 +32,31 @@ public class AuthController {
     public final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthToken> auth(@RequestBody @Valid UsuarioLoginDTO loginDTO) throws RegraDeNegocioException {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getLogin(),
-                        loginDTO.getSenha()
-                );
+    public ResponseEntity<AuthToken> auth(@RequestBody @Valid UsuarioLoginDTO loginDTO) throws Exception {
+        try {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getLogin(),
+                            loginDTO.getSenha()
+                    );
 
-        Authentication authentication =
-                authenticationManager.authenticate(
-                        usernamePasswordAuthenticationToken);
+            Authentication authentication =
+                    authenticationManager.authenticate(
+                            usernamePasswordAuthenticationToken);
 
-        Usuario usuarioValidado = (Usuario) authentication.getPrincipal();
+            Usuario usuarioValidado = (Usuario) authentication.getPrincipal();
 
-        String token = tokenService.generateToken(usuarioValidado);
-        AuthToken authToken = new AuthToken(token);
+            String token = tokenService.generateToken(usuarioValidado);
+            AuthToken authToken = new AuthToken(token);
 
-        return ResponseEntity.ok(authToken);
+            return ResponseEntity.ok(authToken);
+        } catch (Exception e) {
+            throw new RegraDeNegocioException(e.getMessage());
+        }
     }
 
     @PostMapping("/cadastrar")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestBody @Valid UsuarioCreateDTO usuarioDTO) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.criarUsuario(usuarioDTO));
     }
-
 }

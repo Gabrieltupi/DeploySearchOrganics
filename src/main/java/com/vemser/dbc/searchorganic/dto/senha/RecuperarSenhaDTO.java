@@ -1,2 +1,9 @@
-package com.vemser.dbc.searchorganic.dto.senha;public class RecuperarSenhaDTO {
+package com.vemser.dbc.searchorganic.dto.senha;
+
+import lombok.Data;
+
+@Data
+public class RecuperarSenhaDTO {
+    String email;
+    String login;
 }
