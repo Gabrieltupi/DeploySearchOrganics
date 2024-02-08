@@ -174,6 +174,9 @@ public class PedidoService {
 
         if (pagamentoDTO.getFormaPagamento() == FormaPagamento.CREDITO || pagamentoDTO.getFormaPagamento() == FormaPagamento.DEBITO) {
             //Simulando pagamento com cartão, adicionando saldo na conta
+            if(pagamentoDTO.getNumeroCartao() == null || pagamentoDTO.getCvv() == null || pagamentoDTO.getDataValidade() == null){
+                throw new RegraDeNegocioException("Cartão inválido");
+            }
             usuario.getCarteira().setSaldo(carteiraUsuario.getSaldo().add(total));
         }
 
@@ -191,7 +194,7 @@ public class PedidoService {
 
     public PedidoDTO entregue(Integer idPedido) throws Exception {
         Pedido pedido = findById(idPedido);
-        
+
         if (pedido.getStatusPedido() != StatusPedido.A_CAMINHO) {
             throw new RegraDeNegocioException("Pedido não enviado ou cancelado");
         }

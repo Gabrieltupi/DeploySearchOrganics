@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -21,7 +23,7 @@ public class CartaoDTO {
     @Pattern(regexp = "^[0-9]{3}$", message = "O CVV deve ter 3 dígitos numéricos")
     private String cvv;
 
-    @Future
-    @DateTimeFormat(pattern = "MM/yyyy")
-    private String dataValidade;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Future(message = "Data de validade inválida, verifique se a data está no futuro e no formato yyyy-MM-dd")
+    private LocalDate  dataValidade;
 }
