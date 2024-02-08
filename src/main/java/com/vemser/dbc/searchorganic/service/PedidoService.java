@@ -191,6 +191,36 @@ public class PedidoService {
 
         return retornarDto(pedido);
     }
+    public PedidoEmpresaDTO updatePedidoStatus(Integer idPedido, StatusPedido novoStatus, Integer idEmpresa) throws Exception {
+        return updateStatus(idPedido, novoStatus, idEmpresa);
+    }
+
+    public PedidoEmpresaDTO updateStatus(Integer idPedido, StatusPedido novoStatus, Integer idEmpresa) throws Exception {
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado"));
+
+        StatusPedido statusAntigo = pedido.getStatusPedido();
+        pedido.setStatusPedido(novoStatus);
+        Pedido pedidoAtualizado = pedidoRepository.save(pedido);
+
+        PedidoEmpresaDTO pedidoDTO = convertToPedidoDTO(pedidoAtualizado, idEmpresa);
+
+
+
+        return pedidoDTO;
+    }
+
+    private PedidoEmpresaDTO convertToPedidoDTO(Pedido pedido, Integer idEmpresa) {
+        PedidoEmpresaDTO pedidoDTO = new PedidoEmpresaDTO();
+        pedidoDTO.setIdPedido(pedido.getIdPedido());
+        pedidoDTO.setStatusPedido(pedido.getStatusPedido());
+        pedidoDTO.setIdEmpresa(idEmpresa);
+
+
+
+        return pedidoDTO;
+    }
+
 
     public PedidoDTO entregue(Integer idPedido) throws Exception {
         Pedido pedido = findById(idPedido);

@@ -1,11 +1,9 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.vemser.dbc.searchorganic.controller.interfaces.IPedidoController;
-import com.vemser.dbc.searchorganic.dto.pedido.PagamentoDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.*;
 import com.vemser.dbc.searchorganic.service.PedidoService;
+import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,9 +59,16 @@ public class PedidoController implements IPedidoController {
     public ResponseEntity<PedidoDTO> pagar(@PathVariable("idPedido") Integer idPedido, @Valid @RequestBody PagamentoDTO pagamentoDTO) throws Exception {
         return new ResponseEntity<>(pedidoService.pagamento(idPedido, pagamentoDTO), HttpStatus.CREATED);
     }
-
     @PostMapping("/entregue/{idPedido}")
     public ResponseEntity<PedidoDTO> entregue(@PathVariable("idPedido") Integer idPedido) throws Exception {
         return new ResponseEntity<>(pedidoService.entregue(idPedido), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{idEmpresa}/pedido/{idPedido}/status")
+    public ResponseEntity<PedidoEmpresaDTO> updatePedidoStatus(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable("idPedido") Integer idPedido, @RequestParam("novoStatus") StatusPedido novoStatus) throws Exception {
+
+        PedidoEmpresaDTO pedidoAtualizado = pedidoService.updatePedidoStatus(idPedido, novoStatus, idEmpresa);
+
+        return new ResponseEntity<>(pedidoAtualizado, HttpStatus.OK);
     }
 }
