@@ -11,6 +11,7 @@ import com.vemser.dbc.searchorganic.repository.CargoRepository;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -124,8 +125,20 @@ public class UsuarioService {
         return usuarioRepository.findByLoginAndSenha(login, senha);
     }
 
-    public Optional<Usuario> findById(Integer idUsuario) {
-        return usuarioRepository.findById(idUsuario);
+    public Usuario findByLoginAndEmail(String login, String email) throws Exception {
+        Optional<Usuario> usuario = usuarioRepository.findByLoginAndEmail(login, email);
+        if (usuario.isPresent()) {
+            return usuario.get();
+        }
+        throw new Exception("Usuário não encontrado");
+    }
+
+    public Usuario findById(Integer idUsuario) throws Exception {
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        if (usuario.isPresent()) {
+            return usuario.get();
+        }
+        throw new Exception("Usuário não encontrado");
     }
 
     public Optional<Usuario> findByLogin(String login) {
@@ -156,6 +169,15 @@ public class UsuarioService {
 
     public void salvarUsuario(Usuario usuario) {
         this.usuarioRepository.save(usuario);
+    }
+
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    public Usuario getLoggedUser() throws Exception {
+        Integer userId = getIdLoggedUser();
+        return findById(userId);
     }
 }
 
