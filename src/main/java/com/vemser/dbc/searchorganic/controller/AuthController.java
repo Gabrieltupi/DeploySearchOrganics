@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.controller;
 
 
+import com.vemser.dbc.searchorganic.controller.interfaces.IAuthController;
 import com.vemser.dbc.searchorganic.dto.autenticacao.AuthToken;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
@@ -27,7 +28,7 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 @Validated
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements IAuthController {
     private final TokenService tokenService;
     private final UsuarioService usuarioService;
     public final AuthenticationManager authenticationManager;

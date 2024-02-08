@@ -1,6 +1,8 @@
 package com.vemser.dbc.searchorganic.controller.interfaces;
 
+import com.vemser.dbc.searchorganic.dto.autenticacao.AuthToken;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,8 +26,8 @@ public interface IAuthController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping
-    public String auth(@RequestBody @Valid UsuarioLoginDTO loginDTO) throws RegraDeNegocioException;
+    @PostMapping("/login")
+    public ResponseEntity<AuthToken> auth(@RequestBody @Valid UsuarioLoginDTO loginDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Cadastro de usuario!", description = "Gera o cadastro do usuario!")
     @ApiResponses(
@@ -36,5 +38,5 @@ public interface IAuthController {
             }
     )
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarUsuario(@RequestBody UsuarioCreateDTO usuarioDTO) throws Exception;
+    public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestBody @Valid UsuarioCreateDTO usuarioDTO) throws Exception;
 }

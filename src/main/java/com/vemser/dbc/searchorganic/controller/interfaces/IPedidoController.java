@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.controller.interfaces;
 
+import com.vemser.dbc.searchorganic.dto.pedido.PagamentoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
@@ -80,4 +81,26 @@ public interface IPedidoController {
     )
     @GetMapping("/usuario/{idUsuario}")
     ResponseEntity<List<PedidoDTO>> findAllByIdUsuario(@PathVariable("idUsuario") Integer idUsuario) throws Exception;
+
+    @Operation(summary = "Pagar o pedido", description = "Pagar o pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Produto pago"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("/pagar/{idPedido}")
+    public ResponseEntity<PedidoDTO> pagar(@PathVariable("idPedido") Integer idPedido, @Valid @RequestBody PagamentoDTO pagamentoDTO) throws Exception;
+
+    @Operation(summary = "Entrega do pedido", description = "Entrega do pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Pedido entregue"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("/entregue/{idPedido}")
+    public ResponseEntity<PedidoDTO> entregue(@PathVariable("idPedido") Integer idPedido) throws Exception;
 }
