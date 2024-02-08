@@ -12,5 +12,5 @@ public class PedidoEmpresaDTO {
     private Integer idEmpresa;
     private Integer idPedido;
     private StatusPedido statusPedido;
-    private Usuario usuario;
+
 }
