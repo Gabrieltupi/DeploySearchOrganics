@@ -3,10 +3,7 @@ package com.vemser.dbc.searchorganic.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.controller.interfaces.IUsuarioController;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.*;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.UsuarioService;
@@ -30,10 +27,8 @@ public class UsuarioController implements IUsuarioController {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> list() throws Exception {
-        List<UsuarioDTO> usuarios = objectMapper.convertValue(this.usuarioService.exibirTodos(), new TypeReference<List<UsuarioDTO>>() {
-        });
-        ;
+    public ResponseEntity<List<UsuarioListDTO>> list() throws Exception {
+        List<UsuarioListDTO> usuarios = this.usuarioService.exibirTodos().stream().map(UsuarioListDTO::new).toList();
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
@@ -43,7 +38,7 @@ public class UsuarioController implements IUsuarioController {
         Usuario usuarioEntity = this.usuarioService.obterUsuarioPorId(id);
 
         if (usuarioEntity != null) {
-            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+            UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioEntity);
             return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
         } else {
             throw  new RegraDeNegocioException("Usuario não encontrado.");
@@ -60,7 +55,7 @@ public class UsuarioController implements IUsuarioController {
         Usuario usuarioEntity = objectMapper.convertValue(usuarioAtualizar, Usuario.class);
         usuarioEntity = this.usuarioService.editarUsuario(id, usuarioEntity);
 
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioEntity);
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 

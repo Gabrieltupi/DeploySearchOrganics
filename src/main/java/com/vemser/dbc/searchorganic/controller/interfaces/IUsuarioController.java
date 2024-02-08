@@ -1,9 +1,6 @@
 package com.vemser.dbc.searchorganic.controller.interfaces;
 
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.*;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +23,7 @@ public interface IUsuarioController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> list() throws Exception;
+    public ResponseEntity<List<UsuarioListDTO>> list() throws Exception;
 
     @Operation(summary = "Listar Usuario pelo id", description = "Lista o usuario pelo id")
     @ApiResponses(
