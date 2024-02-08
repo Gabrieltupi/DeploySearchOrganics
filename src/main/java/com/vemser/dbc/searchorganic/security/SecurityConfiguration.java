@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -31,6 +30,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers("/auth/login", "/auth/cadastrar", "/").permitAll()
                         .antMatchers("/empresa/**").hasAnyRole("ADMIN", "EMPRESA")
+
                         .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN", "USUARIO", "EMPRESA")
 
                         .antMatchers("/pedido/**").hasAnyRole("ADMIN", "USUARIO")
@@ -58,6 +58,10 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/produto").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.GET, "/produto/categoria/").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.GET, "/produto/empresa/").hasAnyRole("ADMIN", "USUARIO")
+
+
+                        .antMatchers("/usuario/login/**").permitAll()
+                        .antMatchers("/senha/**").permitAll()
 
                         .anyRequest().authenticated()
                 );
