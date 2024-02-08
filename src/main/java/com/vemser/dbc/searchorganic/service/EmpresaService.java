@@ -5,6 +5,7 @@ import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaProdutosDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Cargo;
 import com.vemser.dbc.searchorganic.model.Empresa;
@@ -12,6 +13,7 @@ import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.CargoRepository;
 import com.vemser.dbc.searchorganic.repository.EmpresaRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IEmpresaService;
+import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +41,8 @@ public class EmpresaService implements IEmpresaService {
     public Empresa getById(Integer idEmpresa) throws Exception {
         return empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada"));
     }
+
+
 
     public EmpresaDTO save(Integer idUsuario, CreateEmpresaDTO empresaDto) throws Exception {
         Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);

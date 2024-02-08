@@ -20,15 +20,12 @@ import java.util.Set;
 @NoArgsConstructor
 public class UsuarioDTO {
     private Integer idUsuario;
-    @NotBlank
     @Schema(description = "Nome do usuario", required = true, example = "Gabriel Antonio")
     private String nome;
 
-    @NotBlank
     @Schema(description = "Sobrenome do usuario", required = true, example = "Nunes de Souza")
     private String sobrenome;
 
-    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Schema(description = "Data de nascimento do usuario", required = true, example = "yyyy-MM-dd")
     private LocalDate dataNascimento;
@@ -36,12 +33,9 @@ public class UsuarioDTO {
     @Schema(description = "CPF", required = true, example = "46473219080")
     private String cpf;
 
-    @NotNull
     @Schema(description = "Email", required = true, example = "Gabriel.nunes@dbccompany.com.br")
     private String email;
 
-    @NotNull
-    @NotBlank
     @Schema(description = "Login", required = true, example = "Tupi_Uzumaki321")
     private String login;
 

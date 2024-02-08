@@ -58,7 +58,7 @@ public class SenhaService implements ISenhaService {
         Map<String, Object> dadosEmail = new HashMap<>();
         dadosEmail.put("nomeUsuario", usuario.getNome());
         dadosEmail.put("email", usuario.getEmail());
-        dadosEmail.put("mensagem", "Atencao! Você solicitou a recuperação da senha da sua conta na Search Organic. Sua nova senha de acesso é: " + senha);
+        dadosEmail.put("mensagem", "Atenção! Você solicitou a recuperação da senha da sua conta na Search Organic. Sua nova senha de acesso é: " + senha);
 
         emailService.sendEmail(dadosEmail, "Email para recuperação de senha enviado", usuario.getEmail());
     }
@@ -67,7 +67,7 @@ public class SenhaService implements ISenhaService {
         Map<String, Object> dadosEmail = new HashMap<>();
         dadosEmail.put("nomeUsuario", usuario.getNome());
         dadosEmail.put("email", usuario.getEmail());
-        dadosEmail.put("mensagem", "Atencao! Você redefiniu sua senha em Search Organic com sucesso!");
+        dadosEmail.put("mensagem", "Atenção! Você redefiniu sua senha na Search Organic com sucesso!");
 
         emailService.sendEmail(dadosEmail, "Email para reset de senha enviado", usuario.getEmail());
     }
