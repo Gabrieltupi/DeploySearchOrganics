@@ -54,6 +54,11 @@ public class UsuarioService {
         return usuarioRepository.getById(id);
     }
 
+    public UsuarioDTO obterUsuarioLogado() throws Exception {
+        Usuario usuario = getLoggedUser();
+        return objectMapper.convertValue(usuario, UsuarioDTO.class);
+    }
+
     public Usuario editarUsuario(int usuarioId, Usuario usuario) throws Exception {
         try {
             Usuario usuarioEntity = obterPorId(usuarioId);

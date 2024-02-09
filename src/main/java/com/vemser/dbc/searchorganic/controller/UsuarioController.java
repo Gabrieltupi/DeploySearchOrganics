@@ -8,6 +8,7 @@ import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuario")
+@RequiredArgsConstructor
 public class UsuarioController implements IUsuarioController {
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
-
-    public UsuarioController(UsuarioService usuarioService, ObjectMapper objectMapper) {
-        this.usuarioService = usuarioService;
-        this.objectMapper = objectMapper;
-    }
 
     @Override
     @GetMapping
@@ -35,7 +32,7 @@ public class UsuarioController implements IUsuarioController {
 
     @Override
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception {
+    public ResponseEntity<UsuarioDTO> obterUsuarioPorId(@PathVariable("idUsuario") Integer id) throws Exception {
         Usuario usuarioEntity = this.usuarioService.obterUsuarioPorId(id);
 
         if (usuarioEntity != null) {
@@ -46,6 +43,12 @@ public class UsuarioController implements IUsuarioController {
         }
     }
 
+    @Override
+    @GetMapping("/logado")
+    public ResponseEntity<UsuarioDTO> obterUsuarioLogado() throws Exception {
+        UsuarioDTO usuarioDTO = usuarioService.obterUsuarioLogado();
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+    }
 
     @Override
     @PutMapping("/{idUsuario}")
