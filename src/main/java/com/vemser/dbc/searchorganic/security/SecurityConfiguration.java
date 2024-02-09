@@ -30,6 +30,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers("/auth/login", "/auth/cadastrar", "/").permitAll()
                         .antMatchers("/empresa/**").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers("/carteira/**").hasAnyRole("ADMIN", "EMPRESA", "USUARIO")
 
                         .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN", "USUARIO", "EMPRESA")
 
