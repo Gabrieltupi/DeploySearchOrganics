@@ -1,4 +1,4 @@
-package com.vemser.dbc.searchorganic.dto.usuario;
+package com.vemser.dbc.searchorganic.dto.carteira;
 
 import com.vemser.dbc.searchorganic.model.Carteira;
 import io.swagger.v3.oas.annotations.media.Schema;
