@@ -84,6 +84,7 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
+                        .allowedOrigins("https://search-organic.vercel.app/")
                         .allowedMethods("*")
                         .exposedHeaders("Authorization");
             }
