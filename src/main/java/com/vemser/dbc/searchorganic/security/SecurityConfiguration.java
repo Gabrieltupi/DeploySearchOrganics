@@ -3,6 +3,7 @@ package com.vemser.dbc.searchorganic.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,8 +30,39 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers("/auth/login", "/auth/cadastrar", "/").permitAll()
                         .antMatchers("/empresa/**").hasAnyRole("ADMIN", "EMPRESA")
+
+                        .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN", "USUARIO", "EMPRESA")
+
+                        .antMatchers("/pedido/**").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers("/pedido/entregue/").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.DELETE,"/pedido").hasAnyRole("ADMIN","USUARIO", "EMPRESA")
+                        .antMatchers(HttpMethod.GET,"pedido/").hasAnyRole("ADMIN","USUARIO", "EMPRESA")
+
+                        .antMatchers("/relatorio/**").hasRole("ADMIN")
+
+                        .antMatchers("usuario/**").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.GET,"/usuario").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.GET,"/usuario/cpf/", "/usuario/email/").hasAnyRole("USUARIO", "ADMIN")
+
+                        .antMatchers(HttpMethod.DELETE, "/empresa").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers("/empresa/**").hasAnyRole("ADMIN","EMPRESA")
+
+                        .antMatchers("/endereco/**").hasAnyRole("ADMIN", "EMPRESA", "USUARIO")
+                        .antMatchers(HttpMethod.GET, "/endereco").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/endereco/usuario/").hasAnyRole("ADMIN", "USUARIO")
+
+                        .antMatchers(HttpMethod.POST,"/produto").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.PUT,"/produto").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.DELETE,"/produto").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.POST, "/produto/imagem").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.GET, "/produto").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.GET, "/produto/categoria/").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.GET, "/produto/empresa/").hasAnyRole("ADMIN", "USUARIO")
+
+
                         .antMatchers("/usuario/login/**").permitAll()
                         .antMatchers("/senha/**").permitAll()
+
                         .anyRequest().authenticated()
                 );
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
