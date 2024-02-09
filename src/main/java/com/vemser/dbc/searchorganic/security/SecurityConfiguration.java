@@ -16,12 +16,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final TokenService tokenService;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
