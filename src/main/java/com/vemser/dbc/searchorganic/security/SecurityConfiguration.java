@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfiguration {
     private final TokenService tokenService;
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable().and()
@@ -29,39 +30,37 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers("/auth/login", "/auth/cadastrar", "/").permitAll()
-                        .antMatchers("/empresa/**").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.DELETE,"/empresa").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/empresa/produtos").hasAnyRole("ADMIN", "USUARIO")
 
-                        .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN", "USUARIO", "EMPRESA")
 
-                        .antMatchers("/pedido/**").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.PUT,"/pedido").hasAnyRole("ADMIN", "USUARIO")//
                         .antMatchers("/pedido/entregue/").hasAnyRole("ADMIN", "EMPRESA")
                         .antMatchers(HttpMethod.DELETE,"/pedido").hasAnyRole("ADMIN","USUARIO", "EMPRESA")
-                        .antMatchers(HttpMethod.GET,"pedido/").hasAnyRole("ADMIN","USUARIO", "EMPRESA")
+                        .antMatchers(HttpMethod.POST, "/pedido").hasAnyRole("ADMIN, USUARIO")
+                        .antMatchers(HttpMethod.GET,"/pedido").hasAnyRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/pedido/usuario/").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.POST, "/pedido/pagar/").hasAnyRole("ADMIN", "USUARIO")
 
                         .antMatchers("/relatorio/**").hasRole("ADMIN")
 
-                        .antMatchers("usuario/**").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers("/usuario").hasAnyRole("ADMIN", "USUARIO")//
+                        .antMatchers(HttpMethod.DELETE, "/usuario").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.GET,"/usuario").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.GET,"/usuario/cpf/", "/usuario/email/").hasAnyRole("USUARIO", "ADMIN")
+                        .antMatchers(HttpMethod.GET,"/usuario/cpf/", "/usuario/email/", "/usuario/").hasAnyRole("USUARIO", "ADMIN")
+                        .antMatchers(HttpMethod.PUT, "/usuario").hasAnyRole("ADMIN", "USUARIO")
 
-                        .antMatchers(HttpMethod.DELETE, "/empresa").hasAnyRole("ADMIN", "EMPRESA")
-                        .antMatchers("/empresa/**").hasAnyRole("ADMIN","EMPRESA")
-
-                        .antMatchers("/endereco/**").hasAnyRole("ADMIN", "EMPRESA", "USUARIO")
+                        .antMatchers(HttpMethod.POST,"/endereco").hasAnyRole("ADMIN", "EMPRESA", "USUARIO")
+                        .antMatchers(HttpMethod.PUT, "/endereco").hasAnyRole("ADMIN", "EMPRESA", "USUARIO")
                         .antMatchers(HttpMethod.GET, "/endereco").hasRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/endereco/usuario/").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.GET, "/endereco/usuario/").hasAnyRole("ADMIN", "USUARIO")
 
-                        .antMatchers(HttpMethod.POST,"/produto").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.POST,"/produto","/produto/imagem" ).hasAnyRole("ADMIN", "EMPRESA")
                         .antMatchers(HttpMethod.PUT,"/produto").hasAnyRole("ADMIN", "EMPRESA")
                         .antMatchers(HttpMethod.DELETE,"/produto").hasAnyRole("ADMIN", "EMPRESA")
-                        .antMatchers(HttpMethod.POST, "/produto/imagem").hasAnyRole("ADMIN", "EMPRESA")
-                        .antMatchers(HttpMethod.GET, "/produto").hasAnyRole("ADMIN", "USUARIO")
-                        .antMatchers(HttpMethod.GET, "/produto/categoria/").hasAnyRole("ADMIN", "USUARIO")
-                        .antMatchers(HttpMethod.GET, "/produto/empresa/").hasAnyRole("ADMIN", "USUARIO")
-
-
-                        .antMatchers("/usuario/login/**").permitAll()
-                        .antMatchers("/senha/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/produto", "/produto/categoria/","/produto/empresa/").hasAnyRole("ADMIN", "USUARIO")
 
                         .anyRequest().authenticated()
                 );
