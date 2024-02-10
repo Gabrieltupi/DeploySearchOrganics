@@ -120,6 +120,8 @@ public interface IPedidoController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    public ResponseEntity<PedidoRastreioDTO> atualizarCodigoDeRastreio(@PathVariable("idPedido") Integer idPedido,
-                                                                       @RequestParam(value = "codigoRastreio", required = false) String codigoRastreio) throws Exception;
+    @PutMapping("/{id}/rastreio")
+    public ResponseEntity<PedidoRastreioDTO> atualizarCodigoDeRastreio(@PathVariable("id") Integer idPedido,
+                                                                       @RequestParam(value = "codigoRastreio",required = false) String codigoRastreio,
+                                                                       @RequestParam("idEmpresa") Integer idEmpresa) throws Exception;
 }
