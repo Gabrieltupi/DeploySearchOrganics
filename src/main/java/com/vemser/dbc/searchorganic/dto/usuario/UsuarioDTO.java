@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.dto.usuario;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.vemser.dbc.searchorganic.dto.carteira.CarteiraDTO;
 import com.vemser.dbc.searchorganic.model.Cargo;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
@@ -9,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;

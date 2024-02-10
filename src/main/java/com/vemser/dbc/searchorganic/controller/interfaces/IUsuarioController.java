@@ -27,16 +27,27 @@ public interface IUsuarioController {
     @GetMapping
     public ResponseEntity<List<UsuarioListDTO>> list() throws Exception;
 
-    @Operation(summary = "Listar Usuario pelo id", description = "Lista o usuario pelo id")
+    @Operation(summary = "Obter usuário por id", description = "Obter usuário por id")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna o usuarios"),
+                    @ApiResponse(responseCode = "200", description = "Retorna o usuário por id"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception;
+    public ResponseEntity<UsuarioDTO> obterUsuarioPorId(@PathVariable("idUsuario") Integer id) throws Exception;
+
+    @Operation(summary = "Obter usuário logado", description = "Obter usuário logado")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna o usuario logado"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/logado")
+    public ResponseEntity<UsuarioDTO> obterUsuarioLogado() throws Exception;
 
 
     @Operation(summary = "Altera um Usuario", description = "Altera um usuario")
@@ -74,7 +85,7 @@ public interface IUsuarioController {
     public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException;
 
 
-    @Operation(summary = "Lista um usuario por cpf!", description = "Deleta um usuario por cpf")
+    @Operation(summary = "Lista um usuario por cpf", description = "Deleta um usuario por cpf")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna o usuario por cpf"),

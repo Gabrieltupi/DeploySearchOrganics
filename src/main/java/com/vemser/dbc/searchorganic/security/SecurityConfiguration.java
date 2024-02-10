@@ -30,6 +30,8 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers("/auth/login", "/auth/cadastrar", "/").permitAll()
+                        .antMatchers("/carteira/**").hasAnyRole("ADMIN", "EMPRESA", "USUARIO")
+                                       
                         .antMatchers(HttpMethod.DELETE,"/empresa").hasAnyRole("ADMIN", "EMPRESA")
                         .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/empresa/produtos").hasAnyRole("ADMIN", "USUARIO")
