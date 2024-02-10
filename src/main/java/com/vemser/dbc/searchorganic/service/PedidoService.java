@@ -247,6 +247,17 @@ public class PedidoService {
         return retornarDto(pedido);
     }
 
+    public PedidoRastreioDTO updateCodigoDeRastreio(Integer idPedido, String codigoRastreio) throws Exception {
+        Pedido pedido = findById(idPedido);
+
+        pedido.setCodigoDeRastreio(codigoRastreio);
+        pedidoRepository.save(pedido);
+        PedidoRastreioDTO pedidoRastreioDTO = objectMapper.convertValue(pedido, PedidoRastreioDTO.class);
+
+        return pedidoRastreioDTO;
+    }
+
+
     private void efetuarTransferencia(Carteira carteiraOrigem, Carteira carteiraDestino, BigDecimal total) throws RegraDeNegocioException {
         BigDecimal valorPendente = carteiraOrigem.getSaldo().subtract(total);
         if (valorPendente.compareTo(BigDecimal.ZERO) < 0) {

@@ -60,4 +60,7 @@ public class Pedido {
 
     @Column(name = "PRECO_CARRINHO")
     private BigDecimal precoCarrinho;
+
+    @Column(name = "CODIGORASTREIO")
+    private String CodigoDeRastreio;
 }

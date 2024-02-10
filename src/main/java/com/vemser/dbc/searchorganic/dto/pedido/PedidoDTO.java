@@ -31,7 +31,7 @@ public class PedidoDTO {
     private EnderecoDTO endereco;
     private List<ProdutoPedidoDTO> produtos;
     private CupomDTO cupom;
-
+    private String codigoDeRastreio;
     private EmpresaDTO empresaDTO;
 
     public PedidoDTO(Pedido pedido, UsuarioDTO usuarioDTO, EnderecoDTO enderecoDTO, CupomDTO cupomDto, List<ProdutoPedidoDTO> produtos, EmpresaDTO empresa) {
@@ -47,6 +47,7 @@ public class PedidoDTO {
         this.endereco = enderecoDTO;
         this.produtos = produtos;
         this.cupom = cupomDto;
+        this.codigoDeRastreio = pedido.getCodigoDeRastreio();
         this.empresaDTO = empresa;
     }
 }

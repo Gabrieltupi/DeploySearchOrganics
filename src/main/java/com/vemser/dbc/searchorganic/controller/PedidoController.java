@@ -64,6 +64,13 @@ public class PedidoController implements IPedidoController {
         return new ResponseEntity<>(pedidoService.entregue(idPedido), HttpStatus.CREATED);
     }
 
+    @PutMapping("/{idPedido}/rastreio")
+    public ResponseEntity<PedidoRastreioDTO> atualizarCodigoDeRastreio(@PathVariable("idPedido") Integer idPedido,
+                                                                       @RequestParam(value = "codigoRastreio", required = false) String codigoRastreio) throws Exception {
+        PedidoRastreioDTO pedidoRastreioDTO = pedidoService.updateCodigoDeRastreio(idPedido, codigoRastreio);
+        return ResponseEntity.ok(pedidoRastreioDTO);
+    }
+
     @PutMapping("/{idEmpresa}/pedido/{idPedido}/status")
     public ResponseEntity<PedidoEmpresaDTO> updatePedidoStatus(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable("idPedido") Integer idPedido, @RequestParam("novoStatus") StatusPedido novoStatus) throws Exception {
 
