@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.DELETE,"/empresa").hasAnyRole("ADMIN", "EMPRESA")
                         .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/empresa/produtos").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.PUT,"/empresa/").hasAnyRole("ADMIN", "EMPRESA")
 
 
                         .antMatchers(HttpMethod.PUT,"/pedido").hasAnyRole("ADMIN", "USUARIO")//
@@ -77,8 +78,8 @@ public class SecurityConfiguration {
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
                 "/swagger-ui/**");
-    }
 
+    }
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

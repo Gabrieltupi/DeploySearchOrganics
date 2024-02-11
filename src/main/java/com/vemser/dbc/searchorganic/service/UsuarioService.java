@@ -53,7 +53,13 @@ public class UsuarioService {
 
 
     public List<Usuario> exibirTodos() throws Exception {
-        return usuarioRepository.findAll();
+        Integer loggedUserId = getIdLoggedUser();
+        if ( isAdmin()) {
+            return usuarioRepository.findAll();
+        } else {
+            throw new RegraDeNegocioException("Apenas o  administrador pode ver a lista inteira do banco de dados de usuário.");
+        }
+
     }
 
     public Usuario obterUsuarioPorId(Integer id) throws Exception {
