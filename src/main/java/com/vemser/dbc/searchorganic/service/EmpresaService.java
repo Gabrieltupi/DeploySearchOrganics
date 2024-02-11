@@ -17,6 +17,7 @@ import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -34,9 +35,53 @@ public class EmpresaService implements IEmpresaService {
         return empresas.map(this::retornarDto);
     }
 
-    public EmpresaDTO findById(Integer idEmpresa) throws Exception {
-        return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
+
+    public EmpresaDTO buscaIdEmpresa(Integer id) throws Exception {
+        if(getIdLoggedUser().equals(id)||isAdmin()){
+            return findById(id);
+        }else{
+            throw new RegraDeNegocioException("Só é possivel retornar seus próprios dados.");
+        }
     }
+
+    public EmpresaDTO findById(Integer idEmpresa) throws Exception {
+        if(isUsuario()) {
+            return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
+        } else{
+            return buscaIdEmpresa(idEmpresa);
+        }
+        }
+
+
+    public boolean isAdmin() {
+        Integer userId = getIdLoggedUser();
+        Integer count = empresaRepository.existsAdminCargoByUserId(userId);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public boolean isUsuario() {
+        Integer userId = getIdLoggedUser();
+        Integer count = empresaRepository.existsEmpresaCargoByUserId(userId);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+
+
 
     public Empresa getById(Integer idEmpresa) throws Exception {
         return empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada"));
@@ -65,8 +110,19 @@ public class EmpresaService implements IEmpresaService {
     }
 
     public void delete(Integer idEmpresa) throws Exception {
-        findById(idEmpresa);
+
+        Integer loggedUserId = getIdLoggedUser();
+
+        if (loggedUserId.equals(idEmpresa) || isAdmin()) {
+            findById(idEmpresa);
         empresaRepository.deleteById(idEmpresa);
+
+        } else {
+            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
+        }
+
+
+
     }
 
     public Page<EmpresaProdutosDTO> findAllWithProdutos(Pageable pageable) throws Exception {
