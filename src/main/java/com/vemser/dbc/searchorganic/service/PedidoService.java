@@ -257,7 +257,11 @@ public class PedidoService {
         pedido.setCodigoDeRastreio(codigoRastreio);
 
         PedidoRastreioDTO pedidoRastreioDTO = objectMapper.convertValue(pedido, PedidoRastreioDTO.class);
-
+        if (pedido.getCodigoDeRastreio() != null) {
+            pedido.setStatusPedido(StatusPedido.A_CAMINHO);
+        }else{
+            pedido.setStatusPedido(StatusPedido.EM_SEPARACAO);
+        }
         return pedidoRastreioDTO;
     }
 

@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.pedido;
 
+import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.*;
 
 @Getter
@@ -10,4 +11,5 @@ import lombok.*;
 public class PedidoRastreioDTO {
     private Integer idPedido;
     private String codigoDeRastreio;
+    private StatusPedido statusPedido;
 }
