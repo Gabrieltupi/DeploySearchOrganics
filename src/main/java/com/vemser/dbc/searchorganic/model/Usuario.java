@@ -59,7 +59,6 @@ public class Usuario implements UserDetails {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Carteira carteira;
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "USUARIO_CARGO",

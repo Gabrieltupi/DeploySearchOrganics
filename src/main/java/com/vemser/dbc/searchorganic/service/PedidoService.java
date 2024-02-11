@@ -231,7 +231,7 @@ public class PedidoService {
 
         Integer idUsuarioEmpresa = pedido.getEmpresa().getIdUsuario();
 
-        Usuario empresa = usuarioService.obterPorId(idUsuarioEmpresa);
+        Usuario empresa = usuarioService.obterUsuarioPorId(idUsuarioEmpresa);
         Usuario admin = obterAdmin();
 
         BigDecimal total = pedido.getPrecoCarrinho().add(pedido.getPrecoFrete());
