@@ -65,7 +65,7 @@ public class UsuarioService {
     public Usuario obterUsuarioPorId(Integer id) throws Exception {
         if(getIdLoggedUser().equals(id)||isAdmin()){
             return usuarioRepository.getById(id);
-        }else{
+       }else{
             throw new RegraDeNegocioException("Só é possivel retornar seus próprios dados.");
         }
     }
