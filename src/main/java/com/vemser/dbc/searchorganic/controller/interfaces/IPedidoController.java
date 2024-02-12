@@ -102,7 +102,7 @@ public interface IPedidoController {
     @PostMapping("/entregue/{idPedido}")
     public ResponseEntity<PedidoDTO> entregue(@PathVariable("idPedido") Integer idPedido) throws Exception;
     
-    @Operation(summary = "Editar Status", description = "Esditar o status do pedido pelo id da empresa e o id do pedido")
+    @Operation(summary = "Editar Status", description = "Editar o status do pedido pelo id da empresa e o id do pedido")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Status editado pedidos por usuário!"),
@@ -112,4 +112,16 @@ public interface IPedidoController {
     )
     @PutMapping("/{idEmpresa}/pedido/{idPedido}/status")
     public ResponseEntity<PedidoEmpresaDTO> updatePedidoStatus(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable("idPedido") Integer idPedido, @RequestParam("novoStatus") StatusPedido novoStatus) throws Exception;
+    @Operation(summary = "Editar Codigo de rastreio", description = "Editar o codigo de rastreio com base no id do pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Codigo de rastreio editado!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping("/{id}/rastreio")
+    public ResponseEntity<PedidoRastreioDTO> atualizarCodigoDeRastreio(@PathVariable("id") Integer idPedido,
+                                                                       @RequestParam(value = "codigoRastreio",required = false) String codigoRastreio,
+                                                                       @RequestParam("idEmpresa") Integer idEmpresa) throws Exception;
 }

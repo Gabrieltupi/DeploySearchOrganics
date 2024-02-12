@@ -247,6 +247,25 @@ public class PedidoService {
         return retornarDto(pedido);
     }
 
+    public PedidoRastreioDTO updateCodigoDeRastreio(Integer idPedido, String codigoRastreio, Integer idEmpresa) throws Exception {
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado"));
+
+        if (!pedido.getEmpresa().getIdEmpresa().equals(idEmpresa)) {
+            throw new RegraDeNegocioException("Você não tem permissão para atualizar o código de rastreamento deste pedido.");
+        }
+        pedido.setCodigoDeRastreio(codigoRastreio);
+
+        PedidoRastreioDTO pedidoRastreioDTO = objectMapper.convertValue(pedido, PedidoRastreioDTO.class);
+        if (pedido.getCodigoDeRastreio() != null) {
+            pedido.setStatusPedido(StatusPedido.A_CAMINHO);
+        }else{
+            pedido.setStatusPedido(StatusPedido.EM_SEPARACAO);
+        }
+        return pedidoRastreioDTO;
+    }
+
+
     private void efetuarTransferencia(Carteira carteiraOrigem, Carteira carteiraDestino, BigDecimal total) throws RegraDeNegocioException {
         BigDecimal valorPendente = carteiraOrigem.getSaldo().subtract(total);
         if (valorPendente.compareTo(BigDecimal.ZERO) < 0) {
