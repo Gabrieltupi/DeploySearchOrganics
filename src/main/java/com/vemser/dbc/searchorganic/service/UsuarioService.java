@@ -10,6 +10,7 @@ import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.CargoRepository;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -130,12 +131,13 @@ public class UsuarioService {
 
     public void removerUsuario(int usuarioId) throws Exception {
         try {
+            Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
+
             Integer loggedUserId = getIdLoggedUser();
 
             if (loggedUserId.equals(usuarioId) || isAdmin()) {
-                usuarioRepository.deleteById(usuarioId);
-
-                Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
+                usuarioRemovido.setTipoAtivo(TipoAtivo.N);
+                usuarioRepository.save(usuarioRemovido);
 
                 Map<String, Object> dadosEmail = new HashMap<>();
                 dadosEmail.put("nomeUsuario", usuarioRemovido.getNome());
