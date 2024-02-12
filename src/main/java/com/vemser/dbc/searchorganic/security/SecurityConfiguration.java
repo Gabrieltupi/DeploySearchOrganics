@@ -31,7 +31,13 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers("/auth/login", "/auth/cadastrar", "/").permitAll()
                         .antMatchers("/carteira/**").hasAnyRole("ADMIN", "EMPRESA", "USUARIO")
-                                       
+
+                        .antMatchers(HttpMethod.PUT, "/cupom").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.POST, "/cupom").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.GET, "/cupom").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/cupom/").hasAnyRole("ADMIN","EMPRESA", "USUARIO")
+                        .antMatchers(HttpMethod.GET, "/cupom/empresa/").hasAnyRole("ADMIN","EMPRESA", "USUARIO")
+
                         .antMatchers(HttpMethod.DELETE,"/empresa").hasAnyRole("ADMIN", "EMPRESA")
                         .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/empresa/produtos").hasAnyRole("ADMIN", "USUARIO")
@@ -45,7 +51,8 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET,"/pedido").hasAnyRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/pedido/usuario/").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.POST, "/pedido/pagar/").hasAnyRole("ADMIN", "USUARIO")
-
+                        .antMatchers(HttpMethod.POST, "/pedido/entregue/").hasAnyRole("ADMIN", "EMPRESA")
+                        .antMatchers(HttpMethod.PUT, "/pedido/").hasAnyRole("ADMIN", "USUARIO","EMPRESA")
                         .antMatchers("/relatorio/**").hasRole("ADMIN")
 
                         .antMatchers("/usuario").hasAnyRole("ADMIN", "USUARIO")//
