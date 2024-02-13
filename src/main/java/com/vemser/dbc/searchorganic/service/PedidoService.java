@@ -18,6 +18,7 @@ import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +47,62 @@ public class PedidoService {
     private final BigDecimal TAXA_SERVICO = new BigDecimal(5);
 
     public Pedido findById(Integer id) throws Exception {
-        return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
+        if(isEmpresa()) {
+
+            List<Integer> pedidoIdDoEmpresaLogado = pedidoRepository.findEmpresaIdByUserId(getIdLoggedUser());
+            if(pedidoIdDoEmpresaLogado.isEmpty()){
+                throw new RegraDeNegocioException("não há pedidos para sua empresa.");
+            }
+
+
+            if (pedidoIdDoEmpresaLogado.contains(id) || isAdmin()) {
+                return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
+            } else {
+                throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
+            }
+
+        }else {
+            Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
+
+            if (pedidoIdDoUsuarioLogado.equals(id) || isAdmin()) {
+                return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
+            } else {
+                throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
+            }
+        }
+    }
+
+
+    public boolean isAdmin() {
+        Integer userId = getIdLoggedUser();
+        Integer count = pedidoRepository.existsAdminCargoByUserId(userId);
+
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isEmpresa(){
+        Integer userId= getIdLoggedUser();
+        Integer count= pedidoRepository.existsEmpresaCargoByUserId(userId);
+
+        if(count>0){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+
+
+    public PedidoDTO getById(Integer idPedido) throws Exception {
+        return retornarDto(findById(idPedido));
     }
 
     public List<PedidoDTO> findAll() throws Exception {
@@ -56,6 +112,10 @@ public class PedidoService {
     }
 
     public PedidoDTO save(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
+
+        Integer loggedUserId = getIdLoggedUser();
+
+        if (loggedUserId.equals(id) || isAdmin()) {
         Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
         List<Produto> produtosBanco = new ArrayList<>();
         List<PedidoXProduto> produtos = obterProdutos(pedidoCreateDTO.getProdutosCarrinho(), produtosBanco);
@@ -94,6 +154,10 @@ public class PedidoService {
         this.emailPedidoCriado(pedidoDTO, usuario);
 
         return pedidoDTO;
+
+    } else {
+        throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
+    }
     }
 
     public PedidoDTO update(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
@@ -113,6 +177,9 @@ public class PedidoService {
     }
 
     public void cancelarPedido(Integer idPedido) throws Exception {
+        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
+
+        if (pedidoIdDoUsuarioLogado.equals(idPedido) || isAdmin()) {
         Pedido pedido = findById(idPedido);
         List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
         for (PedidoXProduto pedidoXProduto : produtos) {
@@ -124,9 +191,19 @@ public class PedidoService {
         }
 
         pedidoRepository.cancelarPedido(idPedido);
+        } else {
+            throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
+        }
+
     }
 
     public List<PedidoDTO> findAllByIdUsuario(Integer idUsuario) throws Exception {
+
+
+        Integer loggedUserId = getIdLoggedUser();
+
+        if (loggedUserId.equals(idUsuario) || isAdmin()) {
+
         List<Pedido> pedidos = pedidoRepository.findAllByUsuario_IdUsuario(idUsuario);
 
         ArrayList<PedidoDTO> pedidoDtos = new ArrayList<>();
@@ -137,6 +214,11 @@ public class PedidoService {
         }
 
         return pedidoDtos;
+
+
+        } else {
+            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
+        }
     }
 
     private List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
@@ -156,6 +238,10 @@ public class PedidoService {
 
 
     public PedidoDTO pagamento(Integer idPedido, PagamentoDTO pagamentoDTO) throws Exception {
+        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
+
+        if (pedidoIdDoUsuarioLogado.equals(idPedido) || isAdmin()) {
+
         Pedido pedido = findById(idPedido);
 
         if (pedido.getStatusPedido() != StatusPedido.AGUARDANDO_PAGAMENTO) {
@@ -190,9 +276,16 @@ public class PedidoService {
         pedidoRepository.save(pedido);
 
         return retornarDto(pedido);
+
+        } else {
+            throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
+        }
     }
+
     public PedidoEmpresaDTO updatePedidoStatus(Integer idPedido, StatusPedido novoStatus, Integer idEmpresa) throws Exception {
+        findById(idPedido);
         return updateStatus(idPedido, novoStatus, idEmpresa);
+
     }
 
     public PedidoEmpresaDTO updateStatus(Integer idPedido, StatusPedido novoStatus, Integer idEmpresa) throws Exception {
@@ -205,8 +298,6 @@ public class PedidoService {
 
         PedidoEmpresaDTO pedidoDTO = convertToPedidoDTO(pedidoAtualizado, idEmpresa);
 
-
-
         return pedidoDTO;
     }
 
@@ -216,13 +307,12 @@ public class PedidoService {
         pedidoDTO.setStatusPedido(pedido.getStatusPedido());
         pedidoDTO.setIdEmpresa(idEmpresa);
 
-
-
         return pedidoDTO;
     }
 
 
     public PedidoDTO entregue(Integer idPedido) throws Exception {
+
         Pedido pedido = findById(idPedido);
 
         if (pedido.getStatusPedido() != StatusPedido.A_CAMINHO) {
@@ -231,7 +321,7 @@ public class PedidoService {
 
         Integer idUsuarioEmpresa = pedido.getEmpresa().getIdUsuario();
 
-        Usuario empresa = usuarioService.obterPorId(idUsuarioEmpresa);
+        Usuario empresa = usuarioService.obterUsuarioPorId(idUsuarioEmpresa);
         Usuario admin = obterAdmin();
 
         BigDecimal total = pedido.getPrecoCarrinho().add(pedido.getPrecoFrete());
@@ -287,9 +377,6 @@ public class PedidoService {
         return admin;
     }
 
-    public PedidoDTO getById(Integer idPedido) throws Exception {
-        return retornarDto(findById(idPedido));
-    }
 
     public PedidoDTO retornarDto(Pedido pedido) {
         UsuarioDTO usuarioDTO = new UsuarioDTO(pedido.getUsuario());

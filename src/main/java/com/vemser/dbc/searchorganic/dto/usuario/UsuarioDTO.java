@@ -53,7 +53,16 @@ public class UsuarioDTO {
         this.email = usuario.getEmail();
         this.login = usuario.getLogin();
         this.tipoAtivo = usuario.getTipoAtivo();
-        this.carteira = new CarteiraDTO(usuario.getCarteira());
+        if (usuario.getCarteira() != null) {
+            this.carteira = new CarteiraDTO(usuario.getCarteira());
+        } else {
+            this.carteira = new CarteiraDTO();
+        }
+
+        for (Cargo cargo : usuario.getCargos()) {
+            this.cargos.add(new CargoDTO(cargo));
+        }
+
         for (Cargo cargo : usuario.getCargos()) {
             this.cargos.add(new CargoDTO(cargo));
         }

@@ -10,15 +10,22 @@ import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.CargoRepository;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import com.vemser.dbc.searchorganic.utils.TipoAtivo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
@@ -47,21 +54,54 @@ public class UsuarioService {
 
 
     public List<Usuario> exibirTodos() throws Exception {
-        return usuarioRepository.findAll();
+        Integer loggedUserId = getIdLoggedUser();
+        if ( isAdmin()) {
+            return usuarioRepository.findAll();
+        } else {
+            throw new RegraDeNegocioException("Apenas o  administrador pode ver a lista inteira do banco de dados de usuário.");
+        }
+
     }
 
     public Usuario obterUsuarioPorId(Integer id) throws Exception {
-        return usuarioRepository.getById(id);
+        if(getIdLoggedUser().equals(id)||isAdmin()){
+            return usuarioRepository.getById(id);
+       }else{
+            throw new RegraDeNegocioException("Só é possivel retornar seus próprios dados.");
+        }
     }
+
 
     public UsuarioDTO obterUsuarioLogado() throws Exception {
         Usuario usuario = getLoggedUser();
         return objectMapper.convertValue(usuario, UsuarioDTO.class);
     }
 
+    public boolean isAdmin() {
+        Integer userId = getIdLoggedUser();
+        Integer count = usuarioRepository.existsAdminCargoByUserId(userId);
+
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    public Usuario getLoggedUser() throws Exception {
+        Integer userId = getIdLoggedUser();
+        return findById(userId);
+    }
+
     public Usuario editarUsuario(int usuarioId, Usuario usuario) throws Exception {
         try {
-            Usuario usuarioEntity = obterPorId(usuarioId);
+
+            Usuario usuarioEntity = obterUsuarioPorId(usuarioId);
 
             usuarioEntity.setLogin(usuario.getLogin());
             usuarioEntity.setEmail(usuario.getEmail());
@@ -91,27 +131,29 @@ public class UsuarioService {
 
     public void removerUsuario(int usuarioId) throws Exception {
         try {
-
-            usuarioRepository.deleteById(usuarioId);
             Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
 
-            Map<String, Object> dadosEmail = new HashMap<>();
-            dadosEmail.put("nomeUsuario", usuarioRemovido.getNome());
-            dadosEmail.put("mensagem", "Atencao! Seu usuário foi removido do nosso serviço");
-            dadosEmail.put("email", usuarioRemovido.getEmail());
+            Integer loggedUserId = getIdLoggedUser();
 
-            emailService.sendEmail(dadosEmail, "Usuário Removido", usuarioRemovido.getEmail());
+            if (loggedUserId.equals(usuarioId) || isAdmin()) {
+                usuarioRemovido.setTipoAtivo(TipoAtivo.N);
+                usuarioRepository.save(usuarioRemovido);
 
+                Map<String, Object> dadosEmail = new HashMap<>();
+                dadosEmail.put("nomeUsuario", usuarioRemovido.getNome());
+                dadosEmail.put("mensagem", "Atenção! Seu usuário foi removido do nosso serviço");
+                dadosEmail.put("email", usuarioRemovido.getEmail());
 
+                emailService.sendEmail(dadosEmail, "Usuário Removido", usuarioRemovido.getEmail());
+            } else {
+                throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
+            }
         } catch (Exception e) {
             throw new Exception("Erro ao remover o usuário: " + e.getMessage(), e);
         }
     }
 
-    public Usuario obterPorId(Integer id) throws Exception {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + id));
-    }
+
 
     public UsuarioDTO findByEmail(String email) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findByEmail(email)
@@ -172,18 +214,11 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
+
     public void salvarUsuario(Usuario usuario) {
         this.usuarioRepository.save(usuario);
     }
 
-    public Integer getIdLoggedUser() {
-        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-    }
-
-    public Usuario getLoggedUser() throws Exception {
-        Integer userId = getIdLoggedUser();
-        return findById(userId);
-    }
 }
 
 

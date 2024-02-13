@@ -34,7 +34,7 @@ public class EnderecoUpdateDTO {
     private String complemento;
 
     @NotBlank
-    @Size(min = 9, max = 9)
+    @Size(min = 8, max = 8)
     @Schema(description = "cnpj", required = true, example = "93230600")
     private String cep;
 
