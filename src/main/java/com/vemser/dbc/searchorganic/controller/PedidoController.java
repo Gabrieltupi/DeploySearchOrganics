@@ -1,10 +1,9 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.vemser.dbc.searchorganic.controller.interfaces.IPedidoController;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.*;
 import com.vemser.dbc.searchorganic.service.PedidoService;
+import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +53,30 @@ public class PedidoController implements IPedidoController {
     public ResponseEntity<Void> cancelarPedido(@PathVariable("idPedido") Integer idPedido) throws Exception {
         this.pedidoService.cancelarPedido(idPedido);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/pagar/{idPedido}")
+    public ResponseEntity<PedidoDTO> pagar(@PathVariable("idPedido") Integer idPedido, @Valid @RequestBody PagamentoDTO pagamentoDTO) throws Exception {
+        return new ResponseEntity<>(pedidoService.pagamento(idPedido, pagamentoDTO), HttpStatus.CREATED);
+    }
+    @PostMapping("/entregue/{idPedido}")
+    public ResponseEntity<PedidoDTO> entregue(@PathVariable("idPedido") Integer idPedido) throws Exception {
+        return new ResponseEntity<>(pedidoService.entregue(idPedido), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}/rastreio")
+    public ResponseEntity<PedidoRastreioDTO> atualizarCodigoDeRastreio(@PathVariable("id") Integer idPedido,
+                                                                       @RequestParam(value = "codigoRastreio",required = false) String codigoRastreio,
+                                                                       @RequestParam("idEmpresa") Integer idEmpresa) throws Exception {
+        PedidoRastreioDTO pedidoRastreioDTO = pedidoService.updateCodigoDeRastreio(idPedido, codigoRastreio, idEmpresa);
+        return ResponseEntity.ok(pedidoRastreioDTO);
+    }
+
+    @PutMapping("/{idEmpresa}/pedido/{idPedido}/status")
+    public ResponseEntity<PedidoEmpresaDTO> updatePedidoStatus(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable("idPedido") Integer idPedido, @RequestParam("novoStatus") StatusPedido novoStatus) throws Exception {
+
+        PedidoEmpresaDTO pedidoAtualizado = pedidoService.updatePedidoStatus(idPedido, novoStatus, idEmpresa);
+
+        return new ResponseEntity<>(pedidoAtualizado, HttpStatus.OK);
     }
 }

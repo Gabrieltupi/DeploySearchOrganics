@@ -3,7 +3,10 @@ package com.vemser.dbc.searchorganic.model;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -17,26 +20,26 @@ import java.util.Set;
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUTO_SEQ")
-    @SequenceGenerator(name = "PRODUTO_SEQ", sequenceName = "seq_produto",allocationSize = 1)
-    @Column(name="ID_PRODUTO")
+    @SequenceGenerator(name = "PRODUTO_SEQ", sequenceName = "seq_produto", allocationSize = 1)
+    @Column(name = "ID_PRODUTO")
     private Integer idProduto;
 
-    @Column(name="ID_EMPRESA")
+    @Column(name = "ID_EMPRESA")
     private Integer idEmpresa;
 
-    @Column(name="NOME")
+    @Column(name = "NOME")
     private String nome;
 
-    @Column(name="DESCRICAO")
+    @Column(name = "DESCRICAO")
     private String descricao;
 
-    @Column(name="PRECO")
+    @Column(name = "PRECO")
     private BigDecimal preco;
 
-    @Column(name="QUANTIDADE")
+    @Column(name = "QUANTIDADE")
     private BigDecimal quantidade;
 
-    @Column(name="TAXA")
+    @Column(name = "TAXA")
     private double taxa;
 
     @Column(name = "URL_IMAGEM")

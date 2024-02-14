@@ -1,4 +1,4 @@
-package com.vemser.dbc.searchorganic.dto.relatorio;
+package com.vemser.dbc.searchorganic.dto.autenticacao;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RelatorioProdutoDTO {
-    private String nome;
-    private Long preco;
+public class UsuarioTokenDTO {
+    private Integer id;
+    private String login;
+
 }

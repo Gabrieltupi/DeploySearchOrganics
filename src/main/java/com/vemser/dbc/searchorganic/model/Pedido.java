@@ -3,7 +3,10 @@ package com.vemser.dbc.searchorganic.model;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -30,6 +33,10 @@ public class Pedido {
     @JoinColumn(name = "ID_ENDERECO")
     private Endereco endereco;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_EMPRESA")
+    private Empresa empresa;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_CUPOM", nullable = true)
     private Cupom cupom;
@@ -53,4 +60,7 @@ public class Pedido {
 
     @Column(name = "PRECO_CARRINHO")
     private BigDecimal precoCarrinho;
+
+    @Column(name = "CODIGORASTREIO")
+    private String CodigoDeRastreio;
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -48,4 +47,5 @@ public class UsuarioCreateDTO {
 
     @Schema(description = "Atividade do usuario", required = true, example = "S")
     private TipoAtivo tipoAtivo = TipoAtivo.S;
+
 }

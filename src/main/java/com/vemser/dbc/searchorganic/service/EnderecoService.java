@@ -1,6 +1,7 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
@@ -13,6 +14,7 @@ import com.vemser.dbc.searchorganic.utils.validadores.ValidadorCEP;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,18 +30,45 @@ public class EnderecoService {
     private final ObjectMapper objectMapper;
 
     public EnderecoDTO buscarEndereco(Integer idEndereco) throws Exception {
-        Endereco endereco= this.getById(idEndereco);
-            return mapEnderecoToDTO(endereco);
+
+        Endereco endereco = this.getById(idEndereco);
+        return mapEnderecoToDTO(endereco);
+    }
+
+    public Endereco getById(Integer id) throws Exception {
+        Integer enderecoIdDoUsuarioLogado = enderecoRepository.findEnderecoIdByUserId(getIdLoggedUser())
+                .orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
+
+        if (enderecoIdDoUsuarioLogado.equals(id) || isAdmin()) {
+            return enderecoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Endereço não encontrado"));
+        } else {
+            throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
+        }
     }
 
 
+    public boolean isAdmin() {
+        Integer userId = getIdLoggedUser();
+        Integer count = enderecoRepository.existsAdminCargoByUserId(userId);
+
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
 
 
     public List<EnderecoDTO> listarEnderecos() {
 
         List<Endereco> enderecos = enderecoRepository.findAll();
         return enderecos.stream().map(endereco -> {
-            EnderecoDTO enderecoDTO = objectMapper.convertValue(endereco,EnderecoDTO.class);
+            EnderecoDTO enderecoDTO = objectMapper.convertValue(endereco, EnderecoDTO.class);
             enderecoDTO.setIdUsuario(endereco.getUsuario().getIdUsuario());
             return enderecoDTO;
         }).toList();
@@ -51,7 +80,7 @@ public class EnderecoService {
         try {
             String regiao = ValidadorCEP.isCepValido(enderecoDTO.getCep());
             if (regiao != null) {
-                Usuario usuario =  usuarioService.obterUsuarioPorId(enderecoDTO.getIdUsuario());
+                Usuario usuario = usuarioService.obterUsuarioPorId(enderecoDTO.getIdUsuario());
                 Endereco enderecoEntity = objectMapper.convertValue(enderecoDTO, Endereco.class);
                 enderecoEntity.setRegiao(regiao);
                 enderecoEntity.setUsuario(usuario);
@@ -69,11 +98,14 @@ public class EnderecoService {
     }
 
 
-
-
-
     public EnderecoDTO editarEndereco(Integer idEndereco, EnderecoUpdateDTO enderecoUpdateDTO) throws Exception {
-        Optional<Endereco> enderecoOptional = enderecoRepository.findById(idEndereco);
+
+        Integer loggedUserId = getIdLoggedUser();
+
+        if (loggedUserId.equals(idEndereco) || isAdmin()) {
+
+
+            Optional<Endereco> enderecoOptional = enderecoRepository.findById(idEndereco);
 
         if (enderecoOptional.isPresent()) {
             Endereco enderecoExistente = enderecoOptional.get();
@@ -83,25 +115,46 @@ public class EnderecoService {
         } else {
             throw new Exception("Endereço não encontrado");
         }
+
+        } else {
+            throw new RegraDeNegocioException("Apenas o usuário residente ou um administrador pode editar o endereço.");
+        }
     }
 
     public void removerEndereco(Integer idEndereco) throws Exception {
-        if (enderecoRepository.existsById(idEndereco)) {
+
+        Integer loggedUserId = getIdLoggedUser();
+
+        if (loggedUserId.equals(idEndereco) || isAdmin()) {
+
+
+            if (enderecoRepository.existsById(idEndereco)) {
             enderecoRepository.deleteById(idEndereco);
         } else {
             throw new Exception("Endereço não encontrado");
         }
+
+        } else {
+            throw new RegraDeNegocioException("Apenas o usuário residente ou um administrador pode remover o endereço.");
+        }
     }
 
-    public List<EnderecoDTO> listarEnderecosPorUsuario(Integer idUsuario) {
-        List<Endereco> enderecos = enderecoRepository.findAllByUsuarioIdUsuario(idUsuario);
+    public List<EnderecoDTO> listarEnderecosPorUsuario(Integer idUsuario) throws Exception {
+
+        Integer loggedUserId = getIdLoggedUser();
+
+        if (loggedUserId.equals(idUsuario) || isAdmin()) {
+
+
+            List<Endereco> enderecos = enderecoRepository.findAllByUsuarioIdUsuario(idUsuario);
         return enderecos.stream()
                 .map(this::mapEnderecoToDTO)
                 .collect(Collectors.toList());
+
+        } else {
+            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
+        }
     }
-
-
-
 
 
     private Endereco mapCreateDTOToEntity(EnderecoCreateDTO enderecoCreateDTO) {
@@ -109,7 +162,6 @@ public class EnderecoService {
         endereco.setUsuario(usuarioRepository.findById(enderecoCreateDTO.getIdUsuario()).orElse(null));
         return endereco;
     }
-
 
 
     private EnderecoDTO mapEnderecoToDTO(Endereco endereco) {
@@ -135,10 +187,6 @@ public class EnderecoService {
         endereco.setCidade(enderecoUpdateDTO.getCidade());
         endereco.setEstado(enderecoUpdateDTO.getEstado());
         endereco.setPais(enderecoUpdateDTO.getPais());
-    }
-
-    public Endereco getById (Integer id) throws Exception{
-        return enderecoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Endereço não encontrado"));
     }
 
     public String getMensagemEnderecoEmail(Endereco endereco) {

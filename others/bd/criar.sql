@@ -89,8 +89,9 @@ CREATE TABLE Pedido (
     id_endereco INT NOT NULL,
     id_cupom INT,
     preco_frete DECIMAL NOT NULL,
+    CODIGORASTREIO VARCHAR2(25) NULL,
     forma_pagamento VARCHAR2(255) CHECK(
-        forma_pagamento IN ('PIX', 'CREDITO', 'DEBITO')
+    forma_pagamento IN ('SALDO', 'CREDITO', 'DEBITO')
     ),
     status_pedido VARCHAR2(25) CHECK (
         status_pedido IN (

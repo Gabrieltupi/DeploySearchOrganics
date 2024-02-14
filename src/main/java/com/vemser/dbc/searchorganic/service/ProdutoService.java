@@ -1,12 +1,12 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vemser.dbc.searchorganic.dto.pedido.ProdutoPedidoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Produto;
-import com.vemser.dbc.searchorganic.model.PedidoXProduto;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IProdutoService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class ProdutoService implements IProdutoService {
     private final ObjectMapper objectMapper;
 
     public Page<ProdutoDTO> findAll(Pageable pageable) throws Exception {
-        Page<Produto> produtos =  produtoRepository.findAll(pageable);
+        Page<Produto> produtos = produtoRepository.findAll(pageable);
         return produtos.map(this::retornarDto);
     }
 
@@ -70,14 +70,14 @@ public class ProdutoService implements IProdutoService {
         return produtos.map(this::retornarDto);
     }
 
-    public String getMensagemProdutoEmail(List<PedidoXProduto> produtos) {
+    public String getMensagemProdutoEmail(List<ProdutoPedidoDTO> produtos) {
         StringBuilder mensagemFinal = new StringBuilder();
-        for (PedidoXProduto pedidoXProduto : produtos) {
+        for (ProdutoPedidoDTO produtoPedidoDTO : produtos) {
             String mensagemProduto = String.format("""
                             Nome: %s, Quantidade:  %s, Valor por cada quantidade: R$ %s  <br>
-                            """, pedidoXProduto.getProduto().getNome(),
-                    pedidoXProduto.getQuantidade(),
-                    pedidoXProduto.getProduto().getPreco());
+                            """, produtoPedidoDTO.getProduto().getNome(),
+                    produtoPedidoDTO.getQuantidade(),
+                    produtoPedidoDTO.getProduto().getPreco());
             mensagemFinal.append(mensagemProduto);
         }
         return mensagemFinal.toString();

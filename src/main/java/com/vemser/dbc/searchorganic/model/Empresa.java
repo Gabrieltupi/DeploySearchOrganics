@@ -1,6 +1,10 @@
 package com.vemser.dbc.searchorganic.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -37,4 +41,8 @@ public class Empresa {
 
     @OneToMany(mappedBy = "idEmpresa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Produto> produtos;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "empresa", fetch = FetchType.LAZY)
+    private List<Pedido> pedidos;
 }

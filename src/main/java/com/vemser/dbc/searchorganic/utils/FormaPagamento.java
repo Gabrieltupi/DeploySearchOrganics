@@ -1,17 +1,17 @@
 package com.vemser.dbc.searchorganic.utils;
 
 public enum FormaPagamento {
-    PIX,
+    SALDO,
     CREDITO,
     DEBITO;
 
     public static FormaPagamento fromString(String valor) {
         switch (valor.toUpperCase()) {
-            case "PIX":
-                return PIX;
+            case "SALDO":
+                return SALDO;
             case "CARTAO":
                 return CREDITO;
-            case "BOLETO":
+            case "DEBITO":
                 return DEBITO;
             default:
                 throw new IllegalArgumentException("Forma de pagamento desconhecida: " + valor);

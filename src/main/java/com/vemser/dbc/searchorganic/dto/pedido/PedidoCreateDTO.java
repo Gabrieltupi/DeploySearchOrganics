@@ -26,7 +26,7 @@ public class PedidoCreateDTO {
     @Schema(description = "Forma de pagamento", required = true, example = "PIX")
     private FormaPagamento formaPagamento;
 
-    @Schema(description = "Data que o pedido foi feito", required = true, example = "aaaa/mm/dd")
+    @Schema(description = "Data que o pedido foi feito", hidden = true)
     private LocalDate dataDePedido = LocalDate.now();
 
     @NotNull
@@ -39,11 +39,9 @@ public class PedidoCreateDTO {
     private BigDecimal precoFrete;
 
     @NotNull
-    @Schema(description = "Preço do carrinho", required = true, example = "100")
-    private BigDecimal precoCarrinho;
-
-    @NotNull
     @Schema(description = "produtos carrinho", required = true, example = "[]")
     private ArrayList<ProdutoCarrinhoCreate> produtosCarrinho;
+    @NotNull
+    private Integer idEmpresa;
 
 }
