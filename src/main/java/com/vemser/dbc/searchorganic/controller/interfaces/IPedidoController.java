@@ -1,8 +1,7 @@
 package com.vemser.dbc.searchorganic.controller.interfaces;
 
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoCreateDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoUpdateDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.*;
+import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -80,4 +79,49 @@ public interface IPedidoController {
     )
     @GetMapping("/usuario/{idUsuario}")
     ResponseEntity<List<PedidoDTO>> findAllByIdUsuario(@PathVariable("idUsuario") Integer idUsuario) throws Exception;
+
+    @Operation(summary = "Pagar o pedido", description = "Pagar o pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Produto pago"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("/pagar/{idPedido}")
+    public ResponseEntity<PedidoDTO> pagar(@PathVariable("idPedido") Integer idPedido, @Valid @RequestBody PagamentoDTO pagamentoDTO) throws Exception;
+
+    @Operation(summary = "Entrega do pedido", description = "Entrega do pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Pedido entregue"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("/entregue/{idPedido}")
+    public ResponseEntity<PedidoDTO> entregue(@PathVariable("idPedido") Integer idPedido) throws Exception;
+    
+    @Operation(summary = "Editar Status", description = "Editar o status do pedido pelo id da empresa e o id do pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Status editado pedidos por usuário!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping("/{idEmpresa}/pedido/{idPedido}/status")
+    public ResponseEntity<PedidoEmpresaDTO> updatePedidoStatus(@PathVariable("idEmpresa") Integer idEmpresa, @PathVariable("idPedido") Integer idPedido, @RequestParam("novoStatus") StatusPedido novoStatus) throws Exception;
+    @Operation(summary = "Editar Codigo de rastreio", description = "Editar o codigo de rastreio com base no id do pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Codigo de rastreio editado!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping("/{id}/rastreio")
+    public ResponseEntity<PedidoRastreioDTO> atualizarCodigoDeRastreio(@PathVariable("id") Integer idPedido,
+                                                                       @RequestParam(value = "codigoRastreio",required = false) String codigoRastreio,
+                                                                       @RequestParam("idEmpresa") Integer idEmpresa) throws Exception;
 }

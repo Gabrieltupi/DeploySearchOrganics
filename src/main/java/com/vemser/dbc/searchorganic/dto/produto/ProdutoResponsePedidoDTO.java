@@ -9,15 +9,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProdutoResponsePedidoDTO{
+public class ProdutoResponsePedidoDTO {
     private Integer idProduto;
 
     @Schema(description = "id da empresa", required = true, example = "0")

@@ -1,8 +1,7 @@
 package com.vemser.dbc.searchorganic.controller.interfaces;
 
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioCreateDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioLoginDTO;
+import com.vemser.dbc.searchorganic.dto.usuario.UsuarioListDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,41 +25,30 @@ public interface IUsuarioController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> list() throws Exception;
+    public ResponseEntity<List<UsuarioListDTO>> list() throws Exception;
 
-    @Operation(summary = "Listar Usuario pelo id", description = "Lista o usuario pelo id")
+    @Operation(summary = "Obter usuário por id", description = "Obter usuário por id")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna o usuarios"),
+                    @ApiResponse(responseCode = "200", description = "Retorna o usuário por id"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> obterUmUsuario(@PathVariable("idUsuario") Integer id) throws Exception;
+    public ResponseEntity<UsuarioDTO> obterUsuarioPorId(@PathVariable("idUsuario") Integer id) throws Exception;
 
-    @Operation(summary = "Cria um Usuario", description = "Cria um usuario")
+    @Operation(summary = "Obter usuário logado", description = "Obter usuário logado")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a  criação do usuarios"),
+                    @ApiResponse(responseCode = "200", description = "Retorna o usuario logado"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/{idUsuario}")
-    @PostMapping
-    public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws Exception;
+    @GetMapping("/logado")
+    public ResponseEntity<UsuarioDTO> obterUsuarioLogado() throws Exception;
 
-    @Operation(summary = "Cria um login", description = "Cria um login")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna positivo para a  criação do login"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PostMapping("/login")
-    public ResponseEntity<UsuarioDTO> login(@Valid @RequestBody UsuarioLoginDTO usuarioLoginDTO) throws Exception;
 
     @Operation(summary = "Altera um Usuario", description = "Altera um usuario")
     @ApiResponses(
@@ -94,17 +82,17 @@ public interface IUsuarioController {
             }
     )
     @GetMapping("/email/{email}")
-    public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException ;
+    public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable String email) throws RegraDeNegocioException;
 
 
-
-    @Operation(summary = "Lista um usuario por cpf!", description = "Deleta um usuario por cpf")
+    @Operation(summary = "Lista um usuario por cpf", description = "Deleta um usuario por cpf")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna o usuario por cpf"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
-    )@GetMapping("/cpf/{cpf}")
+    )
+    @GetMapping("/cpf/{cpf}")
     public ResponseEntity<UsuarioDTO> findByCpf(@PathVariable String cpf) throws RegraDeNegocioException;
 }

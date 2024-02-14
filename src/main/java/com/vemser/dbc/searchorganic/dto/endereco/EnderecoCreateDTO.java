@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -35,7 +36,7 @@ public class EnderecoCreateDTO {
     private String complemento;
 
     @NotBlank
-    @Size(min = 9, max = 9)
+    @Size(min = 8, max = 8)
     @Schema(description = "cnpj", required = true, example = "93230600")
     private String cep;
 
