@@ -20,7 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,22 +37,34 @@ public class EmpresaService implements IEmpresaService {
         return empresas.map(this::retornarDto);
     }
 
-
-    public EmpresaDTO buscaIdEmpresa(Integer id) throws Exception {
-        if(getIdLoggedUser().equals(id)||isAdmin()){
-            return findById(id);
-        }else{
-            throw new RegraDeNegocioException("Só é possivel retornar seus próprios dados.");
+    public Usuario getLoggedUser() throws Exception {
+        Integer userId = getIdLoggedUser();
+        return usuarioService.findById(userId);
+    }
+    private boolean hasRoleEmpresa(Usuario usuario) {
+        Set<Cargo> cargos = usuario.getCargos();
+        for (Cargo cargo : cargos) {
+            if ("ROLE_EMPRESA".equals(cargo.getNome())) {
+                return true;
+            }
         }
+        return false;
+    }
+    public EmpresaDTO buscaIdEmpresa(Integer id) throws Exception {
+            Usuario usuario= getLoggedUser();
+            if (hasRoleEmpresa(usuario)) {
+                return retornarDto(empresaRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("empresa nao encontrada")));
+            }
+            return null;
     }
 
     public EmpresaDTO findById(Integer idEmpresa) throws Exception {
-        if(isUsuario()) {
+        if(isUsuario()||isAdmin()) {
             return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
         } else{
             return buscaIdEmpresa(idEmpresa);
         }
-        }
+    }
 
 
     public boolean isAdmin() {
@@ -101,27 +115,27 @@ public class EmpresaService implements IEmpresaService {
     }
 
     public EmpresaDTO update(Integer idEmpresa, UpdateEmpresaDTO empresaDto) throws Exception {
-        findById(idEmpresa);
+        Usuario usuario= getLoggedUser();
+        if(hasRoleEmpresa(usuario) & getIdLoggedUser().equals(empresaDto.getIdUsuario())|| isAdmin()) {
+            Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
+            empresa.setIdEmpresa(idEmpresa);
 
-        Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
-        empresa.setIdEmpresa(idEmpresa);
-
-        return retornarDto(empresaRepository.save(empresa));
+            return retornarDto(empresaRepository.save(empresa));
+        }
+        throw new RegraDeNegocioException("voce só pode atualizar sea propria empresa");
     }
 
     public void delete(Integer idEmpresa) throws Exception {
-
+        EmpresaDTO empresa=findById(idEmpresa);
         Integer loggedUserId = getIdLoggedUser();
 
-        if (loggedUserId.equals(idEmpresa) || isAdmin()) {
+        if (empresa.getIdUsuario().equals(loggedUserId) || isAdmin()) {
             findById(idEmpresa);
         empresaRepository.deleteById(idEmpresa);
 
         } else {
-            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
+            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover a empresa.");
         }
-
-
 
     }
 
