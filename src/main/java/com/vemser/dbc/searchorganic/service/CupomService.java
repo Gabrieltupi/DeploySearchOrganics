@@ -32,6 +32,10 @@ public class CupomService implements ICupomService {
         return retornarDto(cupom);
     }
 
+    public Cupom getById(Integer idCupom) throws Exception {
+        return cupomRepository.findById(idCupom).orElseThrow(() -> new RegraDeNegocioException("Não encontrado"));
+    }
+
     public CupomDTO save(Integer idEmpresa, CreateCupomDTO cupomDto) {
         Cupom cupom = objectMapper.convertValue(cupomDto, Cupom.class);
         cupom.setIdEmpresa(idEmpresa);
@@ -40,12 +44,11 @@ public class CupomService implements ICupomService {
     }
 
     public CupomDTO update(Integer idCupom, UpdateCupomDTO cupomDto) throws Exception {
+        Cupom cupomTransicao= this.getById(idCupom);
+        Integer idC=cupomDto.getIdEmpresa();
 
-        Integer loggedUserId = getIdLoggedUser();
-        Optional<Integer> cupomIdOptional = cupomRepository.findCupomIdByUserId(loggedUserId);
-
-        if (cupomIdOptional.isPresent()) {
-            Integer cupomId = cupomIdOptional.get();
+        if (cupomTransicao.getIdEmpresa().equals(idC)) {
+            Integer cupomId =idC;
 
             if (idCupom.equals(cupomId) || isAdmin()) {
                 Cupom cupom = objectMapper.convertValue(cupomDto, Cupom.class);
@@ -85,9 +88,7 @@ public class CupomService implements ICupomService {
         return objectMapper.convertValue(entity, CupomDTO.class);
     }
 
-    public Cupom getById(Integer idCupom) throws Exception {
-        return cupomRepository.findById(idCupom).orElseThrow(() -> new RegraDeNegocioException("Não encontrado"));
-    }
+
 }
 
 
