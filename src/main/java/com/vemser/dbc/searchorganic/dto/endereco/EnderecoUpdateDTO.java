@@ -35,7 +35,7 @@ public class EnderecoUpdateDTO {
 
     @NotBlank
     @Size(min = 8, max = 8)
-    @Schema(description = "cnpj", required = true, example = "93230600")
+    @Schema(description = "cep", required = true, example = "19020499")
     private String cep;
 
     @NotBlank

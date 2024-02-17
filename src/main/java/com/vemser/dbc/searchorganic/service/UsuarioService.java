@@ -88,7 +88,6 @@ public class UsuarioService {
         }
     }
 
-
     public Integer getIdLoggedUser() {
         return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     }
