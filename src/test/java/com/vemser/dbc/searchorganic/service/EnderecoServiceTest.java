@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,13 +42,16 @@ class EnderecoServiceTest {
     @Mock
     private ObjectMapper objectMapper;
 
-    Endereco enderecoMock = MockEndereco.retornarEndereco();
-    EnderecoDTO enderecoDTOMock = MockEndereco.retornarEnderecoDTO(enderecoMock);
-    EnderecoCreateDTO enderecoCreateDTOMock = MockEndereco.retornarEnderecoCreateDTO(enderecoMock);
-    EnderecoUpdateDTO enderecoUpdateDTOMock = MockEndereco.retornarEnderecoUpdateDTO(enderecoMock);
+    private final Endereco enderecoMock = MockEndereco.retornarEndereco();
+    private final EnderecoDTO enderecoDTOMock = MockEndereco.retornarEnderecoDTO(enderecoMock);
+    private final EnderecoCreateDTO enderecoCreateDTOMock = MockEndereco.retornarEnderecoCreateDTO(enderecoMock);
+    private final EnderecoUpdateDTO enderecoUpdateDTOMock = MockEndereco.retornarEnderecoUpdateDTO(enderecoMock);
+    private final List<Endereco> enderecosMock = MockEndereco.retornarEnderecos(enderecoMock);
+    private final List<EnderecoDTO> enderecosDTOMock = MockEndereco.retornarEnderecosDTO(enderecoDTOMock);
 
 
     @Test
+    @DisplayName("Deveria retornar um endereço por id com sucesso")
     public void deveriaRetornarEnderecoDTOPorId() throws Exception {
         EnderecoDTO enderecoDTOMock = new EnderecoDTO(enderecoMock);
 
@@ -64,6 +66,7 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Não deveria retornar um endereço por id de outro usuário")
     public void naoDeveriaRetornarEnderecoDTODeOutroUsuario() {
         when(usuarioService.getIdLoggedUser()).thenReturn(1);
         when(usuarioService.isAdmin()).thenReturn(false);
@@ -73,11 +76,10 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Deveria listar endereços com sucesso")
     public void deveriaListarEnderecosComSucesso() {
-        List<Endereco> enderecosMock = List.of(enderecoMock, enderecoMock, enderecoMock);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Endereco> listaMock = new PageImpl<>(enderecosMock, pageable, enderecosMock.size());
-        List<EnderecoDTO> enderecosDTOMock = List.of(enderecoDTOMock, enderecoDTOMock, enderecoDTOMock);
 
         when(objectMapper.convertValue(any(Endereco.class), eq(EnderecoDTO.class))).thenReturn(enderecoDTOMock);
         when(enderecoRepository.findAll(pageable)).thenReturn(listaMock);
@@ -90,18 +92,7 @@ class EnderecoServiceTest {
     }
 
     @Test
-    public void deveriaRetornarEnderecoPorId() throws Exception {
-        Integer idAleatorio = new Random().nextInt();
-
-        when(enderecoRepository.findById(anyInt())).thenReturn(Optional.of(enderecoMock));
-
-        Endereco enderecoRetornado = enderecoService.getById(idAleatorio);
-
-        assertNotNull(enderecoRetornado);
-        assertEquals(enderecoMock, enderecoRetornado);
-    }
-
-    @Test
+    @DisplayName("Deveria criar um endereço com sucesso")
     public void deveriaCriarEndereco() throws Exception {
         when(objectMapper.convertValue(enderecoCreateDTOMock, Endereco.class)).thenReturn(enderecoMock);
         when(enderecoRepository.save(any())).thenReturn(enderecoMock);
@@ -114,6 +105,7 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Não deveria criar um endereço com cep inválido")
     public void naoDeveriaCriarEnderecoComCepInvalido() {
         enderecoCreateDTOMock.setCep("98765-432");
 
@@ -121,6 +113,7 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Deveria atualizar um endereço com sucesso")
     public void deveriaAtualizarEndereco() throws Exception {
         enderecoUpdateDTOMock.setLogradouro("Novo Endereco");
 
@@ -137,6 +130,7 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Não deveria atualizar um endereço inexistente")
     public void naoDeveriaAtualizarEnderecoInexistente() {
         when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.empty());
 
@@ -144,6 +138,7 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Deveria remover um endereço com sucesso")
     public void deveriaRemoverEnderecoComSucesso() throws Exception {
         when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.of(enderecoMock));
 
@@ -153,10 +148,8 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Deveria listar endereços por usuário com sucesso")
     public void deveriaListarEnderecosPorUsuarioComSucesso() throws Exception {
-        List<Endereco> enderecosMock = List.of(enderecoMock, enderecoMock, enderecoMock);
-        List<EnderecoDTO> enderecosDTOMock = List.of(enderecoDTOMock, enderecoDTOMock, enderecoDTOMock);
-
         when(usuarioService.getIdLoggedUser()).thenReturn(enderecoMock.getUsuario().getIdUsuario());
         when(enderecoRepository.findAllByUsuarioIdUsuario(enderecoMock.getUsuario().getIdUsuario())).thenReturn(enderecosMock);
 
@@ -168,6 +161,7 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Não deveria listar endereços por usuário de outro usuário")
     public void naoDeveriaListarEnderecosPorUsuarioDeOutroUsuario() {
         when(usuarioService.getIdLoggedUser()).thenReturn(1);
 
@@ -175,6 +169,7 @@ class EnderecoServiceTest {
     }
 
     @Test
+    @DisplayName("Deveria gerar mensagem de email")
     public void deveriaGerarMensagemDeEmail() {
         String mensagemMock = String.format("""
                         Logradouro: %s  <br>

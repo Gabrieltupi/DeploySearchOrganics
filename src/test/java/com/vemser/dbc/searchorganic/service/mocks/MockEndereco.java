@@ -5,25 +5,11 @@ import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
 import com.vemser.dbc.searchorganic.model.Endereco;
 import com.vemser.dbc.searchorganic.model.Usuario;
+
+import java.util.List;
 import java.util.Random;
 
 public class MockEndereco {
-    public static EnderecoDTO retornarEnderecoDTO(Endereco endereco){
-        EnderecoDTO enderecoDTO = new EnderecoDTO();
-        enderecoDTO.setIdEndereco(endereco.getIdEndereco());
-        enderecoDTO.setIdUsuario(endereco.getUsuario().getIdUsuario());
-        enderecoDTO.setLogradouro(endereco.getLogradouro());
-        enderecoDTO.setNumero(endereco.getNumero());
-        enderecoDTO.setComplemento(endereco.getComplemento());
-        enderecoDTO.setCidade(endereco.getCidade());
-        enderecoDTO.setEstado(endereco.getEstado());
-        enderecoDTO.setPais(endereco.getPais());
-        enderecoDTO.setCep(endereco.getCep());
-        enderecoDTO.setRegiao(endereco.getRegiao());
-
-        return enderecoDTO;
-    }
-
     public static Endereco retornarEndereco(){
         Usuario usuario = MockUsuario.retornarUsuario();
 
@@ -40,6 +26,10 @@ public class MockEndereco {
         endereco.setCep("19654-321");
 
         return endereco;
+    }
+
+    public static EnderecoDTO retornarEnderecoDTO(Endereco endereco){
+        return new EnderecoDTO(endereco);
     }
 
     public static EnderecoCreateDTO retornarEnderecoCreateDTO(Endereco endereco) {
@@ -68,5 +58,13 @@ public class MockEndereco {
         enderecoDTO.setCep(endereco.getCep());
 
         return enderecoDTO;
+    }
+
+    public static List<Endereco> retornarEnderecos(Endereco endereco) {
+        return List.of(endereco, endereco, endereco);
+    }
+
+    public static List<EnderecoDTO> retornarEnderecosDTO(EnderecoDTO enderecoDTO) {
+        return List.of(enderecoDTO, enderecoDTO, enderecoDTO);
     }
 }
