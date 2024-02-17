@@ -2,10 +2,12 @@ package com.vemser.dbc.searchorganic.service;
 
 import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
 import com.vemser.dbc.searchorganic.model.*;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
+import org.hibernate.sql.Update;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -96,5 +98,16 @@ public class Mocks {
         carteira.setUsuario(usuario);
 
         return carteira;
+    }
+
+    public static UpdateEmpresaDTO obterEmpresaUpdate(){
+        UpdateEmpresaDTO updateEmpresaDTO = new UpdateEmpresaDTO();
+        updateEmpresaDTO.setCnpj("213123131");
+        updateEmpresaDTO.setSetor("Frutas");
+        updateEmpresaDTO.setRazaoSocial("Nova Razao");
+        updateEmpresaDTO.setNomeFantasia("Novo nomeFantasia");
+        updateEmpresaDTO.setInscricaoEstadual("23135642");
+
+        return updateEmpresaDTO;
     }
 }

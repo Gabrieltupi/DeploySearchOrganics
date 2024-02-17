@@ -116,27 +116,29 @@ public class EmpresaService implements IEmpresaService {
 
     public EmpresaDTO update(Integer idEmpresa, UpdateEmpresaDTO empresaDto) throws Exception {
         Usuario usuario= getLoggedUser();
-        if(hasRoleEmpresa(usuario) & getIdLoggedUser().equals(empresaDto.getIdUsuario())|| isAdmin()) {
-            Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
-            empresa.setIdEmpresa(idEmpresa);
+        if( (hasRoleEmpresa(usuario) && getIdLoggedUser().equals(empresaDto.getIdUsuario())) || isAdmin()) {
+            Empresa empresa = getById(idEmpresa);
+            empresa.setSetor(empresaDto.getSetor());
+            empresa.setCnpj(empresaDto.getCnpj());
+            empresa.setNomeFantasia(empresaDto.getNomeFantasia());
+            empresa.setRazaoSocial(empresaDto.getRazaoSocial());
+            empresa.setInscricaoEstadual(empresaDto.getInscricaoEstadual());
 
             return retornarDto(empresaRepository.save(empresa));
         }
-        throw new RegraDeNegocioException("voce só pode atualizar sea propria empresa");
+        throw new RegraDeNegocioException("voce só pode atualizar sua propria empresa");
     }
 
     public void delete(Integer idEmpresa) throws Exception {
-        EmpresaDTO empresa=findById(idEmpresa);
+        Empresa empresa = getById(idEmpresa);
         Integer loggedUserId = getIdLoggedUser();
 
         if (empresa.getIdUsuario().equals(loggedUserId) || isAdmin()) {
-            findById(idEmpresa);
-        empresaRepository.deleteById(idEmpresa);
-
-        } else {
-            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover a empresa.");
+            empresaRepository.delete(empresa);
+            return;
         }
 
+        throw new RegraDeNegocioException("Apenas o usuário dono da empresa ou um administrador pode remover a empresa.");
     }
 
     public Page<EmpresaProdutosDTO> findAllWithProdutos(Pageable pageable) throws Exception {
