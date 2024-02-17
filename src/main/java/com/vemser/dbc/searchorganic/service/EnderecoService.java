@@ -30,22 +30,19 @@ public class EnderecoService {
     private final ObjectMapper objectMapper;
 
     public EnderecoDTO buscarEndereco(Integer idEndereco) throws Exception {
+        Endereco endereco= this.getById(idEndereco);
+        Integer loggedUserId = getIdLoggedUser();
 
-        Endereco endereco = this.getById(idEndereco);
+        if (endereco.getUsuario().getIdUsuario().equals(loggedUserId)|| isAdmin()) {
         return mapEnderecoToDTO(endereco);
-    }
-
-    public Endereco getById(Integer id) throws Exception {
-        Integer enderecoIdDoUsuarioLogado = enderecoRepository.findEnderecoIdByUserId(getIdLoggedUser())
-                .orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
-
-        if (enderecoIdDoUsuarioLogado.equals(id) || isAdmin()) {
-            return enderecoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Endereço não encontrado"));
         } else {
             throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
         }
     }
 
+    public Endereco getById(Integer id) throws Exception {
+            return enderecoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Endereço não encontrado"));
+    }
 
     public boolean isAdmin() {
         Integer userId = getIdLoggedUser();
@@ -57,7 +54,6 @@ public class EnderecoService {
             return false;
         }
     }
-
 
     public Integer getIdLoggedUser() {
         return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
@@ -99,12 +95,7 @@ public class EnderecoService {
 
 
     public EnderecoDTO editarEndereco(Integer idEndereco, EnderecoUpdateDTO enderecoUpdateDTO) throws Exception {
-
-        Integer loggedUserId = getIdLoggedUser();
-
-        if (loggedUserId.equals(idEndereco) || isAdmin()) {
-
-
+            buscarEndereco(idEndereco);
             Optional<Endereco> enderecoOptional = enderecoRepository.findById(idEndereco);
 
         if (enderecoOptional.isPresent()) {
@@ -116,44 +107,28 @@ public class EnderecoService {
             throw new Exception("Endereço não encontrado");
         }
 
-        } else {
-            throw new RegraDeNegocioException("Apenas o usuário residente ou um administrador pode editar o endereço.");
-        }
     }
 
     public void removerEndereco(Integer idEndereco) throws Exception {
-
-        Integer loggedUserId = getIdLoggedUser();
-
-        if (loggedUserId.equals(idEndereco) || isAdmin()) {
-
-
+        buscarEndereco(idEndereco);
             if (enderecoRepository.existsById(idEndereco)) {
-            enderecoRepository.deleteById(idEndereco);
-        } else {
-            throw new Exception("Endereço não encontrado");
-        }
+                enderecoRepository.deleteById(idEndereco);
+            } else {
+                throw new Exception("Endereço não encontrado");
+            }
 
-        } else {
-            throw new RegraDeNegocioException("Apenas o usuário residente ou um administrador pode remover o endereço.");
-        }
     }
 
     public List<EnderecoDTO> listarEnderecosPorUsuario(Integer idUsuario) throws Exception {
+            if(getIdLoggedUser().equals(idUsuario)) {
 
-        Integer loggedUserId = getIdLoggedUser();
+                List<Endereco> enderecos = enderecoRepository.findAllByUsuarioIdUsuario(idUsuario);
+                return enderecos.stream()
+                        .map(this::mapEnderecoToDTO)
+                        .collect(Collectors.toList());
+            }
+            throw new RegraDeNegocioException("Acesso a apenas seus dados");
 
-        if (loggedUserId.equals(idUsuario) || isAdmin()) {
-
-
-            List<Endereco> enderecos = enderecoRepository.findAllByUsuarioIdUsuario(idUsuario);
-        return enderecos.stream()
-                .map(this::mapEnderecoToDTO)
-                .collect(Collectors.toList());
-
-        } else {
-            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
-        }
     }
 
 
