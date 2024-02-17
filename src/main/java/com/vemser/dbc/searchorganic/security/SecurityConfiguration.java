@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/cupom/empresa/").hasAnyRole("ADMIN","EMPRESA", "USUARIO")
 
                         .antMatchers(HttpMethod.DELETE,"/empresa").hasAnyRole("ADMIN", "EMPRESA")
-                        .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.GET, "/empresa/produtos").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.PUT,"/empresa/").hasAnyRole("ADMIN", "EMPRESA")
 

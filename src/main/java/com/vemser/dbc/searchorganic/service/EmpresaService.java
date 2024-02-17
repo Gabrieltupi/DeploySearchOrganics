@@ -50,37 +50,15 @@ public class EmpresaService implements IEmpresaService {
         }
         return false;
     }
-    public EmpresaDTO buscaIdEmpresa(Integer id) throws Exception {
-            Usuario usuario= getLoggedUser();
-            if (hasRoleEmpresa(usuario)) {
-                return retornarDto(empresaRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("empresa nao encontrada")));
-            }
-            return null;
-    }
 
     public EmpresaDTO findById(Integer idEmpresa) throws Exception {
-        if(isUsuario()||isAdmin()) {
             return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
-        } else{
-            return buscaIdEmpresa(idEmpresa);
-        }
     }
 
 
     public boolean isAdmin() {
         Integer userId = getIdLoggedUser();
         Integer count = empresaRepository.existsAdminCargoByUserId(userId);
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    public boolean isUsuario() {
-        Integer userId = getIdLoggedUser();
-        Integer count = empresaRepository.existsEmpresaCargoByUserId(userId);
         if (count > 0) {
             return true;
         } else {
@@ -147,7 +125,6 @@ public class EmpresaService implements IEmpresaService {
     }
 
     public EmpresaProdutosDTO findByIdWithProdutos(Integer idEmpresa) throws Exception {
-        findById(idEmpresa);
         Optional<Empresa> empresa = empresaRepository.findByIdWithProdutos(idEmpresa);
         return objectMapper.convertValue(empresa, EmpresaProdutosDTO.class);
     }
