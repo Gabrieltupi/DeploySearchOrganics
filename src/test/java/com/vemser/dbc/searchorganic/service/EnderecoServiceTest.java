@@ -7,7 +7,7 @@ import com.vemser.dbc.searchorganic.dto.endereco.EnderecoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.*;
 import com.vemser.dbc.searchorganic.repository.EnderecoRepository;
-import com.vemser.dbc.searchorganic.utils.TipoAtivo;
+import com.vemser.dbc.searchorganic.service.mocks.MockEndereco;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +19,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,9 +43,14 @@ class EnderecoServiceTest {
     @Mock
     private ObjectMapper objectMapper;
 
+    Endereco enderecoMock = MockEndereco.retornarEndereco();
+    EnderecoDTO enderecoDTOMock = MockEndereco.retornarEnderecoDTO(enderecoMock);
+    EnderecoCreateDTO enderecoCreateDTOMock = MockEndereco.retornarEnderecoCreateDTO(enderecoMock);
+    EnderecoUpdateDTO enderecoUpdateDTOMock = MockEndereco.retornarEnderecoUpdateDTO(enderecoMock);
+
+
     @Test
     public void deveriaRetornarEnderecoDTOPorId() throws Exception {
-        Endereco enderecoMock = retornarEndereco();
         EnderecoDTO enderecoDTOMock = new EnderecoDTO(enderecoMock);
 
         when(usuarioService.getIdLoggedUser()).thenReturn(1);
@@ -62,8 +65,6 @@ class EnderecoServiceTest {
 
     @Test
     public void naoDeveriaRetornarEnderecoDTODeOutroUsuario() {
-        Endereco enderecoMock = retornarEndereco();
-
         when(usuarioService.getIdLoggedUser()).thenReturn(1);
         when(usuarioService.isAdmin()).thenReturn(false);
         when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.of(enderecoMock));
@@ -73,14 +74,12 @@ class EnderecoServiceTest {
 
     @Test
     public void deveriaListarEnderecosComSucesso() {
-        Endereco endereco = retornarEndereco();
-        EnderecoDTO enderecoDTO = retornarEnderecoDTO(endereco);
-        List<Endereco> enderecosMock = List.of(endereco, endereco, endereco);
+        List<Endereco> enderecosMock = List.of(enderecoMock, enderecoMock, enderecoMock);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Endereco> listaMock = new PageImpl<>(enderecosMock, pageable, enderecosMock.size());
-        List<EnderecoDTO> enderecosDTOMock = List.of(enderecoDTO, enderecoDTO, enderecoDTO);
+        List<EnderecoDTO> enderecosDTOMock = List.of(enderecoDTOMock, enderecoDTOMock, enderecoDTOMock);
 
-        when(objectMapper.convertValue(any(Endereco.class), eq(EnderecoDTO.class))).thenReturn(enderecoDTO);
+        when(objectMapper.convertValue(any(Endereco.class), eq(EnderecoDTO.class))).thenReturn(enderecoDTOMock);
         when(enderecoRepository.findAll(pageable)).thenReturn(listaMock);
 
         Page<EnderecoDTO> listaDTORetornada = enderecoService.listarEnderecosPaginados(pageable);
@@ -94,8 +93,6 @@ class EnderecoServiceTest {
     public void deveriaRetornarEnderecoPorId() throws Exception {
         Integer idAleatorio = new Random().nextInt();
 
-        Endereco enderecoMock = retornarEndereco();
-
         when(enderecoRepository.findById(anyInt())).thenReturn(Optional.of(enderecoMock));
 
         Endereco enderecoRetornado = enderecoService.getById(idAleatorio);
@@ -106,40 +103,33 @@ class EnderecoServiceTest {
 
     @Test
     public void deveriaCriarEndereco() throws Exception {
-        EnderecoCreateDTO enderecoCreateDTO = retornarEnderecoCreateDTO();
-        Endereco endereco = retornarEndereco();
-        EnderecoDTO enderecoDTO = retornarEnderecoDTO(endereco);
+        when(objectMapper.convertValue(enderecoCreateDTOMock, Endereco.class)).thenReturn(enderecoMock);
+        when(enderecoRepository.save(any())).thenReturn(enderecoMock);
+        when(objectMapper.convertValue(enderecoMock, EnderecoDTO.class)).thenReturn(enderecoDTOMock);
 
-        when(objectMapper.convertValue(enderecoCreateDTO, Endereco.class)).thenReturn(endereco);
-        when(enderecoRepository.save(any())).thenReturn(endereco);
-        when(objectMapper.convertValue(endereco, EnderecoDTO.class)).thenReturn(enderecoDTO);
-
-        EnderecoDTO enderecoCriado =  enderecoService.adicionarEndereco(enderecoCreateDTO);
+        EnderecoDTO enderecoCriado =  enderecoService.adicionarEndereco(enderecoCreateDTOMock);
 
         assertNotNull(enderecoCriado);
-        assertEquals(enderecoDTO, enderecoCriado);
+        assertEquals(enderecoDTOMock, enderecoCriado);
     }
 
     @Test
-    public void naoDeveriaCriarEnderecoComCepInvalido() throws Exception {
-        EnderecoCreateDTO enderecoCreateDTO = retornarEnderecoCreateDTO();
-        enderecoCreateDTO.setCep("98765-432");
+    public void naoDeveriaCriarEnderecoComCepInvalido() {
+        enderecoCreateDTOMock.setCep("98765-432");
 
-        assertThrows(RegraDeNegocioException.class, () -> enderecoService.adicionarEndereco(enderecoCreateDTO));
+        assertThrows(RegraDeNegocioException.class, () -> enderecoService.adicionarEndereco(enderecoCreateDTOMock));
     }
 
     @Test
     public void deveriaAtualizarEndereco() throws Exception {
-        Endereco endereco = retornarEndereco();
-        EnderecoUpdateDTO enderecoUpdateDTO = retornarEnderecoUpdateDTO(endereco);
-        enderecoUpdateDTO.setLogradouro("Novo Endereco");
+        enderecoUpdateDTOMock.setLogradouro("Novo Endereco");
 
-        EnderecoDTO enderecoDTO = new EnderecoDTO(endereco);
+        EnderecoDTO enderecoDTO = new EnderecoDTO(enderecoMock);
 
-        when(enderecoRepository.findById(endereco.getIdEndereco())).thenReturn(Optional.of(endereco));
-        when(enderecoRepository.save(any())).thenReturn(endereco);
+        when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.of(enderecoMock));
+        when(enderecoRepository.save(any())).thenReturn(enderecoMock);
 
-        EnderecoDTO enderecoCriado =  enderecoService.editarEndereco(endereco.getIdEndereco(), enderecoUpdateDTO);
+        EnderecoDTO enderecoCriado =  enderecoService.editarEndereco(enderecoMock.getIdEndereco(), enderecoUpdateDTOMock);
 
         assertNotNull(enderecoCriado);
         assertNotEquals(enderecoDTO, enderecoCriado);
@@ -148,36 +138,29 @@ class EnderecoServiceTest {
 
     @Test
     public void naoDeveriaAtualizarEnderecoInexistente() {
-        Endereco endereco = retornarEndereco();
-        EnderecoUpdateDTO enderecoUpdateDTO = retornarEnderecoUpdateDTO(endereco);
+        when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.empty());
 
-        when(enderecoRepository.findById(endereco.getIdEndereco())).thenReturn(Optional.empty());
-
-        assertThrows(RegraDeNegocioException.class, () -> enderecoService.editarEndereco(endereco.getIdEndereco(), enderecoUpdateDTO));
+        assertThrows(RegraDeNegocioException.class, () -> enderecoService.editarEndereco(enderecoMock.getIdEndereco(), enderecoUpdateDTOMock));
     }
 
     @Test
     public void deveriaRemoverEnderecoComSucesso() throws Exception {
-        Endereco endereco = retornarEndereco();
+        when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.of(enderecoMock));
 
-        when(enderecoRepository.findById(endereco.getIdEndereco())).thenReturn(Optional.of(endereco));
+        enderecoService.removerEndereco(enderecoMock.getIdEndereco());
 
-        enderecoService.removerEndereco(endereco.getIdEndereco());
-
-        verify(enderecoRepository, times(1)).deleteById(endereco.getIdEndereco());
+        verify(enderecoRepository, times(1)).deleteById(enderecoMock.getIdEndereco());
     }
 
     @Test
     public void deveriaListarEnderecosPorUsuarioComSucesso() throws Exception {
-        Endereco endereco = retornarEndereco();
-        EnderecoDTO enderecoDTO = retornarEnderecoDTO(endereco);
-        List<Endereco> enderecosMock = List.of(endereco, endereco, endereco);
-        List<EnderecoDTO> enderecosDTOMock = List.of(enderecoDTO, enderecoDTO, enderecoDTO);
+        List<Endereco> enderecosMock = List.of(enderecoMock, enderecoMock, enderecoMock);
+        List<EnderecoDTO> enderecosDTOMock = List.of(enderecoDTOMock, enderecoDTOMock, enderecoDTOMock);
 
-        when(usuarioService.getIdLoggedUser()).thenReturn(endereco.getUsuario().getIdUsuario());
-        when(enderecoRepository.findAllByUsuarioIdUsuario(endereco.getUsuario().getIdUsuario())).thenReturn(enderecosMock);
+        when(usuarioService.getIdLoggedUser()).thenReturn(enderecoMock.getUsuario().getIdUsuario());
+        when(enderecoRepository.findAllByUsuarioIdUsuario(enderecoMock.getUsuario().getIdUsuario())).thenReturn(enderecosMock);
 
-        List<EnderecoDTO> listaDTORetornada = enderecoService.listarEnderecosPorUsuario(endereco.getUsuario().getIdUsuario());
+        List<EnderecoDTO> listaDTORetornada = enderecoService.listarEnderecosPorUsuario(enderecoMock.getUsuario().getIdUsuario());
 
         assertNotNull(listaDTORetornada);
         assertEquals(enderecosDTOMock.size(), listaDTORetornada.size());
@@ -186,17 +169,13 @@ class EnderecoServiceTest {
 
     @Test
     public void naoDeveriaListarEnderecosPorUsuarioDeOutroUsuario() {
-        Endereco endereco = retornarEndereco();
-
         when(usuarioService.getIdLoggedUser()).thenReturn(1);
 
-        assertThrows(RegraDeNegocioException.class, () -> enderecoService.listarEnderecosPorUsuario(endereco.getUsuario().getIdUsuario()));
+        assertThrows(RegraDeNegocioException.class, () -> enderecoService.listarEnderecosPorUsuario(enderecoMock.getUsuario().getIdUsuario()));
     }
 
     @Test
     public void deveriaGerarMensagemDeEmail() {
-        Endereco enderecoMock = retornarEndereco();
-
         String mensagemMock = String.format("""
                         Logradouro: %s  <br>
                         Número: %s       <br>
@@ -219,88 +198,5 @@ class EnderecoServiceTest {
 
         assertNotNull(mensagemRetornada);
         assertEquals(mensagemMock, mensagemRetornada);
-    }
-
-    public static EnderecoDTO retornarEnderecoDTO(Endereco endereco){
-        EnderecoDTO enderecoDTO = new EnderecoDTO();
-        enderecoDTO.setIdEndereco(endereco.getIdEndereco());
-        enderecoDTO.setIdUsuario(endereco.getUsuario().getIdUsuario());
-        enderecoDTO.setLogradouro(endereco.getLogradouro());
-        enderecoDTO.setNumero(endereco.getNumero());
-        enderecoDTO.setComplemento(endereco.getComplemento());
-        enderecoDTO.setCidade(endereco.getCidade());
-        enderecoDTO.setEstado(endereco.getEstado());
-        enderecoDTO.setPais(endereco.getPais());
-        enderecoDTO.setCep(endereco.getCep());
-        enderecoDTO.setRegiao(endereco.getRegiao());
-
-        return enderecoDTO;
-    }
-
-    public static Endereco retornarEndereco(){
-        Usuario usuario = retornarUsuario();
-
-        Endereco endereco = new Endereco();
-        endereco.setIdEndereco(new Random().nextInt());
-        endereco.setUsuario(usuario);
-        endereco.setLogradouro("Avenida da Capoeira");
-        endereco.setNumero("112");
-        endereco.setComplemento("Apartamento 1");
-        endereco.setCidade("Campinas");
-        endereco.setEstado("São Paulo");
-        endereco.setPais("Brasil");
-        endereco.setRegiao("SP - Interior");
-        endereco.setCep("19654-321");
-
-        return endereco;
-    }
-
-    public static Usuario retornarUsuario(){
-        Integer idUsuario = new Random().nextInt();
-        Set<Cargo> cargos = Set.of(new Cargo());
-        TipoAtivo tipoAtivo = TipoAtivo.fromString("S");
-
-        Usuario usuario = new Usuario();
-        usuario.setIdUsuario(idUsuario);
-        usuario.setNome("Anderson");
-        usuario.setSobrenome("Luiz");
-        usuario.setCpf("09876543211");
-        usuario.setDataNascimento(LocalDate.parse("2010-10-10"));
-        usuario.setEmail("anderson.turkiewicz@dbccompany.com");
-        usuario.setLogin("aluiz");
-        usuario.setSenha("12345678");
-        usuario.setCargos(cargos);
-        usuario.setTipoAtivo(tipoAtivo);
-        usuario.setCarteira(new Carteira(usuario));
-
-        return usuario;
-    }
-
-    private static EnderecoCreateDTO retornarEnderecoCreateDTO() {
-        EnderecoCreateDTO endereco = new EnderecoCreateDTO();
-        endereco.setIdUsuario(new Random().nextInt());
-        endereco.setLogradouro("Avenida da Capoeira");
-        endereco.setNumero("112");
-        endereco.setComplemento("Apartamento 1");
-        endereco.setCidade("Campinas");
-        endereco.setEstado("São Paulo");
-        endereco.setPais("Brasil");
-        endereco.setRegiao("SP - Interior");
-        endereco.setCep("19654-321");
-
-        return endereco;
-    }
-
-    private static EnderecoUpdateDTO retornarEnderecoUpdateDTO(Endereco endereco) {
-        EnderecoUpdateDTO enderecoDTO = new EnderecoUpdateDTO();
-        enderecoDTO.setLogradouro(endereco.getLogradouro());
-        enderecoDTO.setNumero(endereco.getNumero());
-        enderecoDTO.setComplemento(endereco.getComplemento());
-        enderecoDTO.setCidade(endereco.getCidade());
-        enderecoDTO.setEstado(endereco.getEstado());
-        enderecoDTO.setPais(endereco.getPais());
-        enderecoDTO.setCep(endereco.getCep());
-
-        return enderecoDTO;
     }
 }
