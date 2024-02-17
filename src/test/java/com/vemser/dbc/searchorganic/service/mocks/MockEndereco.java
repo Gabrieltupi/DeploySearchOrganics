@@ -23,7 +23,7 @@ public class MockEndereco {
         endereco.setEstado("São Paulo");
         endereco.setPais("Brasil");
         endereco.setRegiao("SP - Interior");
-        endereco.setCep("19654-321");
+        endereco.setCep("19654321");
 
         return endereco;
     }
