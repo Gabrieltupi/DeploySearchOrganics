@@ -170,7 +170,7 @@ public class UsuarioService {
     }
 
 
-    public Optional<Usuario> findByLoginAndSenha(String login, String senha) {
+    public Optional<Usuario> findByLoginAndSenha(String login, String senha) throws RegraDeNegocioException {
         return usuarioRepository.findByLoginAndSenha(login, senha);
     }
 
