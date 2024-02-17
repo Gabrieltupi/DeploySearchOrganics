@@ -28,7 +28,7 @@ public class EnderecoDTO {
     @Schema(description = "Complemento do endereço", required = true, example = "Perto do SuperMercado Menger")
     private String complemento;
 
-    @Schema(description = "cnpj", required = true, example = "93230600")
+    @Schema(description = "cep", required = true, example = "19020499")
     private String cep;
 
     @Schema(description = "Cidade", required = true, example = "Sapucaia do Sul")

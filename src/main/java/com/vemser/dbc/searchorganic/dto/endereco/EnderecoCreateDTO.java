@@ -34,8 +34,8 @@ public class EnderecoCreateDTO {
     private String complemento;
 
     @NotBlank
-    @Size(min = 9, max = 9)
-    @Schema(description = "CEP", required = true, example = "19654-002")
+    @Size(min = 8, max = 8)
+    @Schema(description = "cep", required = true, example = "19020499")
     private String cep;
 
     @NotBlank
