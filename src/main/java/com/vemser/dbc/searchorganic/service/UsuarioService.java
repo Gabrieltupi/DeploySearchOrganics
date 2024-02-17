@@ -99,6 +99,7 @@ public class UsuarioService {
     }
 
     public Usuario editarUsuario(int usuarioId, Usuario usuario) throws Exception {
+        obterUsuarioPorId(usuarioId);
         try {
 
             Usuario usuarioEntity = obterUsuarioPorId(usuarioId);
@@ -130,6 +131,7 @@ public class UsuarioService {
     }
 
     public void removerUsuario(int usuarioId) throws Exception {
+        obterUsuarioPorId(usuarioId);
         try {
             Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
 
