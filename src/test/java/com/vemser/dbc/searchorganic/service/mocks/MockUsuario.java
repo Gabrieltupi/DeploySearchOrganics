@@ -19,6 +19,7 @@ public class MockUsuario {
         usuario.setCarteira(carteira(usuario));
         usuario.setTipoAtivo(TipoAtivo.S);
         usuario.setNome("Usuario 1");
+        usuario.setLogin("usu1");
         usuario.setCpf("12345678900");
         usuario.setEmail("email@example.com");
         usuario.setDataNascimento(LocalDate.parse("1990-05-05"));
