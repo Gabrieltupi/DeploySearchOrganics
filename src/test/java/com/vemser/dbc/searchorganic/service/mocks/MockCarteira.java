@@ -1,0 +1,23 @@
+package com.vemser.dbc.searchorganic.service.mocks;
+
+import com.vemser.dbc.searchorganic.dto.carteira.CarteiraDTO;
+import com.vemser.dbc.searchorganic.model.Carteira;
+
+import java.math.BigDecimal;
+
+public class MockCarteira {
+
+    public static CarteiraDTO retornaCarteiraDto(){
+        CarteiraDTO carteiraDTO= new CarteiraDTO();
+        carteiraDTO.setIdCarteira(1);
+        carteiraDTO.setSaldo(BigDecimal.valueOf(100));
+        return carteiraDTO;
+    }
+
+    public static Carteira retornarCarteira(){
+        Carteira carteira= new Carteira();
+        carteira.setIdCarteira(1);
+        carteira.setSaldo(BigDecimal.valueOf(100));
+        return carteira;
+    }
+}
