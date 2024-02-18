@@ -35,8 +35,7 @@ public class ProdutoService implements IProdutoService {
     }
 
     public ProdutoDTO findById(Integer id) throws Exception {
-        return retornarDto(produtoRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado")));
+        return retornarDto(getById(id));
     }
 
     public ProdutoDTO save(Integer idEmpresa, ProdutoCreateDTO produtoDto) throws Exception {
@@ -50,29 +49,32 @@ public class ProdutoService implements IProdutoService {
 
 
     public ProdutoDTO update(Integer idProduto, ProdutoUpdateDTO produtoDto) throws Exception {
-        ProdutoDTO produtoExistente = findById(idProduto);
-        Integer idEmp = produtoDto.getIdEmpresa();
-        if (produtoExistente.getIdEmpresa().equals(idEmp)) {
-            Produto produto = objectMapper.convertValue(produtoDto, Produto.class);
-            produto.setIdProduto(idProduto);
+        Produto produto = getById(idProduto);
+        Integer idUsuarioDonoProd = empresaService.getById(produto.getIdEmpresa()).getIdUsuario();
+        if(idUsuarioDonoProd.equals(usuarioService.getIdLoggedUser())||isAdmin()) {
+            produto.setUnidadeMedida(produtoDto.getUnidadeMedida());
+            produto.setPreco(produtoDto.getPreco());
+            produto.setTaxa(produto.getTaxa());
+            produto.setCategoria(produtoDto.getCategoria());
+            produto.setQuantidade(produtoDto.getQuantidade());
+            produto.setUrlImagem(produtoDto.getUrlImagem());
+            produto.setNome(produtoDto.getNome());
+            produto.setTipoAtivo(produtoDto.getTipoAtivo());
+            produto.setDescricao(produtoDto.getDescricao());
 
             return retornarDto(produtoRepository.save(produto));
         }
-        throw new RegraDeNegocioException("só poderá atualizar seu Proprio produto");
+        throw new RegraDeNegocioException("Só poderá atualizar seu próprio produto");
     }
-
-
-
-
     public void delete(Integer idProduto) throws Exception {
-        ProdutoDTO produtoPraAtual=findById(idProduto);
+        Produto produto = getById(idProduto);
+        Integer idUsuarioDonoProd = empresaService.getById(produto.getIdEmpresa()).getIdUsuario();
 
-        Empresa empresa= empresaService.getById(produtoPraAtual.getIdEmpresa());
-        Integer idUSu= empresa.getIdUsuario();
-        if(idUSu.equals(usuarioService.getIdLoggedUser())||isAdmin()) {
-            produtoRepository.deleteById(idProduto);
+        if(idUsuarioDonoProd.equals(usuarioService.getIdLoggedUser())||isAdmin()) {
+            produtoRepository.delete(produto);
+            return;
         }
-        throw new RegraDeNegocioException("só poderá deletar seu Proprio produto");
+        throw new RegraDeNegocioException("Só poderá deletar seu próprio produto");
     }
 
     public boolean isAdmin() {
@@ -98,7 +100,6 @@ public class ProdutoService implements IProdutoService {
         Page<Produto> produtos = produtoRepository.findAllByIdCategoria(idCategoria, pageable);
         return produtos.map(this::retornarDto);
     }
-
     public String getMensagemProdutoEmail(List<ProdutoPedidoDTO> produtos) {
         StringBuilder mensagemFinal = new StringBuilder();
         for (ProdutoPedidoDTO produtoPedidoDTO : produtos) {
@@ -112,10 +113,9 @@ public class ProdutoService implements IProdutoService {
         return mensagemFinal.toString();
     }
 
-//    public Produto getById(Integer idProduto) throws Exception {
-//        ProdutoDTO produto = findById(idProduto);
-//        return convertDto(produto);
-//    }
+    public Produto getById(Integer idProduto) throws Exception {
+        return produtoRepository.findById(idProduto).orElseThrow( () -> new RegraDeNegocioException("Produto não encontrado"));
+    }
 
     public Produto convertDto(ProdutoCreateDTO dto) {
         return objectMapper.convertValue(dto, Produto.class);
