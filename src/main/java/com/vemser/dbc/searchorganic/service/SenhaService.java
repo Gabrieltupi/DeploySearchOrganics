@@ -6,6 +6,7 @@ import com.vemser.dbc.searchorganic.dto.senha.SenhaDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.service.interfaces.ISenhaService;
+import com.vemser.dbc.searchorganic.utils.SenhaUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,12 @@ public class SenhaService implements ISenhaService {
     private final UsuarioService usuarioService;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final SenhaUtil senhaUtil;
 
     public SenhaDTO recover(RecuperarSenhaDTO senhaDto) throws Exception {
         try {
             Usuario usuario = usuarioService.findByLoginAndEmail(senhaDto.getLogin(), senhaDto.getEmail());
-            String senha = RandomStringUtils.randomAlphanumeric(8);
+            String senha = senhaUtil.gerarSenha(8);
             usuario.setSenha(passwordEncoder.encode(senha));
 
             usuarioService.salvarUsuario(usuario);
@@ -41,7 +43,10 @@ public class SenhaService implements ISenhaService {
         try {
             Usuario usuario = usuarioService.getLoggedUser();
 
-            usuarioService.findByLoginAndSenha(usuario.getLogin(), senhaDto.getSenhaAtual());
+            String senhaAntiga = passwordEncoder.encode(senhaDto.getSenhaAtual());
+            usuarioService.findByLoginAndSenha(usuario.getLogin(), senhaAntiga)
+                    .orElseThrow(() ->  new RegraDeNegocioException("Senha atual inválida"));
+
             usuario.setSenha(passwordEncoder.encode(senhaDto.getNovaSenha()));
 
             usuarioService.salvarUsuario(usuario);
@@ -62,7 +67,7 @@ public class SenhaService implements ISenhaService {
 
         emailService.sendEmail(dadosEmail, "Email para recuperação de senha enviado", usuario.getEmail());
     }
-
+    
     public void sendResetEmail(Usuario usuario) throws Exception {
         Map<String, Object> dadosEmail = new HashMap<>();
         dadosEmail.put("nomeUsuario", usuario.getNome());
