@@ -15,4 +15,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
     @Query(value = "SELECT * FROM PRODUTO p WHERE p.tipo_categoria = :idCategoria", nativeQuery = true)
     Page<Produto> findAllByIdCategoria(@Param("idCategoria") Integer idCategoria, Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM USUARIO_CARGO uc2 \n" +
+            "WHERE uc2.ID_USUARIO = :userId AND uc2.ID_CARGO = 1", nativeQuery = true)
+    Integer existsAdminCargoByUserId(@Param("userId") Integer userId);
 }

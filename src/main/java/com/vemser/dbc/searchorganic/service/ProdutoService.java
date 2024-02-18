@@ -6,13 +6,16 @@ import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
+import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
+import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IProdutoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,7 @@ public class ProdutoService implements IProdutoService {
     private final ProdutoRepository produtoRepository;
     private final EmpresaService empresaService;
     private final ObjectMapper objectMapper;
+    private final UsuarioService usuarioService;
 
     public Page<ProdutoDTO> findAll(Pageable pageable) throws Exception {
         Page<Produto> produtos = produtoRepository.findAll(pageable);
@@ -44,19 +48,44 @@ public class ProdutoService implements IProdutoService {
         return retornarDto(produtoRepository.save(produto));
     }
 
+
     public ProdutoDTO update(Integer idProduto, ProdutoUpdateDTO produtoDto) throws Exception {
-        findById(idProduto);
+        ProdutoDTO produtoExistente = findById(idProduto);
+        Integer idEmp = produtoDto.getIdEmpresa();
+        if (produtoExistente.getIdEmpresa().equals(idEmp)) {
+            Produto produto = objectMapper.convertValue(produtoDto, Produto.class);
+            produto.setIdProduto(idProduto);
 
-        Produto produto = objectMapper.convertValue(produtoDto, Produto.class);
-        produto.setIdProduto(idProduto);
-
-        return retornarDto(produtoRepository.save(produto));
+            return retornarDto(produtoRepository.save(produto));
+        }
+        throw new RegraDeNegocioException("só poderá atualizar seu Proprio produto");
     }
+
+
+
 
     public void delete(Integer idProduto) throws Exception {
-        findById(idProduto);
-        produtoRepository.deleteById(idProduto);
+        ProdutoDTO produtoPraAtual=findById(idProduto);
+
+        Empresa empresa= empresaService.getById(produtoPraAtual.getIdEmpresa());
+        Integer idUSu= empresa.getIdUsuario();
+        if(idUSu.equals(usuarioService.getIdLoggedUser())||isAdmin()) {
+            produtoRepository.deleteById(idProduto);
+        }
+        throw new RegraDeNegocioException("só poderá deletar seu Proprio produto");
     }
+
+    public boolean isAdmin() {
+        Integer userId = usuarioService.getIdLoggedUser();
+        Integer count = produtoRepository.existsAdminCargoByUserId(userId);
+
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public Page<ProdutoDTO> findAllByIdEmpresa(Integer idEmpresa, Pageable pageable) throws Exception {
         empresaService.findById(idEmpresa);
@@ -83,10 +112,10 @@ public class ProdutoService implements IProdutoService {
         return mensagemFinal.toString();
     }
 
-    public Produto getById(Integer idProduto) throws Exception {
-        ProdutoDTO produto = findById(idProduto);
-        return convertDto(produto);
-    }
+//    public Produto getById(Integer idProduto) throws Exception {
+//        ProdutoDTO produto = findById(idProduto);
+//        return convertDto(produto);
+//    }
 
     public Produto convertDto(ProdutoCreateDTO dto) {
         return objectMapper.convertValue(dto, Produto.class);
