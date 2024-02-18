@@ -84,6 +84,7 @@ public class EmpresaService implements IEmpresaService {
     public EmpresaDTO update(Integer idEmpresa, UpdateEmpresaDTO empresaDto) throws Exception {
         Usuario usuario = usuarioService.getLoggedUser();
         if ((hasRoleEmpresa(usuario) && getIdLoggedUser().equals(empresaDto.getIdUsuario())) || isAdmin()) {
+
             Empresa empresa = getById(idEmpresa);
             empresa.setSetor(empresaDto.getSetor());
             empresa.setCnpj(empresaDto.getCnpj());

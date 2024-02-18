@@ -6,6 +6,7 @@ import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.*;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoResponsePedidoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
@@ -224,7 +225,8 @@ public class PedidoService {
     private List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
         List<PedidoXProduto> produtos = new ArrayList<>();
         for (ProdutoCarrinhoCreate produtoCarrinhoCreate : produtosCarrinhoCreate) {
-            Produto produto = produtoService.getById(produtoCarrinhoCreate.getIdProduto());
+            ProdutoDTO produtoDto = produtoService.findById(produtoCarrinhoCreate.getIdProduto());
+            Produto produto= objectMapper.convertValue(produtoDto,Produto.class);
             produtosBanco.add(produto);
             PedidoXProduto pedidoXProduto = new PedidoXProduto();
             pedidoXProduto.setProduto(produto);
