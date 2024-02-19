@@ -2,6 +2,7 @@ package com.vemser.dbc.searchorganic.service.mocks;
 
 import com.vemser.dbc.searchorganic.dto.carteira.CarteiraDTO;
 import com.vemser.dbc.searchorganic.model.Carteira;
+import com.vemser.dbc.searchorganic.model.Usuario;
 
 import java.math.BigDecimal;
 
@@ -15,9 +16,11 @@ public class MockCarteira {
     }
 
     public static Carteira retornarCarteira(){
+        Usuario usuario= MockUsuario.retornarUsuario();
         Carteira carteira= new Carteira();
         carteira.setIdCarteira(1);
         carteira.setSaldo(BigDecimal.valueOf(100));
+        carteira.setUsuario(usuario);
         return carteira;
     }
 }
