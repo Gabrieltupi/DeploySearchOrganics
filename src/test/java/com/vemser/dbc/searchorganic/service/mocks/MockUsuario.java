@@ -108,4 +108,12 @@ public class MockUsuario {
 
         return carteiraDTO;
     }
+
+    public static Usuario retornarUsuarioAdmin() {
+        Usuario admin = retornarUsuario();
+        admin.setNome("Admin");
+        admin.getCargos().add(obterCargo("ROLE_ADMIN"));
+
+        return admin;
+    }
 }

@@ -4,6 +4,7 @@ import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.*;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoResponsePedidoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.model.*;
@@ -12,11 +13,13 @@ import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import com.vemser.dbc.searchorganic.utils.validadores.TipoEntrega;
+import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MockPedido {
 
@@ -67,18 +70,21 @@ public class MockPedido {
 
     public static PedidoDTO retornaPedidoDto(){
         PedidoDTO pedidoDto= new PedidoDTO();
+
         pedidoDto.setIdPedido(1);
 
         Usuario usuario= MockUsuario.retornarUsuario();
-        UsuarioDTO usuarioDto =MockUsuario.retornarUsuarioDTO(usuario);
+        UsuarioDTO usuarioDto = MockUsuario.retornarUsuarioDTO(usuario);
         pedidoDto.setUsuario(usuarioDto);
 
         Endereco endereco=MockEndereco.retornarEndereco();
         EnderecoDTO enderecoDto= MockEndereco.retornarEnderecoDTO(endereco);
+
         pedidoDto.setEndereco(enderecoDto);
 
         Empresa empresa= MockEmpresa.retornarEmpresa();
         EmpresaDTO empresaDto= MockEmpresa.retornarEmpresaDTO(empresa);
+
         pedidoDto.setEmpresaDTO(empresaDto);
 
         pedidoDto.setCupom(new CupomDTO(1,"cupom10", TipoAtivo.S,"cupom 10 de desconto", BigDecimal.valueOf(10),empresa.getIdEmpresa()));
@@ -134,22 +140,49 @@ public class MockPedido {
         return pedidoUpdateDto;
     }
 
-    public static PedidoXProduto retornaPedidoXProduto() {
+    public static PedidoXProduto retornaPedidoXProduto(Pedido pedido, Produto produto) {
         PedidoXProduto pedidoXProduto = new PedidoXProduto();
         ProdutoXPedidoPK pk = new ProdutoXPedidoPK();
-        pk.setIdProduto(1);
-        pk.setIdPedido(1);
+        pk.setIdProduto(produto.getIdProduto());
+        pk.setIdPedido(pedido.getIdPedido());
+
         pedidoXProduto.setProdutoXPedidoPK(pk);
-        Pedido pedido = MockPedido.retornaPedidoEntity();
         pedidoXProduto.setPedido(pedido);
-        Produto produto = MockProduto.retornarProdutoEntity();
         pedidoXProduto.setProduto(produto);
-        pedidoXProduto.setQuantidade(10);
+        pedidoXProduto.setQuantidade(new Random().nextInt(10));
+
         return pedidoXProduto;
     }
-    public static List<PedidoXProduto> retornaListaProdutoXPedido(){
-        return List.of(retornaPedidoXProduto(),retornaPedidoXProduto());
+    public static List<PedidoXProduto> retornaListaProdutoXPedido(Pedido pedido, Produto produto){
+        return List.of(retornaPedidoXProduto(pedido, produto),retornaPedidoXProduto(pedido, produto));
+    }
+    public static PedidoDTO retornaPedidoDTOPorEntity(Pedido pedido){
+        UsuarioDTO usuarioDTO = MockUsuario.retornarUsuarioDTO(pedido.getUsuario());
+        EnderecoDTO enderecoDTO = MockEndereco.retornarEnderecoDTO(pedido.getEndereco());
+        EmpresaDTO empresaDTO = MockEmpresa.retornarEmpresaDTO(pedido.getEmpresa());
+        CupomDTO cupomDTO = MockCupom.retornarCupomDTO(pedido.getCupom());
+        Produto produto = MockProduto.retornarProdutoEntity();
+        List<ProdutoPedidoDTO> produtos = retornarProdutosPedidoDTO(retornaListaProdutoXPedido(pedido, produto));
+
+        PedidoDTO pedidoDTO = new PedidoDTO(pedido, usuarioDTO, enderecoDTO, cupomDTO, produtos, empresaDTO);
+
+        return pedidoDTO;
     }
 
+    private static List<ProdutoPedidoDTO> retornarProdutosPedidoDTO(List<PedidoXProduto> listaPedidoXPrd) {
+        List<ProdutoPedidoDTO> produtosPedidoDTO = new ArrayList<>();
+        for(PedidoXProduto pedidoXProduto : listaPedidoXPrd){
+            ProdutoPedidoDTO pedidoXprodDTO = new ProdutoPedidoDTO();
+            ProdutoResponsePedidoDTO produtoResponsePedidoDTO = new ProdutoResponsePedidoDTO(pedidoXProduto.getProduto());
+
+            pedidoXprodDTO.setQuantidade(pedidoXProduto.getQuantidade());
+            pedidoXprodDTO.setProduto(produtoResponsePedidoDTO);
+
+            produtosPedidoDTO.add(pedidoXprodDTO);
+
+        }
+
+        return produtosPedidoDTO;
+    }
 
 }

@@ -55,7 +55,7 @@ public class PedidoService {
     public PedidoDTO getById(Integer idPedido) throws Exception {
         Pedido pedido = findById(idPedido);
         Integer idUsuarioPedido = pedido.getUsuario().getIdUsuario();
-        
+
         if(!(verificarSeAdminOuUsuario(idUsuarioPedido))){
             throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
         }
@@ -350,7 +350,7 @@ public class PedidoService {
 
     public Usuario obterAdmin() throws Exception {
         Usuario admin = usuarioService.findByLogin("admin")
-                .orElseThrow(() -> new RegraDeNegocioException("Ocorreu um erro ao processar o pagamento"));
+                .orElseThrow(() -> new RegraDeNegocioException("Ocorreu um erro com o administrador"));
         boolean isAdmin = admin.getCargos().stream()
                 .anyMatch(cargo -> "ROLE_ADMIN".equalsIgnoreCase(cargo.getNome()));
         if (!isAdmin) {

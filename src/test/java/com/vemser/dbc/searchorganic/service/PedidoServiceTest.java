@@ -12,11 +12,14 @@ import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import com.vemser.dbc.searchorganic.service.mocks.*;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.ArgumentCaptor;
 import java.math.BigDecimal;
@@ -57,53 +60,38 @@ class PedidoServiceTest {
     private  EmpresaService empresaService;
     @Mock
     private  BigDecimal TAXA_SERVICO = new BigDecimal(5);
+    @Spy
     @InjectMocks
     private PedidoService pedidoService;
 
-
-    @Test
-    @DisplayName("sucessoOUsuarioAdmin")
-    void sucessoOUsuarioAdmin() throws Exception {
-        Integer idUsuario= MockUsuario.retornarUsuario().getIdUsuario();
-
-        when(usuarioService.getIdLoggedUser()).thenReturn(idUsuario);
-        when(pedidoRepository.existsAdminCargoByUserId(idUsuario)).thenReturn(1);
-
-        verify(usuarioService).getIdLoggedUser();
-        verify(pedidoRepository).existsAdminCargoByUserId(idUsuario);
+    @BeforeEach
+    void setUp(){
+        Usuario admin = MockUsuario.retornarUsuarioAdmin();
+        when(usuarioService.findByLogin("admin")).thenReturn(Optional.ofNullable(admin));
     }
-
-    @Test
-    @DisplayName("sucessoOUsuarioEmpresa")
-    void sucessoOUsuarioEmpresa() throws Exception {
-        Integer idUsuario= MockUsuario.retornarUsuario().getIdUsuario();
-
-        when(usuarioService.getIdLoggedUser()).thenReturn(idUsuario);
-        when(pedidoRepository.existsEmpresaCargoByUserId(idUsuario)).thenReturn(1);
-        ;
-        verify(usuarioService).getIdLoggedUser();
-        verify(pedidoRepository).existsEmpresaCargoByUserId(idUsuario);
-    }
-
     @Test
     @DisplayName("sucessoAcharPorId")
     void sucessoAcharPorId() throws Exception {
-        Usuario usuario= MockUsuario.retornarUsuario();
+        Usuario usuario = MockUsuario.retornarUsuario();
+        Pedido pedidoEntity = MockPedido.retornaPedidoEntity();
+        pedidoEntity.setUsuario(usuario);
+        List<PedidoXProduto> pedidoXProduto = MockPedido.retornaListaProdutoXPedido(pedidoEntity, MockProduto.retornarProdutoEntity());
 
-        Pedido pedidoRetornado = MockPedido.retornaPedidoEntity();
-
+        PedidoDTO pedidoDTO = MockPedido.retornaPedidoDTOPorEntity(pedidoEntity);
 
         when(usuarioService.getIdLoggedUser()).thenReturn(usuario.getIdUsuario());
-        when(pedidoRepository.findEmpresaIdByUserId(usuario.getIdUsuario())).thenReturn(MockPedido.retornaListaPedidoId());
-        when(pedidoRepository.findById(pedidoRetornado.getIdPedido())).thenReturn(Optional.of(pedidoRetornado));
-
-        Pedido resultado = pedidoService.findById(pedidoRetornado.getIdPedido());
-
-        assertEquals(pedidoRetornado, resultado);
+        when(pedidoRepository.findById(pedidoEntity.getIdPedido())).thenReturn(Optional.of(pedidoEntity));
+        when(pedidoXProdutoRepository.findAllByIdPedido(pedidoEntity.getIdPedido())).thenReturn(pedidoXProduto);
+        PedidoDTO pedidoRetornado = pedidoService.getById(pedidoEntity.getIdPedido());
 
         verify(usuarioService).getIdLoggedUser();
-        verify(pedidoRepository).findEmpresaIdByUserId(usuario.getIdUsuario());
         verify(pedidoRepository).findById(pedidoRetornado.getIdPedido());
+        Assertions.assertAll(
+                () -> assertEquals(pedidoRetornado.getIdPedido(), pedidoDTO.getIdPedido()),
+                () -> assertEquals(pedidoRetornado.getUsuario().getIdUsuario(), pedidoDTO.getUsuario().getIdUsuario()),
+                () -> assertEquals(pedidoRetornado.getProdutos().size(), pedidoDTO.getProdutos().size())
+        );
+
     }
 
     @Test
@@ -134,8 +122,9 @@ class PedidoServiceTest {
 //        Integer idPedido = 1;
         PedidoCreateDTO pedidoCreateDTO = MockPedido.retornarPedidoCreateDto();
         Pedido pedido = MockPedido.retornaPedidoEntity();
+        Produto produto = MockProduto.retornarProdutoEntity();
         List<Produto> produtosBanco = MockProduto.retornarListaProdutos();
-        List<PedidoXProduto> produtos = MockPedido.retornaListaProdutoXPedido();
+        List<PedidoXProduto> produtos = MockPedido.retornaListaProdutoXPedido(pedido,produto);
         Usuario usuario = MockUsuario.retornarUsuario();
         usuario.setIdUsuario(loggedUserId);
         Endereco endereco = MockEndereco.retornarEndereco();
