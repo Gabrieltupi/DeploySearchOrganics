@@ -1,7 +1,7 @@
 package com.vemser.dbc.searchorganic.controller;
 
 import com.vemser.dbc.searchorganic.dto.log.LogDTO;
-import com.vemser.dbc.searchorganic.service.LogService;
+import com.vemser.dbc.searchorganic.middleware.LogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
