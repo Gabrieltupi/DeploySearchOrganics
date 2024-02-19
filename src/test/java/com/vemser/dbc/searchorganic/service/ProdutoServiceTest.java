@@ -2,6 +2,7 @@ package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.ProdutoPedidoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -93,18 +95,50 @@ class ProdutoServiceTest {
     @Test
     @DisplayName("atualizacaoDoProdutoDeveTerSucesso")
     public void atualizacaoDoProdutoDeveTerSucesso() throws Exception {
-        ProdutoUpdateDTO novoProduto= MockProduto.retornarProdutoUpdateDto();
-        ProdutoDTO produtoExistente= MockProduto.retornarProdutoDTO();
-        Produto produtoConvertido= MockProduto.retornarProdutoEntity();
+        Produto produtoEntity = MockProduto.retornarProdutoEntity();
 
-        when(produtoService.findById(produtoExistente.getIdProduto())).thenReturn(produtoExistente);
-        when(objectMapper.convertValue(novoProduto, Produto.class)).thenReturn(produtoConvertido);
-        when(produtoRepository.save(produtoConvertido)).thenReturn(produtoConvertido);
+        ProdutoUpdateDTO produtoUpdateDTO = MockProduto.retornarProdutoUpdateDto();
+        ProdutoDTO novoProduto = MockProduto.retornarNovoProdutoPorUpdate(produtoEntity.getIdProduto() ,produtoUpdateDTO);
+        ProdutoDTO produtoAntigo = MockProduto.retornarProdutoDTOPorEntity(produtoEntity);
 
-        ProdutoDTO produtoDTOAtualizado = produtoService.update(produtoExistente.getIdProduto(), novoProduto);
 
-        assertEquals(produtoConvertido.getIdProduto(), produtoDTOAtualizado.getIdProduto());
-        assertNotEquals(novoProduto,produtoExistente);
+        Integer idProduto = produtoEntity.getIdProduto();
+        Empresa empresa = MockProduto.retornarEmpresaEntity();
+
+        when(objectMapper.convertValue(produtoEntity, ProdutoDTO.class)).thenReturn(novoProduto);
+        when(produtoRepository.findById(idProduto)).thenReturn(Optional.of(produtoEntity));
+        when(produtoRepository.save(produtoEntity)).thenReturn(produtoEntity);
+        when(empresaService.getById(empresa.getIdEmpresa())).thenReturn(empresa);
+        when(usuarioService.getIdLoggedUser()).thenReturn(empresa.getIdUsuario());
+
+        ProdutoDTO produtoDTOAtualizado = produtoService.update(idProduto, produtoUpdateDTO);
+
+        assertEquals(produtoEntity.getIdProduto(), produtoDTOAtualizado.getIdProduto());
+        assertNotEquals(produtoDTOAtualizado, produtoAntigo);
+
+    }
+    @Test
+    @DisplayName("atualizacaoDoProdutoDeveTerSucesso")
+    public void deveObterMensagensEmail() throws Exception {
+        List<ProdutoPedidoDTO> produtoPedidoDTOS = MockProduto.retornaListaProdutoPedidoDTO();
+        String mensagem = produtoService.getMensagemProdutoEmail(produtoPedidoDTOS);
+
+        assertNotNull(mensagem);
+        assertEquals(70, mensagem.length());
+
+    }
+    @Test
+    @DisplayName("atualizacaoDoProdutoDeveFalhar")
+    public void atualizacaoDoProdutoDeveFalhar() throws Exception {
+        Produto produtoEntity = MockProduto.retornarProdutoEntity();
+        ProdutoUpdateDTO produtoUpdateDTO = MockProduto.retornarProdutoUpdateDto();
+        Integer idProduto = produtoEntity.getIdProduto();
+        Empresa empresa = MockProduto.retornarEmpresaEntity();
+
+        when(produtoRepository.findById(idProduto)).thenReturn(Optional.of(produtoEntity));
+        when(empresaService.getById(empresa.getIdEmpresa())).thenReturn(empresa);
+
+        assertThrows(RegraDeNegocioException.class, () ->  produtoService.update(idProduto, produtoUpdateDTO));
 
     }
 
@@ -174,16 +208,32 @@ class ProdutoServiceTest {
     @Test
     @DisplayName("sucessoAoDeletar")
     public void sucessoAoDeletar() throws Exception {
-        ProdutoDTO produtoDTOExistente = MockProduto.retornarProdutoDTO();
+        Produto produto = MockProduto.retornarProdutoEntity();
+        Integer idProduto = produto.getIdProduto();
         Empresa empresa = MockProduto.retornarEmpresaEntity();
 
-        when(produtoService.findById(produtoDTOExistente.getIdProduto())).thenReturn(produtoDTOExistente);
-        when(empresaService.getById(produtoDTOExistente.getIdEmpresa())).thenReturn(empresa);
+        when(produtoRepository.findById(idProduto)).thenReturn(Optional.of(produto));
+        when(empresaService.getById(empresa.getIdEmpresa())).thenReturn(empresa);
         when(usuarioService.getIdLoggedUser()).thenReturn(empresa.getIdUsuario());
 
-        produtoService.delete(produtoDTOExistente.getIdProduto());
 
-        verify(produtoRepository, times(1)).deleteById(produtoDTOExistente.getIdProduto());
+        produtoService.delete(idProduto);
+
+        verify(produtoRepository, times(1)).delete(produto);
+    }
+    @Test
+    @DisplayName("falhaAoDeletar")
+    public void falhaAoDeletar() throws Exception {
+        Produto produto = MockProduto.retornarProdutoEntity();
+        Integer idProduto = produto.getIdProduto();
+        Empresa empresa = MockProduto.retornarEmpresaEntity();
+
+        when(produtoRepository.findById(idProduto)).thenReturn(Optional.of(produto));
+        when(empresaService.getById(empresa.getIdEmpresa())).thenReturn(empresa);
+
+        assertThrows(RegraDeNegocioException.class, () -> {
+            produtoService.delete(idProduto);
+        });
     }
 
     @Test

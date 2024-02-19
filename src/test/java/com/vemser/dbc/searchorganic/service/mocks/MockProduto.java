@@ -2,6 +2,7 @@ package com.vemser.dbc.searchorganic.service.mocks;
 
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.ProdutoCarrinhoCreate;
+
 import com.vemser.dbc.searchorganic.dto.pedido.ProdutoPedidoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
@@ -126,6 +127,19 @@ public class MockProduto {
         return produtoDTOS;
     }
 
+    public static  List<ProdutoPedidoDTO> retornaListaProdutoPedidoDTO(){
+        List<ProdutoPedidoDTO> produtoPedidoDTOS = new ArrayList<>();
+        ProdutoResponsePedidoDTO produto  = new ProdutoResponsePedidoDTO();
+        produto.setNome("produto1");
+        produto.setPreco(BigDecimal.valueOf(5));
+        Integer quantidade=  5;
+        ProdutoPedidoDTO produtoPedidoDTO = new ProdutoPedidoDTO(produto, quantidade);
+        produtoPedidoDTOS.add(produtoPedidoDTO);
+
+        return produtoPedidoDTOS;
+
+    }
+
     public static List<Produto> criarProdutos(Integer idEmpresa){
         List<Produto> produtos = new ArrayList<>();
         Produto produto = new Produto();
@@ -142,5 +156,38 @@ public class MockProduto {
         produtos.add(produto);
 
         return produtos;
+    }
+
+
+    public static  ProdutoDTO retornarProdutoDTOPorEntity(Produto produto){
+        ProdutoDTO produtoDTO = new ProdutoDTO();
+        produtoDTO.setIdProduto(produto.getIdProduto());
+        produtoDTO.setNome(produto.getNome());
+        produtoDTO.setPreco(produto.getPreco());
+        produtoDTO.setDescricao(produto.getDescricao());
+        produtoDTO.setCategoria(produto.getCategoria());
+        produtoDTO.setQuantidade(produto.getQuantidade());
+        produtoDTO.setUrlImagem(produto.getUrlImagem());
+        produtoDTO.setTaxa(produto.getTaxa());
+        produtoDTO.setTipoAtivo(produto.getTipoAtivo());
+        produtoDTO.setIdEmpresa(produto.getIdEmpresa());
+
+        return produtoDTO;
+    }
+
+    public static ProdutoDTO retornarNovoProdutoPorUpdate(Integer id, ProdutoUpdateDTO produtoUpdateDTO) {
+        ProdutoDTO produtoDTO = new ProdutoDTO();
+        produtoDTO.setIdProduto(id);
+        produtoDTO.setIdEmpresa(produtoUpdateDTO.getIdEmpresa());
+        produtoDTO.setNome(produtoUpdateDTO.getNome());
+        produtoDTO.setPreco(produtoUpdateDTO.getPreco());
+        produtoDTO.setDescricao(produtoUpdateDTO.getDescricao());
+        produtoDTO.setCategoria(produtoUpdateDTO.getCategoria());
+        produtoDTO.setQuantidade(produtoUpdateDTO.getQuantidade());
+        produtoDTO.setUrlImagem(produtoUpdateDTO.getUrlImagem());
+        produtoDTO.setTaxa(produtoUpdateDTO.getTaxa());
+        produtoDTO.setTipoAtivo(produtoUpdateDTO.getTipoAtivo());
+
+        return produtoDTO;
     }
 }
