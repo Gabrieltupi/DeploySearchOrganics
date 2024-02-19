@@ -49,8 +49,7 @@ public class PedidoService {
 
     public Pedido findById(Integer id) throws Exception {
         if(isEmpresa()) {
-
-            List<Integer> pedidoIdDoEmpresaLogado = pedidoRepository.findEmpresaIdByUserId(getIdLoggedUser());
+            List<Integer> pedidoIdDoEmpresaLogado = pedidoRepository.findEmpresaIdByUserId(usuarioService.getIdLoggedUser());
             if(pedidoIdDoEmpresaLogado.isEmpty()){
                 throw new RegraDeNegocioException("não há pedidos para sua empresa.");
             }
@@ -63,7 +62,7 @@ public class PedidoService {
             }
 
         }else {
-            Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
+            Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(usuarioService.getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Pedido do usuário logado não encontrado"));
 
             if (pedidoIdDoUsuarioLogado.equals(id) || isAdmin()) {
                 return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
@@ -75,7 +74,7 @@ public class PedidoService {
 
 
     public boolean isAdmin() {
-        Integer userId = getIdLoggedUser();
+        Integer userId = usuarioService.getIdLoggedUser();
         Integer count = pedidoRepository.existsAdminCargoByUserId(userId);
 
         if (count > 0) {
@@ -86,7 +85,7 @@ public class PedidoService {
     }
 
     public boolean isEmpresa(){
-        Integer userId= getIdLoggedUser();
+        Integer userId= usuarioService.getIdLoggedUser();
         Integer count= pedidoRepository.existsEmpresaCargoByUserId(userId);
 
         if(count>0){
@@ -95,11 +94,6 @@ public class PedidoService {
             return false;
         }
     }
-
-    public Integer getIdLoggedUser() {
-        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-    }
-
 
 
     public PedidoDTO getById(Integer idPedido) throws Exception {
@@ -114,7 +108,7 @@ public class PedidoService {
 
     public PedidoDTO save(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
 
-        Integer loggedUserId = getIdLoggedUser();
+        Integer loggedUserId = usuarioService.getIdLoggedUser();
 
         if (loggedUserId.equals(id) || isAdmin()) {
         Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
@@ -178,7 +172,7 @@ public class PedidoService {
     }
 
     public void cancelarPedido(Integer idPedido) throws Exception {
-        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
+        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(usuarioService.getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
 
         if (pedidoIdDoUsuarioLogado.equals(idPedido) || isAdmin()) {
         Pedido pedido = findById(idPedido);
@@ -201,7 +195,7 @@ public class PedidoService {
     public List<PedidoDTO> findAllByIdUsuario(Integer idUsuario) throws Exception {
 
 
-        Integer loggedUserId = getIdLoggedUser();
+        Integer loggedUserId = usuarioService.getIdLoggedUser();
 
         if (loggedUserId.equals(idUsuario) || isAdmin()) {
 
@@ -240,7 +234,7 @@ public class PedidoService {
 
 
     public PedidoDTO pagamento(Integer idPedido, PagamentoDTO pagamentoDTO) throws Exception {
-        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
+        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(usuarioService.getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
 
         if (pedidoIdDoUsuarioLogado.equals(idPedido) || isAdmin()) {
 
