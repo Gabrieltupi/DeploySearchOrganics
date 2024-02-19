@@ -69,35 +69,8 @@ public class MockPedido {
     }
 
     public static PedidoDTO retornaPedidoDto(){
-        PedidoDTO pedidoDto= new PedidoDTO();
-
-        pedidoDto.setIdPedido(1);
-
-        Usuario usuario= MockUsuario.retornarUsuario();
-        UsuarioDTO usuarioDto = MockUsuario.retornarUsuarioDTO(usuario);
-        pedidoDto.setUsuario(usuarioDto);
-
-        Endereco endereco=MockEndereco.retornarEndereco();
-        EnderecoDTO enderecoDto= MockEndereco.retornarEnderecoDTO(endereco);
-
-        pedidoDto.setEndereco(enderecoDto);
-
-        Empresa empresa= MockEmpresa.retornarEmpresa();
-        EmpresaDTO empresaDto= MockEmpresa.retornarEmpresaDTO(empresa);
-
-        pedidoDto.setEmpresaDTO(empresaDto);
-
-        pedidoDto.setCupom(new CupomDTO(1,"cupom10", TipoAtivo.S,"cupom 10 de desconto", BigDecimal.valueOf(10),empresa.getIdEmpresa()));
-        pedidoDto.setProdutos(retornarProdutoPedidoDto());
-
-        pedidoDto.setFormaPagamento(FormaPagamento.CREDITO);
-        pedidoDto.setStatusPedido(StatusPedido.A_CAMINHO);
-        pedidoDto.setDataDePedido(LocalDate.of(2024,02,19));
-        pedidoDto.setDataEntrega(LocalDate.of(2024,02,22));
-        pedidoDto.setPrecoFrete(BigDecimal.valueOf(12.0));
-        pedidoDto.setTotal(BigDecimal.valueOf(44.0));
-        pedidoDto.setPrecoCarrinho(BigDecimal.valueOf(32.0));
-        pedidoDto.setCodigoDeRastreio("1V5387ES1UP8");
+        Pedido pedido = retornaPedidoEntity();
+        PedidoDTO pedidoDto = retornaPedidoDTOPorEntity(pedido, retornaListaProdutoXPedido(pedido, MockProduto.retornarProdutoEntity()));
 
         return pedidoDto;
     }
@@ -156,13 +129,12 @@ public class MockPedido {
     public static List<PedidoXProduto> retornaListaProdutoXPedido(Pedido pedido, Produto produto){
         return List.of(retornaPedidoXProduto(pedido, produto),retornaPedidoXProduto(pedido, produto));
     }
-    public static PedidoDTO retornaPedidoDTOPorEntity(Pedido pedido){
+    public static PedidoDTO retornaPedidoDTOPorEntity(Pedido pedido,   List<PedidoXProduto> pedProdEntity){
         UsuarioDTO usuarioDTO = MockUsuario.retornarUsuarioDTO(pedido.getUsuario());
         EnderecoDTO enderecoDTO = MockEndereco.retornarEnderecoDTO(pedido.getEndereco());
         EmpresaDTO empresaDTO = MockEmpresa.retornarEmpresaDTO(pedido.getEmpresa());
         CupomDTO cupomDTO = MockCupom.retornarCupomDTO(pedido.getCupom());
-        Produto produto = MockProduto.retornarProdutoEntity();
-        List<ProdutoPedidoDTO> produtos = retornarProdutosPedidoDTO(retornaListaProdutoXPedido(pedido, produto));
+        List<ProdutoPedidoDTO> produtos = retornarProdutosPedidoDTO(pedProdEntity);
 
         PedidoDTO pedidoDTO = new PedidoDTO(pedido, usuarioDTO, enderecoDTO, cupomDTO, produtos, empresaDTO);
 

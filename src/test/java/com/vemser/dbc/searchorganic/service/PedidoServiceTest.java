@@ -77,7 +77,7 @@ class PedidoServiceTest {
         pedidoEntity.setUsuario(usuario);
         List<PedidoXProduto> pedidoXProduto = MockPedido.retornaListaProdutoXPedido(pedidoEntity, MockProduto.retornarProdutoEntity());
 
-        PedidoDTO pedidoDTO = MockPedido.retornaPedidoDTOPorEntity(pedidoEntity);
+        PedidoDTO pedidoDTO = MockPedido.retornaPedidoDTOPorEntity(pedidoEntity, pedidoXProduto);
 
         when(usuarioService.getIdLoggedUser()).thenReturn(usuario.getIdUsuario());
         when(pedidoRepository.findById(pedidoEntity.getIdPedido())).thenReturn(Optional.of(pedidoEntity));
@@ -86,6 +86,7 @@ class PedidoServiceTest {
 
         verify(usuarioService).getIdLoggedUser();
         verify(pedidoRepository).findById(pedidoRetornado.getIdPedido());
+        assertEquals(pedidoDTO, pedidoRetornado);
         Assertions.assertAll(
                 () -> assertEquals(pedidoRetornado.getIdPedido(), pedidoDTO.getIdPedido()),
                 () -> assertEquals(pedidoRetornado.getUsuario().getIdUsuario(), pedidoDTO.getUsuario().getIdUsuario()),
