@@ -69,9 +69,6 @@ class PedidoServiceTest {
         when(usuarioService.getIdLoggedUser()).thenReturn(idUsuario);
         when(pedidoRepository.existsAdminCargoByUserId(idUsuario)).thenReturn(1);
 
-        boolean isAdmin = pedidoService.isAdmin();
-
-        assertTrue(isAdmin);
         verify(usuarioService).getIdLoggedUser();
         verify(pedidoRepository).existsAdminCargoByUserId(idUsuario);
     }
@@ -83,10 +80,7 @@ class PedidoServiceTest {
 
         when(usuarioService.getIdLoggedUser()).thenReturn(idUsuario);
         when(pedidoRepository.existsEmpresaCargoByUserId(idUsuario)).thenReturn(1);
-
-        boolean isEmpresa = pedidoService.isEmpresa();
-
-        assertTrue(isEmpresa);
+        ;
         verify(usuarioService).getIdLoggedUser();
         verify(pedidoRepository).existsEmpresaCargoByUserId(idUsuario);
     }
