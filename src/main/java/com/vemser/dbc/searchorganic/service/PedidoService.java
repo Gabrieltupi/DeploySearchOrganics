@@ -48,28 +48,7 @@ public class PedidoService {
     private final BigDecimal TAXA_SERVICO = new BigDecimal(5);
 
     public Pedido findById(Integer id) throws Exception {
-        if(isEmpresa()) {
-            List<Integer> pedidoIdDoEmpresaLogado = pedidoRepository.findEmpresaIdByUserId(usuarioService.getIdLoggedUser());
-            if(pedidoIdDoEmpresaLogado.isEmpty()){
-                throw new RegraDeNegocioException("não há pedidos para sua empresa.");
-            }
-
-
-            if (pedidoIdDoEmpresaLogado.contains(id) || isAdmin()) {
-                return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
-            } else {
-                throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
-            }
-
-        }else {
-            Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(usuarioService.getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Pedido do usuário logado não encontrado"));
-
-            if (pedidoIdDoUsuarioLogado.equals(id) || isAdmin()) {
-                return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
-            } else {
-                throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
-            }
-        }
+        return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
     }
 
 
@@ -97,7 +76,15 @@ public class PedidoService {
 
 
     public PedidoDTO getById(Integer idPedido) throws Exception {
-        return retornarDto(findById(idPedido));
+        Pedido pedido = findById(idPedido);
+        Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
+        Integer idUsuarioPedido = pedido.getUsuario().getIdUsuario();
+        Integer idUsuarioEmpresa = pedido.getEmpresa().getIdUsuario();
+
+        if(!(idUsuarioLogado.equals(idUsuarioPedido)) && !(idUsuarioLogado.equals(idUsuarioEmpresa)) ){
+            throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
+        }
+        return retornarDto(pedido);
     }
 
     public List<PedidoDTO> findAll() throws Exception {
