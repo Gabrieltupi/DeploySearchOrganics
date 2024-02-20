@@ -26,6 +26,10 @@ public class RelatorioService implements IRelatorioService {
     private final ObjectMapper objectMapper;
     private final RelatorioMongoRepository relatorioMongoRepository;
 
+    public List<Relatorio<?>> findAllRelatorios() {
+        return relatorioMongoRepository.findAll();
+    }
+
     public Page<RelatorioProdutoPrecoDTO> findAllProdutosByPreco(Pageable pageable) throws Exception {
         Page<Object[]> resultado = relatorioRepository.findAllProdutosByPreco(pageable);
 
@@ -55,7 +59,7 @@ public class RelatorioService implements IRelatorioService {
             RelatorioProdutoQuantidadeDTO relatorioDTO = new RelatorioProdutoQuantidadeDTO(nome, quantidade);
             relatorioDTOs.add(relatorioDTO);
         }
-        saveRelatorio(relatorioDTOs, "Relatório de produtos por pedido por quantidade");
+        saveRelatorio(relatorioDTOs, "Relatório de produtos por quantidade");
 
         return new PageImpl<>(relatorioDTOs, pageable, resultado.getTotalElements());
     }
@@ -90,7 +94,7 @@ public class RelatorioService implements IRelatorioService {
             RelatorioProdutoPedidosMesDTO relatorioDTO = new RelatorioProdutoPedidosMesDTO(nome, mes, pedidos);
             relatorioDTOs.add(relatorioDTO);
         }
-        saveRelatorio(relatorioDTOs, "Relatório de produtos por pedido no mês");
+        saveRelatorio(relatorioDTOs, "Relatório de produtos por pedidos no mês");
 
         return new PageImpl<>(relatorioDTOs, pageable, resultado.getTotalElements());
     }
