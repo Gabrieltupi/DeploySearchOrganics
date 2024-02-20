@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.log;
 
+import com.vemser.dbc.searchorganic.utils.TipoLog;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class LogDTO {
     private String id;
-    private String nome;
+    private TipoLog tipoLog;
+    private String idUsuario;
+    private String acao;
+    private String payload;
     private LocalDateTime data;
 }
