@@ -19,12 +19,5 @@ public interface CupomRepository extends JpaRepository<Cupom, Integer> {
             "WHERE uc2.ID_USUARIO = :userId AND uc2.ID_CARGO = 1", nativeQuery = true)
     Integer existsAdminCargoByUserId(@Param("userId") Integer userId);
 
-    @Query(value = "SELECT EC.ID_CUPOM " +
-            "FROM EMPRESA E " +
-            "LEFT JOIN CUPOM EC ON E.ID_EMPRESA = EC.ID_EMPRESA " +
-            "WHERE E.ID_USUARIO = :userId " +
-            "AND EC.ATIVO = 'S'", nativeQuery = true)
-    Optional<Integer> findCupomIdByUserId(@Param("userId") Integer userId);
-
 
 }

@@ -5,7 +5,6 @@ import com.vemser.dbc.searchorganic.dto.empresa.CreateEmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaProdutosDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.UpdateEmpresaDTO;
-import com.vemser.dbc.searchorganic.dto.pedido.PedidoDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Cargo;
 import com.vemser.dbc.searchorganic.model.Empresa;
@@ -13,14 +12,13 @@ import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.CargoRepository;
 import com.vemser.dbc.searchorganic.repository.EmpresaRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IEmpresaService;
-import com.vemser.dbc.searchorganic.utils.StatusPedido;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,22 +33,29 @@ public class EmpresaService implements IEmpresaService {
         return empresas.map(this::retornarDto);
     }
 
+    public boolean isEmpresa() {
+        Integer userId = getIdLoggedUser();
+        Integer count = empresaRepository.existsAdminCargoByUserId(userId);
 
-    public EmpresaDTO buscaIdEmpresa(Integer id) throws Exception {
-        if(getIdLoggedUser().equals(id)||isAdmin()){
-            return findById(id);
-        }else{
-            throw new RegraDeNegocioException("Só é possivel retornar seus próprios dados.");
+        if (count > 0) {
+            return true;
         }
+        return false;
+    }
+
+    private boolean hasRoleEmpresa(Usuario usuario) {
+        Set<Cargo> cargos = usuario.getCargos();
+        for (Cargo cargo : cargos) {
+            if ("ROLE_EMPRESA".equals(cargo.getNome())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public EmpresaDTO findById(Integer idEmpresa) throws Exception {
-        if(isUsuario()) {
-            return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
-        } else{
-            return buscaIdEmpresa(idEmpresa);
-        }
-        }
+        return retornarDto(empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada")));
+    }
 
 
     public boolean isAdmin() {
@@ -64,30 +69,14 @@ public class EmpresaService implements IEmpresaService {
     }
 
 
-    public boolean isUsuario() {
-        Integer userId = getIdLoggedUser();
-        Integer count = empresaRepository.existsEmpresaCargoByUserId(userId);
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-
     public Integer getIdLoggedUser() {
-        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        return usuarioService.getIdLoggedUser();
     }
-
-
 
 
     public Empresa getById(Integer idEmpresa) throws Exception {
         return empresaRepository.findById(idEmpresa).orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada"));
     }
-
-
 
     public EmpresaDTO save(Integer idUsuario, CreateEmpresaDTO empresaDto) throws Exception {
         Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
@@ -101,38 +90,41 @@ public class EmpresaService implements IEmpresaService {
     }
 
     public EmpresaDTO update(Integer idEmpresa, UpdateEmpresaDTO empresaDto) throws Exception {
-        findById(idEmpresa);
+        Usuario usuario = usuarioService.getLoggedUser();
+        if ((hasRoleEmpresa(usuario) && getIdLoggedUser().equals(empresaDto.getIdUsuario())) || isAdmin()) {
 
-        Empresa empresa = objectMapper.convertValue(empresaDto, Empresa.class);
-        empresa.setIdEmpresa(idEmpresa);
+            Empresa empresa = getById(idEmpresa);
+            empresa.setSetor(empresaDto.getSetor());
+            empresa.setCnpj(empresaDto.getCnpj());
+            empresa.setNomeFantasia(empresaDto.getNomeFantasia());
+            empresa.setRazaoSocial(empresaDto.getRazaoSocial());
+            empresa.setInscricaoEstadual(empresaDto.getInscricaoEstadual());
 
-        return retornarDto(empresaRepository.save(empresa));
+            return retornarDto(empresaRepository.save(empresa));
+        }
+        throw new RegraDeNegocioException("voce só pode atualizar sua propria empresa");
     }
 
     public void delete(Integer idEmpresa) throws Exception {
-
+        Empresa empresa = getById(idEmpresa);
         Integer loggedUserId = getIdLoggedUser();
 
-        if (loggedUserId.equals(idEmpresa) || isAdmin()) {
-            findById(idEmpresa);
-        empresaRepository.deleteById(idEmpresa);
-
-        } else {
-            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
+        if (empresa.getIdUsuario().equals(loggedUserId) || isAdmin()) {
+            empresaRepository.delete(empresa);
+            return;
         }
 
-
-
+        throw new RegraDeNegocioException("Apenas o usuário dono da empresa ou um administrador pode remover a empresa.");
     }
 
-    public Page<EmpresaProdutosDTO> findAllWithProdutos(Pageable pageable) throws Exception {
+    public Page<EmpresaProdutosDTO> findAllWithProdutos(Pageable pageable) {
         Page<Empresa> empresas = empresaRepository.findAllWithProdutos(pageable);
         return empresas.map(empresa -> objectMapper.convertValue(empresa, EmpresaProdutosDTO.class));
     }
 
     public EmpresaProdutosDTO findByIdWithProdutos(Integer idEmpresa) throws Exception {
-        findById(idEmpresa);
-        Optional<Empresa> empresa = empresaRepository.findByIdWithProdutos(idEmpresa);
+        Empresa empresa = empresaRepository.findByIdWithProdutos(idEmpresa)
+                .orElseThrow(() -> new RegraDeNegocioException("Empresa não encontrada"));
         return objectMapper.convertValue(empresa, EmpresaProdutosDTO.class);
     }
 

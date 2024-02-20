@@ -6,6 +6,7 @@ import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.*;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
+import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoResponsePedidoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
@@ -26,6 +27,7 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,80 +49,62 @@ public class PedidoService {
     private final BigDecimal TAXA_SERVICO = new BigDecimal(5);
 
     public Pedido findById(Integer id) throws Exception {
-        if(isEmpresa()) {
-
-            List<Integer> pedidoIdDoEmpresaLogado = pedidoRepository.findEmpresaIdByUserId(getIdLoggedUser());
-            if(pedidoIdDoEmpresaLogado.isEmpty()){
-                throw new RegraDeNegocioException("não há pedidos para sua empresa.");
-            }
-
-
-            if (pedidoIdDoEmpresaLogado.contains(id) || isAdmin()) {
-                return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
-            } else {
-                throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
-            }
-
-        }else {
-            Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
-
-            if (pedidoIdDoUsuarioLogado.equals(id) || isAdmin()) {
-                return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
-            } else {
-                throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
-            }
-        }
+        return pedidoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado: " + id));
     }
-
-
-    public boolean isAdmin() {
-        Integer userId = getIdLoggedUser();
-        Integer count = pedidoRepository.existsAdminCargoByUserId(userId);
-
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isEmpresa(){
-        Integer userId= getIdLoggedUser();
-        Integer count= pedidoRepository.existsEmpresaCargoByUserId(userId);
-
-        if(count>0){
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    public Integer getIdLoggedUser() {
-        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-    }
-
 
 
     public PedidoDTO getById(Integer idPedido) throws Exception {
-        return retornarDto(findById(idPedido));
+        Pedido pedido = findById(idPedido);
+        Integer idUsuarioPedido = pedido.getUsuario().getIdUsuario();
+
+        if(!(verificarSeAdminOuUsuario(idUsuarioPedido))){
+            throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
+        }
+        return retornarDto(pedido);
+    }
+
+    public void cancelarPedido(Integer idPedido) throws Exception {
+        PedidoDTO pedidoDto = getById(idPedido);
+        Pedido pedido = objectMapper.convertValue(pedidoDto, Pedido.class);
+        Integer idUsuarioPedido = pedido.getUsuario().getIdUsuario();
+        Integer idEmpresaPedido = pedido.getEmpresa().getIdUsuario();
+
+        if(!verificarSeEmpresaAdminUsuario(idUsuarioPedido, idEmpresaPedido)){
+            throw new RegraDeNegocioException("Você não tem permissão pra cancelar este pedido");
+        }
+
+        List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
+        for (PedidoXProduto pedidoXProduto : produtos) {
+            Produto produto = pedidoXProduto.getProduto();
+            produto.setQuantidade(produto.getQuantidade().add(BigDecimal.valueOf(pedidoXProduto.getQuantidade())));
+            produtoRepository.save(produto);
+        }
+
+        pedidoRepository.cancelarPedido(idPedido);
+
     }
 
     public List<PedidoDTO> findAll() throws Exception {
+        Usuario admin = obterAdmin();
+        Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
+        if(!(admin.getIdUsuario().equals(idUsuarioLogado))){
+            throw new RegraDeNegocioException("Apenas o administrador pode acessar este recurso");
+        }
         return pedidoRepository.findAll().stream()
                 .map(this::retornarDto)
                 .collect(Collectors.toList());
     }
 
-    public PedidoDTO save(Integer id, PedidoCreateDTO pedidoCreateDTO) throws Exception {
-
-        Integer loggedUserId = getIdLoggedUser();
-
-        if (loggedUserId.equals(id) || isAdmin()) {
+    public PedidoDTO save(Integer idUsuario, PedidoCreateDTO pedidoCreateDTO) throws Exception {
         Pedido pedido = objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
         List<Produto> produtosBanco = new ArrayList<>();
-        List<PedidoXProduto> produtos = obterProdutos(pedidoCreateDTO.getProdutosCarrinho(), produtosBanco);
 
-        Usuario usuario = usuarioService.obterUsuarioPorId(id);
+        List<PedidoXProduto> produtos = obterProdutos(pedidoCreateDTO.getProdutosCarrinho(), produtosBanco);
+        Usuario usuario = usuarioService.obterUsuarioPorId(idUsuario);
+        if(verificarSeAdminOuUsuario(idUsuario)){
+            throw new RegraDeNegocioException("Você não tem permissão pra acessar este recurso");
+        }
+
         Endereco endereco = enderecoService.getById(pedidoCreateDTO.getIdEndereco());
         Empresa empresa = empresaService.getById(pedidoCreateDTO.getIdEmpresa());
 
@@ -132,11 +116,11 @@ public class PedidoService {
             Cupom cupom = cupomService.getById(pedidoCreateDTO.getIdCupom());
             pedido.setCupom(cupom);
         }
-
-        for (IValidarPedido validador : validarPedidoList) {
-            validador.validar(pedido, id, produtos);
+        if (this.validarPedidoList != null) {
+            for (IValidarPedido validador : validarPedidoList) {
+                validador.validar(pedido, usuario.getIdUsuario(), produtos);
+            }
         }
-
 
         pedido = pedidoRepository.save(pedido);
 
@@ -154,14 +138,16 @@ public class PedidoService {
         this.emailPedidoCriado(pedidoDTO, usuario);
 
         return pedidoDTO;
-
-    } else {
-        throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
-    }
     }
 
     public PedidoDTO update(Integer id, PedidoUpdateDTO pedidoAtualizar) throws Exception {
         Pedido pedidoEntity = findById(id);
+
+        if(!verificarSeAdminOuUsuario(pedidoEntity.getUsuario().getIdUsuario())){
+            throw new RegraDeNegocioException("Você não tem permissão pra editar este pedido");
+        }
+
+
         Endereco endereco = enderecoService.getById(pedidoAtualizar.getIdEndereco());
 
         pedidoEntity.setEndereco(endereco);
@@ -176,33 +162,15 @@ public class PedidoService {
         return retornarDto(pedidoEntity);
     }
 
-    public void cancelarPedido(Integer idPedido) throws Exception {
-        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
 
-        if (pedidoIdDoUsuarioLogado.equals(idPedido) || isAdmin()) {
-        Pedido pedido = findById(idPedido);
-        List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
-        for (PedidoXProduto pedidoXProduto : produtos) {
-            Produto produto = pedidoXProduto.getProduto();
 
-            produto.setQuantidade(produto.getQuantidade().add(BigDecimal.valueOf(pedidoXProduto.getQuantidade())));
 
-            produtoRepository.save(produto);
-        }
 
-        pedidoRepository.cancelarPedido(idPedido);
-        } else {
-            throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
-        }
-
-    }
 
     public List<PedidoDTO> findAllByIdUsuario(Integer idUsuario) throws Exception {
-
-
-        Integer loggedUserId = getIdLoggedUser();
-
-        if (loggedUserId.equals(idUsuario) || isAdmin()) {
+         if(!verificarSeAdminOuUsuario(idUsuario)){
+             throw new RegraDeNegocioException("Você não tem permissão pra acessar este recurso");
+         }
 
         List<Pedido> pedidos = pedidoRepository.findAllByUsuario_IdUsuario(idUsuario);
 
@@ -215,16 +183,13 @@ public class PedidoService {
 
         return pedidoDtos;
 
-
-        } else {
-            throw new RegraDeNegocioException("Apenas o usuário dono da conta ou um administrador pode remover o usuário.");
-        }
     }
 
-    private List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
+    public List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
         List<PedidoXProduto> produtos = new ArrayList<>();
         for (ProdutoCarrinhoCreate produtoCarrinhoCreate : produtosCarrinhoCreate) {
-            Produto produto = produtoService.getById(produtoCarrinhoCreate.getIdProduto());
+            ProdutoDTO produtoDto = produtoService.findById(produtoCarrinhoCreate.getIdProduto());
+            Produto produto =  objectMapper.convertValue(produtoDto,Produto.class);
             produtosBanco.add(produto);
             PedidoXProduto pedidoXProduto = new PedidoXProduto();
             pedidoXProduto.setProduto(produto);
@@ -238,11 +203,12 @@ public class PedidoService {
 
 
     public PedidoDTO pagamento(Integer idPedido, PagamentoDTO pagamentoDTO) throws Exception {
-        Integer pedidoIdDoUsuarioLogado = pedidoRepository.findUsuarioIdByUserId(getIdLoggedUser()).orElseThrow(() -> new RegraDeNegocioException("Endereço do usuário logado não encontrado"));
-
-        if (pedidoIdDoUsuarioLogado.equals(idPedido) || isAdmin()) {
 
         Pedido pedido = findById(idPedido);
+
+        if(!verificarSeAdminOuUsuario(pedido.getUsuario().getIdUsuario())){
+            throw new RegraDeNegocioException("Você não tem permissão pra acessar este recurso");
+        }
 
         if (pedido.getStatusPedido() != StatusPedido.AGUARDANDO_PAGAMENTO) {
             throw new RegraDeNegocioException("Este pedido não está aguardando pagamento");
@@ -277,22 +243,18 @@ public class PedidoService {
 
         return retornarDto(pedido);
 
-        } else {
-            throw new RegraDeNegocioException("Só é possível retornar seus próprios dados.");
-        }
     }
 
     public PedidoEmpresaDTO updatePedidoStatus(Integer idPedido, StatusPedido novoStatus, Integer idEmpresa) throws Exception {
-        findById(idPedido);
-        return updateStatus(idPedido, novoStatus, idEmpresa);
+        Pedido pedido = findById(idPedido);
+        if(!verificarSeEmpresa(pedido.getEmpresa().getIdUsuario())){
+            throw  new RegraDeNegocioException("Sua empresa não é responsável por este pedido");
+        }
+        return updateStatus(pedido, novoStatus, idEmpresa);
 
     }
 
-    public PedidoEmpresaDTO updateStatus(Integer idPedido, StatusPedido novoStatus, Integer idEmpresa) throws Exception {
-        Pedido pedido = pedidoRepository.findById(idPedido)
-                .orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado"));
-
-        StatusPedido statusAntigo = pedido.getStatusPedido();
+    public PedidoEmpresaDTO updateStatus(Pedido pedido, StatusPedido novoStatus, Integer idEmpresa) throws Exception {
         pedido.setStatusPedido(novoStatus);
         Pedido pedidoAtualizado = pedidoRepository.save(pedido);
 
@@ -312,8 +274,11 @@ public class PedidoService {
 
 
     public PedidoDTO entregue(Integer idPedido) throws Exception {
-
         Pedido pedido = findById(idPedido);
+
+        if(!verificarSeAdminOuUsuario(pedido.getUsuario().getIdUsuario())){
+            throw new RegraDeNegocioException("Você não tem permissão pra acessar este recurso");
+        }
 
         if (pedido.getStatusPedido() != StatusPedido.A_CAMINHO) {
             throw new RegraDeNegocioException("Pedido não enviado ou cancelado");
@@ -337,15 +302,15 @@ public class PedidoService {
         return retornarDto(pedido);
     }
 
-    public PedidoRastreioDTO updateCodigoDeRastreio(Integer idPedido, String codigoRastreio, Integer idEmpresa) throws Exception {
+    public PedidoRastreioDTO updateCodigoDeRastreio(Integer idPedido, String codigoRastreio) throws Exception {
         Pedido pedido = pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado"));
 
-        if (!pedido.getEmpresa().getIdEmpresa().equals(idEmpresa)) {
-            throw new RegraDeNegocioException("Você não tem permissão para atualizar o código de rastreamento deste pedido.");
+        if(!verificarSeEmpresa(pedido.getEmpresa().getIdUsuario())){
+            throw  new RegraDeNegocioException("Sua empresa não é responsável por este pedido");
         }
-        pedido.setCodigoDeRastreio(codigoRastreio);
 
+        pedido.setCodigoDeRastreio(codigoRastreio);
 
         if (pedido.getCodigoDeRastreio() != null) {
             pedido.setStatusPedido(StatusPedido.A_CAMINHO);
@@ -357,7 +322,7 @@ public class PedidoService {
     }
 
 
-    private void efetuarTransferencia(Carteira carteiraOrigem, Carteira carteiraDestino, BigDecimal total) throws RegraDeNegocioException {
+    public void efetuarTransferencia(Carteira carteiraOrigem, Carteira carteiraDestino, BigDecimal total) throws RegraDeNegocioException {
         BigDecimal valorPendente = carteiraOrigem.getSaldo().subtract(total);
         if (valorPendente.compareTo(BigDecimal.ZERO) < 0) {
             throw new RegraDeNegocioException("SALDO INSUFICIENTE");
@@ -365,10 +330,33 @@ public class PedidoService {
         carteiraOrigem.setSaldo(carteiraOrigem.getSaldo().subtract(total));
         carteiraDestino.setSaldo(carteiraDestino.getSaldo().add(total));
     }
+    public Boolean verificarSeAdminOuUsuario(Integer idUsuarioPedido) throws Exception {
+        Integer idAdmin = obterAdmin().getIdUsuario();
+        Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
+        if(!(idUsuarioLogado.equals(idUsuarioPedido)) && !(idUsuarioLogado.equals(idAdmin)) ){
+            return false;
+        }
+        return true;
+    }
+    public Boolean verificarSeEmpresaAdminUsuario(Integer idUsuarioPedido, Integer idUsuarioEmpresa) throws Exception {
+        if(verificarSeAdminOuUsuario(idUsuarioPedido)){
+            return true;
+        }
+
+        return verificarSeEmpresa(idUsuarioEmpresa);
+    }
+
+
+    public Boolean verificarSeEmpresa(Integer idUsuarioEmpresa) throws Exception {
+        Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
+
+        return idUsuarioLogado.equals(idUsuarioEmpresa);
+    }
+
 
     public Usuario obterAdmin() throws Exception {
         Usuario admin = usuarioService.findByLogin("admin")
-                .orElseThrow(() -> new RegraDeNegocioException("Ocorreu um erro ao processar o pagamento"));
+                .orElseThrow(() -> new RegraDeNegocioException("Ocorreu um erro com o administrador"));
         boolean isAdmin = admin.getCargos().stream()
                 .anyMatch(cargo -> "ROLE_ADMIN".equalsIgnoreCase(cargo.getNome()));
         if (!isAdmin) {
@@ -400,7 +388,7 @@ public class PedidoService {
         return pedidoDTO;
     }
 
-    private void emailPedidoCriado(PedidoDTO pedidoDTO, Usuario usuario) throws Exception {
+    public void emailPedidoCriado(PedidoDTO pedidoDTO, Usuario usuario) throws Exception {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataEntrega = formato.format(pedidoDTO.getDataEntrega());
         String dataPedido = formato.format(pedidoDTO.getDataDePedido());

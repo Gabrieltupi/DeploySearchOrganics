@@ -19,9 +19,6 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Integer> {
             "WHERE uc2.ID_USUARIO = :userId AND uc2.ID_CARGO = 1", nativeQuery = true)
     Integer existsAdminCargoByUserId(@Param("userId") Integer userId);
 
-    @Query(value = "SELECT ID_ENDERECO FROM ENDERECO WHERE ID_USUARIO = :userId", nativeQuery = true)
-    Optional<Integer> findEnderecoIdByUserId(@Param("userId") Integer userId);
-
 
 }
 

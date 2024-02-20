@@ -68,7 +68,7 @@ public class PedidoController implements IPedidoController {
     public ResponseEntity<PedidoRastreioDTO> atualizarCodigoDeRastreio(@PathVariable("id") Integer idPedido,
                                                                        @RequestParam(value = "codigoRastreio",required = false) String codigoRastreio,
                                                                        @RequestParam("idEmpresa") Integer idEmpresa) throws Exception {
-        PedidoRastreioDTO pedidoRastreioDTO = pedidoService.updateCodigoDeRastreio(idPedido, codigoRastreio, idEmpresa);
+        PedidoRastreioDTO pedidoRastreioDTO = pedidoService.updateCodigoDeRastreio(idPedido, codigoRastreio);
         return ResponseEntity.ok(pedidoRastreioDTO);
     }
 
