@@ -11,15 +11,13 @@ import com.vemser.dbc.searchorganic.service.interfaces.ICupomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CupomService implements ICupomService {
     private final CupomRepository cupomRepository;
+    private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 
     public Page<CupomDTO> findAll(Pageable pageable) throws Exception {
@@ -32,6 +30,10 @@ public class CupomService implements ICupomService {
         return retornarDto(cupom);
     }
 
+    public Cupom getById(Integer idCupom) throws Exception {
+        return cupomRepository.findById(idCupom).orElseThrow(() -> new RegraDeNegocioException("Não encontrado"));
+    }
+
     public CupomDTO save(Integer idEmpresa, CreateCupomDTO cupomDto) {
         Cupom cupom = objectMapper.convertValue(cupomDto, Cupom.class);
         cupom.setIdEmpresa(idEmpresa);
@@ -40,14 +42,13 @@ public class CupomService implements ICupomService {
     }
 
     public CupomDTO update(Integer idCupom, UpdateCupomDTO cupomDto) throws Exception {
+        Cupom cupomTransicao = this.getById(idCupom);
+        Integer idC=cupomDto.getIdEmpresa();
 
-        Integer loggedUserId = getIdLoggedUser();
-        Optional<Integer> cupomIdOptional = cupomRepository.findCupomIdByUserId(loggedUserId);
+        if (cupomTransicao.getIdEmpresa().equals(idC)) {
+            Integer cupomId =idC;
 
-        if (cupomIdOptional.isPresent()) {
-            Integer cupomId = cupomIdOptional.get();
-
-            if (idCupom.equals(cupomId) || isAdmin()) {
+            if (idCupom.equals(cupomId) || usuarioService.isAdmin()) {
                 Cupom cupom = objectMapper.convertValue(cupomDto, Cupom.class);
                 cupom.setIdCupom(idCupom);
 
@@ -56,24 +57,8 @@ public class CupomService implements ICupomService {
                 throw new RegraDeNegocioException("O cupom informado não está associado ao usuário logado.");
             }
         } else {
-            throw new RegraDeNegocioException("Não foi encontrado um cupom válido associado ao usuário logado.");
+            throw new RegraDeNegocioException("Não foi encontrado um cupom válido associado na empresa informada.");
         }
-    }
-
-
-    public boolean isAdmin() {
-        Integer userId = getIdLoggedUser();
-        Integer count = cupomRepository.existsAdminCargoByUserId(userId);
-
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public Integer getIdLoggedUser() {
-        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     }
 
     public Page<CupomDTO> findAllByIdEmpresa(Integer idEmpresa, Pageable pageable) throws Exception {
@@ -83,10 +68,6 @@ public class CupomService implements ICupomService {
 
     private CupomDTO retornarDto(Cupom entity) {
         return objectMapper.convertValue(entity, CupomDTO.class);
-    }
-
-    public Cupom getById(Integer idCupom) throws Exception {
-        return cupomRepository.findById(idCupom).orElseThrow(() -> new RegraDeNegocioException("Não encontrado"));
     }
 }
 

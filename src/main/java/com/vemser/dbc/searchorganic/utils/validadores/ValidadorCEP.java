@@ -3,7 +3,7 @@ package com.vemser.dbc.searchorganic.utils.validadores;
 public class ValidadorCEP {
     public static String isCepValido(String cep) {
         if (cep == null) return null;
-        if (cep.length() != 9) return null;
+        if (cep.length() != 8) return null;
 
         String digitoRegiaoDigitoSubRegiao = cep.substring(0, 2);
         int cepInt = Integer.parseInt(digitoRegiaoDigitoSubRegiao);

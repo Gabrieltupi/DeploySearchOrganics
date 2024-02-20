@@ -13,15 +13,11 @@ import lombok.RequiredArgsConstructor;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,30 +43,22 @@ public class UsuarioService {
             return novoUsuario;
         } catch (DataIntegrityViolationException e) {
             throw new Exception("Erro ao criar o usuário devido a violação de integridade: " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new Exception("Erro ao criar o usuário: " + e.getMessage(), e);
         }
     }
 
-
     public List<Usuario> exibirTodos() throws Exception {
-        Integer loggedUserId = getIdLoggedUser();
-        if ( isAdmin()) {
+        if (isAdmin()) {
             return usuarioRepository.findAll();
-        } else {
-            throw new RegraDeNegocioException("Apenas o  administrador pode ver a lista inteira do banco de dados de usuário.");
         }
-
+        throw new RegraDeNegocioException("Apenas o administrador pode ver a lista inteira do banco de dados de usuário.");
     }
 
     public Usuario obterUsuarioPorId(Integer id) throws Exception {
-        if(getIdLoggedUser().equals(id)||isAdmin()){
+        if (getIdLoggedUser().equals(id) || isAdmin()){
             return usuarioRepository.getById(id);
-       }else{
-            throw new RegraDeNegocioException("Só é possivel retornar seus próprios dados.");
         }
+        throw new RegraDeNegocioException("Só é possivel retornar seus próprios dados.");
     }
-
 
     public UsuarioDTO obterUsuarioLogado() throws Exception {
         Usuario usuario = getLoggedUser();
@@ -83,14 +71,16 @@ public class UsuarioService {
 
         if (count > 0) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
-
     public Integer getIdLoggedUser() {
-        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        try {
+            return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public Usuario getLoggedUser() throws Exception {
@@ -99,8 +89,9 @@ public class UsuarioService {
     }
 
     public Usuario editarUsuario(int usuarioId, Usuario usuario) throws Exception {
-        try {
+        obterUsuarioPorId(usuarioId);
 
+        try {
             Usuario usuarioEntity = obterUsuarioPorId(usuarioId);
 
             usuarioEntity.setLogin(usuario.getLogin());
@@ -110,7 +101,6 @@ public class UsuarioService {
             usuarioEntity.setDataNascimento(usuario.getDataNascimento());
             usuarioEntity.setNome(usuario.getNome());
             usuarioEntity.setSobrenome(usuario.getSobrenome());
-
 
             usuarioRepository.save(usuarioEntity);
 
@@ -130,6 +120,8 @@ public class UsuarioService {
     }
 
     public void removerUsuario(int usuarioId) throws Exception {
+        obterUsuarioPorId(usuarioId);
+
         try {
             Usuario usuarioRemovido = usuarioRepository.getById(usuarioId);
 
@@ -153,8 +145,6 @@ public class UsuarioService {
         }
     }
 
-
-
     public UsuarioDTO findByEmail(String email) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + email));
@@ -166,7 +156,6 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado: " + cpf));
         return new UsuarioDTO(usuario);
     }
-
 
     public Optional<Usuario> findByLoginAndSenha(String login, String senha) {
         return usuarioRepository.findByLoginAndSenha(login, senha);
@@ -192,7 +181,6 @@ public class UsuarioService {
         return usuarioRepository.findByLogin(login);
     }
 
-
     public UsuarioDTO criarUsuario(UsuarioCreateDTO usuarioCreateDTO) throws Exception {
         String senhaCriptografada = passwordEncoder.encode(usuarioCreateDTO.getSenha());
         Set<Cargo> cargos = new HashSet<>();
@@ -214,11 +202,7 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-
-    public void salvarUsuario(Usuario usuario) {
-        this.usuarioRepository.save(usuario);
+    public Usuario salvarUsuario(Usuario usuario) {
+        return this.usuarioRepository.save(usuario);
     }
-
 }
-
-

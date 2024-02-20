@@ -5,6 +5,8 @@ import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPedidosDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPedidosMesDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPrecoDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoQuantidadeDTO;
+import com.vemser.dbc.searchorganic.model.Relatorio;
+import com.vemser.dbc.searchorganic.repository.RelatorioMongoRepository;
 import com.vemser.dbc.searchorganic.repository.RelatorioRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IRelatorioService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,11 @@ import java.util.List;
 public class RelatorioService implements IRelatorioService {
     private final RelatorioRepository relatorioRepository;
     private final ObjectMapper objectMapper;
+    private final RelatorioMongoRepository relatorioMongoRepository;
+
+    public List<Relatorio<?>> findAllRelatorios() {
+        return relatorioMongoRepository.findAll();
+    }
 
     public Page<RelatorioProdutoPrecoDTO> findAllProdutosByPreco(Pageable pageable) throws Exception {
         Page<Object[]> resultado = relatorioRepository.findAllProdutosByPreco(pageable);
@@ -35,6 +42,7 @@ public class RelatorioService implements IRelatorioService {
             RelatorioProdutoPrecoDTO relatorioDTO = new RelatorioProdutoPrecoDTO(nome, preco);
             relatorioDTOs.add(relatorioDTO);
         }
+        saveRelatorio(relatorioDTOs, "Relatório de produtos por preço");
 
         return new PageImpl<>(relatorioDTOs, pageable, resultado.getTotalElements());
     }
@@ -51,6 +59,7 @@ public class RelatorioService implements IRelatorioService {
             RelatorioProdutoQuantidadeDTO relatorioDTO = new RelatorioProdutoQuantidadeDTO(nome, quantidade);
             relatorioDTOs.add(relatorioDTO);
         }
+        saveRelatorio(relatorioDTOs, "Relatório de produtos por quantidade");
 
         return new PageImpl<>(relatorioDTOs, pageable, resultado.getTotalElements());
     }
@@ -67,6 +76,7 @@ public class RelatorioService implements IRelatorioService {
             RelatorioProdutoPedidosDTO relatorioDTO = new RelatorioProdutoPedidosDTO(nome, pedidos);
             relatorioDTOs.add(relatorioDTO);
         }
+        saveRelatorio(relatorioDTOs, "Relatório de produtos por pedidos");
 
         return new PageImpl<>(relatorioDTOs, pageable, resultado.getTotalElements());
     }
@@ -84,7 +94,16 @@ public class RelatorioService implements IRelatorioService {
             RelatorioProdutoPedidosMesDTO relatorioDTO = new RelatorioProdutoPedidosMesDTO(nome, mes, pedidos);
             relatorioDTOs.add(relatorioDTO);
         }
+        saveRelatorio(relatorioDTOs, "Relatório de produtos por pedidos no mês");
 
         return new PageImpl<>(relatorioDTOs, pageable, resultado.getTotalElements());
+    }
+
+    public <T> void saveRelatorio(T relatorioDTO, String nomeRelatorio) {
+        Relatorio<T> relatorio = new Relatorio<>();
+        relatorio.setNome(nomeRelatorio);
+        relatorio.setDados(relatorioDTO);
+
+        relatorioMongoRepository.save(relatorio);
     }
 }

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/cupom/empresa/").hasAnyRole("ADMIN","EMPRESA", "USUARIO")
 
                         .antMatchers(HttpMethod.DELETE,"/empresa").hasAnyRole("ADMIN", "EMPRESA")
-                        .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/empresa").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.GET, "/empresa/produtos").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.PUT,"/empresa/").hasAnyRole("ADMIN", "EMPRESA")
 
@@ -93,7 +93,7 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://search-organic.vercel.app/")
+                        .allowedOrigins("http://vemser-dbc.dbccompany.com.br/", "https://search-organic.vercel.app/", "http://vemser-dbc.dbccompany.com.br:39000/")
                         .allowedMethods("*")
                         .exposedHeaders("Authorization");
             }

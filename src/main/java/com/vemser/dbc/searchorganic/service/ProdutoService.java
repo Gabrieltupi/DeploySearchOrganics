@@ -6,13 +6,16 @@ import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoUpdateDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
+import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
+import com.vemser.dbc.searchorganic.model.Usuario;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
 import com.vemser.dbc.searchorganic.service.interfaces.IProdutoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,7 @@ public class ProdutoService implements IProdutoService {
     private final ProdutoRepository produtoRepository;
     private final EmpresaService empresaService;
     private final ObjectMapper objectMapper;
+    private final UsuarioService usuarioService;
 
     public Page<ProdutoDTO> findAll(Pageable pageable) throws Exception {
         Page<Produto> produtos = produtoRepository.findAll(pageable);
@@ -31,8 +35,7 @@ public class ProdutoService implements IProdutoService {
     }
 
     public ProdutoDTO findById(Integer id) throws Exception {
-        return retornarDto(produtoRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado")));
+        return retornarDto(getById(id));
     }
 
     public ProdutoDTO save(Integer idEmpresa, ProdutoCreateDTO produtoDto) throws Exception {
@@ -44,19 +47,47 @@ public class ProdutoService implements IProdutoService {
         return retornarDto(produtoRepository.save(produto));
     }
 
+
     public ProdutoDTO update(Integer idProduto, ProdutoUpdateDTO produtoDto) throws Exception {
-        findById(idProduto);
+        Produto produto = getById(idProduto);
+        Integer idUsuarioDonoProd = empresaService.getById(produto.getIdEmpresa()).getIdUsuario();
+        if(idUsuarioDonoProd.equals(usuarioService.getIdLoggedUser())||isAdmin()) {
+            produto.setUnidadeMedida(produtoDto.getUnidadeMedida());
+            produto.setPreco(produtoDto.getPreco());
+            produto.setTaxa(produto.getTaxa());
+            produto.setCategoria(produtoDto.getCategoria());
+            produto.setQuantidade(produtoDto.getQuantidade());
+            produto.setUrlImagem(produtoDto.getUrlImagem());
+            produto.setNome(produtoDto.getNome());
+            produto.setTipoAtivo(produtoDto.getTipoAtivo());
+            produto.setDescricao(produtoDto.getDescricao());
 
-        Produto produto = objectMapper.convertValue(produtoDto, Produto.class);
-        produto.setIdProduto(idProduto);
-
-        return retornarDto(produtoRepository.save(produto));
+            return retornarDto(produtoRepository.save(produto));
+        }
+        throw new RegraDeNegocioException("Só poderá atualizar seu próprio produto");
     }
-
     public void delete(Integer idProduto) throws Exception {
-        findById(idProduto);
-        produtoRepository.deleteById(idProduto);
+        Produto produto = getById(idProduto);
+        Integer idUsuarioDonoProd = empresaService.getById(produto.getIdEmpresa()).getIdUsuario();
+
+        if(idUsuarioDonoProd.equals(usuarioService.getIdLoggedUser())||isAdmin()) {
+            produtoRepository.delete(produto);
+            return;
+        }
+        throw new RegraDeNegocioException("Só poderá deletar seu próprio produto");
     }
+
+    public boolean isAdmin() {
+        Integer userId = usuarioService.getIdLoggedUser();
+        Integer count = produtoRepository.existsAdminCargoByUserId(userId);
+
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public Page<ProdutoDTO> findAllByIdEmpresa(Integer idEmpresa, Pageable pageable) throws Exception {
         empresaService.findById(idEmpresa);
@@ -84,8 +115,7 @@ public class ProdutoService implements IProdutoService {
     }
 
     public Produto getById(Integer idProduto) throws Exception {
-        ProdutoDTO produto = findById(idProduto);
-        return convertDto(produto);
+        return produtoRepository.findById(idProduto).orElseThrow( () -> new RegraDeNegocioException("Produto não encontrado"));
     }
 
     public Produto convertDto(ProdutoCreateDTO dto) {
