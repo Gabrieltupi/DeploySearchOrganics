@@ -106,12 +106,16 @@ class PedidoServiceTest {
     @Test
     @DisplayName("sucessoCancelarPedido")
     public void sucessoCancelarPedido() throws Exception {
-        PedidoDTO pedidoDTO = MockPedido.retornaPedidoDto();
         Pedido pedido = MockPedido.retornaPedidoEntity();
-
+        Produto produto = MockProduto.retornarProdutoEntity();
+        List<PedidoXProduto> pedidoXProduto = MockPedido.retornaListaProdutoXPedido(pedido, produto);
+        ProdutoResponsePedidoDTO produtoRespDTO = new ProdutoResponsePedidoDTO(produto);
         when(pedidoRepository.findById(pedido.getIdPedido())).thenReturn(Optional.of(pedido));
+        when(objectMapper.convertValue(pedidoXProduto.get(0).getProduto(), ProdutoResponsePedidoDTO.class)).thenReturn(produtoRespDTO);
         when(objectMapper.convertValue(any(PedidoDTO.class), eq(Pedido.class))).thenReturn(pedido);
         when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getUsuario().getIdUsuario());
+        when(pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido())).thenReturn(pedidoXProduto);
+
         pedidoService.cancelarPedido(pedido.getIdPedido());
 
         verify(pedidoRepository, times(1)).cancelarPedido(pedido.getIdPedido());
