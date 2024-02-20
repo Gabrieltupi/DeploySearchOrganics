@@ -10,6 +10,7 @@ import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.Empresa;
 import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.repository.ProdutoRepository;
+import com.vemser.dbc.searchorganic.service.mocks.MockPedido;
 import com.vemser.dbc.searchorganic.service.mocks.MockProduto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -308,10 +310,32 @@ class ProdutoServiceTest {
 
 
     @Test
-    @DisplayName("sucessoEmailProdutoPedido")
-    public void sucessoEmailProdutoPedido() {
+    @DisplayName("getMensagemProdutoEmail - Sucesso")
+    public void getMensagemProdutoEmailSucesso() {
+        // Cenário
+        Produto produto1 = new Produto();
+        produto1.setNome("Produto 1");
+        produto1.setPreco(BigDecimal.valueOf(10.00));
+
+        Produto produto2 = new Produto();
+        produto2.setNome("Produto 2");
+        produto2.setPreco(BigDecimal.valueOf(20.00));
+
+        List<ProdutoPedidoDTO> produtos = MockPedido.retornarListaProdutoPedidoDto();
+
+        ProdutoPedidoDTO produtoPedidoDTO2 = MockPedido.retornarProdutoPedidoDto();
+
+        // Execução do método a ser testado
+        String mensagemProduto = produtoService.getMensagemProdutoEmail(produtos);
+
+        // Verificações
+        String mensagemEsperada = """
+            Nome: Produto 1, Quantidade:  2, Valor por cada quantidade: R$ 10.00  <br>
+            Nome: Produto 2, Quantidade:  3, Valor por cada quantidade: R$ 20.00  <br>
+            """;
 
     }
+
 
 
 }

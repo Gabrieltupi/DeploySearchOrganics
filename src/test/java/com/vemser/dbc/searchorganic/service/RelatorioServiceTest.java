@@ -6,6 +6,7 @@ import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPedidosMesDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPrecoDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoQuantidadeDTO;
 import com.vemser.dbc.searchorganic.model.Empresa;
+import com.vemser.dbc.searchorganic.repository.RelatorioMongoRepository;
 import com.vemser.dbc.searchorganic.repository.RelatorioRepository;
 import com.vemser.dbc.searchorganic.service.mocks.MockEmpresa;
 import com.vemser.dbc.searchorganic.service.mocks.MockRelatorio;
@@ -35,6 +36,8 @@ import static org.mockito.Mockito.when;
 class RelatorioServiceTest {
     @Mock
     private RelatorioRepository relatorioRepository;
+    @Mock
+    private RelatorioMongoRepository relatorioMongoRepository;
     @InjectMocks
     private RelatorioService relatorioService;
 

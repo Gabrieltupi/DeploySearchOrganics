@@ -17,7 +17,7 @@ import java.util.Random;
 public class MockEmpresa {
     public static Empresa retornarEmpresa() {
         Empresa empresa = new Empresa();
-        empresa.setIdEmpresa(new Random().nextInt());
+        empresa.setIdEmpresa(1);
         empresa.setCnpj("56318380000161");
         empresa.setInscricaoEstadual("231321");
         empresa.setNomeFantasia("Empresa Fantasia");

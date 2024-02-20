@@ -14,7 +14,7 @@ public class MockEndereco {
         Usuario usuario = MockUsuario.retornarUsuario();
 
         Endereco endereco = new Endereco();
-        endereco.setIdEndereco(new Random().nextInt());
+        endereco.setIdEndereco(1);
         endereco.setUsuario(usuario);
         endereco.setLogradouro("Avenida da Capoeira");
         endereco.setNumero("112");

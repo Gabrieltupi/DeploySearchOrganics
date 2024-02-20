@@ -56,7 +56,6 @@ class EnderecoServiceTest {
         EnderecoDTO enderecoDTOMock = new EnderecoDTO(enderecoMock);
 
         when(usuarioService.getIdLoggedUser()).thenReturn(1);
-        when(usuarioService.isAdmin()).thenReturn(true);
         when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.of(enderecoMock));
 
         EnderecoDTO enderecoRetornado = enderecoService.buscarEndereco(enderecoMock.getIdEndereco());
@@ -68,8 +67,7 @@ class EnderecoServiceTest {
     @Test
     @DisplayName("Não deveria retornar um endereço por id de outro usuário")
     public void naoDeveriaRetornarEnderecoDTODeOutroUsuario() {
-        when(usuarioService.getIdLoggedUser()).thenReturn(1);
-        when(usuarioService.isAdmin()).thenReturn(false);
+        when(usuarioService.getIdLoggedUser()).thenReturn(52);
         when(enderecoRepository.findById(enderecoMock.getIdEndereco())).thenReturn(Optional.of(enderecoMock));
 
         assertThrows(RegraDeNegocioException.class, () -> enderecoService.buscarEndereco(enderecoMock.getIdEndereco()));
@@ -163,7 +161,7 @@ class EnderecoServiceTest {
     @Test
     @DisplayName("Não deveria listar endereços por usuário de outro usuário")
     public void naoDeveriaListarEnderecosPorUsuarioDeOutroUsuario() {
-        when(usuarioService.getIdLoggedUser()).thenReturn(1);
+        when(usuarioService.getIdLoggedUser()).thenReturn(53);
 
         assertThrows(RegraDeNegocioException.class, () -> enderecoService.listarEnderecosPorUsuario(enderecoMock.getUsuario().getIdUsuario()));
     }

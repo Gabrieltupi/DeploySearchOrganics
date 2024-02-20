@@ -5,6 +5,7 @@ import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPedidosDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPedidosMesDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoPrecoDTO;
 import com.vemser.dbc.searchorganic.dto.relatorio.RelatorioProdutoQuantidadeDTO;
+import com.vemser.dbc.searchorganic.model.Relatorio;
 import com.vemser.dbc.searchorganic.service.RelatorioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/relatorio")
@@ -28,7 +31,10 @@ public class RelatorioController implements IRelatorioController {
         return new ResponseEntity<>(relatorioService.findAllProdutosByPreco(pageable), HttpStatus.OK);
     }
 
-
+    @GetMapping("/registrados")
+    public ResponseEntity<List<Relatorio<?>>> listarTodosRelatorios() {
+        return new ResponseEntity<>( relatorioService.findAllRelatorios(), HttpStatus.OK);
+    }
     @GetMapping("/produto/quantidade")
     public ResponseEntity<Page<RelatorioProdutoQuantidadeDTO>> findAllProdutosByQuantidade(@PageableDefault(page = 0, size = 10, sort = "quantidade", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
         return new ResponseEntity<>(relatorioService.findAllProdutosByQuantidade(pageable), HttpStatus.OK);

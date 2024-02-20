@@ -1,6 +1,8 @@
 package com.vemser.dbc.searchorganic.service.mocks;
 
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
+import com.vemser.dbc.searchorganic.dto.pedido.ProdutoCarrinhoCreate;
+
 import com.vemser.dbc.searchorganic.dto.pedido.ProdutoPedidoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoCreateDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
@@ -61,10 +63,26 @@ public class MockProduto {
         return produtoDto;
     }
 
+    public static ProdutoResponsePedidoDTO retornarProdutoResponsePedidoDTO(){
+        ProdutoResponsePedidoDTO produtoReponseDto= new ProdutoResponsePedidoDTO();
+        produtoReponseDto.setIdProduto(1);
+        produtoReponseDto.setIdEmpresa(2);
+        produtoReponseDto.setNome("amora");
+        produtoReponseDto.setDescricao("roxa");
+        produtoReponseDto.setPreco(new BigDecimal(5.44));
+        produtoReponseDto.setCategoria(TipoCategoria.FRUTAS);
+        produtoReponseDto.setTaxa(4);
+        produtoReponseDto.setUnidadeMedida(UnidadeMedida.KG);
+        produtoReponseDto.setUrlImagem("");
+        produtoReponseDto.setTipoAtivo(TipoAtivo.S);
+        return produtoReponseDto;
+    }
+
     public static List<Produto> retornarListaProdutos(){
         return List.of(retornarProdutoEntity(), retornarProdutoEntity(), retornarProdutoEntity());
 
     }
+
 
     public static Empresa retornarEmpresaEntity() {
         Empresa empresa= new Empresa();

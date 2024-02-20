@@ -1,5 +1,6 @@
 package com.vemser.dbc.searchorganic.dto.produto;
 
+import com.vemser.dbc.searchorganic.model.Produto;
 import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import com.vemser.dbc.searchorganic.utils.TipoCategoria;
 import com.vemser.dbc.searchorganic.utils.UnidadeMedida;
@@ -44,4 +45,17 @@ public class ProdutoResponsePedidoDTO {
 
     @Schema(description = "Atividade do produto", required = true, example = "S")
     private TipoAtivo tipoAtivo;
+
+    public ProdutoResponsePedidoDTO(Produto produto) {
+        this.idProduto = produto.getIdProduto();
+        this.idEmpresa = produto.getIdEmpresa();
+        this.nome = produto.getNome();
+        this.descricao = produto.getDescricao();
+        this.preco = produto.getPreco();
+        this.categoria = produto.getCategoria();
+        this.taxa = produto.getTaxa();
+        this.unidadeMedida = produto.getUnidadeMedida();
+        this.urlImagem = produto.getUrlImagem();
+        this.tipoAtivo = produto.getTipoAtivo();
+    }
 }

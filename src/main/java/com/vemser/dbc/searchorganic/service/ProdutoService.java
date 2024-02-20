@@ -100,6 +100,7 @@ public class ProdutoService implements IProdutoService {
         Page<Produto> produtos = produtoRepository.findAllByIdCategoria(idCategoria, pageable);
         return produtos.map(this::retornarDto);
     }
+
     public String getMensagemProdutoEmail(List<ProdutoPedidoDTO> produtos) {
         StringBuilder mensagemFinal = new StringBuilder();
         for (ProdutoPedidoDTO produtoPedidoDTO : produtos) {
