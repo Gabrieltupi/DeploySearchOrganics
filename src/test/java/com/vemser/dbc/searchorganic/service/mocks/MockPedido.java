@@ -4,6 +4,7 @@ import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
 import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
 import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.*;
+import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoResponsePedidoDTO;
 import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Random;
 
 public class MockPedido {
-
     public static Pedido retornaPedidoEntity(){
         Pedido pedido= new Pedido();
         pedido.setIdPedido(1);
@@ -46,6 +46,11 @@ public class MockPedido {
         pedido.setCodigoDeRastreio("1V5387ES1UP8");
         return pedido;
     }
+
+    public static PedidoRastreioDTO retornaPedidoRastreioDto(){
+        PedidoRastreioDTO pedidoRastreioDTO= new PedidoRastreioDTO(retornaPedidoDto().getIdPedido(), retornaPedidoDto().getCodigoDeRastreio(),retornaPedidoDto().getStatusPedido());
+        return pedidoRastreioDTO;
+    }
     public static List<Pedido> retornaListaPedidoEntity(){
         return List.of(retornaPedidoEntity(), retornaPedidoEntity());
     }
@@ -56,7 +61,29 @@ public class MockPedido {
         return List.of(retornaPedidoDto(), retornaPedidoDto());
     }
 
-    public static List<ProdutoPedidoDTO> retornarProdutoPedidoDto() {
+
+    public static PedidoXProduto retornaPedidoXProdutoEntity(){
+        Pedido pedido= retornaPedidoEntity();
+        Produto produto= MockProduto.retornarProdutoEntity();
+
+        PedidoXProduto pedidoXProduto = new PedidoXProduto();
+        ProdutoXPedidoPK pk = new ProdutoXPedidoPK();
+        pk.setIdProduto(produto.getIdProduto());
+        pk.setIdPedido(pedido.getIdPedido());
+
+        pedidoXProduto.setProdutoXPedidoPK(pk);
+        pedidoXProduto.setPedido(pedido);
+        pedidoXProduto.setProduto(produto);
+        pedidoXProduto.setQuantidade(new Random().nextInt(10));
+
+        return pedidoXProduto;
+    }
+
+    public static  List<PedidoXProduto> retornaListaPedidoXPROduto(){
+        return List.of(retornaPedidoXProdutoEntity(), retornaPedidoXProdutoEntity());
+    }
+
+    public static List<ProdutoPedidoDTO> retornarListaProdutoPedidoDto() {
         ProdutoResponsePedidoDTO produtoResponsePedidoDTO = MockProduto.retornarProdutoResponsePedidoDTO();
         List<ProdutoPedidoDTO> lista = new ArrayList<>();
 
@@ -67,6 +94,17 @@ public class MockPedido {
 
         return lista;
     }
+    public static ProdutoPedidoDTO retornarProdutoPedidoDto() {
+        ProdutoResponsePedidoDTO produtoResponsePedidoDTO = MockProduto.retornarProdutoResponsePedidoDTO();
+        ProdutoPedidoDTO lista = new ProdutoPedidoDTO();
+
+        ProdutoPedidoDTO produtoPedidoDTO = new ProdutoPedidoDTO();
+        produtoPedidoDTO.setProduto(produtoResponsePedidoDTO);
+        produtoPedidoDTO.setQuantidade(1);
+
+
+        return lista;
+    }
 
     public static PedidoDTO retornaPedidoDto(){
         Pedido pedido = retornaPedidoEntity();
@@ -74,6 +112,8 @@ public class MockPedido {
 
         return pedidoDto;
     }
+
+
 
 
     public static ArrayList<ProdutoCarrinhoCreate> retornaProdutoCarrinhoCreate(){

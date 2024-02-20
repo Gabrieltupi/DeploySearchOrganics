@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +63,30 @@ public class PedidoService {
         return retornarDto(pedido);
     }
 
+    public void cancelarPedido(Integer idPedido) throws Exception {
+        PedidoDTO pedidoDto = getById(idPedido);
+        Pedido pedido= objectMapper.convertValue(pedidoDto, Pedido.class);
+        Integer idUsuarioPedido = pedido.getUsuario().getIdUsuario();
+        Integer idEmpresaPedido = pedido.getEmpresa().getIdUsuario();
+
+
+        if(!verificarSeAdminOuUsuario(idUsuarioPedido)){
+            throw new RegraDeNegocioException("Você não tem permissão pra cancelar este pedido");
+        }
+
+        List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
+        for (PedidoXProduto pedidoXProduto : produtos) {
+            Produto produto = pedidoXProduto.getProduto();
+
+            produto.setQuantidade(produto.getQuantidade().add(BigDecimal.valueOf(pedidoXProduto.getQuantidade())));
+
+            produtoRepository.save(produto);
+        }
+
+        pedidoRepository.cancelarPedido(idPedido);
+
+    }
+
     public List<PedidoDTO> findAll() throws Exception {
         Usuario admin = obterAdmin();
         Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
@@ -79,7 +104,7 @@ public class PedidoService {
 
         List<PedidoXProduto> produtos = obterProdutos(pedidoCreateDTO.getProdutosCarrinho(), produtosBanco);
         Usuario usuario = usuarioService.obterUsuarioPorId(idUsuario);
-        if(!verificarSeAdminOuUsuario(idUsuario)){
+        if(verificarSeAdminOuUsuario(idUsuario)){
             throw new RegraDeNegocioException("Você não tem permissão pra acessar este recurso");
         }
 
@@ -140,27 +165,10 @@ public class PedidoService {
         return retornarDto(pedidoEntity);
     }
 
-    public void cancelarPedido(Integer idPedido) throws Exception {
-        Pedido pedido = findById(idPedido);
-        Integer idUsuarioPedido = pedido.getUsuario().getIdUsuario();
-        Integer idEmpresaPedido = pedido.getEmpresa().getIdUsuario();
 
-        if(!verificarSeEmpresaAdminUsuario(idUsuarioPedido, idEmpresaPedido)){
-            throw new RegraDeNegocioException("Você não tem permissão pra cancelar este pedido");
-        }
 
-        List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
-        for (PedidoXProduto pedidoXProduto : produtos) {
-            Produto produto = pedidoXProduto.getProduto();
 
-            produto.setQuantidade(produto.getQuantidade().add(BigDecimal.valueOf(pedidoXProduto.getQuantidade())));
 
-            produtoRepository.save(produto);
-        }
-
-        pedidoRepository.cancelarPedido(idPedido);
-
-    }
 
     public List<PedidoDTO> findAllByIdUsuario(Integer idUsuario) throws Exception {
          if(!verificarSeAdminOuUsuario(idUsuario)){
@@ -180,7 +188,7 @@ public class PedidoService {
 
     }
 
-    private List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
+    public List<PedidoXProduto> obterProdutos(ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate, List<Produto> produtosBanco) throws Exception {
         List<PedidoXProduto> produtos = new ArrayList<>();
         for (ProdutoCarrinhoCreate produtoCarrinhoCreate : produtosCarrinhoCreate) {
             ProdutoDTO produtoDto = produtoService.findById(produtoCarrinhoCreate.getIdProduto());
@@ -318,7 +326,7 @@ public class PedidoService {
     }
 
 
-    private void efetuarTransferencia(Carteira carteiraOrigem, Carteira carteiraDestino, BigDecimal total) throws RegraDeNegocioException {
+    public void efetuarTransferencia(Carteira carteiraOrigem, Carteira carteiraDestino, BigDecimal total) throws RegraDeNegocioException {
         BigDecimal valorPendente = carteiraOrigem.getSaldo().subtract(total);
         if (valorPendente.compareTo(BigDecimal.ZERO) < 0) {
             throw new RegraDeNegocioException("SALDO INSUFICIENTE");
@@ -334,17 +342,21 @@ public class PedidoService {
         }
         return true;
     }
-    public Boolean verificarSeEmpresaAdminUsuario(Integer idUsuarioPedido, Integer idUsuarioEmpresa) throws Exception {
-        if(verificarSeAdminOuUsuario(idUsuarioPedido)){
+    public Boolean verificarSeEmpresaAdminUsuario(Integer id) throws Exception {
+        if (usuarioService.isAdmin()) {
             return true;
         }
 
-        return verificarSeEmpresa(idUsuarioEmpresa);
-    }
-    public Boolean verificarSeEmpresa(Integer idUsuarioEmpresa) throws Exception {
-        Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
 
-        return idUsuarioLogado.equals(idUsuarioEmpresa);
+        return false;
+    }
+
+
+    public Boolean verificarSeEmpresa(Integer idUsuarioEmpresa) throws Exception {
+        if(empresaService.isEmpresa()){
+            return true;
+        }
+        return false;
     }
 
 
@@ -382,7 +394,7 @@ public class PedidoService {
         return pedidoDTO;
     }
 
-    private void emailPedidoCriado(PedidoDTO pedidoDTO, Usuario usuario) throws Exception {
+    public void emailPedidoCriado(PedidoDTO pedidoDTO, Usuario usuario) throws Exception {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataEntrega = formato.format(pedidoDTO.getDataEntrega());
         String dataPedido = formato.format(pedidoDTO.getDataDePedido());

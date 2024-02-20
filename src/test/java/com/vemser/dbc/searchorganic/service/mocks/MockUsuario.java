@@ -19,7 +19,7 @@ import java.util.Set;
 public class MockUsuario {
     public static Usuario retornarUsuario(){
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario(new Random().nextInt());
+        usuario.setIdUsuario(1);
         usuario.setSenha("1234");
         usuario.setCarteira(carteira(usuario));
         usuario.setTipoAtivo(TipoAtivo.S);
@@ -47,6 +47,7 @@ public class MockUsuario {
         usuarioDTO.setEmail(usuario.getEmail());
         usuarioDTO.setDataNascimento(usuario.getDataNascimento());
         usuarioDTO.setSobrenome(usuario.getSobrenome());
+        usuarioDTO.setLogin(usuario.getLogin());
         usuarioDTO.setCargos(retornarCargosDTO(usuario.getCargos()));
         usuarioDTO.setCarteira(carteiraDTO(usuario.getCarteira()));
 
@@ -111,8 +112,18 @@ public class MockUsuario {
 
     public static Usuario retornarUsuarioAdmin() {
         Usuario admin = retornarUsuario();
+        admin.setIdUsuario(retornarUsuario().getIdUsuario());
         admin.setNome("Admin");
         admin.getCargos().add(obterCargo("ROLE_ADMIN"));
+
+        return admin;
+    }
+
+    public static Usuario retornarUsuarioUsuario() {
+        Usuario admin = retornarUsuario();
+        admin.setIdUsuario(retornarUsuario().getIdUsuario());
+        admin.setNome("Usuario 1");
+        admin.getCargos().add(obterCargo("ROLE_USUARIO"));
 
         return admin;
     }

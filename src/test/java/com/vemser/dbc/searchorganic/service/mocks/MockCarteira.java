@@ -23,4 +23,12 @@ public class MockCarteira {
         carteira.setUsuario(usuario);
         return carteira;
     }
+    public static Carteira retornarCarteira2(){
+        Usuario usuario= MockUsuario.retornarUsuario();
+        Carteira carteira= new Carteira();
+        carteira.setIdCarteira(2);
+        carteira.setSaldo(BigDecimal.valueOf(100));
+        carteira.setUsuario(usuario);
+        return carteira;
+    }
 }
