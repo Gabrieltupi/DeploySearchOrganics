@@ -33,7 +33,15 @@ public class EmpresaService implements IEmpresaService {
         return empresas.map(this::retornarDto);
     }
 
+    public boolean isEmpresa() {
+        Integer userId = getIdLoggedUser();
+        Integer count = empresaRepository.existsAdminCargoByUserId(userId);
 
+        if (count > 0) {
+            return true;
+        }
+        return false;
+    }
 
     private boolean hasRoleEmpresa(Usuario usuario) {
         Set<Cargo> cargos = usuario.getCargos();

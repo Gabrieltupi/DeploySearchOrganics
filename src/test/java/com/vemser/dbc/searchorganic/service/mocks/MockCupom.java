@@ -13,7 +13,7 @@ import java.util.Random;
 public class MockCupom {
     public static Cupom retornarCupom(){
         Cupom cupom = new Cupom();
-        cupom.setIdCupom(new Random().nextInt());
+        cupom.setIdCupom(1);
         cupom.setIdEmpresa(new Random().nextInt());
         cupom.setNomeCupom("Cupom promocional");
         cupom.setAtivo(TipoAtivo.S);
