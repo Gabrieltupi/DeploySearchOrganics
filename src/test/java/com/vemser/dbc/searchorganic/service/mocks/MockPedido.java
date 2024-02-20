@@ -196,5 +196,11 @@ public class MockPedido {
 
         return produtosPedidoDTO;
     }
-
+    public static PedidoRastreioDTO retornarPedidoRastreioOk(Pedido pedido, String codRastreio){
+        PedidoRastreioDTO pedidoRastreioDTO = new PedidoRastreioDTO();
+        pedidoRastreioDTO.setCodigoDeRastreio(codRastreio);
+        pedidoRastreioDTO.setStatusPedido(StatusPedido.A_CAMINHO);
+        pedidoRastreioDTO.setIdPedido(pedido.getIdPedido());
+        return pedidoRastreioDTO;
+    }
 }

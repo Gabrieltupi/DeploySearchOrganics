@@ -65,21 +65,18 @@ public class PedidoService {
 
     public void cancelarPedido(Integer idPedido) throws Exception {
         PedidoDTO pedidoDto = getById(idPedido);
-        Pedido pedido= objectMapper.convertValue(pedidoDto, Pedido.class);
+        Pedido pedido = objectMapper.convertValue(pedidoDto, Pedido.class);
         Integer idUsuarioPedido = pedido.getUsuario().getIdUsuario();
         Integer idEmpresaPedido = pedido.getEmpresa().getIdUsuario();
 
-
-        if(!verificarSeAdminOuUsuario(idUsuarioPedido)){
+        if(!verificarSeEmpresaAdminUsuario(idUsuarioPedido, idEmpresaPedido)){
             throw new RegraDeNegocioException("Você não tem permissão pra cancelar este pedido");
         }
 
         List<PedidoXProduto> produtos = pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido());
         for (PedidoXProduto pedidoXProduto : produtos) {
             Produto produto = pedidoXProduto.getProduto();
-
             produto.setQuantidade(produto.getQuantidade().add(BigDecimal.valueOf(pedidoXProduto.getQuantidade())));
-
             produtoRepository.save(produto);
         }
 
@@ -119,11 +116,11 @@ public class PedidoService {
             Cupom cupom = cupomService.getById(pedidoCreateDTO.getIdCupom());
             pedido.setCupom(cupom);
         }
-
-        for (IValidarPedido validador : validarPedidoList) {
-            validador.validar(pedido, usuario.getIdUsuario(), produtos);
+        if (this.validarPedidoList != null) {
+            for (IValidarPedido validador : validarPedidoList) {
+                validador.validar(pedido, usuario.getIdUsuario(), produtos);
+            }
         }
-
 
         pedido = pedidoRepository.save(pedido);
 
@@ -192,7 +189,7 @@ public class PedidoService {
         List<PedidoXProduto> produtos = new ArrayList<>();
         for (ProdutoCarrinhoCreate produtoCarrinhoCreate : produtosCarrinhoCreate) {
             ProdutoDTO produtoDto = produtoService.findById(produtoCarrinhoCreate.getIdProduto());
-            Produto produto= objectMapper.convertValue(produtoDto,Produto.class);
+            Produto produto =  objectMapper.convertValue(produtoDto,Produto.class);
             produtosBanco.add(produto);
             PedidoXProduto pedidoXProduto = new PedidoXProduto();
             pedidoXProduto.setProduto(produto);
@@ -315,7 +312,6 @@ public class PedidoService {
 
         pedido.setCodigoDeRastreio(codigoRastreio);
 
-
         if (pedido.getCodigoDeRastreio() != null) {
             pedido.setStatusPedido(StatusPedido.A_CAMINHO);
         }else{
@@ -342,21 +338,19 @@ public class PedidoService {
         }
         return true;
     }
-    public Boolean verificarSeEmpresaAdminUsuario(Integer id) throws Exception {
-        if (usuarioService.isAdmin()) {
+    public Boolean verificarSeEmpresaAdminUsuario(Integer idUsuarioPedido, Integer idUsuarioEmpresa) throws Exception {
+        if(verificarSeAdminOuUsuario(idUsuarioPedido)){
             return true;
         }
 
-
-        return false;
+        return verificarSeEmpresa(idUsuarioEmpresa);
     }
 
 
     public Boolean verificarSeEmpresa(Integer idUsuarioEmpresa) throws Exception {
-        if(empresaService.isEmpresa()){
-            return true;
-        }
-        return false;
+        Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
+
+        return idUsuarioLogado.equals(idUsuarioEmpresa);
     }
 
 

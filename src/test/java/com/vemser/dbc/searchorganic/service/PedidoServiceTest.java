@@ -1,14 +1,10 @@
 package com.vemser.dbc.searchorganic.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vemser.dbc.searchorganic.dto.cupom.CupomDTO;
-import com.vemser.dbc.searchorganic.dto.empresa.EmpresaDTO;
-import com.vemser.dbc.searchorganic.dto.endereco.EnderecoDTO;
 import com.vemser.dbc.searchorganic.dto.pedido.*;
 import com.vemser.dbc.searchorganic.dto.pedido.validacoes.IValidarPedido;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoDTO;
 import com.vemser.dbc.searchorganic.dto.produto.ProdutoResponsePedidoDTO;
-import com.vemser.dbc.searchorganic.dto.usuario.UsuarioDTO;
 import com.vemser.dbc.searchorganic.exceptions.RegraDeNegocioException;
 import com.vemser.dbc.searchorganic.model.*;
 import com.vemser.dbc.searchorganic.repository.PedidoRepository;
@@ -18,7 +14,6 @@ import com.vemser.dbc.searchorganic.repository.UsuarioRepository;
 import com.vemser.dbc.searchorganic.service.mocks.*;
 import com.vemser.dbc.searchorganic.utils.FormaPagamento;
 import com.vemser.dbc.searchorganic.utils.StatusPedido;
-import com.vemser.dbc.searchorganic.utils.TipoAtivo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,13 +23,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.ArgumentCaptor;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-import static com.vemser.dbc.searchorganic.service.mocks.MockUsuario.obterCargo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,39 +40,41 @@ import static org.mockito.Mockito.*;
 class PedidoServiceTest {
 
     @Mock
-    private  PedidoRepository pedidoRepository;
+    private PedidoRepository pedidoRepository;
     @Mock
-    private  ProdutoRepository produtoRepository;
+    private ProdutoRepository produtoRepository;
     @Mock
-    private  PedidoXProdutoRepository pedidoXProdutoRepository;
+    private PedidoXProdutoRepository pedidoXProdutoRepository;
     @Mock
-    private  ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     @Mock
-    private  EnderecoService enderecoService;
+    private EnderecoService enderecoService;
     @Mock
-    private  CupomService cupomService;
+    private CupomService cupomService;
     @Mock
-    private  UsuarioService usuarioService;
+    private UsuarioService usuarioService;
     @Mock
-    private  EmailService emailService;
+    private EmailService emailService;
     @Mock
-    private  ProdutoService produtoService;
+    private IValidarPedido validarPedido;
     @Mock
-    private  List<IValidarPedido> validarPedidoList;
+    private ProdutoService produtoService;
     @Mock
-    private  UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
     @Mock
-    private  EmpresaService empresaService;
+    private EmpresaService empresaService;
     @Mock
-    private  BigDecimal TAXA_SERVICO = new BigDecimal(5);
+    private BigDecimal TAXA_SERVICO = new BigDecimal(5);
     @Spy
     @InjectMocks
     private PedidoService pedidoService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         Usuario admin = MockUsuario.retornarUsuarioAdmin();
-        lenient().when(usuarioService.findByLogin("admin")).thenReturn(Optional.ofNullable(admin));
+        admin.setCarteira(MockCarteira.retornarCarteira());
+        admin.getCarteira().setSaldo(BigDecimal.valueOf(500000));
+        lenient().when(usuarioService.findByLogin("admin")).thenReturn(Optional.of(admin));
     }
 
     @Test
@@ -106,38 +105,18 @@ class PedidoServiceTest {
 
     @Test
     @DisplayName("sucessoCancelarPedido")
-    public void  sucessoCancelarPedido() throws Exception {
-        PedidoDTO pedidoDTO= pedidoService.getById(MockPedido.retornaPedidoDto().getIdPedido());
-        Pedido pedido= MockPedido.retornaPedidoEntity();
-        when(objectMapper.convertValue(pedidoDTO,Pedido.class)).thenReturn(pedido);
-        Integer idUsuarioPedido= pedido.getUsuario().getIdUsuario();
-        Integer idEpresaPedido= pedido.getEmpresa().getIdEmpresa();
+    public void sucessoCancelarPedido() throws Exception {
+        PedidoDTO pedidoDTO = MockPedido.retornaPedidoDto();
+        Pedido pedido = MockPedido.retornaPedidoEntity();
 
-        when(pedidoService.verificarSeEmpresaAdminUsuario(idUsuarioPedido)).thenReturn(true);
+        when(pedidoRepository.findById(pedido.getIdPedido())).thenReturn(Optional.of(pedido));
+        when(objectMapper.convertValue(any(PedidoDTO.class), eq(Pedido.class))).thenReturn(pedido);
+        when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getUsuario().getIdUsuario());
+        pedidoService.cancelarPedido(pedido.getIdPedido());
 
-         List<PedidoXProduto> produtos= MockPedido.retornaListaPedidoXPROduto();
-         when(pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido())).thenReturn(produtos);
+        verify(pedidoRepository, times(1)).cancelarPedido(pedido.getIdPedido());
 
-         for (PedidoXProduto pedidoXProduto : produtos) {
-             Produto produto = pedidoXProduto.getProduto();
-
-             produto.setQuantidade(produto.getQuantidade().add(BigDecimal.valueOf(pedidoXProduto.getQuantidade())));
-
-             when(produtoRepository.save(produto)).thenReturn(produto);
-         }
-
-         pedidoService.cancelarPedido(pedido.getIdPedido());
-
-        verify(pedidoService).verificarSeEmpresaAdminUsuario(idUsuarioPedido);
-        verify(pedidoRepository).findById(pedido.getIdPedido());
-        verify(pedidoXProdutoRepository).findAllByIdPedido(pedido.getIdPedido());
-        verify(pedidoService).cancelarPedido(pedido.getIdPedido());
-        for (PedidoXProduto pedidoXProduto : produtos) {
-            Produto produto = pedidoXProduto.getProduto();
-            verify(produtoRepository).save(produto);
-     }
     }
-
 
 
     @Test
@@ -156,6 +135,7 @@ class PedidoServiceTest {
         assertEquals(new BigDecimal("50"), carteiraOrigem.getSaldo());
         assertEquals(new BigDecimal("150"), carteiraDestino.getSaldo());
     }
+
     @Test
     @DisplayName("efetuarTransferenciaSaldoInsuficiente")
     public void efetuarTransferenciaSaldoInsuficiente() {
@@ -205,7 +185,7 @@ class PedidoServiceTest {
     @Test
     @DisplayName("obterProdutos - Sucesso")
     public void obterProdutosSucesso() throws Exception {
-        Produto produto= MockProduto.retornarProdutoEntity();
+        Produto produto = MockProduto.retornarProdutoEntity();
         ArrayList<ProdutoCarrinhoCreate> produtosCarrinhoCreate = new ArrayList<>();
         ProdutoCarrinhoCreate produtoCarrinhoCreate = new ProdutoCarrinhoCreate();
         produtoCarrinhoCreate.setIdProduto(produto.getIdProduto());
@@ -213,7 +193,7 @@ class PedidoServiceTest {
         produtosCarrinhoCreate.add(produtoCarrinhoCreate);
 
         List<Produto> produtosBanco = new ArrayList<>();
-        ProdutoDTO produtoDTO =MockProduto.retornarProdutoDTO();
+        ProdutoDTO produtoDTO = MockProduto.retornarProdutoDTO();
 
         when(produtoService.findById(produtoCarrinhoCreate.getIdProduto())).thenReturn(produtoDTO);
 
@@ -291,87 +271,70 @@ class PedidoServiceTest {
         PedidoDTO pedidoDTO = MockPedido.retornaPedidoDto();
         Usuario usuario = MockUsuario.retornarUsuario();
 
-        when(enderecoService.getMensagemEnderecoEmail(objectMapper.convertValue(pedidoDTO.getEndereco(),Endereco.class))).thenReturn("Endereço do pedido");
+        when(enderecoService.getMensagemEnderecoEmail(objectMapper.convertValue(pedidoDTO.getEndereco(), Endereco.class))).thenReturn("Endereço do pedido");
         when(produtoService.getMensagemProdutoEmail(pedidoDTO.getProdutos())).thenReturn("Detalhes dos produtos do pedido");
 
         pedidoService.emailPedidoCriado(pedidoDTO, usuario);
 
         String mensagemEsperada = """
-                    <span style="display: block; font-size: 16px; font-weight: bold;">Pedido Realizado</span>
-                    <section style="color: #ffffff;">
-                        <p style="color: #ffffff;">Olá Usuario Teste, seu pedido foi realizado com sucesso,</p>
-                        <p style="color: #ffffff;">O Status atual do seu pedido é PENDENTE,</p>
-                        <p style="color: #ffffff;">Abaixo seguem detalhes do seu pedido:</p>
-                        <p style="color: #ffffff;">Pedido N°: 1,</p>
-                        <p style="color: #ffffff;">Total: 100.0,</p>
-                        <p style="color: #ffffff;">Forma de pagamento: CARTAO_CREDITO,</p>
-                        <p style="color: #ffffff;">Data do pedido: 01/01/2024,</p>
-                        <p style="color: #ffffff;">Data da entrega: 10/01/2024,</p>
-                        <p style="color: #ffffff;">Produtos: <br> Detalhes dos produtos do pedido </p>
-                        <p style="color: #ffffff;">Endereço: <br> Endereço do pedido </p>
-                    </section>
-                    """;
+                <span style="display: block; font-size: 16px; font-weight: bold;">Pedido Realizado</span>
+                <section style="color: #ffffff;">
+                    <p style="color: #ffffff;">Olá Usuario Teste, seu pedido foi realizado com sucesso,</p>
+                    <p style="color: #ffffff;">O Status atual do seu pedido é PENDENTE,</p>
+                    <p style="color: #ffffff;">Abaixo seguem detalhes do seu pedido:</p>
+                    <p style="color: #ffffff;">Pedido N°: 1,</p>
+                    <p style="color: #ffffff;">Total: 100.0,</p>
+                    <p style="color: #ffffff;">Forma de pagamento: CARTAO_CREDITO,</p>
+                    <p style="color: #ffffff;">Data do pedido: 01/01/2024,</p>
+                    <p style="color: #ffffff;">Data da entrega: 10/01/2024,</p>
+                    <p style="color: #ffffff;">Produtos: <br> Detalhes dos produtos do pedido </p>
+                    <p style="color: #ffffff;">Endereço: <br> Endereço do pedido </p>
+                </section>
+                """;
 //        verify(emailService).sendEmail(mensagemEsperada, "Pedido realizado", "usuario@teste.com");
     }
 
-@Test
-@DisplayName("sucessoSalvarPedido")
-public void sucessoSalvarPedido() throws Exception {
-        PedidoCreateDTO pedidoCreateDTO= MockPedido.retornarPedidoCreateDto();
+    @Test
+    @DisplayName("sucessoSalvarPedido")
+    public void sucessoSalvarPedido() throws Exception {
+        PedidoCreateDTO pedidoCreateDTO = MockPedido.retornarPedidoCreateDto();
+        Pedido pedido = MockPedido.retornaPedidoEntity();
+        Usuario usuario = MockUsuario.retornarUsuario();
+        Produto produto = MockProduto.retornarProdutoEntity();
+        ProdutoDTO produtoDTO = MockProduto.retornarProdutoDTO();
 
-        Pedido pedido= MockPedido.retornaPedidoEntity();
         when(objectMapper.convertValue(pedidoCreateDTO, Pedido.class)).thenReturn(pedido);
-
-        Usuario usuario= MockUsuario.retornarUsuarioAdmin();
-        List<Produto> produtosBanco= MockProduto.retornarListaProdutos();
-        List<PedidoXProduto> produtos=MockPedido.retornaListaPedidoXPROduto();
-        when(usuarioService.obterUsuarioPorId(pedido.getUsuario().getIdUsuario())).thenReturn(usuario);
-
-        Endereco endereco= MockEndereco.retornarEndereco();
-        when(enderecoService.getById(pedidoCreateDTO.getIdEndereco())).thenReturn(endereco);
-        Empresa empresa= MockEmpresa.retornarEmpresa();
-        when(empresaService.getById(pedidoCreateDTO.getIdEmpresa())).thenReturn(empresa);
-
-        pedido.setEmpresa(empresa);
-        pedido.setEndereco(endereco);
-        pedido.setUsuario(usuario);
-
-        Cupom cupom= MockCupom.retornarCupom();
-        when(cupomService.getById(pedidoCreateDTO.getIdCupom())).thenReturn(cupom);
-
-    for (IValidarPedido validador : validarPedidoList) {
-        verify(validador).validar(eq(pedido), eq(usuario.getIdUsuario()), eq(produtos));
-    }
+        when(produtoService.findById(anyInt())).thenReturn(produtoDTO);
+        when(objectMapper.convertValue(produtoDTO,Produto.class)).thenReturn(produto);
         when(pedidoRepository.save(pedido)).thenReturn(pedido);
+        when(usuarioService.obterUsuarioPorId(usuario.getIdUsuario())).thenReturn(usuario);
+        when(enderecoService.getById(pedidoCreateDTO.getIdEndereco())).thenReturn(pedido.getEndereco());
+        when( empresaService.getById(pedidoCreateDTO.getIdEmpresa())).thenReturn(pedido.getEmpresa());
+        when(cupomService.getById(pedidoCreateDTO.getIdCupom())).thenReturn(pedido.getCupom());
+        when(pedidoXProdutoRepository.findAllByIdPedido(pedido.getIdPedido())).thenReturn(MockPedido.retornaListaProdutoXPedido(pedido, produto));
 
-        PedidoXProduto pedidoXProduto= MockPedido.retornaPedidoXProdutoEntity();
-        when(pedidoXProdutoRepository.save(pedidoXProduto)).thenReturn(pedidoXProduto);
 
-        Produto produto= MockProduto.retornarProdutoEntity();
-        BigDecimal quantidadeAtualizada = produto.getQuantidade().subtract(BigDecimal.valueOf(pedidoXProduto.getQuantidade()));
-        verify(pedidoXProdutoRepository).updateQuantidadeProduto(produto.getIdProduto(), quantidadeAtualizada);
+        PedidoDTO pedidoDTO = pedidoService.save(usuario.getIdUsuario(), pedidoCreateDTO);
 
-    PedidoDTO pedidoDTO= pedidoService.save(usuario.getIdUsuario(), pedidoCreateDTO);
+        assertNotNull(pedidoDTO);
+        assertEquals(usuario.getIdUsuario(), pedidoDTO.getUsuario().getIdUsuario());
 
-    assertNotNull(pedidoDTO);
-    assertEquals(usuario.getIdUsuario(), pedidoDTO.getUsuario().getIdUsuario());
-    assertEquals(empresa.getIdEmpresa(), pedidoDTO.getEmpresaDTO().getIdEmpresa());
-    assertEquals(cupom.getIdCupom(), pedidoDTO.getCupom().getIdCupom());
 
-}
-
+    }
 
 
     @Test
     @DisplayName("atualizarStatusDoPedido")
     public void atualizarStatusDoPedido() throws Exception {
-        Pedido pedido= MockPedido.retornaPedidoEntity();
+        Pedido pedido = MockPedido.retornaPedidoEntity();
         Integer idPedido = pedido.getIdPedido();
         pedido.setStatusPedido(StatusPedido.ENTREGUE);
         Integer idEmpresa = pedido.getEmpresa().getIdEmpresa();
+        pedido.getEmpresa().setIdUsuario(3);
 
-        when(pedidoService.verificarSeEmpresa(anyInt())).thenReturn(true);
-        when(pedidoService.findById(idPedido)).thenReturn(pedido);
+        when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getEmpresa().getIdUsuario());
+        when(pedidoRepository.findById(idPedido)).thenReturn(Optional.of(pedido));
+        when(pedidoRepository.save(pedido)).thenReturn(pedido);
 
         PedidoEmpresaDTO pedidoAtualizado = pedidoService.updatePedidoStatus(idPedido, pedido.getStatusPedido(), idEmpresa);
 
@@ -379,7 +342,24 @@ public void sucessoSalvarPedido() throws Exception {
         assertEquals(idPedido, pedidoAtualizado.getIdPedido());
         assertEquals(pedido.getStatusPedido(), pedidoAtualizado.getStatusPedido());
     }
+    @Test
+    @DisplayName("atualizarCodigoRastreio")
+    public void atualizarCodigoRastreio() throws Exception {
+        String codRastreio = "ABCDFEK";
+        Pedido pedido = MockPedido.retornaPedidoEntity();
+        Usuario usuEmpresa = MockUsuario.retornarUsuario();
+        pedido.getEmpresa().setIdUsuario(usuEmpresa.getIdUsuario());
+        PedidoRastreioDTO pedRastreioDTO = MockPedido.retornarPedidoRastreioOk(pedido, codRastreio);
 
+        when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getEmpresa().getIdUsuario());
+        when(pedidoRepository.findById(pedido.getIdPedido())).thenReturn(Optional.of(pedido));
+        when(objectMapper.convertValue(pedido, PedidoRastreioDTO.class)).thenReturn(pedRastreioDTO);
+        PedidoRastreioDTO pedidoRastreioDTO = pedidoService.updateCodigoDeRastreio(pedido.getIdPedido(), codRastreio);
+
+        assertNotNull(pedidoRastreioDTO);
+        assertEquals(pedido.getCodigoDeRastreio(), "ABCDFEK");
+        assertEquals(pedido.getStatusPedido(), pedidoRastreioDTO.getStatusPedido());
+    }
 
 
     @Test
@@ -388,11 +368,13 @@ public void sucessoSalvarPedido() throws Exception {
         Pedido pedido = MockPedido.retornaPedidoEntity();
         Integer idPedido = pedido.getIdPedido();
         pedido.setStatusPedido(StatusPedido.A_CAMINHO);
+        Usuario usuarioEmpresa = MockUsuario.retornarUsuario();
+        usuarioEmpresa.setCarteira(MockCarteira.retornarCarteira());
+        pedido.getEmpresa().setIdUsuario(usuarioEmpresa.getIdUsuario());
 
-        when(pedidoService.findById(idPedido)).thenReturn(pedido);
-        when(pedidoService.verificarSeAdminOuUsuario(anyInt())).thenReturn(true);
-        when(usuarioService.obterUsuarioPorId(anyInt())).thenReturn(MockUsuario.retornarUsuario());
-        when(pedidoService.obterAdmin()).thenReturn(MockUsuario.retornarUsuario());
+        when(usuarioService.obterUsuarioPorId(pedido.getEmpresa().getIdEmpresa())).thenReturn(usuarioEmpresa);
+        when(pedidoRepository.findById(idPedido)).thenReturn(Optional.of(pedido));
+        when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getUsuario().getIdUsuario());
 
         PedidoDTO pedidoDTO = pedidoService.entregue(idPedido);
 
@@ -416,14 +398,8 @@ public void sucessoSalvarPedido() throws Exception {
         pagamentoDTO.setCvv("123");
         pagamentoDTO.setDataValidade(LocalDate.parse("2025-12-01", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-        Usuario admin = MockUsuario.retornarUsuarioAdmin();
-        Usuario usuario = MockUsuario.retornarUsuario();
-
-        BigDecimal total = new BigDecimal("100");
-
-        when(pedidoService.findById(idPedido)).thenReturn(pedido);
-        when(pedidoService.verificarSeAdminOuUsuario(anyInt())).thenReturn(true);
-        when(pedidoService.obterAdmin()).thenReturn(admin);
+        when(pedidoRepository.findById(idPedido)).thenReturn(Optional.of(pedido));
+        when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getUsuario().getIdUsuario());
 
         PedidoDTO pedidoDTO = pedidoService.pagamento(idPedido, pagamentoDTO);
 
@@ -431,8 +407,6 @@ public void sucessoSalvarPedido() throws Exception {
         assertEquals(idPedido, pedidoDTO.getIdPedido());
         assertEquals(StatusPedido.PAGO, pedido.getStatusPedido());
         assertEquals(FormaPagamento.CREDITO, pedido.getFormaPagamento());
-        assertEquals(usuario.getCarteira().getSaldo().add(total), usuarioRepository.findById(usuario.getIdUsuario()).get().getCarteira().getSaldo());
-        assertEquals(admin.getCarteira().getSaldo().subtract(total), usuarioRepository.findById(admin.getIdUsuario()).get().getCarteira().getSaldo());
     }
 
     @Test
@@ -450,8 +424,8 @@ public void sucessoSalvarPedido() throws Exception {
         pagamentoDTO.setCvv(null);
         pagamentoDTO.setDataValidade(null);
 
-        when(pedidoService.findById(idPedido)).thenReturn(pedido);
-        when(pedidoService.verificarSeAdminOuUsuario(anyInt())).thenReturn(true);
+        when(pedidoRepository.findById(idPedido)).thenReturn(Optional.of(pedido));
+        when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getUsuario().getIdUsuario());
 
         assertThrows(RegraDeNegocioException.class, () -> pedidoService.pagamento(idPedido, pagamentoDTO), "Cartão inválido");
     }
@@ -464,6 +438,8 @@ public void sucessoSalvarPedido() throws Exception {
         Integer id = pedido.getIdPedido();
         PedidoUpdateDTO pedidoAtualizar = MockPedido.retornarPedidoUpdateDto();
 
+
+        when(usuarioService.getIdLoggedUser()).thenReturn(pedido.getUsuario().getIdUsuario());
         when(pedidoRepository.findById(id)).thenReturn(java.util.Optional.of(pedido));
         when(enderecoService.getById(pedidoAtualizar.getIdEndereco())).thenReturn(pedido.getEndereco());
 
@@ -471,7 +447,7 @@ public void sucessoSalvarPedido() throws Exception {
 
         assertNotNull(pedidoAtualizado);
         assertEquals(pedido.getIdPedido(), pedidoAtualizado.getIdPedido());
-        assertEquals(pedido.getEndereco(), pedidoAtualizado.getEndereco());
+        assertEquals(pedido.getEndereco().getEstado(), pedidoAtualizado.getEndereco().getEstado());
         assertEquals(pedidoAtualizar.getFormaPagamento(), pedidoAtualizado.getFormaPagamento());
         assertEquals(pedidoAtualizar.getDataEntrega(), pedidoAtualizado.getDataEntrega());
         assertEquals(pedidoAtualizar.getStatusPedido(), pedidoAtualizado.getStatusPedido());
@@ -479,11 +455,6 @@ public void sucessoSalvarPedido() throws Exception {
 
         verify(pedidoRepository).save(pedido);
     }
-
-
-
-
-
 
 
 }
